@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selector Input</title>
+</head>
+<body>
+  <script>
+    const input = document.createElement("bim-selector-input")
+    input.setAttribute("label", "Selector")
+    input.options = ["Option A", "Option B"]
+    input.value = "Option A" // If you don't set the value, it will default to the first set in options.
+    
+    // It's recommended to set any event listeners after you've set the selector options.
+    input.onchange = () => {
+      console.log(input.value)
+    }
+  </script>
+</body>
+</html>
