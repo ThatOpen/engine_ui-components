@@ -42,6 +42,8 @@ export class CheckboxInput extends UIComponent {
     onChange: () => void
   } | null = null
 
+  protected static _tableHostable = true
+
   associateProperty(object: Record<string, any>, key: string) {
     const value = object[key]
     if (typeof value !== "boolean") return;

@@ -70,6 +70,8 @@ export class NumberInput extends UIComponent {
 
   private _inputRef = createRef<HTMLInputElement>()
   private host = createRef<HTMLDivElement>()
+
+  protected static _tableHostable = true
   
   private onInput(e: InputEvent) {
     const input = e.target as HTMLInputElement

@@ -99,6 +99,8 @@ export class SelectorInput extends UIComponent {
     return this._value
   }
 
+  protected static _tableHostable = true
+
   private onOptionClick(value: string) {
     this.value = value
   }

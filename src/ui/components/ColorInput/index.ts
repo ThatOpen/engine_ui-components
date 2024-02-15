@@ -100,6 +100,8 @@ export class ColorInput extends UIComponent {
   private _text = createRef<HTMLInputElement>()
   private _opacity = createRef<HTMLInputElement>()
 
+  protected static _tableHostable = true
+
   constructor() {
     super()
     this.transparent = false

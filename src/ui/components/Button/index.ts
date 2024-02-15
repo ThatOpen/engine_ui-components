@@ -15,6 +15,7 @@ export class Button extends UIComponent {
       font-size: 12px;
       line-height: 1rem;
       border-radius: 0.375rem;
+      padding: 0 1rem;
     }
 
     :host(:not([disabled]):hover) {
@@ -40,6 +41,8 @@ export class Button extends UIComponent {
   declare label?: string
   declare active: boolean
   declare disabled: boolean
+
+  protected static _tableHostable = true
 
   constructor() {
     super()

@@ -36,6 +36,8 @@ export class VectorInput extends UIComponent {
   private _host = createRef<HTMLDivElement>()
   private _xInput = createRef<NumberInput>()
 
+  protected static _tableHostable = true
+
   private onInput(e: InputEvent, axis: "x" | "y" | "z") {
     const input = e.target as NumberInput
     const { value } = input

@@ -9,6 +9,7 @@ import { PanelsContainer } from "./PanelsContainer";
 import { PanelSection } from "./PanelSection";
 import { SelectorInput } from "./SelectorInput";
 import { Table } from "./Table";
+import { Tag } from "./Tag";
 import { Toolbar } from "./Toolbar";
 import { ToolbarSection } from "./ToolbarSection";
 import { VectorInput } from "./VectorInput";
@@ -25,6 +26,7 @@ declare global {
     "bim-panel-section": PanelSection;
     "bim-selector-input": SelectorInput;
     "bim-table": Table;
+    "bim-tag": Tag;
     "bim-toolbar": Toolbar;
     "bim-toolbar-section": ToolbarSection;
     "bim-vector-input": VectorInput;
@@ -42,6 +44,7 @@ customElements.define("bim-panels-container", PanelsContainer)
 customElements.define("bim-panel-section", PanelSection)
 customElements.define("bim-selector-input", SelectorInput)
 customElements.define("bim-table", Table)
+customElements.define("bim-tag", Tag)
 customElements.define("bim-toolbar", Toolbar)
 customElements.define("bim-toolbar-section", ToolbarSection)
 customElements.define("bim-vector-input", VectorInput)
@@ -56,6 +59,8 @@ export {
   Panel,
   PanelSection,
   SelectorInput,
+  Table,
+  Tag,
   Toolbar,
   ToolbarSection,
   VectorInput
