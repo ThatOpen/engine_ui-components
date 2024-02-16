@@ -9,7 +9,7 @@ interface TableComponentCell {
 }
 
 interface TableRow {
-  [key: string]: string | TableRow[] | undefined | TableComponentCell
+  data: {[key: string]: string | TableComponentCell}
   children?: TableRow[];
 }
 
@@ -18,12 +18,14 @@ export interface TableData {
   rows: TableRow[]
 }
 
-interface ParsedTable {
-  headers: string[]
-  rows: {
-    data: { [key: string]: TemplateResult[] }
-    order: string[]
-  }
+interface ParsedRow {
+  data: TemplateResult[]
+  children?: ParsedRow[]
+}
+
+interface ParsedData {
+  headers: string[],
+  rows: ParsedRow[]
 }
 
 export class Table extends UIComponent {
@@ -52,7 +54,6 @@ export class Table extends UIComponent {
     }
 
     tr {
-      cursor: pointer;
       border-bottom: 1px solid #2e2e2e;
       position: relative;
     }
@@ -87,32 +88,48 @@ export class Table extends UIComponent {
     return this._indentHighlighted
   }
 
-  private _parsedData: ParsedTable = {
-    headers: [],
-    rows: {
-      data: {},
-      order: []
-    }
-  }
-  
-  private _value: TableData = {rows: []}
+  private _parsedData: ParsedData = { headers: [], rows: [] }
+  private _value: TableData = { headers: [], rows: []}
 
   set value(data: TableData) {
     this._value = data
-    this._parsedData = {
-      headers: data.headers?? [],
-      rows: {
-        data: {},
-        order: []
-      }
-    }
-    this.parseTableData()
+    this._parsedData.headers = data.headers?? []
+    this._parsedData.rows = this.process(data.rows)
   }
 
   get value() {
     return this._value
   }
+
+  private getRowsTemplates(rows: ParsedRow[] = this._parsedData.rows, collector: TemplateResult[] = []) {
+    for (const row of rows) {
+      const tds: TemplateResult[] = []
+      const { data, children } = row
+      data.length = this._parsedData.headers.length
+      for (const value of data) { tds.push(html`${value?? html`<td></td>`}`) }
+      collector.push(html`<tr>${tds.map(td => td)}</tr>`)
+      if (children) this.getRowsTemplates(children, collector)
+    }
+    return collector
+  }
   
+  private process(row: TableRow[], indentation = 0) {
+    const { headers } = this._parsedData
+    const rows: ParsedRow[] = []
+    for (const [i, dataRow] of row.entries()) {
+      rows[i] = {data: []}
+      const { children, ...info } = dataRow
+      for (const header in info.data) {
+        if (!headers.includes(header) && this.inferHeaders) headers.push(header)
+        const headerIndex = headers.indexOf(header)
+        const value = info.data[header]
+        if (value) rows[i].data[headerIndex] = this.createRowData(value, headerIndex, indentation)
+      }
+      if (children) rows[i].children = this.process(children, indentation + 1)
+    }
+    return rows
+  }
+
   private _table = createRef<HTMLTableElement>()
 
   inferHeaders = true
@@ -123,27 +140,37 @@ export class Table extends UIComponent {
     this.selectableRows = false
   }
 
-  private parseTableData(data = this._value.rows, parent = "0") {
-    const { headers } = this._parsedData
-    const { data: rows, order } = this._parsedData.rows
-    for (const [count, item] of data.entries()) {
-      const indentation = parent.length === 1 ? count.toString() : `${parent}${count}`
-      order.push(indentation)
-      rows[indentation] = []
-      const { children, ...data } = item
-      for (const header in data) {
-        if (!headers.includes(header) && this.inferHeaders) { headers.push(header) }
-        const headerIndex = headers.indexOf(header)
-        const value = item[header] as string | TableComponentCell
-        if (typeof value === "string") {
-          rows[indentation][headerIndex] = html`${value}`
-        } else {
-          const component = this.createCellComponent(value)
-          if (component) rows[indentation][headerIndex] = html`${component}`
-        }
-      }
-      if (children) this.parseTableData(children, `${indentation}.`)
+  private createRowData(value: string | TableRow[] | TableComponentCell, headerIndex: number, indentation: number) {
+    const divStyle = {
+      display: "flex",
+      justifyContent: `${headerIndex === 0? `left` : "center"}`,
+      alignItems: "center",
+      columnGap: "0.25rem",
+      // marginLeft: "1rem",
+      marginLeft: `${headerIndex === 0? `${indentation.toString()}rem` : 0}`
     }
+    const indents: TemplateResult[] = []
+    if (headerIndex === 0) {
+      for (let index = 0; index < indentation; index++) {
+        indents.push(html`<span style="width: 1rem; border: 1px solid white"></span>`)
+      }
+    }
+    const caretRight = html`<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M10 17l5-5-5-5v10z"/><path d="M0 24V0h24v24H0z" fill="none"/></svg>`
+    const caretDown = html`<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>`
+    const caret = headerIndex === 0 ? caretDown : null
+    return html`
+      <td>
+        <div style=${styleMap(divStyle)}>
+        <!-- ${indents} -->
+        <!-- ${caret} -->
+        ${
+          typeof value === "string"
+          ? html`${value}`
+          : html`${this.createCellComponent(value as TableComponentCell)}`
+        }
+        </div>
+      </td>
+    `
   }
 
   private createCellComponent(cell: TableComponentCell) {
@@ -188,50 +215,13 @@ export class Table extends UIComponent {
   }
 
   render() {
-    const tableRows: TemplateResult[] = []
     const { headers } = this._parsedData
-    const { data: rows, order } = this._parsedData.rows
-    for (const indentation of order) {
-      const row = rows[indentation]
-      row.length = headers.length
-      const indentCount = indentation.split(".").length - 1
-      const tableCells: TemplateResult[] = []
-      for (const [index, data] of row.entries()) {
-        const divStyle = {
-          display: "flex",
-          justifyContent: `${index === 0 && data !== undefined ? `left` : "center"}`,
-          alignItems: "center",
-          columnGap: "0.25rem",
-          marginLeft: `${index === 0 && data !== undefined ? `${indentCount.toString()}rem` : 0}`
-        }
-        const caretRight = html`<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M10 17l5-5-5-5v10z"/><path d="M0 24V0h24v24H0z" fill="none"/></svg>`
-        const caretDown = html`<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>`
-        const caret = index === 0 && data !== undefined ? caretDown : null
-        const container = html`
-          <div style=${styleMap(divStyle)}>
-            ${caret}
-            ${data}
-          </div> 
-        `
-        tableCells.push(html`
-          <td>
-            ${data !== undefined ? container : null}
-          </td>
-        `)
-      }
-      const tr = html`
-        <tr data-ui-table-group='${indentation}'>
-          ${this.selectableRows ? html`<td><bim-checkbox-input></bim-checkbox-input></td>` : null}
-          ${tableCells}
-        </tr>
-      `
-      tableRows.push(tr)
-    }
-    
+    const templates = this.getRowsTemplates().map(template => template)
     return html`
       <table ${ref(this._table)}>
+        <colgroup>${headers.map(() => html`<col />`)}</colgroup>
         ${this.headersVisible ? html`<thead><tr>${headers.map(h => html`<th>${h}</th>`)}</tr></thead>` : null}
-        <tbody>${tableRows}</tbody>
+        <tbody>${templates}</tbody>
       </table>
     `
   }
