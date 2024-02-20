@@ -30,11 +30,15 @@ interface ParsedData {
 
 export class Table extends UIComponent {
   static styles = css`
+    :host {
+      position: relative
+    }
+
     table {
       border-collapse: collapse;
       margin: 0;
       padding: 0;
-      font-size: 14px;
+      font-size: 12px;
     }
     
     thead {
@@ -43,6 +47,7 @@ export class Table extends UIComponent {
     }
     
     th {
+      font-size: 14px;
       padding: 0.5rem 1rem;
       font-weight: 500;
       text-wrap: nowrap;
@@ -50,10 +55,11 @@ export class Table extends UIComponent {
     
     td {
       position: relative;
-      padding: 0.5rem 1rem;
+      padding: 0.25rem 1rem;
     }
-
+    
     tr {
+      height: 2rem;
       border-bottom: 1px solid #2e2e2e;
       position: relative;
     }
@@ -69,11 +75,14 @@ export class Table extends UIComponent {
     rows: { type: Object, attribute: false },
     headersVisible: { type: Boolean, reflect: true, attribute: "headers" },
     indentHighlighted: { type: String, reflect: true, attribute: "indent-highlighted" },
-    selectableRows: { type: Boolean, reflect: true, attribute: "selectable-rows" }
+    selectableRows: { type: Boolean, reflect: true, attribute: "selectable-rows" },
+    carets: { type: Boolean, reflect: true },
+    branches: { type: Boolean, reflect: true }
   }
 
   declare headersVisible: boolean
   declare selectableRows: boolean
+  declare carets: boolean
   
   private _indentHighlighted?: string = undefined
 
@@ -101,14 +110,15 @@ export class Table extends UIComponent {
     return this._value
   }
 
-  private getRowsTemplates(rows: ParsedRow[] = this._parsedData.rows, collector: TemplateResult[] = []) {
-    for (const row of rows) {
+  private getRowsTemplates(rows: ParsedRow[] = this._parsedData.rows, collector: TemplateResult[] = [], _indentation = "0") {
+    for (const [index, row] of rows.entries()) {
+      const indentation = _indentation.length === 1 ? (index + 1).toString() : `${_indentation}${index}`
       const tds: TemplateResult[] = []
       const { data, children } = row
       data.length = this._parsedData.headers.length
       for (const value of data) { tds.push(html`${value?? html`<td></td>`}`) }
-      collector.push(html`<tr>${tds.map(td => td)}</tr>`)
-      if (children) this.getRowsTemplates(children, collector)
+      collector.push(html`<tr data-ui-table-indentation=${indentation}>${tds.map(td => td)}</tr>`)
+      if (children) this.getRowsTemplates(children, collector, `${indentation}.`)
     }
     return collector
   }
@@ -123,7 +133,7 @@ export class Table extends UIComponent {
         if (!headers.includes(header) && this.inferHeaders) headers.push(header)
         const headerIndex = headers.indexOf(header)
         const value = info.data[header]
-        if (value) rows[i].data[headerIndex] = this.createRowData(value, headerIndex, indentation)
+        if (value) rows[i].data[headerIndex] = this.createRowData(value, headerIndex, indentation, !!children)
       }
       if (children) rows[i].children = this.process(children, indentation + 1)
     }
@@ -138,36 +148,69 @@ export class Table extends UIComponent {
     super()
     this.headersVisible = true
     this.selectableRows = false
+    this.carets = true
   }
 
-  private createRowData(value: string | TableRow[] | TableComponentCell, headerIndex: number, indentation: number) {
+  private createSVGLine(indentation = 0) {
+    // Create an SVG element
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.style.zIndex = "10"
+    svg.style.position = "absolute"
+    svg.style.top = "1rem"
+    svg.style.left = `${1 + indentation - 0.5}rem`
+
+    // Set attributes (optional)
+    svg.setAttribute("width", "1");
+    svg.setAttribute("height", "10");
+
+    // Create a line element
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.style.pointerEvents = "none"
+
+    // Set attributes for the line
+    line.setAttribute("x1", "0");
+    line.setAttribute("y1", "0");
+    line.setAttribute("x2", "0");
+    line.setAttribute("y2", "10");
+    line.setAttribute("stroke", "white");
+    line.setAttribute("stroke-width", "2");
+
+    // Append the line element to the SVG
+    svg.appendChild(line);
+    return svg
+  }
+
+  private createRowData(value: string | TableRow[] | TableComponentCell, headerIndex: number, indentation: number, children: boolean) {
     const divStyle = {
       display: "flex",
       justifyContent: `${headerIndex === 0? `left` : "center"}`,
       alignItems: "center",
       columnGap: "0.25rem",
       // marginLeft: "1rem",
-      marginLeft: `${headerIndex === 0? `${indentation.toString()}rem` : 0}`
+      marginLeft: `${headerIndex === 0 ? `${(indentation + 1).toString()}rem` : 0}`,
     }
     const indents: TemplateResult[] = []
     if (headerIndex === 0) {
       for (let index = 0; index < indentation; index++) {
-        indents.push(html`<span style="width: 1rem; border: 1px solid white"></span>`)
+        indents.push(html`
+          <span data-ui-table-level=${index} style="position: relative; height: 28px; width: 1rem"></span>
+        `)
       }
     }
-    const caretRight = html`<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M10 17l5-5-5-5v10z"/><path d="M0 24V0h24v24H0z" fill="none"/></svg>`
-    const caretDown = html`<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>`
+    const caretRight = html`<svg style="position: absolute; left: 0px" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M10 17l5-5-5-5v10z"/><path d="M0 24V0h24v24H0z" fill="none"/></svg>`
+    const caretDown = html`<svg style="position: absolute; left: 0px" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>`
     const caret = headerIndex === 0 ? caretDown : null
     return html`
-      <td>
+      <td style="position: relative;">
+        <!-- ${headerIndex === 0 && children ? this.createSVGLine(indentation) : null} -->
         <div style=${styleMap(divStyle)}>
-        <!-- ${indents} -->
-        <!-- ${caret} -->
-        ${
-          typeof value === "string"
-          ? html`${value}`
-          : html`${this.createCellComponent(value as TableComponentCell)}`
-        }
+          <!-- ${headerIndex === 0 ? html`<div data-ui-table="indent-helpers" style="display: flex">${indents.map(i => i)}</div>` : null} -->
+          <!-- ${children ? caret : null} -->
+          ${
+            typeof value === "string"
+            ? html`${value}`
+            : html`${this.createCellComponent(value as TableComponentCell)}`
+          }
         </div>
       </td>
     `

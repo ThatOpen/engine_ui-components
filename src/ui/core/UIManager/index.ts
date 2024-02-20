@@ -72,6 +72,7 @@ export class UIManager {
 
   private createGrid() {
     const { floating } = this.config
+    this.grid.setAttribute("data-ui-style", floating ? "floating" : "fixed")
     const { areas, columnsSize, rowsSize, padding, gap } = this.config.grid
     if (floating) {
       this.grid.style.position = "absolute";

@@ -12,9 +12,9 @@ export class NumberInput extends UIComponent {
     .host {
       display: flex;
       height: 1.75rem;
-      width: fit-content;
+      /* width: fit-content; */
       border-radius: 0.375rem;
-      justify-content: center;
+      justify-content: space-between;
       font-size: 12px;
       line-height: 1rem;
       align-items: center;
@@ -34,6 +34,7 @@ export class NumberInput extends UIComponent {
       font-size: 12px;
       line-height: 1rem;
       width: 1.25rem;
+      /* width: 100%; */
       text-align: right;
       font-family: inherit;
       font-feature-settings: inherit;

@@ -3,6 +3,11 @@ import { UIComponent } from "../../core/UIComponent"
 
 export class InputLabel extends UIComponent {
   static styles = css`
+    :host {
+      font-size: 14px;
+      overflow: hidden;
+    }
+
     .host {
       display: flex;
       align-items: center;
@@ -19,11 +24,9 @@ export class InputLabel extends UIComponent {
 
     label {
       margin-right: 1rem;
-      overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 14px;  
-      line-height: 1rem;
+      overflow: hidden;
     }
   `
 
