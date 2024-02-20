@@ -6,6 +6,7 @@ export class InputLabel extends UIComponent {
     :host {
       font-size: 14px;
       overflow: hidden;
+      height: 100%;
     }
 
     .host {

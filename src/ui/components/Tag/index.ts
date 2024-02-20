@@ -4,11 +4,14 @@ import { UIComponent } from "../../core/UIComponent";
 export class Tag extends UIComponent {
   static styles = css`
     :host {
+      box-sizing: border-box;
       background-color: #1d7a42;
       border-radius: 99999px;
       padding: 0.25rem 0.875rem;
       font-size: 12px;
       text-wrap: nowrap;
+      text-align: center;
+      min-width: 4rem;
     }
   `
 

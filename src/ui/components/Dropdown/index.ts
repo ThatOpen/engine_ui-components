@@ -16,14 +16,14 @@ export class Dropdown extends UIComponent {
       display: flex;
       justify-content: space-between;
       height: 1.75rem;
-      column-gap: 0.5rem;
       align-items: center;
       width: 100%;
       user-select: none;
     }
 
     .input {
-      max-width: 12rem;
+      box-sizing: border-box;
+      max-width: 13rem;
       column-gap: 0.25rem;
       outline: none;
       background-color: #2e2e2e;

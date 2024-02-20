@@ -15,7 +15,6 @@ export class SelectorInput extends UIComponent {
       display: flex;
       justify-content: space-between;
       height: 1.75rem;
-      column-gap: 0.5rem;
       width: 100%;
       align-items: center;
     }
@@ -24,8 +23,7 @@ export class SelectorInput extends UIComponent {
       display: flex;
       flex: 1 1 0%;
       height: 100%;
-      justify-content: flex-end;
-      max-width: 20rem;
+      max-width: 13rem;
     }
 
     .options button {
@@ -36,6 +34,7 @@ export class SelectorInput extends UIComponent {
       line-height: 1rem;
       column-gap: 0.25rem;
       height: 100%;
+      width: 100%;
       padding-left: 0.75rem;
       padding-right: 0.75rem;
       background-color: #2e2e2e;

@@ -9,11 +9,24 @@ export class NumberInput extends UIComponent {
       padding: 0;
     }
 
+    :host {
+      width: 100%;
+      background-color: #2e2e2e;
+      border-radius: 0.375rem;
+    }
+    
+    :host([outlined]) {
+      outline: 1px solid #2e2e2e;
+      background-color: transparent;
+    }
+
+    :host(:focus) {
+      outline: 1px solid #bcf124
+    }
+
     .host {
       display: flex;
       height: 1.75rem;
-      /* width: fit-content; */
-      border-radius: 0.375rem;
       justify-content: space-between;
       font-size: 12px;
       line-height: 1rem;
@@ -23,7 +36,6 @@ export class NumberInput extends UIComponent {
       padding: 0 0.5rem;
       pointer-events: auto;
       user-select: none;
-      outline: 1px solid #2e2e2e;
     }
 
     input {
@@ -34,7 +46,7 @@ export class NumberInput extends UIComponent {
       font-size: 12px;
       line-height: 1rem;
       width: 1.25rem;
-      /* width: 100%; */
+      flex-grow: 1;
       text-align: right;
       font-family: inherit;
       font-feature-settings: inherit;
@@ -61,7 +73,7 @@ export class NumberInput extends UIComponent {
     pref: { type: String },
     icon: { type: String },
     sufix: { type: String },
-    value: {type: Number}
+    value: { type: Number }
   }
 
   declare pref?: string
@@ -82,13 +94,13 @@ export class NumberInput extends UIComponent {
   private onFocus() {
     const { value } = this.host
     if (!value) return;
-    value.style.outlineColor = "#bcf124"
+    // value.style.outlineColor = "#bcf124"
   }
   
   private onBlur() {
     const { value } = this.host
     if (!value) return;
-    value.style.outlineColor = "#2e2e2e"
+    // value.style.outlineColor = "#2e2e2e"
   }
 
   focus() {

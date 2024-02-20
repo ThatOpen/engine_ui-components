@@ -19,7 +19,8 @@ export class VectorInput extends UIComponent {
       flex: 1 1 0%;
       height: 100%;
       justify-content: flex-end;
-      column-gap: 0.25rem;
+      column-gap: 0.5rem;
+      max-width: 13rem;
     }
   `
 

@@ -4,6 +4,7 @@ import { UIComponent } from "../../core/UIComponent";
 export class Button extends UIComponent {
   static styles = css`
     :host {
+      box-sizing: border-box;
       display: flex;
       user-select: none;
       column-gap: 0.5rem;
@@ -16,6 +17,7 @@ export class Button extends UIComponent {
       line-height: 1rem;
       border-radius: 0.375rem;
       padding: 0 1rem;
+      min-width: 4rem;
     }
 
     :host(:not([disabled]):hover) {

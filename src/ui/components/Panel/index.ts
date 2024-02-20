@@ -43,6 +43,20 @@ export class Panel extends UIComponent {
     ::slotted(bim-panel-section:not(:last-child)) {
       border-bottom: 1px solid #2e2e2e
     }
+
+    ::-webkit-scrollbar {
+      width: 0.5rem;
+      overflow: hidden;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #9c6bff77;
+      border-radius: 0.25rem;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background-color: black;
+    }
   `
 
   static properties = {

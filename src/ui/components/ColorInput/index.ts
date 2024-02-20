@@ -11,6 +11,10 @@ export class ColorInput extends UIComponent {
       border: none;
     }
 
+    :host {
+      width: 100%;
+    }
+
     .host {
       display: flex;
       justify-content: space-between;
@@ -21,11 +25,13 @@ export class ColorInput extends UIComponent {
     }
 
     .input-container {
+      box-sizing: border-box;
       display: flex;
       column-gap: 0.25rem;
       height: 100%;
       flex: 1 1 0%;
-      max-width: 20rem;
+      min-width: 6rem;
+      max-width: 13rem;
     }
 
     .color-container {
