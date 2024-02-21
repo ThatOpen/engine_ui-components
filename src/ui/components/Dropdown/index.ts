@@ -36,7 +36,7 @@ export class Dropdown extends UIComponent {
       align-items: center;
       justify-content: space-between;
       padding: 0 0.5rem;
-      font-size: 12px;
+      font-size: 0.75rem;
     }
 
     .list {
@@ -60,7 +60,7 @@ export class Dropdown extends UIComponent {
     }
 
     :host([visible]) .input {
-      outline: 1px solid #bcf124;
+      outline: 1px solid var(--bim-dropdown-focus-color);
     }
 
     .list > div {
@@ -258,7 +258,7 @@ export class Dropdown extends UIComponent {
       listElementTemplates.push(html`
         <div @click=${() => this.onOptionClick(key)} ?data-selected=${selected}>
           <p>${key}</p>
-          <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         </div>
       `)
     }
@@ -283,8 +283,8 @@ export class Dropdown extends UIComponent {
       <div class="host">
         ${this.label && !this.full ? html`<bim-input-label .label=${this.label}></bim-input-label>` : null}
         <div ${ref(this._inputContainer)} class="input" @click=${() => this.visible = !this.visible}>
-          <bim-input-label .label=${inputLabel} style="font-size: 12px; overflow: hidden; pointer-events: none"></bim-input-label>
-          <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          <bim-input-label .label=${inputLabel} style="font-size: 0.75rem; pointer-events: none"></bim-input-label>
+          <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </div>
         <div ${ref(this._listElement)} class="list">
           ${this.searchBox ? html`SearchBox Here` : null}

@@ -2,15 +2,23 @@ import { ToolbarSection } from "../..";
 import { Panel } from "../../components/Panel";
 import { PanelsContainer } from "../../components/PanelsContainer";
 import { Toolbar } from "../../components/Toolbar";
+import { styles } from "./src/styles";
 
-interface UICreatorConfig {
-  tagName: string;
-  attributes?: { [key: string]: string };
-  properties?: { [key: string]: any };
-  children?: UICreatorConfig[];
+export interface UIManagerStyles {
+  color: {
+    main: string
+    accent: string
+  }
+  focus: {
+    color: string
+  }
+  label: {
+    color: string
+  }
 }
 
 export interface UIManagerConfig {
+  styles: UIManagerStyles;
   floating: boolean;
   grid: {
     areas: string;
@@ -34,6 +42,7 @@ export class UIManager {
 
   // A configuration object to define the UI behavior
   static config: Required<UIManagerConfig> = {
+    styles,
     floating: true,
     grid: {
       areas: `
@@ -49,8 +58,8 @@ export class UIManager {
 
   config: Required<UIManagerConfig>
 
-  private _panelContainerPrefix = "panel-"
-  private _toolbarPrefix = "toolbar-"
+  private PANEL_CONTAINER_PREFIX = "panel-"
+  private TOOLBAR_PREFIX = "toolbar-"
 
   constructor(container: HTMLElement, config?: Partial<UIManagerConfig>) {
     this.config = { ...UIManager.config, ...config }
@@ -68,6 +77,26 @@ export class UIManager {
     this.createGrid()
     this.createPanelContainers()
     this.createGridToolbars()
+    this.addGlobalStyles()
+  }
+
+  private addGlobalStyles() {
+    const { styles } = this.config
+    const style = document.createElement("style")
+    document.head.append(style)
+    style.id = "bim-ui"
+    style.textContent = `
+      * {
+        --bim-label-color: ${styles.label.color};
+        --bim-dropdown-focus-color: ${styles.color.main};
+        --bim-number-input-focus-color: ${styles.color.main};
+        --bim-selector-input-selected: ${styles.color.main};
+        --bim-checkbox-accent: ${styles.color.main};
+        --bim-panel-section-hover: ${styles.color.main};
+        --bim-button-hover: ${styles.color.main};
+        --bim-dropdown-color: ${styles.color.main};
+      }
+    `
   }
 
   private createGrid() {
@@ -194,7 +223,7 @@ export class UIManager {
   }
 
   getPanelsContainer(area: UIAreas) {
-    const gridArea = `${this._panelContainerPrefix}${area}`
+    const gridArea = `${this.PANEL_CONTAINER_PREFIX}${area}`
     const selector = `bim-panels-container[style*="grid-area: ${gridArea};"]`
     const container = this.grid.querySelector<PanelsContainer>(selector)
     if (!container) {
@@ -204,7 +233,7 @@ export class UIManager {
   }
 
   getGridToolbar(area: UIAreas) {
-    const gridArea = `${this._toolbarPrefix}${area}`
+    const gridArea = `${this.TOOLBAR_PREFIX}${area}`
     const selector = `bim-toolbar[style*="grid-area: ${gridArea};"]`
     const container = this.grid.querySelector<Toolbar>(selector)
     if (!container) {
@@ -231,37 +260,6 @@ export class UIManager {
     temp.innerHTML = template;
     const element = temp.firstElementChild as T;
     temp.remove();
-    return element;
-  }
-
-  createElementFromConfig<T extends HTMLElement = HTMLElement>(config: UICreatorConfig) {
-    const element = document.createElement(config.tagName) as T;
-  
-    if (config.attributes) {
-      for (const [key, value] of Object.entries(config.attributes)) {
-        if (key === "id") {
-          element.setAttribute("data-ui-id", value);
-        } else {
-          element.setAttribute(key, value);
-        }
-      }
-    }
-
-    if (config.properties) {
-      for (const [key, value] of Object.entries(config.properties)) {
-        if (!(key in element)) continue;
-        // @ts-ignore
-        element[key] = value;
-      }
-    }
-  
-    if (config.children) {
-      for (const childConfig of config.children) {
-        const childElement = this.createElementFromConfig(childConfig);
-        element.appendChild(childElement);
-      }
-    }
-  
     return element;
   }
 }

@@ -6,7 +6,6 @@ export class SelectorInput extends UIComponent {
     * {
       margin: 0;
       padding: 0;
-      color: white;
       border: none;
       outline: none;
     }
@@ -30,7 +29,7 @@ export class SelectorInput extends UIComponent {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 12px;
+      font-size: 0.75rem;
       line-height: 1rem;
       column-gap: 0.25rem;
       height: 100%;
@@ -42,10 +41,16 @@ export class SelectorInput extends UIComponent {
       font-feature-settings: inherit;
       font-variation-settings: inherit;
       cursor: pointer;
+      color: white;
     }
 
     .options button:hover {
       color: #bcf124;
+    }
+
+    .options button[data-selected] {
+      background-color: var(--bim-selector-input-selected);
+      font-weight: 500;
     }
 
     .options button:first-child {
@@ -112,7 +117,7 @@ export class SelectorInput extends UIComponent {
           ${
             this.options?.map((option) =>
               html`
-              <button @click=${() => this.onOptionClick(option)} style="background-color: ${this.value === option ? '#6528D7' : '#2e2e2e'}" type="button">${option}</button>
+              <button @click=${() => this.onOptionClick(option)} ?data-selected=${this.value === option} type="button">${option}</button>
               `
             )
           }

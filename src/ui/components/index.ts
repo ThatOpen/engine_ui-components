@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { CheckboxInput } from "./CheckboxInput";
+import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
 import { Dropdown } from "./Dropdown";
 import { Input } from "./Input";
@@ -18,7 +18,7 @@ import { VectorInput } from "./VectorInput";
 declare global {
   interface HTMLElementTagNameMap {
     "bim-button": Button;
-    "bim-checkbox": CheckboxInput;
+    "bim-checkbox": Checkbox;
     "bim-color-input": ColorInput;
     "bim-dropdown": Dropdown;
     "bim-input": Input;
@@ -36,7 +36,7 @@ declare global {
 }
 
 customElements.define("bim-button", Button)
-customElements.define("bim-checkbox", CheckboxInput)
+customElements.define("bim-checkbox", Checkbox)
 customElements.define("bim-color-input", ColorInput)
 customElements.define("bim-dropdown", Dropdown)
 customElements.define("bim-input", Input)
@@ -54,7 +54,7 @@ customElements.define("bim-vector-input", VectorInput)
 
 export {
   Button,
-  CheckboxInput,
+  Checkbox,
   ColorInput,
   Dropdown,
   Input,

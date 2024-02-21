@@ -8,7 +8,7 @@ export class Tag extends UIComponent {
       background-color: #1d7a42;
       border-radius: 99999px;
       padding: 0.25rem 0.875rem;
-      font-size: 12px;
+      font-size: 0.75rem;
       text-wrap: nowrap;
       text-align: center;
       min-width: 4rem;

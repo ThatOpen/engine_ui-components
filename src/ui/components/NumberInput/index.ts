@@ -21,17 +21,16 @@ export class NumberInput extends UIComponent {
     }
 
     :host(:focus) {
-      outline: 1px solid #bcf124
+      outline: 1px solid var(--bim-number-input-focus-color)
     }
 
     .host {
       display: flex;
       height: 1.75rem;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 0.75rem;
       line-height: 1rem;
       align-items: center;
-      color: white;
       font-weight: 500;
       padding: 0 0.5rem;
       pointer-events: auto;
@@ -42,8 +41,8 @@ export class NumberInput extends UIComponent {
       background-color: transparent;
       outline: none;
       border: none;
-      color: white;
-      font-size: 12px;
+      color: var(--color, white);
+      font-size: 0.75rem;
       line-height: 1rem;
       width: 1.25rem;
       flex-grow: 1;
@@ -58,8 +57,8 @@ export class NumberInput extends UIComponent {
     }
 
     .prefix, .sufix {
-      color: #909499;
-      font-size: 12px;
+      color: #808080;
+      font-size: 0.75rem;
       line-height: 1rem;
     }
 
@@ -91,18 +90,6 @@ export class NumberInput extends UIComponent {
     this.value = Number(input.value)
   }
 
-  private onFocus() {
-    const { value } = this.host
-    if (!value) return;
-    // value.style.outlineColor = "#bcf124"
-  }
-  
-  private onBlur() {
-    const { value } = this.host
-    if (!value) return;
-    // value.style.outlineColor = "#2e2e2e"
-  }
-
   focus() {
     const { value } = this._inputRef
     if (!value) return;
@@ -120,7 +107,7 @@ export class NumberInput extends UIComponent {
           </div>`
           : null
         }
-        <input ${ref(this._inputRef)} type="text" @focus=${this.onFocus} @blur=${this.onBlur} @input=${this.onInput} @change=${this.onInput} .value=${this.value?.toString()?? ''}> 
+        <input ${ref(this._inputRef)} type="text" @input=${this.onInput} @change=${this.onInput} .value=${this.value?.toString()?? ''}> 
         ${ this.sufix ? html`<p class="sufix">${this.sufix}</p>` : null }
       </div>
     `

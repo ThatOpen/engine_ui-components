@@ -31,7 +31,7 @@ export class Panel extends UIComponent {
 
     :host .title span,
     :host .title p {
-      font-size: 14px;
+      font-size: 0.875rem;
       line-height: 1rem;
     }
 

@@ -1,7 +1,7 @@
 import { css, html } from "lit"
 import { UIComponent } from "../../core/UIComponent"
 
-export class CheckboxInput extends UIComponent {
+export class Checkbox extends UIComponent {
   static styles = css`
     .host {
       display: flex;
@@ -15,7 +15,7 @@ export class CheckboxInput extends UIComponent {
     input {
       height: 1rem;
       width: 1rem;
-      accent-color: #6528D7;
+      accent-color: var(--bim-checkbox-accent);
       cursor: pointer;
     }
   `

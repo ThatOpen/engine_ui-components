@@ -13,7 +13,7 @@ export class Button extends UIComponent {
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 12px;
+      font-size: 0.75rem;
       line-height: 1rem;
       border-radius: 0.375rem;
       padding: 0 1rem;
@@ -21,12 +21,12 @@ export class Button extends UIComponent {
     }
 
     :host(:not([disabled]):hover) {
-      background-color: #6528D7;
+      background-color: var(--bim-button-hover);
       cursor: pointer;
     }
     
     :host([active]) {
-      background-color: #6528D7;
+      background-color: var(--bim-button-hover);
     }
 
     :host([disabled]) {

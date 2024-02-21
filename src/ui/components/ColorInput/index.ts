@@ -70,7 +70,7 @@ export class ColorInput extends UIComponent {
       outline: none;
       background-color: transparent;
       color: #fff;
-      font-size: 12px;
+      font-size: 0.75rem;
       line-height: 1rem;
       width: 1.25rem;
       text-transform: uppercase;

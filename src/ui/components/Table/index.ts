@@ -38,7 +38,7 @@ export class Table extends UIComponent {
       border-collapse: collapse;
       margin: 0;
       padding: 0;
-      font-size: 12px;
+      font-size: 0.75rem;
     }
     
     thead {
@@ -47,7 +47,7 @@ export class Table extends UIComponent {
     }
     
     th {
-      font-size: 14px;
+      font-size: 0.75rem;
       padding: 0.5rem 1rem;
       font-weight: 500;
       text-wrap: nowrap;
@@ -180,32 +180,33 @@ export class Table extends UIComponent {
     return svg
   }
 
-  private createRowData(value: string | TableRow[] | TableComponentCell, headerIndex: number, indentation: number, children: boolean) {
+  private createRowData(value: string | TableComponentCell, headerIndex: number, _indentation: number, children: boolean) {
+    const ADDITIONAL_INDENTATION = 0.125
+    const indentation = _indentation + ADDITIONAL_INDENTATION
     const divStyle = {
       display: "flex",
       justifyContent: `${headerIndex === 0? `left` : "center"}`,
       alignItems: "center",
       columnGap: "0.25rem",
-      // marginLeft: "1rem",
-      marginLeft: `${headerIndex === 0 ? `${(indentation + 1).toString()}rem` : 0}`,
+      marginLeft: `${headerIndex === 0 ? `${(indentation + (this.carets && !children ? 1 : 0)).toString()}rem` : 0}`,
     }
     const indents: TemplateResult[] = []
     if (headerIndex === 0) {
       for (let index = 0; index < indentation; index++) {
         indents.push(html`
-          <span data-ui-table-level=${index} style="position: relative; height: 28px; width: 1rem"></span>
+          <span data-ui-table-level=${index} style="position: relative; height: 1.75rem; width: 1rem"></span>
         `)
       }
     }
-    const caretRight = html`<svg style="position: absolute; left: 0px" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M10 17l5-5-5-5v10z"/><path d="M0 24V0h24v24H0z" fill="none"/></svg>`
-    const caretDown = html`<svg style="position: absolute; left: 0px" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>`
-    const caret = headerIndex === 0 ? caretDown : null
+    const caretRight = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="${1+ADDITIONAL_INDENTATION}rem" fill="#FFFFFF"><path d="M10 17l5-5-5-5v10z"/><path d="M0 24V0h24v24H0z" fill="none"/></svg>`
+    const caretDown = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="${1+ADDITIONAL_INDENTATION}rem" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>`
+    const caret = headerIndex === 0 && children && this.carets ? caretDown : null
     return html`
       <td style="position: relative;">
         <!-- ${headerIndex === 0 && children ? this.createSVGLine(indentation) : null} -->
         <div style=${styleMap(divStyle)}>
           <!-- ${headerIndex === 0 ? html`<div data-ui-table="indent-helpers" style="display: flex">${indents.map(i => i)}</div>` : null} -->
-          <!-- ${children ? caret : null} -->
+          ${caret}
           ${
             typeof value === "string"
             ? html`${value}`
