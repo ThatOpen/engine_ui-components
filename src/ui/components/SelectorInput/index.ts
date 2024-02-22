@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
-import { internalStyles } from "../../core/UIManager/src/styles";
+import { styles } from "../../core/UIManager/src/styles";
 
 export class SelectorInput extends UIComponent {
   static styles = [
-    internalStyles,
+    styles.internalStyles,
     css`
       * {
         margin: 0;
@@ -55,12 +55,14 @@ export class SelectorInput extends UIComponent {
   ]
 
   static properties = {
+    labelIcon: { type: String, reflect: true, attribute: "label-icon" },
     label: { type: String, reflect: true },
     options: { type: Array<String> },
     value: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true }
   }
 
+  declare labelIcon?: string
   declare label?: string
   declare vertical: boolean
 
@@ -109,7 +111,7 @@ export class SelectorInput extends UIComponent {
   render() {
     return html`
       <div class="parent">
-        ${ this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label>` : null }
+        ${ this.label ? html`<bim-input-label .icon=${this.labelIcon} .label="${this.label}"></bim-input-label>` : null }
         <div class="input">
           ${
             this.options?.map((option) =>

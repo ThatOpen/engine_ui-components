@@ -35,6 +35,7 @@ export class Table extends UIComponent {
     }
 
     table {
+      width: 100%;
       border-collapse: collapse;
       margin: 0;
       padding: 0;

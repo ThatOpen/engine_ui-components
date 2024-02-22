@@ -1,11 +1,11 @@
 import { css, html } from "lit"
 import { createRef, ref } from "lit/directives/ref.js"
 import { UIComponent } from "../../core/UIComponent";
-import { internalStyles } from "../../core/UIManager/src/styles";
+import { styles } from "../../core/UIManager/src/styles";
 
 export class ColorInput extends UIComponent {
   static styles = [
-    internalStyles,
+    styles.internalStyles,
     css`
       * {
         margin: 0;

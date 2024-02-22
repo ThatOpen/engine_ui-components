@@ -9,11 +9,12 @@ import {
 import { TemplateResult, css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
 import { createRef, ref } from "lit/directives/ref.js";
-import { internalStyles } from "../../core/UIManager/src/styles";
+import { styles } from "../../core/UIManager/src/styles";
 
 export class Dropdown extends UIComponent {
   static styles = [
-    internalStyles,
+    styles.internalStyles,
+    styles.scrollbar,
     css`
       .input {
         column-gap: 0.25rem;
@@ -83,20 +84,6 @@ export class Dropdown extends UIComponent {
 
       .list > div p {
         white-space: nowrap;
-      }
-
-      ::-webkit-scrollbar {
-        width: 0.5rem;
-        overflow: hidden;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        border-radius: 0.25rem;
-        background-color: var(--bim-dropdown_sb--c);
-      }
-      
-      ::-webkit-scrollbar-track {
-        background-color: var(--bim-dropdown_sb--bgc);
       }
     `
   ]

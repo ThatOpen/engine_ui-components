@@ -1,60 +1,64 @@
 import { css, html } from "lit"
 import { UIComponent } from "../../core/UIComponent"
+import { styles } from "../../core/UIManager/src/styles"
 
 export class PanelSection extends UIComponent {
-  static styles = css`
-    * {
-      margin: 0;
-      padding: 0;
-    }
+  static styles = [
+    styles.scrollbar,
+    css`
+      * {
+        margin: 0;
+        padding: 0;
+      }
 
-    :host {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 0.75rem 1rem;
-      row-gap: 0.75rem;
-      pointer-events: auto;
-    }
+      :host {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0.75rem 1rem;
+        row-gap: 0.75rem;
+        pointer-events: auto;
+      }
 
-    :host(:not([fixed])) .header:hover {
-      cursor: pointer;
-      color: var(--bim-panel-section¡hover);
-    }
+      :host(:not([fixed])) .header:hover {
+        cursor: pointer;
+        color: var(--bim-panel-section¡hover);
+      }
 
-    :host(:not([fixed])) .header:hover svg {
-      fill: var(--bim-panel-section¡hover);
-    }
+      :host(:not([fixed])) .header:hover svg {
+        fill: var(--bim-panel-section¡hover);
+      }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      user-select: none;
-      height: 1.5rem;
-      color: var(--bim-panel-section--c);
-    }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        user-select: none;
+        height: 1.5rem;
+        color: var(--bim-panel-section--c);
+      }
 
-    .header svg {
-      fill: var(--bim-panel-section--c)
-    }
+      .header svg {
+        fill: var(--bim-panel-section--c)
+      }
 
-    .title {
-      display: flex;
-      align-items: center;
-      column-gap: 0.5rem;
-    }
+      .title {
+        display: flex;
+        align-items: center;
+        column-gap: 0.5rem;
+      }
 
-    .title p {
-      font-size: var(--bim-panel-section--fz);
-    }
+      .title p {
+        font-size: var(--bim-panel-section--fz);
+      }
 
-    .components-list {
-      flex-direction: column;
-      row-gap: 0.75rem;
-    }
-  `
+      .components-list {
+        flex-direction: column;
+        row-gap: 0.75rem;
+      }
+    `
+  ]
 
   static properties = {
     icon: { type: String, reflect: true },

@@ -2,42 +2,9 @@ import { ToolbarSection } from "../..";
 import { Panel } from "../../components/Panel";
 import { PanelsContainer } from "../../components/PanelsContainer";
 import { Toolbar } from "../../components/Toolbar";
-import { styles } from "./src/styles";
-import { css, unsafeCSS } from "lit";
-
-export interface UIManagerStyles {
-  color: {
-    brand: {
-      main: {
-        light: string
-        base: string
-      }
-      accent: {
-        base: string
-      }
-    }
-    background: {
-      "base": string
-      "contrast-10": string
-      "contrast-20": string
-      "contrast-40": string
-      "contrast-60": string
-      "contrast-80": string
-      "contrast-100": string
-    }
-  }
-  size: {
-    "4xs": string
-    "3xs": string
-    "2xs": string
-    "xs": string
-    "sm": string
-    "base": string
-  }
-}
+import { css } from "lit";
 
 export interface UIManagerConfig {
-  styles: UIManagerStyles;
   floating: boolean;
   grid: {
     areas: string;
@@ -61,7 +28,6 @@ export class UIManager {
 
   // A configuration object to define the UI behavior
   static config: Required<UIManagerConfig> = {
-    styles,
     floating: true,
     grid: {
       areas: `
@@ -100,99 +66,176 @@ export class UIManager {
   }
 
   private addGlobalStyles() {
-    const { styles } = this.config
     const style = document.createElement("style")
-    document.head.append(style);
+    const firstChild = document.head.firstChild
+    if (firstChild) {
+      document.head.insertBefore(style, firstChild)
+    } else {
+      document.head.append(style)
+    }
     style.id = "bim-ui"
     const rules = css`
-      :root {        
+      :root { 
+        /* Backgrounds */
+        --bim-ui_bg-base: hsl(210 10% 5%);
+        --bim-ui_bg-contrast-10: hsl(210 10% 10%);
+        --bim-ui_bg-contrast-20: hsl(210 10% 20%);
+        --bim-ui_bg-contrast-40: hsl(210 10% 40%);
+        --bim-ui_bg-contrast-60: hsl(210 10% 60%);
+        --bim-ui_bg-contrast-80: hsl(210 10% 80%);
+        --bim-ui_bg-contrast-100: hsl(210 10% 95%);
+
+        /* Colors */
+        --bim-ui_color-main: #6528D7;
+        --bim-ui_color-main-light: #9D6BFF;
+        --bim-ui_color-accent: #BCF124;
+
+        /* Sizes */
+        --bim-ui_size-4xs: 0.375rem;
+        --bim-ui_size-3xs: 0.5rem;
+        --bim-ui_size-2xs: 0.625rem;
+        --bim-ui_size-xs: 0.75rem;
+        --bim-ui_size-sm: 0.875rem;
+        --bim-ui_size-base: 1rem;
+        --bim-ui_size-lg: 1.125rem;
+
+        /* Scrollbar */
+        --bim-scrollbar--c: var(--bim-ui_color-main);
+        --bim-scrollbar--bgc: black;
+
         /* Button */
-        --bim-button--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-button--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-button¡hover--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-button¡hover--bgc: ${unsafeCSS(styles.color.brand.main.base)};
-        --bim-button¡active--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-button¡active--bgc: ${unsafeCSS(styles.color.brand.main.base)};
+        --bim-button--fz: var(--bim-ui_size-xs);
+        --bim-button--c: var(--bim-ui_bg-contrast-100);
+        --bim-button--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-button¡hover--c: var(--bim-ui_bg-contrast-100);
+        --bim-button¡hover--bgc: var(--bim-ui_color-main);
+        --bim-button¡active--c: var(--bim-ui_bg-contrast-100);
+        --bim-button¡active--bgc: var(--bim-ui_color-main);
 
         /* Checkbox */
-        --bim-checkbox--c: ${unsafeCSS(styles.color.brand.main.base)};
+        --bim-checkbox--c: var(--bim-ui_color-main);
         --bim-checkbox--olw: 2px;
-        --bim-checkbox--olc: ${unsafeCSS(styles.color.brand.accent.base)};
+        --bim-checkbox--olc: var(--bim-ui_color-accent);
 
         /* ColorInput */
-        --bim-color-input--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-color-input--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-color-input--bdrs: ${unsafeCSS(styles.size["4xs"])};
+        --bim-color-input--c: var(--bim-ui_bg-contrast-100);
+        --bim-color-input--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-color-input--bdrs: var(--bim-ui_size-4xs);
 
         /* Dropdown */
-        --bim-dropdown--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-dropdown--fz: ${unsafeCSS(styles.size.xs)};
-        --bim-dropdown--bdrs: ${unsafeCSS(styles.size["4xs"])};
+        --bim-dropdown--c: var(--bim-ui_bg-contrast-100);
+        --bim-dropdown--fz: var(--bim-ui_size-xs);
+        --bim-dropdown--bdrs: var(--bim-ui_size-4xs);
         --bim-dropdown--olw: 2px;
         --bim-dropdown--olc: transparent;
-        --bim-dropdown--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-dropdown¡focus--c: ${unsafeCSS(styles.color.brand.accent.base)};
-        --bim-dropdown¡selected--c: ${unsafeCSS(styles.color.brand.main.light)};
-        --bim-dropdown_list--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-dropdown_sb--c: ${unsafeCSS(styles.color.brand.main.light)};
-        --bim-dropdown_sb--bgc: black;
+        --bim-dropdown--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-dropdown¡focus--c: var(--bim-ui_color-accent);
+        --bim-dropdown¡selected--c: var(--bim-ui_color-main-light);
+        --bim-dropdown_list--bgc: var(--bim-ui_bg-contrast-20);
+
+        /* Icon */
+        --bim-icon--fz: var(--bim-ui_size-base);
 
         /* InputLabel */
-        --bim-input-label--fz: ${unsafeCSS(styles.size.sm)};
-        --bim-input-label--c: ${unsafeCSS(styles.color.background["contrast-60"])};
+        --bim-input-label--fz: var(--bim-ui_size-sm);
+        --bim-input-label--c: var(--bim-ui_bg-contrast-60);
 
         /* NumberInput */
-        --bim-number-input--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-number-input--bdrs: ${unsafeCSS(styles.size["4xs"])};
-        --bim-number-input--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-number-input--c: var(--bim-ui_bg-contrast-100);
+        --bim-number-input--bdrs: var(--bim-ui_size-4xs);
+        --bim-number-input--bgc: var(--bim-ui_bg-contrast-20);
         --bim-number-input--olc: transparent;
         --bim-number-input--olw: 2px;
-        --bim-number-input--fz: ${unsafeCSS(styles.size.xs)};
-        --bim-number-input¡focus--c: ${unsafeCSS(styles.color.brand.accent.base)};
-        --bim-number-input_affixes--c: ${unsafeCSS(styles.color.background["contrast-60"])};
-        --bim-number-input_affixes--fz: ${unsafeCSS(styles.size.xs)};
+        --bim-number-input--fz: var(--bim-ui_size-xs);
+        --bim-number-input¡focus--c: var(--bim-ui_color-accent);
+        --bim-number-input_affixes--c: var(--bim-ui_bg-contrast-60);
+        --bim-number-input_affixes--fz: var(--bim-ui_size-xs);
 
         /* Panel */
-        --bim-panel--bgc: ${unsafeCSS(styles.color.background["base"])};
-        --bim-panel--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-panel--bdrs: ${unsafeCSS(styles.size.base)};
-        --bim-panel--fz: ${unsafeCSS(styles.size.sm)};
+        --bim-panel--bgc: var(--bim-ui_bg-base);
+        --bim-panel--c: var(--bim-ui_bg-contrast-100);
+        --bim-panel--bdrs: var(--bim-ui_size-base);
+        --bim-panel--fz: var(--bim-ui_size-sm);
 
         /* PanelSection */
-        --bim-panel-section--fz: ${unsafeCSS(styles.size.sm)};
-        --bim-panel-section--c: ${unsafeCSS(styles.color.background["contrast-80"])};
-        --bim-panel-section--bdc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-panel-section¡hover: ${unsafeCSS(styles.color.brand.accent.base)};
+        --bim-panel-section--fz: var(--bim-ui_size-sm);
+        --bim-panel-section--c: var(--bim-ui_bg-contrast-80);
+        --bim-panel-section--bdc: var(--bim-ui_bg-contrast-20);
+        --bim-panel-section¡hover: var(--bim-ui_color-accent);
 
         /* SelectorInput */
-        --bim-selector-input--bdrs: ${unsafeCSS(styles.size["4xs"])};
-        --bim-selector-input--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-selector-input--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-selector-input¡hover--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-selector-input¡hover--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-selector-input¡selected--bgc: ${unsafeCSS(styles.color.brand.main.base)};
+        --bim-selector-input--bdrs: var(--bim-ui_size-4xs);
+        --bim-selector-input--c: var(--bim-ui_bg-contrast-100);
+        --bim-selector-input--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-selector-input¡hover--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-selector-input¡hover--c: var(--bim-ui_bg-contrast-100);
+        --bim-selector-input¡selected--bgc: var(--bim-ui_color-main);
         --bim-selector-input¡selected--c: white;
 
         /* Table */
-        --bim-table_header--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
-        --bim-table_header--c: ${unsafeCSS(styles.color.background["contrast-100"])};
-        --bim-table¡striped--c: ${unsafeCSS(styles.color.background["contrast-10"])};
+        --bim-table_header--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-table_header--c: var(--bim-ui_bg-contrast-100);
+        --bim-table¡striped--c: var(--bim-ui_bg-contrast-10);
 
         /* Tag */
 
         /* Toolbar */
-        --bim-toolbar--bgc: ${unsafeCSS(styles.color.background["base"])};
+        --bim-toolbar--bgc: var(--bim-ui_bg-base);
 
         /* ToolbarSection */
 
         /* VectorInput */
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bim-ui_bg-base: hsl(210 10% 5%);
+          --bim-ui_bg-contrast-10: hsl(210 10% 10%);
+          --bim-ui_bg-contrast-20: hsl(210 10% 20%);
+          --bim-ui_bg-contrast-40: hsl(210 10% 40%);
+          --bim-ui_bg-contrast-60: hsl(210 10% 60%);
+          --bim-ui_bg-contrast-80: hsl(210 10% 80%);
+          --bim-ui_bg-contrast-100: hsl(210 10% 95%);
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bim-ui_bg-base: hsl(210 10% 95%);
+          --bim-ui_bg-contrast-10: hsl(210 10% 90%);
+          --bim-ui_bg-contrast-20: hsl(210 10% 80%);
+          --bim-ui_bg-contrast-40: hsl(210 10% 60%);
+          --bim-ui_bg-contrast-60: hsl(210 10% 40%);
+          --bim-ui_bg-contrast-80: hsl(210 10% 20%);
+          --bim-ui_bg-contrast-100: hsl(210 10% 5%);
+        }
+      }
+
+      html.bim-ui-dark {
+        --bim-ui_bg-base: hsl(210 10% 5%);
+        --bim-ui_bg-contrast-10: hsl(210 10% 10%);
+        --bim-ui_bg-contrast-20: hsl(210 10% 20%);
+        --bim-ui_bg-contrast-40: hsl(210 10% 40%);
+        --bim-ui_bg-contrast-60: hsl(210 10% 60%);
+        --bim-ui_bg-contrast-80: hsl(210 10% 80%);
+        --bim-ui_bg-contrast-100: hsl(210 10% 95%);
+      }
+
+      html.bim-ui-light {
+        --bim-ui_bg-base: hsl(210 10% 95%);
+        --bim-ui_bg-contrast-10: hsl(210 10% 90%);
+        --bim-ui_bg-contrast-20: hsl(210 10% 80%);
+        --bim-ui_bg-contrast-40: hsl(210 10% 60%);
+        --bim-ui_bg-contrast-60: hsl(210 10% 40%);
+        --bim-ui_bg-contrast-80: hsl(210 10% 20%);
+        --bim-ui_bg-contrast-100: hsl(210 10% 5%);
       }
     `
     style.textContent = rules.cssText
   }
 
   private createGrid() {
-    const { floating, styles } = this.config
+    const { floating } = this.config
     this.grid.setAttribute("data-ui-style", floating ? "floating" : "fixed")
     const { areas, columnsSize, rowsSize, padding, gap } = this.config.grid
     if (floating) {
@@ -208,7 +251,7 @@ export class UIManager {
       this.viewerArea.style.minWidth = "0px";
       this.viewerArea.style.gridArea = "viewer";
       this.viewerArea.style.position = "relative";
-      this.viewerArea.style.outline = `1px solid ${styles.color.background["contrast-20"]}`
+      this.viewerArea.style.outline = `1px solid var(--bim-ui_bg-contrast-20)`
       this.grid.append(this.viewerArea)
     }
     this.grid.setAttribute("data-ui-type", "grid")

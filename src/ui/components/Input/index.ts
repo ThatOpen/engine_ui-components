@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
-import { internalStyles } from "../../core/UIManager/src/styles";
+import { styles } from "../../core/UIManager/src/styles";
 
 export class Input extends UIComponent {
   static styles = [
-    internalStyles,
+    styles.internalStyles,
     css`
       .input {
         height: auto;

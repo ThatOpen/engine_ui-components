@@ -9,10 +9,10 @@ export class InputLabel extends UIComponent {
       color: var(--bim-input-label--c);
     }
     
-    .host {
+    .parent {
       display: flex;
       align-items: center;
-      column-gap: 0.25rem;
+      column-gap: 0.375rem;
       user-select: none;
       height: 100%;
     }
@@ -26,14 +26,17 @@ export class InputLabel extends UIComponent {
   `
 
   static properties = {
-    label: { type: String }
+    label: { type: String, reflect: true },
+    icon: { type: String, reflect: true }
   }
 
+  declare icon?: string
   declare label?: string
 
   render() {
     return html`
-      <div class="host">
+      <div class="parent">
+        ${ this.icon ? html`<bim-icon .icon=${this.icon}></bim-icon>` : null }
         ${ this.label ? html`<label>${this.label}</label>` : null }
       </div>
     `

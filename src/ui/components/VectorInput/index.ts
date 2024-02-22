@@ -2,11 +2,11 @@ import { css, html } from "lit"
 import { createRef, ref } from "lit/directives/ref.js"
 import { NumberInput } from "../NumberInput"
 import { UIComponent } from "../../core/UIComponent"
-import { internalStyles } from "../../core/UIManager/src/styles";
+import { styles } from "../../core/UIManager/src/styles";
 
 export class VectorInput extends UIComponent {
   static styles = [
-    internalStyles,
+    styles.internalStyles,
     css`      
       .input {
         column-gap: 0.5rem;

@@ -1,66 +1,56 @@
 import { css, html } from "lit"
 import { UIComponent } from "../../core/UIComponent"
+import { styles } from "../../core/UIManager/src/styles"
 
 export class Panel extends UIComponent {
-  static styles = css`
-    * {
-      margin: 0;
-      padding: 0;
-    }
+  static styles = [
+    styles.scrollbar,
+    css`
+      * {
+        margin: 0;
+        padding: 0;
+      }
 
-    :host {
-      min-width: 20rem;
-      max-width: 28rem;
-    }
+      :host {
+        min-width: 20rem;
+        max-width: 28rem;
+      }
 
-    .host {
-      display: flex;
-      flex-direction: column;
-      pointer-events: auto;
-      border-radius: var(--bim-panel--bdrs);
-      background-color: var(--bim-panel--bgc);
-      color: var(--bim-panel--c);
-    }
+      .host {
+        display: flex;
+        flex-direction: column;
+        pointer-events: auto;
+        border-radius: var(--bim-panel--bdrs);
+        background-color: var(--bim-panel--bgc);
+        color: var(--bim-panel--c);
+      }
 
-    .host .title {
-      display: flex;
-      padding: 1rem;
-      justify-content: flex-start;
-      align-items: center;
-      font-weight: 500;
-      column-gap: 0.5rem;
-      user-select: none;
-    }
+      .host .title {
+        display: flex;
+        padding: 1rem;
+        justify-content: flex-start;
+        align-items: center;
+        font-weight: 500;
+        column-gap: 0.5rem;
+        user-select: none;
+      }
 
-    .host .title span,
-    .host .title p {
-      font-weight: 600;
-      font-size: var(--bim-panel--fz);
-    }
+      .host .title span,
+      .host .title p {
+        font-weight: 600;
+        font-size: var(--bim-panel--fz);
+      }
 
-    .host .sections {
-      display: flex;
-      flex-direction: column;
-    }
+      .host .sections {
+        display: flex;
+        flex-direction: column;
+      }
 
-    ::slotted(bim-panel-section:not(:last-child)) {
-      border-bottom: 1px solid var(--bim-panel-section--bdc);
-    }
-
-    ::-webkit-scrollbar {
-      width: 0.5rem;
-      overflow: hidden;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: #9c6bff77;
-      border-radius: 0.25rem;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background-color: black;
-    }
-  `
+      ::slotted(bim-panel-section:not(:last-child)) {
+        border-bottom: 1px solid var(--bim-panel-section--bdc);
+      }
+    `
+  ]
 
   static properties = {
     icon: { type: String, reflect: true },

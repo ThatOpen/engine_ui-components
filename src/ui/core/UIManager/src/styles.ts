@@ -1,41 +1,6 @@
 import { css } from "lit";
-import { UIManagerStyles } from "..";
 
-const dark = true
-
-export const styles: UIManagerStyles = {
-  color: {
-    brand: {
-      main: {
-        light: "#9D6BFF",
-        base: "#6528d7"
-      },
-      accent: {
-        base: "#bcf124",
-      }
-    },
-    background: {
-      base: `hsl(210 10% ${dark ? 6 : 94}%)`,
-      "contrast-10": `hsl(210 10% ${dark ? 10 : 90}%)`,
-      "contrast-20": `hsl(210 10% ${dark ? 20 : 80}%)`,
-      "contrast-40": `hsl(210 10% ${dark ? 40 : 60}%)`,
-      "contrast-60": `hsl(210 10% ${dark ? 60 : 40}%)`,
-      "contrast-80": `hsl(210 10% ${dark ? 80 : 20}%)`,
-      "contrast-100": `hsl(210 10% ${dark ? 94 : 6}%)`,
-    }
-  },
-  size: {
-    "4xs": "0.375rem",
-    "3xs": "0.5rem",
-    "2xs": "0.625rem",
-    "xs": "0.75rem",
-    "sm": "0.875rem",
-    "base": "1rem"
-  },
-}
-
-// Add a wrapped attribute to integrate the label into the input
-export const internalStyles = css`
+const internalStyles = css`
   :host {
     flex: 1;
   }
@@ -72,3 +37,24 @@ export const internalStyles = css`
     min-width: 6rem;
   }
 `
+
+const scrollbar = css`
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+    overflow: hidden;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 0.25rem;
+    background-color: var(--bim-scrollbar--c);
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: var(--bim-scrollbar--bgc);
+  }
+`
+
+export const styles = {
+  scrollbar,
+  internalStyles
+}
