@@ -8,25 +8,27 @@ export class Button extends UIComponent {
       display: flex;
       user-select: none;
       column-gap: 0.5rem;
-      background-color: #2e2e2e;
       height: 1.75rem;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 0.75rem;
       line-height: 1rem;
       border-radius: 0.375rem;
       padding: 0 1rem;
       min-width: 4rem;
+      font-size: 0.75rem;
+      color: var(--bim-button--c);
+      background-color: var(--bim-button--bgc);
     }
 
     :host(:not([disabled]):hover) {
-      background-color: var(--bim-button-hover);
       cursor: pointer;
+      background-color: var(--bim-button¡hover--bgc);
+      color: var(--bim-button¡hover--c);
     }
     
     :host([active]) {
-      background-color: var(--bim-button-hover);
+      background-color: var(--bim-button¡active--bgc);
+      color: var(--bim-button¡active--c);
     }
 
     :host([disabled]) {

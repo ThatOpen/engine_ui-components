@@ -42,8 +42,8 @@ export class Table extends UIComponent {
     }
     
     thead {
-      background-color: #2e2e2e;
-      color: #909499;
+      color: var(--bim-table_header--c);
+      background-color: var(--bim-table_header--bgc);
     }
     
     th {
@@ -64,8 +64,8 @@ export class Table extends UIComponent {
       position: relative;
     }
 
-    tbody tr:nth-child(odd) {
-      background-color: #181818;
+    :host([striped]) tbody tr:nth-child(even) {
+      background-color: var(--bim-table¡striped--c);
     }
   `
   
@@ -77,12 +77,14 @@ export class Table extends UIComponent {
     indentHighlighted: { type: String, reflect: true, attribute: "indent-highlighted" },
     selectableRows: { type: Boolean, reflect: true, attribute: "selectable-rows" },
     carets: { type: Boolean, reflect: true },
-    branches: { type: Boolean, reflect: true }
+    branches: { type: Boolean, reflect: true },
+    striped: { type: Boolean, reflect: true },
   }
 
   declare headersVisible: boolean
   declare selectableRows: boolean
   declare carets: boolean
+  declare striped: boolean
   
   private _indentHighlighted?: string = undefined
 
@@ -149,6 +151,7 @@ export class Table extends UIComponent {
     this.headersVisible = true
     this.selectableRows = false
     this.carets = true
+    this.striped = true
   }
 
   private createSVGLine(indentation = 0) {

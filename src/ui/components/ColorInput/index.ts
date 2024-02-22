@@ -1,93 +1,72 @@
 import { css, html } from "lit"
 import { createRef, ref } from "lit/directives/ref.js"
-import { UIComponent } from "../../core/UIComponent"
+import { UIComponent } from "../../core/UIComponent";
+import { internalStyles } from "../../core/UIManager/src/styles";
 
 export class ColorInput extends UIComponent {
-  static styles = css`
-    * {
-      margin: 0;
-      padding: 0;
-      outline: none;
-      border: none;
-    }
+  static styles = [
+    internalStyles,
+    css`
+      * {
+        margin: 0;
+        padding: 0;
+        outline: none;
+        border: none;
+      }
 
-    :host {
-      width: 100%;
-    }
+      .color-container {
+        position: relative;
+        outline: none;
+        display: flex;
+        height: 100%;
+        gap: 0.5rem;
+        justify-content: flex-start;
+        padding-left: 0.5rem;
+        align-items: center;
+        flex: 1;
+        border-radius: var(--bim-color-input--bdrs);
+        background-color: var(--bim-color-input--bgc);
+      }
 
-    .host {
-      display: flex;
-      justify-content: space-between;
-      height: 1.75rem;
-      column-gap: 0.5rem;
-      width: 100%;
-      align-items: center;
-    }
+      .color-container input[type="color"] {
+        position: absolute;
+        bottom: -0.25rem;
+        visibility: hidden;
+        width: 0;
+        height: 0;
+      }
+      
+      .color-container .sample {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.125rem;
+        background-color: #fff;
+      }
 
-    .input-container {
-      box-sizing: border-box;
-      display: flex;
-      column-gap: 0.25rem;
-      height: 100%;
-      flex: 1 1 0%;
-      min-width: 6rem;
-      max-width: 13rem;
-    }
+      .color-container input[type="text"] {
+        height: 100%;
+        flex: 1;
+        outline: none;
+        width: 1.25rem;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        background-color: transparent;
+        color: var(--bim-color-input--c);
+      }
 
-    .color-container {
-      position: relative;
-      outline: none;
-      border-color: #bec0c4;
-      display: flex;
-      height: 100%;
-      gap: 0.5rem;
-      border-radius: 0.375rem;
-      justify-content: flex-start;
-      padding-left: 0.5rem;
-      align-items: center;
-      flex: 1;
-      background-color: #2e2e2e;
-    }
-
-    .color-container input[type="color"] {
-      position: absolute;
-      bottom: -0.25rem;
-      visibility: hidden;
-      width: 0;
-      height: 0;
-    }
-    
-    .color-container .sample {
-      width: 1rem;
-      height: 1rem;
-      border-radius: 0.125rem;
-      background-color: #fff;
-    }
-
-    .color-container input[type="text"] {
-      height: 100%;
-      flex: 1;
-      outline: none;
-      background-color: transparent;
-      color: #fff;
-      font-size: 0.75rem;
-      line-height: 1rem;
-      width: 1.25rem;
-      text-transform: uppercase;
-    }
-
-    .opacity-container {
-      outline: none;
-      border-color: #bec0c4;
-      display: flex;
-      height: 100%;
-      border-radius: 0.375rem;
-      justify-content: flex-start;
-      padding-left: 0.5rem;
-      align-items: center;
-      background-color: #2e2e2e;
-    }
-  `
+      .opacity-container {
+        outline: none;
+        display: flex;
+        height: 100%;
+        justify-content: flex-start;
+        padding-left: 0.5rem;
+        align-items: center;
+        border-radius: 0.375rem;
+        border-color: #bec0c4;
+        background-color: #2e2e2e;
+      }
+    `
+  ]
 
   static properties = {
     label: { type: String },
@@ -162,9 +141,9 @@ export class ColorInput extends UIComponent {
     `
 
     return html`
-     <div class="host">
+     <div class="parent">
       ${ this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label>` : null }
-      <div class="input-container">
+      <div class="input">
         <div class="color-container">
           <input ${ref(this._color)} @input="${this.onColorInput}" type="color" .value="${this.value.color}">
           <div ${ref(this._sample)} @click=${this.focus} class="sample" style="background-color: ${this.value.color}"></div>

@@ -9,17 +9,20 @@ export class Panel extends UIComponent {
     }
 
     :host {
-      display: flex;
-      flex-direction: column;
-      border-radius: 1rem;
-      pointer-events: auto;
       min-width: 20rem;
       max-width: 28rem;
-      background-color: black;
-      color: white;
     }
 
-    :host .title {
+    .host {
+      display: flex;
+      flex-direction: column;
+      pointer-events: auto;
+      border-radius: var(--bim-panel--bdrs);
+      background-color: var(--bim-panel--bgc);
+      color: var(--bim-panel--c);
+    }
+
+    .host .title {
       display: flex;
       padding: 1rem;
       justify-content: flex-start;
@@ -29,19 +32,19 @@ export class Panel extends UIComponent {
       user-select: none;
     }
 
-    :host .title span,
-    :host .title p {
-      font-size: 0.875rem;
-      line-height: 1rem;
+    .host .title span,
+    .host .title p {
+      font-weight: 600;
+      font-size: var(--bim-panel--fz);
     }
 
-    :host .sections {
+    .host .sections {
       display: flex;
       flex-direction: column;
     }
 
     ::slotted(bim-panel-section:not(:last-child)) {
-      border-bottom: 1px solid #2e2e2e
+      border-bottom: 1px solid var(--bim-panel-section--bdc);
     }
 
     ::-webkit-scrollbar {
@@ -84,17 +87,19 @@ export class Panel extends UIComponent {
   render() {
     const title = this.icon || this.name
     return html`
-      ${title
-        ? html`
-          <div class="title">
-            ${this.icon ? html`<span class="material-icons">${this.icon}</span>` : null}
-            ${this.name ? html`<p>${this.name}</p>` : null}
-          </div>
-        `
-        : null
-      }
-      <div class="sections">
-        <slot></slot>
+      <div class="host">
+        ${title
+          ? html`
+            <div class="title">
+              ${this.icon ? html`<span class="material-icons">${this.icon}</span>` : null}
+              ${this.name ? html`<p>${this.name}</p>` : null}
+            </div>
+          `
+          : null
+        }
+        <div class="sections">
+          <slot></slot>
+        </div>
       </div>
     `
   }

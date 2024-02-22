@@ -5,8 +5,8 @@ export class InputLabel extends UIComponent {
   static styles = css`
     :host {
       overflow: hidden;
-      font-size: 0.875rem;
-      color: var(--bim-label-color);
+      font-size: var(--bim-input-label--fz);
+      color: var(--bim-input-label--c);
     }
     
     .host {

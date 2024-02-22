@@ -1,25 +1,23 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
+import { internalStyles } from "../../core/UIManager/src/styles";
 
 export class Input extends UIComponent {
-  static styles = css`
-    .host {
-      display: flex;
-      justify-content: space-between;
-      height: 1.75rem;
-      column-gap: 0.5rem;
-      width: 100%;
-      align-items: center;
-    }
+  static styles = [
+    internalStyles,
+    css`
+      .input {
+        height: auto;
+      }
 
-    .inputs-container {
-      display: flex;
-      flex: 1 1 0%;
-      height: 100%;
-      justify-content: flex-end;
-      column-gap: 0.25rem;
-    }
-  `
+      slot {
+        display: flex;
+        flex: 1;
+        gap: 0.375rem;
+        flex-wrap: wrap;
+      }
+    `
+  ]
 
   static properties = {
     label: { type: String }
@@ -29,9 +27,9 @@ export class Input extends UIComponent {
 
   render() {
     return html`
-      <div class="host">
+      <div class="parent">
         <bim-input-label .label="${this.label}"></bim-input-label>
-        <div class="inputs-container">
+        <div class="input">
           <slot></slot>
         </div>
       </div>  

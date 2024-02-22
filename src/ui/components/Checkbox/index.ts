@@ -15,8 +15,14 @@ export class Checkbox extends UIComponent {
     input {
       height: 1rem;
       width: 1rem;
-      accent-color: var(--bim-checkbox-accent);
       cursor: pointer;
+      border: none;
+      outline: none;
+      accent-color: var(--bim-checkbox--c);
+    }
+    
+    input:focus {
+      outline: var(--bim-checkbox--olw) solid var(--bim-checkbox--olc);
     }
   `
   

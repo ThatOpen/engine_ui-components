@@ -3,17 +3,36 @@ import { Panel } from "../../components/Panel";
 import { PanelsContainer } from "../../components/PanelsContainer";
 import { Toolbar } from "../../components/Toolbar";
 import { styles } from "./src/styles";
+import { css, unsafeCSS } from "lit";
 
 export interface UIManagerStyles {
   color: {
-    main: string
-    accent: string
+    brand: {
+      main: {
+        light: string
+        base: string
+      }
+      accent: {
+        base: string
+      }
+    }
+    background: {
+      "base": string
+      "contrast-10": string
+      "contrast-20": string
+      "contrast-40": string
+      "contrast-60": string
+      "contrast-80": string
+      "contrast-100": string
+    }
   }
-  focus: {
-    color: string
-  }
-  label: {
-    color: string
+  size: {
+    "4xs": string
+    "3xs": string
+    "2xs": string
+    "xs": string
+    "sm": string
+    "base": string
   }
 }
 
@@ -83,24 +102,97 @@ export class UIManager {
   private addGlobalStyles() {
     const { styles } = this.config
     const style = document.createElement("style")
-    document.head.append(style)
+    document.head.append(style);
     style.id = "bim-ui"
-    style.textContent = `
-      * {
-        --bim-label-color: ${styles.label.color};
-        --bim-dropdown-focus-color: ${styles.color.main};
-        --bim-number-input-focus-color: ${styles.color.main};
-        --bim-selector-input-selected: ${styles.color.main};
-        --bim-checkbox-accent: ${styles.color.main};
-        --bim-panel-section-hover: ${styles.color.main};
-        --bim-button-hover: ${styles.color.main};
-        --bim-dropdown-color: ${styles.color.main};
+    const rules = css`
+      :root {        
+        /* Button */
+        --bim-button--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-button--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-button¡hover--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-button¡hover--bgc: ${unsafeCSS(styles.color.brand.main.base)};
+        --bim-button¡active--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-button¡active--bgc: ${unsafeCSS(styles.color.brand.main.base)};
+
+        /* Checkbox */
+        --bim-checkbox--c: ${unsafeCSS(styles.color.brand.main.base)};
+        --bim-checkbox--olw: 2px;
+        --bim-checkbox--olc: ${unsafeCSS(styles.color.brand.accent.base)};
+
+        /* ColorInput */
+        --bim-color-input--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-color-input--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-color-input--bdrs: ${unsafeCSS(styles.size["4xs"])};
+
+        /* Dropdown */
+        --bim-dropdown--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-dropdown--fz: ${unsafeCSS(styles.size.xs)};
+        --bim-dropdown--bdrs: ${unsafeCSS(styles.size["4xs"])};
+        --bim-dropdown--olw: 2px;
+        --bim-dropdown--olc: transparent;
+        --bim-dropdown--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-dropdown¡focus--c: ${unsafeCSS(styles.color.brand.accent.base)};
+        --bim-dropdown¡selected--c: ${unsafeCSS(styles.color.brand.main.light)};
+        --bim-dropdown_list--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-dropdown_sb--c: ${unsafeCSS(styles.color.brand.main.light)};
+        --bim-dropdown_sb--bgc: black;
+
+        /* InputLabel */
+        --bim-input-label--fz: ${unsafeCSS(styles.size.sm)};
+        --bim-input-label--c: ${unsafeCSS(styles.color.background["contrast-60"])};
+
+        /* NumberInput */
+        --bim-number-input--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-number-input--bdrs: ${unsafeCSS(styles.size["4xs"])};
+        --bim-number-input--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-number-input--olc: transparent;
+        --bim-number-input--olw: 2px;
+        --bim-number-input--fz: ${unsafeCSS(styles.size.xs)};
+        --bim-number-input¡focus--c: ${unsafeCSS(styles.color.brand.accent.base)};
+        --bim-number-input_affixes--c: ${unsafeCSS(styles.color.background["contrast-60"])};
+        --bim-number-input_affixes--fz: ${unsafeCSS(styles.size.xs)};
+
+        /* Panel */
+        --bim-panel--bgc: ${unsafeCSS(styles.color.background["base"])};
+        --bim-panel--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-panel--bdrs: ${unsafeCSS(styles.size.base)};
+        --bim-panel--fz: ${unsafeCSS(styles.size.sm)};
+
+        /* PanelSection */
+        --bim-panel-section--fz: ${unsafeCSS(styles.size.sm)};
+        --bim-panel-section--c: ${unsafeCSS(styles.color.background["contrast-80"])};
+        --bim-panel-section--bdc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-panel-section¡hover: ${unsafeCSS(styles.color.brand.accent.base)};
+
+        /* SelectorInput */
+        --bim-selector-input--bdrs: ${unsafeCSS(styles.size["4xs"])};
+        --bim-selector-input--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-selector-input--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-selector-input¡hover--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-selector-input¡hover--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-selector-input¡selected--bgc: ${unsafeCSS(styles.color.brand.main.base)};
+        --bim-selector-input¡selected--c: white;
+
+        /* Table */
+        --bim-table_header--bgc: ${unsafeCSS(styles.color.background["contrast-20"])};
+        --bim-table_header--c: ${unsafeCSS(styles.color.background["contrast-100"])};
+        --bim-table¡striped--c: ${unsafeCSS(styles.color.background["contrast-10"])};
+
+        /* Tag */
+
+        /* Toolbar */
+        --bim-toolbar--bgc: ${unsafeCSS(styles.color.background["base"])};
+
+        /* ToolbarSection */
+
+        /* VectorInput */
       }
     `
+    style.textContent = rules.cssText
   }
 
   private createGrid() {
-    const { floating } = this.config
+    const { floating, styles } = this.config
     this.grid.setAttribute("data-ui-style", floating ? "floating" : "fixed")
     const { areas, columnsSize, rowsSize, padding, gap } = this.config.grid
     if (floating) {
@@ -116,9 +208,8 @@ export class UIManager {
       this.viewerArea.style.minWidth = "0px";
       this.viewerArea.style.gridArea = "viewer";
       this.viewerArea.style.position = "relative";
-      this.viewerArea.style.outline = "1px solid #2e2e2e"
+      this.viewerArea.style.outline = `1px solid ${styles.color.background["contrast-20"]}`
       this.grid.append(this.viewerArea)
-      this.grid.style.backgroundColor = "#1b1b1b"
     }
     this.grid.setAttribute("data-ui-type", "grid")
     this.grid.style.overflow = "hidden";

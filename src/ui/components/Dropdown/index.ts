@@ -9,125 +9,116 @@ import {
 import { TemplateResult, css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
 import { createRef, ref } from "lit/directives/ref.js";
+import { internalStyles } from "../../core/UIManager/src/styles";
 
 export class Dropdown extends UIComponent {
-  static styles = css`
-    .host {
-      display: flex;
-      justify-content: space-between;
-      height: 1.75rem;
-      align-items: center;
-      width: 100%;
-      user-select: none;
-    }
+  static styles = [
+    internalStyles,
+    css`
+      .input {
+        column-gap: 0.25rem;
+        outline: none;
+        cursor: pointer;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+        border-radius: var(--bim-dropdown--bdrs);
+        background-color: var(--bim-dropdown--bgc);
+        font-size: var(--bim-dropdown--fz);
+        outline: var(--bim-dropdown--olw) solid var(--bim-dropdown--olc);
+      }
 
-    .input {
-      box-sizing: border-box;
-      max-width: 13rem;
-      column-gap: 0.25rem;
-      outline: none;
-      background-color: #2e2e2e;
-      cursor: pointer;
-      height: 100%;
-      color: #a0a0a0;
-      border-radius: 0.375rem;
-      display: flex;
-      flex: 1 1 0%;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 0.5rem;
-      font-size: 0.75rem;
-    }
+      .list {
+        position: absolute;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 20rem;
+        min-width: 6rem;
+        display: none;
+        flex-direction: column;
+        box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+        padding: 0.75rem 0;
+        border-radius: 1rem;
+        z-index: 20;
+        background-color: var(--bim-dropdown_list--bgc);
+        font-size: var(--bim-dropdown--fz);
+        color: var(--bim-dropdown--c);
+      }
 
-    .list {
-      position: absolute;
-      overflow-y: auto;
-      overflow-x: hidden;
-      max-height: 20rem;
-      min-width: 6rem;
-      display: none;
-      flex-direction: column;
-      background-color: #2e2e2e;
-      box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
-      font-size: 0.75rem;
-      padding: 0.75rem 0;
-      border-radius: 1rem;
-      z-index: 20;
-    }
+      :host([visible]) .list {
+        display: flex !important;
+      }
 
-    :host([visible]) .list {
-      display: flex !important;
-    }
+      :host([visible]) .input {
+        outline: var(--bim-dropdown--olw) solid var(--bim-dropdown¡focus--c);
+      }
 
-    :host([visible]) .input {
-      outline: 1px solid var(--bim-dropdown-focus-color);
-    }
+      .list > div {
+        display: flex;
+        padding: 0 1rem;
+        height: 2rem;
+        justify-content: space-between;
+        align-items: center;
+        column-gap: 1.25rem;
+      }
 
-    .list > div {
-      display: flex;
-      padding: 0 1rem;
-      height: 2rem;
-      justify-content: space-between;
-      align-items: center;
-      column-gap: 1.25rem;
-    }
+      .list > div[data-selected] {
+        font-weight: 600;
+        color: var(--bim-dropdown¡selected--c)
+      }
 
-    .list > div[data-selected] {
-      font-weight: 600;
-      color: #9D6BFF
-    }
+      .list > div svg {
+        visibility: hidden;
+      }
 
-    .list > div svg {
-      visibility: hidden;
-    }
+      .list > div[data-selected] svg {
+        visibility: visible;
+        fill: var(--bim-dropdown¡selected--c);
+      }
 
-    .list > div[data-selected] svg {
-      visibility: visible;
-      fill: #9D6BFF;
-    }
+      .list > div:hover {
+        cursor: pointer;
+        background-color: #0000002a;
+      }
 
-    .list > div:hover {
-      background-color: #9D6BFF4D;
-      color: white !important;
-      cursor: pointer;
-    }
+      .list > div p {
+        white-space: nowrap;
+      }
 
-    .list > div p {
-      white-space: nowrap;
-    }
+      ::-webkit-scrollbar {
+        width: 0.5rem;
+        overflow: hidden;
+      }
 
-    ::-webkit-scrollbar {
-      width: 0.5rem;
-      overflow: hidden;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: #9c6bff77;
-      border-radius: 0.25rem;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background-color: black;
-    }
-
-  `
+      ::-webkit-scrollbar-thumb {
+        border-radius: 0.25rem;
+        background-color: var(--bim-dropdown_sb--c);
+      }
+      
+      ::-webkit-scrollbar-track {
+        background-color: var(--bim-dropdown_sb--bgc);
+      }
+    `
+  ]
 
   static properties = {
     label: { type: String, reflect: true },
-    full: { type: Boolean, reflect: true },
+    wrapped: { type: Boolean, reflect: true },
     value: { type: Object, attribute: false },
     options: { type: Object, attribute: false },
     multiple: { type: Boolean, reflect: true },
     required: { type: Boolean, reflect: true },
     visible: { type: Boolean, reflect: true },
-    searchBox: { type: Boolean, reflect: true, attribute: "search-box" }
+    searchBox: { type: Boolean, reflect: true, attribute: "search-box" },
+    vertical: { type: Boolean, reflect: true }
   }
 
   declare label?: string
-  declare full: boolean
+  declare wrapped: boolean
   declare multiple: boolean
   declare required: boolean
   declare searchBox: boolean
+  declare vertical: boolean
   declare options: Record<string, any>
 
   private _value: Record<string, any> = {}
@@ -185,10 +176,11 @@ export class Dropdown extends UIComponent {
 
   constructor() {
     super()
-    this.full = false
+    this.wrapped = false
     this.multiple = false
     this.required = false
     this.visible = false
+    this.vertical = false
     this.searchBox = false
     this.options = []
   }
@@ -267,23 +259,23 @@ export class Dropdown extends UIComponent {
       ? this._value
       : Object.keys(this._value);
     if (values.length === 0) {
-      inputLabel = this.full && this.label
+      inputLabel = this.wrapped && this.label
         ? `${this.label} (Select an option...)`
         : "Select an option..."
     } else if (values.length === 1) {
-      inputLabel = this.full && this.label
+      inputLabel = this.wrapped && this.label
         ? `${this.label}: ${values[0]}`
         : values[0]
     } else {
-      inputLabel = this.full && this.label
+      inputLabel = this.wrapped && this.label
         ? `${this.label} (Multiple ${values.length})`
         : `Multiple (${values.length})`
     }
     return html`
-      <div class="host">
-        ${this.label && !this.full ? html`<bim-input-label .label=${this.label}></bim-input-label>` : null}
+      <div class="parent">
+        ${this.label && !this.wrapped ? html`<bim-input-label .label=${this.label}></bim-input-label>` : null}
         <div ${ref(this._inputContainer)} class="input" @click=${() => this.visible = !this.visible}>
-          <bim-input-label .label=${inputLabel} style="font-size: 0.75rem; pointer-events: none"></bim-input-label>
+          <bim-input-label .label=${inputLabel} style="font-size: var(--bim-dropdown--fz); color: var(--bim-dropdown--c); pointer-events: none"></bim-input-label>
           <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </div>
         <div ${ref(this._listElement)} class="list">

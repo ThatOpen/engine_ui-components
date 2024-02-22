@@ -14,48 +14,43 @@ export class PanelSection extends UIComponent {
       height: 100%;
       padding: 0.75rem 1rem;
       row-gap: 0.75rem;
-      border-color: #2e2e2e;
-      border: none;
       pointer-events: auto;
-    }
-
-    :host .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #808080;
-      font-weight: 500;
-      user-select: none;
-      height: 1.5rem
     }
 
     :host(:not([fixed])) .header:hover {
       cursor: pointer;
-      color: var(--bim-panel-section-hover);
+      color: var(--bim-panel-section¡hover);
     }
 
     :host(:not([fixed])) .header:hover svg {
-      fill: var(--bim-panel-section-hover);
+      fill: var(--bim-panel-section¡hover);
     }
 
-    :host .title span,
-    :host .header span {
-      font-size: 1rem;
-      line-height: 1.25rem;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      user-select: none;
+      height: 1.5rem;
+      color: var(--bim-panel-section--c);
     }
 
-    :host .title {
+    .header svg {
+      fill: var(--bim-panel-section--c)
+    }
+
+    .title {
       display: flex;
       align-items: center;
       column-gap: 0.5rem;
     }
 
-    :host .title p {
-      font-size: 0.875rem;
-      line-height: 1rem;
+    .title p {
+      font-size: var(--bim-panel-section--fz);
     }
 
-    :host .components-list {
+    .components-list {
       flex-direction: column;
       row-gap: 0.75rem;
     }
@@ -88,8 +83,8 @@ export class PanelSection extends UIComponent {
       </div>
     `
 
-    const expandLessSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#ffffff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>`
-    const expandMoreSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#ffffff"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>`
+    const expandLessSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>`
+    const expandMoreSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>`
     const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG
 
     const headerTemplate = html`

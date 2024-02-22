@@ -1,76 +1,68 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
+import { internalStyles } from "../../core/UIManager/src/styles";
 
 export class SelectorInput extends UIComponent {
-  static styles = css`
-    * {
-      margin: 0;
-      padding: 0;
-      border: none;
-      outline: none;
-    }
+  static styles = [
+    internalStyles,
+    css`
+      * {
+        margin: 0;
+        padding: 0;
+        border: none;
+        outline: none;
+      }
 
-    .host {
-      display: flex;
-      justify-content: space-between;
-      height: 1.75rem;
-      width: 100%;
-      align-items: center;
-    }
+      .input button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.75rem;
+        column-gap: 0.25rem;
+        height: 100%;
+        width: 100%;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        font-family: inherit;
+        font-feature-settings: inherit;
+        font-variation-settings: inherit;
+        cursor: pointer;
+        background-color: var(--bim-selector-input--bgc);
+        color: var(--bim-selector-input--c);
+      }
+      
+      .input button:hover {
+        background-color: var(--bim-selector-input¡hover--bgc, #2e2e2e);
+        color: var(--bim-selector-input¡hover--c);
+      }
 
-    .options {
-      display: flex;
-      flex: 1 1 0%;
-      height: 100%;
-      max-width: 13rem;
-    }
+      .input button[data-selected] {
+        font-weight: 500;
+        background-color: var(--bim-selector-input¡selected--bgc);
+        color: var(--bim-selector-input¡selected--c);
+      }
 
-    .options button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.75rem;
-      line-height: 1rem;
-      column-gap: 0.25rem;
-      height: 100%;
-      width: 100%;
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-      background-color: #2e2e2e;
-      font-family: inherit;
-      font-feature-settings: inherit;
-      font-variation-settings: inherit;
-      cursor: pointer;
-      color: white;
-    }
+      .input button:first-child {
+        border-bottom-left-radius: var(--bim-selector-input--bdrs);
+        border-top-left-radius: var(--bim-selector-input--bdrs);
+      }
 
-    .options button:hover {
-      color: #bcf124;
-    }
-
-    .options button[data-selected] {
-      background-color: var(--bim-selector-input-selected);
-      font-weight: 500;
-    }
-
-    .options button:first-child {
-      border-bottom-left-radius: 0.375rem;
-      border-top-left-radius: 0.375rem;
-    }
-
-    .options button:last-child {
-      border-bottom-right-radius: 0.375rem;
-      border-top-right-radius: 0.375rem;
-    }
-  `
+      .input button:last-child {
+        border-bottom-right-radius: var(--bim-selector-input--bdrs);
+        border-top-right-radius: var(--bim-selector-input--bdrs);
+      }
+    `
+  ]
 
   static properties = {
-    label: { type: String },
+    label: { type: String, reflect: true },
     options: { type: Array<String> },
-    value: { type: String }
+    value: { type: String, reflect: true },
+    vertical: { type: Boolean, reflect: true }
   }
 
   declare label?: string
+  declare vertical: boolean
 
   private _optionsSetEvent = new Event("optionsset")
   private _options: string[] = []
@@ -85,6 +77,11 @@ export class SelectorInput extends UIComponent {
 
   get options() {
     return this._options
+  }
+
+  constructor() {
+    super()
+    this.vertical = false
   }
 
   private _changeEvent = new Event("change")
@@ -111,9 +108,9 @@ export class SelectorInput extends UIComponent {
 
   render() {
     return html`
-      <div class="host">
+      <div class="parent">
         ${ this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label>` : null }
-        <div class="options">
+        <div class="input">
           ${
             this.options?.map((option) =>
               html`

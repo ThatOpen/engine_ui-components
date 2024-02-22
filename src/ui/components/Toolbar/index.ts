@@ -2,13 +2,19 @@ import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent"
 
 export class Toolbar extends UIComponent {
-  static styles = css`
-    :host {
+  static styles = css`    
+    .parent {
       display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
       align-items: center;
-      background-color: black;
       border-radius: 0.75rem;
       padding: 1rem;
+      background-color: var(--bim-toolbar--bgc);
+    }
+
+    :host([vertical]) {
+      flex-direction: column;
     }
   `
 
@@ -20,7 +26,9 @@ export class Toolbar extends UIComponent {
 
   render() {
     return html`
-      <slot></slot>
+      <div class="parent">
+        <slot></slot>
+      </div>
     `
   }
 }
