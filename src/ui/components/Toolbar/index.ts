@@ -8,12 +8,12 @@ export class Toolbar extends UIComponent {
       flex-wrap: wrap;
       gap: 0.375rem;
       align-items: center;
-      border-radius: 0.75rem;
       padding: 1rem;
+      border-radius: var(--bim-toolbar--bdrs);
       background-color: var(--bim-toolbar--bgc);
     }
 
-    :host([vertical]) {
+    :host([vertical]) .parent {
       flex-direction: column;
     }
   `

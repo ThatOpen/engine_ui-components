@@ -2,6 +2,7 @@ import { Button } from "./Button";
 import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
 import { Dropdown } from "./Dropdown";
+import { Grid } from "./Grid";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
@@ -22,6 +23,7 @@ declare global {
     "bim-checkbox": Checkbox;
     "bim-color-input": ColorInput;
     "bim-dropdown": Dropdown;
+    "bim-grid": Grid;
     "bim-icon": Icon;
     "bim-input": Input;
     "bim-input-label": InputLabel;
@@ -41,6 +43,7 @@ customElements.define("bim-button", Button)
 customElements.define("bim-checkbox", Checkbox)
 customElements.define("bim-color-input", ColorInput)
 customElements.define("bim-dropdown", Dropdown)
+customElements.define("bim-grid", Grid)
 customElements.define("bim-icon", Icon)
 customElements.define("bim-input", Input)
 customElements.define("bim-input-label", InputLabel)
@@ -60,6 +63,7 @@ export {
   Checkbox,
   ColorInput,
   Dropdown,
+  Grid,
   Icon,
   Input,
   InputLabel,

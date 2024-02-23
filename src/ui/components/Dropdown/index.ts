@@ -79,7 +79,7 @@ export class Dropdown extends UIComponent {
 
       .list > div:hover {
         cursor: pointer;
-        background-color: #0000002a;
+        background-color: #00000024;
       }
 
       .list > div p {

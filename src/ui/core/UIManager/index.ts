@@ -1,64 +1,55 @@
-import { ToolbarSection } from "../..";
+import { Grid } from "../../components/Grid";
+import { ToolbarSection } from "../../components/ToolbarSection";
 import { Panel } from "../../components/Panel";
 import { PanelsContainer } from "../../components/PanelsContainer";
 import { Toolbar } from "../../components/Toolbar";
 import { css } from "lit";
 
-export interface UIManagerConfig {
+export interface ManagerConfig {
   floating: boolean;
-  grid: {
-    areas: string;
-    columnsSize: string;
-    rowsSize: string;
-    padding: string;
-    gap: string;
-  };
+  addGlobalStyles: boolean,
+  onViewportResize: () => void;
 }
 
-export type UIAreas = "a" | "b" | "c" | "d" | "e" | "f" | "l" | "r" | "t";
+export type GridArea = "a" | "b" | "c" | "d" | "e" | "f" | "l" | "r" | "t";
 
 export type UIOrientation = "horizontal" | "vertical";
 
 export class UIManager {
-  // The main HTMLElement where all the UI lives
-  grid: HTMLElement
+  // The main HTMLElement where all the UI lives. Here also lives the viewport if config.floating = false.
+  grid = document.createElement("bim-grid") as Grid
 
   // Only defined if config.floating is false
-  viewerArea: HTMLDivElement | null = null
+  viewport: HTMLElement
 
   // A configuration object to define the UI behavior
-  static config: Required<UIManagerConfig> = {
-    floating: true,
-    grid: {
-      areas: `
-        'toolbar-a toolbar-a toolbar-a'
-        'panel-a viewer panel-b'
-      `,
-      columnsSize: "minmax(320px, auto) 1fr minmax(320px, auto)",
-      rowsSize: "auto 1fr",
-      padding: "1.25rem",
-      gap: "1rem",
-    },
+  config: Required<ManagerConfig> = {
+    floating: false,
+    addGlobalStyles: true,
+    onViewportResize: () => {}
   }
-
-  config: Required<UIManagerConfig>
 
   private PANEL_CONTAINER_PREFIX = "panel-"
   private TOOLBAR_PREFIX = "toolbar-"
 
-  constructor(container: HTMLElement, config?: Partial<UIManagerConfig>) {
-    this.config = { ...UIManager.config, ...config }
-    const { floating, grid } = this.config
-    if (!floating && !grid.areas.includes("viewer")) {
-      throw new Error(
-        "If UI.floating is false, UI.config.areas must have a viewer area defined."
-      )
-    }
-    this.grid = floating ? document.createElement("div") : container
-    if (floating) {
-      container.style.position = "relative"
-      container.append(this.grid)
-    }
+  private get gridRows() {
+    const template = getComputedStyle(document.documentElement).getPropertyValue("--bim-grid--tpl")
+    const rows = template
+      .trim()
+      .split(/"([^"]*)"/)
+      .map((value, index) => {if (index % 2 !== 0) {return value}})
+      .filter((value) => value !== undefined) as string[];
+    return rows
+  }
+
+  constructor(viewport: HTMLElement, config?: Partial<ManagerConfig>) {
+    this.viewport = viewport
+    this.config = { ...this.config, ...config }
+    // if (!this.config.grid.areas.includes("viewport")) {
+    //   throw new Error(
+    //     "UI.config.areas must have a viewport area defined."
+    //   )
+    // }
     this.createGrid()
     this.createPanelContainers()
     this.createGridToolbars()
@@ -133,6 +124,22 @@ export class UIManager {
         --bim-dropdown¡selected--c: var(--bim-ui_color-main-light);
         --bim-dropdown_list--bgc: var(--bim-ui_bg-contrast-20);
 
+        /* Grid */
+        --bim-grid--bgc: var(--bim-ui_bg-contrast-20);
+        --bim-grid--g: 1px;
+        --bim-grid--tpl:
+          "panel-a viewport" 1fr
+          "panel-a viewport" 1fr
+          "panel-b panel-b" auto
+          / 350px 1fr
+        ;
+
+        bim-grid[floating] {
+          --bim-grid--p: 1.25rem;
+          --bim-grid--g: 1rem;
+          --bim-grid--bgc: transparent;
+        }
+
         /* Icon */
         --bim-icon--fz: var(--bim-ui_size-base);
 
@@ -156,6 +163,10 @@ export class UIManager {
         --bim-panel--c: var(--bim-ui_bg-contrast-100);
         --bim-panel--bdrs: var(--bim-ui_size-base);
         --bim-panel--fz: var(--bim-ui_size-sm);
+
+        bim-grid:not([floating]) {
+          --bim-panel--bdrs: 0;
+        }
 
         /* PanelSection */
         --bim-panel-section--fz: var(--bim-ui_size-sm);
@@ -181,6 +192,10 @@ export class UIManager {
 
         /* Toolbar */
         --bim-toolbar--bgc: var(--bim-ui_bg-base);
+        --bim-toolbar--bdrs: var(--bim-ui_size-base);
+        bim-grid:not([floating]) {
+          --bim-toolbar--bdrs: 0;
+        }
 
         /* ToolbarSection */
 
@@ -235,158 +250,144 @@ export class UIManager {
   }
 
   private createGrid() {
-    const { floating } = this.config
-    this.grid.setAttribute("data-ui-style", floating ? "floating" : "fixed")
-    const { areas, columnsSize, rowsSize, padding, gap } = this.config.grid
+    const { floating, onViewportResize } = this.config
+    this.grid.floating = floating
     if (floating) {
-      this.grid.style.position = "absolute";
-      this.grid.style.pointerEvents = "none";
-      this.grid.style.top = "0";
-      this.grid.style.left = "0";
-      this.grid.style.height = "100%";
-      this.grid.style.width = "100%";
+      this.viewport.style.position = "relative"
+      this.viewport.append(this.grid)
     } else {
-      this.viewerArea = document.createElement("div");
-      this.viewerArea.style.minHeight = "0px";
-      this.viewerArea.style.minWidth = "0px";
-      this.viewerArea.style.gridArea = "viewer";
-      this.viewerArea.style.position = "relative";
-      this.viewerArea.style.outline = `1px solid var(--bim-ui_bg-contrast-20)`
-      this.grid.append(this.viewerArea)
+      const container = this.viewport.parentElement
+      if (!container) {
+        throw new Error("UIManager: viewport needs to have a parent to create a grid.")
+      }
+      container.append(this.grid)
+      container.style.overflow = "auto"
+      this.grid.append(this.viewport)
+      this.viewport.style.minHeight = "0px";
+      this.viewport.style.minWidth = "0px";
+      this.viewport.style.gridArea = "viewport";
+      this.viewport.style.position = "relative";
+      const observer = new ResizeObserver(onViewportResize)
+      observer.observe(this.viewport)
     }
-    this.grid.setAttribute("data-ui-type", "grid")
-    this.grid.style.overflow = "hidden";
-    this.grid.style.boxSizing = "border-box";
-    this.grid.style.display = "grid";
-    this.grid.style.gridTemplateAreas = areas;
-    this.grid.style.gridTemplateColumns = columnsSize;
-    this.grid.style.gridTemplateRows = rowsSize;
-    this.grid.style.padding = padding;
-    this.grid.style.gap = gap;
   }
 
   private createPanelContainers() {
-    const { gridTemplateAreas } = this.grid.style;
-    const rows = gridTemplateAreas
-      .trim()
-      .split(/"([^"]*)"/)
-      .filter((value) => Boolean(value.replace(" ", "")));
-
-    const panelsOrientation: Record<string, UIOrientation> = {};
-
-    for (const [rowIndex, row] of rows.entries()) {
-      const columns = row.trim().split(/\s+/);
-      for (const column of columns) {
-        const isPanel = RegExp(/\b\w*panel-\b/g).test(column);
-        if (!isPanel) continue;
-        if (!panelsOrientation[column]) {
-          const abovePanel =
-            rowIndex > 0 && rows[rowIndex - 1].includes(column);
-          const belowPanel =
-            rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
-          panelsOrientation[column] =
-            abovePanel || belowPanel ? "vertical" : "horizontal";
+    requestAnimationFrame(() => {
+      const rows = this.gridRows
+      const panelsOrientation: Record<string, UIOrientation> = {};
+      for (const [rowIndex, row] of rows.entries()) {
+        const columns = row.trim().split(/\s+/);
+        for (const column of columns) {
+          const isPanel = RegExp(/\b\w*panel-\b/g).test(column);
+          if (!isPanel) continue;
+          if (!panelsOrientation[column]) {
+            const abovePanel =
+              rowIndex > 0 && rows[rowIndex - 1].includes(column);
+            const belowPanel =
+              rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
+            panelsOrientation[column] =
+              abovePanel || belowPanel ? "vertical" : "horizontal";
+          }
         }
       }
-    }
-
-    for (const area in panelsOrientation) {
-      const orientation = panelsOrientation[area];
-      const element = document.createElement("bim-panels-container") as PanelsContainer
-      element.horizontal = orientation === "horizontal"
-      element.style.gridArea = area;
-      element.ondragenter = () => {
-        element.classList.remove("bg-[#00000021]");
-        element.classList.add("bg-[#00000030]");
-      };
-      element.ondragleave = () => {
-        element.classList.add("bg-[#00000021]");
-        element.classList.remove("bg-[#00000030]");
-      };
-      element.ondragover = (e) => {
-        e.preventDefault();
-        if (e.dataTransfer) {
-          e.dataTransfer.effectAllowed = "move";
-        }
-      };
-      element.ondrop = (e) => {
-        e.preventDefault();
-        const id = e.dataTransfer?.getData("id");
-        if (!id) return;
-        const panel = document.getElementById(id);
-        if (!panel) return;
-        element.append(panel);
-      };
-      this.grid.append(element);
-    }
+  
+      for (const area in panelsOrientation) {
+        // const container = this.getPanelsContainer(area.split(this.PANEL_CONTAINER_PREFIX)[1] as UIAreas)
+        // if (container) continue;
+        const orientation = panelsOrientation[area];
+        const element = document.createElement("bim-panels-container") as PanelsContainer
+        element.horizontal = orientation === "horizontal"
+        element.style.gridArea = area;
+        element.ondragenter = () => {
+          element.classList.remove("bg-[#00000021]");
+          element.classList.add("bg-[#00000030]");
+        };
+        element.ondragleave = () => {
+          element.classList.add("bg-[#00000021]");
+          element.classList.remove("bg-[#00000030]");
+        };
+        element.ondragover = (e) => {
+          e.preventDefault();
+          if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = "move";
+          }
+        };
+        element.ondrop = (e) => {
+          e.preventDefault();
+          const id = e.dataTransfer?.getData("id");
+          if (!id) return;
+          const panel = document.getElementById(id);
+          if (!panel) return;
+          element.append(panel);
+        };
+        this.grid.append(element);
+      }
+    })
   }
 
   private createGridToolbars() {
-    const { gridTemplateAreas } = this.grid.style;
-    const rows = gridTemplateAreas
-      .trim()
-      .split(/"([^"]*)"/)
-      .filter((value) => Boolean(value.replace(" ", "")));
-
-    const toolbarsOrientation: Record<string, UIOrientation> = {};
-
-    for (const [rowIndex, row] of rows.entries()) {
-      const columns = row.trim().split(/\s+/);
-      for (const column of columns) {
-        const isToolbar = RegExp(/\b\w*toolbar-\b/g).test(column);
-        if (!isToolbar) continue;
-        if (!toolbarsOrientation[column]) {
-          const aboveToolbar =
-            rowIndex > 0 && rows[rowIndex - 1].includes(column);
-          const belowToolbar =
-            rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
-          toolbarsOrientation[column] =
-            aboveToolbar || belowToolbar ? "vertical" : "horizontal";
+    requestAnimationFrame(() => {
+      const rows = this.gridRows
+      const toolbarsOrientation: Record<string, UIOrientation> = {};
+      for (const [rowIndex, row] of rows.entries()) {
+        const columns = row.trim().split(/\s+/);
+        for (const column of columns) {
+          const isToolbar = RegExp(/\b\w*toolbar-\b/g).test(column);
+          if (!isToolbar) continue;
+          if (!toolbarsOrientation[column]) {
+            const aboveToolbar =
+              rowIndex > 0 && rows[rowIndex - 1].includes(column);
+            const belowToolbar =
+              rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
+            toolbarsOrientation[column] =
+              aboveToolbar || belowToolbar ? "vertical" : "horizontal";
+          }
         }
       }
-    }
-
-    for (const area in toolbarsOrientation) {
-      const orientation = toolbarsOrientation[area];
-      const element = document.createElement("bim-toolbar") as Toolbar;
-      element.horizontal = orientation === "horizontal"
-      element.style.gridArea = area;
-      element.style.flexDirection = orientation === "horizontal" ? "row" : "column"
-      this.grid.append(element);
-    }
+  
+      for (const area in toolbarsOrientation) {
+        const orientation = toolbarsOrientation[area];
+        const element = document.createElement("bim-toolbar") as Toolbar;
+        element.horizontal = orientation === "horizontal"
+        element.style.gridArea = area;
+        this.grid.append(element);
+      }
+    })
   }
 
-  getPanelsContainer(area: UIAreas) {
+  private getPanelsContainer(area: GridArea) {
     const gridArea = `${this.PANEL_CONTAINER_PREFIX}${area}`
     const selector = `bim-panels-container[style*="grid-area: ${gridArea};"]`
     const container = this.grid.querySelector<PanelsContainer>(selector)
     if (!container) {
-      throw new Error(`${gridArea} wasn't define in the UIManager.config.grid.areas`)
+      throw new Error(`UIManager: ${gridArea} wasn't define in --bim-grid--tpl`)
     }
     return container
   }
 
-  getGridToolbar(area: UIAreas) {
+  getGridToolbar(area: GridArea) {
     const gridArea = `${this.TOOLBAR_PREFIX}${area}`
     const selector = `bim-toolbar[style*="grid-area: ${gridArea};"]`
     const container = this.grid.querySelector<Toolbar>(selector)
     if (!container) {
-      throw new Error(`${gridArea} wasn't define in the UIManager.config.grid.areas`)
+      throw new Error(`UIManager: ${gridArea} wasn't define in --bim-grid--tpl`)
     }
     return container
   }
 
-  addPanel(panel: Panel, area: UIAreas) {
-    // if (!(panel instanceof Panel)) {
-    //   throw new Error("Only bim-panel can be added to a bim-panels-container element.")
-    // }
-    const container = this.getPanelsContainer(area)
-    container.appendChild(panel)
+  addPanel(panel: Panel, area: GridArea) {
+    requestAnimationFrame(() => {
+      const container = this.getPanelsContainer(area)
+      container.appendChild(panel)
+    })
   }
 
-  addGridToolbarSection(section: ToolbarSection, area: UIAreas) {
-    const container = this.getGridToolbar(area)
-    container.appendChild(section)
+  addGridToolbarSection(section: ToolbarSection, area: GridArea) {
+    requestAnimationFrame(() => {
+      const container = this.getGridToolbar(area)
+      container.appendChild(section)
+    })
   }
 
   createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
@@ -395,5 +396,10 @@ export class UIManager {
     const element = temp.firstElementChild as T;
     temp.remove();
     return element;
+  }
+
+  setGridTemplate(template: string) {
+    document.documentElement.style.setProperty("--bim-grid--tpl", template);
+    this.createPanelContainers()
   }
 }

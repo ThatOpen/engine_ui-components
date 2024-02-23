@@ -9,5 +9,8 @@ export const abbreviations = {
   fontFamily: "ff",
   outline: "ol",
   outlineColor: "olc",
-  scrollbar: "sb"
+  scrollbar: "sb",
+  template: "tpl", //Not from emmet
+  padding: "p",
+  gap: "g"
 }
