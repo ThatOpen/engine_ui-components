@@ -18,7 +18,6 @@ export class InputLabel extends UIComponent {
     }
 
     label {
-      margin-right: 1rem;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;

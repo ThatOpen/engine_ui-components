@@ -28,7 +28,7 @@ export class Input extends UIComponent {
   render() {
     return html`
       <div class="parent">
-        <bim-input-label .label="${this.label}"></bim-input-label>
+        ${this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label>` : null}
         <div class="input">
           <slot></slot>
         </div>

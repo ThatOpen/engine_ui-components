@@ -12,6 +12,7 @@ export class PanelsContainer extends UIComponent {
         pointer-events: none;
         overflow: auto;
         overflow-x: hidden;
+        gap: 0.5rem;
       }
 
       :host([horizontal]) {
@@ -26,10 +27,22 @@ export class PanelsContainer extends UIComponent {
   ]
 
   static properties = {
-    horizontal: {type: Boolean, reflect: true}
+    horizontal: { type: Boolean, reflect: true },
+    gridArea: { type: String, attribute: false }
   }
 
   declare horizontal?: boolean
+
+  private _gridArea: string = ""
+
+  get gridArea() {
+    return this._gridArea
+  }
+
+  set gridArea(value: string) {
+    this._gridArea = value
+    this.style.gridArea = `panel-${value}`
+  }
 
   render() {
     return html`

@@ -2,6 +2,7 @@ import { TemplateResult, css, html } from 'lit';
 import { UIComponent } from './../../core/UIComponent';
 import { createRef, ref } from 'lit/directives/ref.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { styles } from '../../core/UIManager/src/styles';
 
 interface TableComponentCell {
   component: typeof UIComponent
@@ -29,46 +30,51 @@ interface ParsedData {
 }
 
 export class Table extends UIComponent {
-  static styles = css`
-    :host {
-      position: relative
-    }
+  static styles = [
+    styles.scrollbar,
+    css`
+      :host {
+        position: relative;
+        overflow: auto;
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0;
-      padding: 0;
-      font-size: 0.75rem;
-    }
-    
-    thead {
-      color: var(--bim-table_header--c);
-      background-color: var(--bim-table_header--bgc);
-    }
-    
-    th {
-      font-size: 0.75rem;
-      padding: 0.5rem 1rem;
-      font-weight: 500;
-      text-wrap: nowrap;
-    }
-    
-    td {
-      position: relative;
-      padding: 0.25rem 1rem;
-    }
-    
-    tr {
-      height: 2rem;
-      border-bottom: 1px solid #2e2e2e;
-      position: relative;
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        font-size: 0.75rem;
+        border: 1px solid #2e2e2e;
+      }
+      
+      thead {
+        color: var(--bim-table_header--c);
+        background-color: var(--bim-table_header--bgc);
+      }
+      
+      th {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        text-wrap: nowrap;
+      }
+      
+      td {
+        position: relative;
+        padding: 0.25rem 1rem;
+      }
+      
+      tr {
+        height: 2rem;
+        border-bottom: 1px solid #2e2e2e;
+        position: relative;
+      }
 
-    :host([striped]) tbody tr:nth-child(even) {
-      background-color: var(--bim-table¡striped--c);
-    }
-  `
+      :host([striped]) tbody tr:nth-child(even) {
+        background-color: var(--bim-table¡striped--c);
+      }
+    `
+  ]
   
   static properties = {
     value: { type: Object, attribute: false },

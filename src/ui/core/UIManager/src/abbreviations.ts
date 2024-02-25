@@ -6,11 +6,12 @@ export const abbreviations = {
   backgroundColor: "bgc",
   color: "c",
   fontSize: "fz",
-  fontFamily: "ff",
   outline: "ol",
   outlineColor: "olc",
+  outlineWidth: "olw",
   scrollbar: "sb",
   template: "tpl", //Not from emmet
   padding: "p",
-  gap: "g"
+  gap: "g",
+  justifySelft: "jts",
 }

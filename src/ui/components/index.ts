@@ -14,6 +14,8 @@ import { SelectorInput } from "./SelectorInput";
 import { Table } from "./Table";
 import { Tag } from "./Tag";
 import { Toolbar } from "./Toolbar";
+import { ToolbarGroup } from "./ToolbarGroup";
+import { ToolbarsContainer } from "./ToolbarsContainer";
 import { ToolbarSection } from "./ToolbarSection";
 import { VectorInput } from "./VectorInput";
 
@@ -34,6 +36,8 @@ declare global {
     "bim-table": Table;
     "bim-tag": Tag;
     "bim-toolbar": Toolbar;
+    "bim-toolbar-group": ToolbarGroup;
+    "bim-toolbars-container": ToolbarsContainer;
     "bim-toolbar-section": ToolbarSection;
     "bim-vector-input": VectorInput;
   }
@@ -55,6 +59,8 @@ customElements.define("bim-selector-input", SelectorInput)
 customElements.define("bim-table", Table)
 customElements.define("bim-tag", Tag)
 customElements.define("bim-toolbar", Toolbar)
+customElements.define("bim-toolbar-group", ToolbarGroup)
+customElements.define("bim-toolbars-container", ToolbarsContainer)
 customElements.define("bim-toolbar-section", ToolbarSection)
 customElements.define("bim-vector-input", VectorInput)
 
@@ -74,6 +80,8 @@ export {
   Table,
   Tag,
   Toolbar,
+  ToolbarGroup,
+  ToolbarsContainer,
   ToolbarSection,
   VectorInput
 }
