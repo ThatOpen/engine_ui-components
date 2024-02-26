@@ -5,16 +5,21 @@ export class InputLabel extends UIComponent {
   static styles = css`
     :host {
       overflow: hidden;
-      font-size: var(--bim-input-label--fz);
       color: var(--bim-input-label--c);
+      font-size: var(--bim-input-label--fz);
     }
     
     .parent {
       display: flex;
       align-items: center;
-      column-gap: 0.375rem;
+      column-gap: 0.25rem;
       user-select: none;
       height: 100%;
+      pointer-events: none;
+    }
+
+    :host([vertical]) .parent {
+      flex-direction: column;
     }
 
     label {
@@ -26,11 +31,18 @@ export class InputLabel extends UIComponent {
 
   static properties = {
     label: { type: String, reflect: true },
-    icon: { type: String, reflect: true }
+    icon: { type: String, reflect: true },
+    vertical: { type: Boolean, reflect: true },
   }
 
   declare icon?: string
   declare label?: string
+  declare vertical: boolean
+
+  constructor() {
+    super()
+    this.vertical = false
+  }
 
   render() {
     return html`

@@ -78,6 +78,13 @@ const globalStyles = css`
     --bim-ui_size-sm: 0.875rem;
     --bim-ui_size-base: 1rem;
     --bim-ui_size-lg: 1.125rem;
+    --bim-ui_size-xl: 1.25rem;
+    --bim-ui_size-2xl: 1.375rem;
+    --bim-ui_size-3xl: 1.5rem;
+    --bim-ui_size-4xl: 1.625rem;
+    --bim-ui_size-5xl: 1.75rem;
+    --bim-ui_size-6xl: 1.875rem;
+    --bim-ui_size-7xl: 2rem;
 
     /* Scrollbar */
     --bim-scrollbar--c: var(--bim-ui_color-main);
@@ -85,13 +92,8 @@ const globalStyles = css`
 
     /* Button */
     --bim-button--bdrs: var(--bim-ui_size-4xs);
-    --bim-button--fz: var(--bim-ui_size-xs);
-    --bim-button--c: var(--bim-ui_bg-contrast-100);
     --bim-button--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-button¡hover--c: var(--bim-ui_bg-contrast-100);
-    --bim-button¡hover--bgc: var(--bim-ui_color-main);
-    --bim-button¡active--c: var(--bim-ui_bg-contrast-100);
-    --bim-button¡active--bgc: var(--bim-ui_color-main);
+    --bim-button--jc: center;
 
     /* Checkbox */
     --bim-checkbox--c: var(--bim-ui_color-main);
@@ -183,7 +185,7 @@ const globalStyles = css`
     :root {
       --bim-ui_bg-base: hsl(210 10% 95%);
       --bim-ui_bg-contrast-10: hsl(210 10% 90%);
-      --bim-ui_bg-contrast-20: hsl(210 10% 80%);
+      --bim-ui_bg-contrast-20: hsl(210 10% 85%);
       --bim-ui_bg-contrast-40: hsl(210 10% 60%);
       --bim-ui_bg-contrast-60: hsl(210 10% 40%);
       --bim-ui_bg-contrast-80: hsl(210 10% 20%);
@@ -204,16 +206,30 @@ const globalStyles = css`
   html.bim-ui-light {
     --bim-ui_bg-base: hsl(210 10% 95%);
     --bim-ui_bg-contrast-10: hsl(210 10% 90%);
-    --bim-ui_bg-contrast-20: hsl(210 10% 80%);
+    --bim-ui_bg-contrast-20: hsl(210 10% 85%);
     --bim-ui_bg-contrast-40: hsl(210 10% 60%);
     --bim-ui_bg-contrast-60: hsl(210 10% 40%);
     --bim-ui_bg-contrast-80: hsl(210 10% 20%);
     --bim-ui_bg-contrast-100: hsl(210 10% 5%);
   }
 
-  /* Button */
-  bim-toolbar-section bim-button {
-    --bim-button--bgc: transparent;
+  /* Button */  
+  bim-button:hover, 
+  bim-button[active] {
+    background-color: var(--bim-ui_color-main);
+  }
+  
+  bim-toolbar bim-button {
+    background-color: transparent;
+  }
+
+  bim-toolbar bim-button[vertical] {
+    height: 3.5rem;
+    --bim-icon--fz: var(--bim-ui_size-5xl);
+  }
+
+  bim-toolbar-group bim-button {
+    --bim-button--jc: flex-start;
   }
 
   /* Grid */
@@ -240,6 +256,22 @@ const globalStyles = css`
     ;
   }
 
+  /* InputLabel */
+  bim-button {
+    --bim-input-label--c: var(--bim-ui_bg-contrast-80);
+    --bim-input-label--fz: var(--bim-ui_size-xs);
+  }
+  
+  bim-button:hover,
+  bim-button[active] {
+    --bim-input-label--c: white;
+  }
+
+  bim-toolbar-section * {
+    --bim-input-label--fz: var(--bim-ui_size-xs);
+    --bim-input-label--c: var(--bim-ui_bg-contrast-100);
+  }
+  
   /* Panel */
   bim-grid:not([floating]) {
     --bim-panel--bdrs: 0;
@@ -252,7 +284,7 @@ const globalStyles = css`
   /* ToolbarsContainer */ 
   bim-grid:not([floating]) {
     --bim-toolbars-container--bdrs: 0;
-    --bim-toolbars-container--jts: auto;
+    --bim-toolbars-container--js: auto;
     --bim-toolbars-container_tabs--bgc: var(--bim-ui_bg-base)
   }
   
@@ -260,7 +292,7 @@ const globalStyles = css`
     --bim-toolbars-container--bdrs: var(--bim-ui_size-base);
     --bim-toolbars-container--olw: 1px;
     --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
-    --bim-toolbars-container--jts: center;
+    --bim-toolbars-container--js: center;
     --bim-toolbars-container_tabs--bgc: transparent;
   }
 `

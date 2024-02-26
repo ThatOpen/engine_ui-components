@@ -1,36 +1,33 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
-import { createRef, ref } from "lit/directives/ref.js";
 
 export class ToolbarGroup extends UIComponent {
   static styles = css`
     .parent {
       display: grid;
+      grid-auto-flow: column;
     }
   `
 
   static properties = {
-    rowItems: { type: Number, reflect: true, attribute: "row-items" }
+    rows: { type: Number, reflect: true }
   }
 
-  private _parent = createRef<HTMLDivElement>()
+  declare rows: number
 
-  private _rowItems: number = 2
-  set rowItems(value: number) {
-    this._rowItems = value
-    const { value: parent } = this._parent
-    if (parent) {
-      parent.style.gridTemplateColumns = `repeat(${value}, 1fr)`
-    }
-  }
-
-  get rowItems() {
-    return this._rowItems
+  constructor() {
+    super()
+    this.rows = 2
   }
 
   render() {
     return html`
-      <div ${ref(this._parent)} class="parent">
+      <style>
+        .parent {
+          grid-template-rows: repeat(${this.rows}, 1fr);
+        }
+      </style>
+      <div class="parent">
         <slot></slot>
       </div>
     `

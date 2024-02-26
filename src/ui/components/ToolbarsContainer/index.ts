@@ -4,7 +4,7 @@ import { UIComponent } from "../../core/UIComponent";
 export class ToolbarsContainer extends UIComponent {
   static styles = css`
     :host {
-      justify-self: var(--bim-toolbars-container--jts)
+      justify-self: var(--bim-toolbars-container--js)
     }
 
     .parent {
@@ -18,8 +18,8 @@ export class ToolbarsContainer extends UIComponent {
     }
     
     .switchers {
-      --bim-button--bgc: var(--bim-ui_bg-base);
       --bim-button--bdrs: 0;
+      --bim-button--bgc: var(--bim-ui_bg-base);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -32,10 +32,10 @@ export class ToolbarsContainer extends UIComponent {
     }
 
     .switchers bim-button {
+      overflow: hidden;
       outline: 1px solid var(--bim-ui_bg-contrast-20);
       border-top-left-radius: var(--bim-ui_size-4xs);
       border-top-right-radius: var(--bim-ui_size-4xs);
-      overflow: hidden;
     }
     
     .toolbars {
@@ -55,7 +55,7 @@ export class ToolbarsContainer extends UIComponent {
     }
 
     :host(:not([toolbars-hidden])) .toolbars {
-      border-top: 1px solid var(--bim-ui_bg-contrast-20)
+      /* border-top: 1px solid var(--bim-ui_bg-contrast-20) */
     }
   `
 
@@ -84,7 +84,7 @@ export class ToolbarsContainer extends UIComponent {
   constructor() {
     super()
     this.horizontal = false
-    this.tabs = true
+    this.tabs = false
     this.toolbarsHidden = false
   }
 

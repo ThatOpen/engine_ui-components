@@ -12,16 +12,15 @@ export class ToolbarSection extends UIComponent {
       flex-direction: column;
       gap: 0.5rem;
       align-items: center;
-      padding: 0 1rem;
+      padding: 0 0.5rem;
       height: 100%;
       justify-content: space-between;
     }
     
     .children {
-      display: flex;
-      gap: 0.375rem;
-      align-items: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-auto-flow: column;
+      gap: 0.25rem;
     }
   `
 
