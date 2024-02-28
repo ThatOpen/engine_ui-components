@@ -13,6 +13,7 @@ export const abbreviations = {
   template: "tpl", //Not from emmet
   padding: "p",
   gap: "g",
+  display: "d",
   justifySelf: "js",
   justifyContent: "jc",
 }

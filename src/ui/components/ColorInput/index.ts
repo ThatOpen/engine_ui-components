@@ -8,8 +8,6 @@ export class ColorInput extends UIComponent {
     styles.internalStyles,
     css`
       * {
-        margin: 0;
-        padding: 0;
         outline: none;
         border: none;
       }
@@ -46,11 +44,11 @@ export class ColorInput extends UIComponent {
       .color-container input[type="text"] {
         height: 100%;
         flex: 1;
-        outline: none;
         width: 1.25rem;
         text-transform: uppercase;
         font-size: 0.75rem;
         background-color: transparent;
+        padding: 0%;
         color: var(--bim-color-input--c);
       }
 
@@ -142,7 +140,7 @@ export class ColorInput extends UIComponent {
 
     return html`
      <div class="parent">
-      ${ this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label>` : null }
+      ${ this.label ? html`<bim-label .label="${this.label}"></bim-label>` : null }
       <div class="input">
         <div class="color-container">
           <input ${ref(this._color)} @input="${this.onColorInput}" type="color" .value="${this.value.color}">

@@ -260,9 +260,9 @@ export class Dropdown extends UIComponent {
     }
     return html`
       <div class="parent">
-        ${this.label && !this.wrapped ? html`<bim-input-label .label=${this.label}></bim-input-label>` : null}
+        ${this.label && !this.wrapped ? html`<bim-label .label=${this.label}></bim-label>` : null}
         <div ${ref(this._inputContainer)} class="input" @click=${() => this.visible = !this.visible}>
-          <bim-input-label .label=${inputLabel} style="font-size: var(--bim-dropdown--fz); color: var(--bim-dropdown--c); pointer-events: none"></bim-input-label>
+          <bim-label .label=${inputLabel} style="font-size: var(--bim-dropdown--fz); color: var(--bim-dropdown--c); pointer-events: none"></bim-label>
           <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </div>
         <div ${ref(this._listElement)} class="list">

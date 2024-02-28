@@ -1,5 +1,4 @@
 import { Grid } from "../../components/Grid";
-import { ToolbarSection } from "../../components/ToolbarSection";
 import { Panel } from "../../components/Panel";
 import { PanelsContainer } from "../../components/PanelsContainer";
 import { Toolbar } from "../../components/Toolbar";
@@ -44,27 +43,27 @@ export class UIManager<GridAreas extends string = Areas> {
     this.config = { ...this.config, ...config }
     this.createGrid()
     this.createPanelContainers()
-    this.createGridToolbars()
+    this.createToolbarContainers()
     this.addGlobalStyles()
   }
 
   private addGlobalStyles() {
     const style = document.createElement("style")
+    style.id = "bim-ui"
+    style.textContent = styles.globalStyles.cssText
     const firstChild = document.head.firstChild
     if (firstChild) {
       document.head.insertBefore(style, firstChild)
     } else {
       document.head.append(style)
     }
-    style.id = "bim-ui"
-    style.textContent = styles.globalStyles.cssText
   }
 
   private validateGridTemplates() {
     // Outer must have viewport
     // Inner must not have viewport
     // There must be no repeated panels/toolbars
-    // 
+    throw new Error("UIManager: You've passed an invalid grid template.")
   }
 
   private createGrid() {
@@ -129,20 +128,7 @@ export class UIManager<GridAreas extends string = Areas> {
     })
   }
 
-  private removeUnusedLayoutElements() {
-    const { panels: panelContainers } = this.containers
-    const usedAreas = [
-      ...this.getGridRows(this.outerGrid),
-      ...this.getGridRows(this.innerGrid)
-    ]
-    for (const container of panelContainers) {
-      const area = `${this.PANEL_CONTAINER_PREFIX}${container.gridArea}`
-      const used = usedAreas.find((usedArea) => usedArea.includes(area))
-      if (!used) container.remove()
-    }
-  }
-
-  private createGridToolbars() {
+  private createToolbarContainers() {
     // Request animation frame is needed because in the first render of the page
     // the browser has not computed CSS variables yet.
     requestAnimationFrame(() => {
@@ -164,7 +150,7 @@ export class UIManager<GridAreas extends string = Areas> {
             const belowPanel = rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
             const element = document.createElement("bim-toolbars-container") as ToolbarsContainer
             toolbars.push(element)
-            element.horizontal = !(abovePanel || belowPanel)
+            element.vertical = abovePanel || belowPanel
             element.gridArea = columnArea
             grid.append(element);
           }
@@ -173,8 +159,21 @@ export class UIManager<GridAreas extends string = Areas> {
       this.removeUnusedLayoutElements()
     })
   }
+  
+  private removeUnusedLayoutElements() {
+    const { panels: panelContainers } = this.containers
+    const usedAreas = [
+      ...this.getGridRows(this.outerGrid),
+      ...this.getGridRows(this.innerGrid)
+    ]
+    for (const container of panelContainers) {
+      const area = `${this.PANEL_CONTAINER_PREFIX}${container.gridArea}`
+      const used = usedAreas.find((usedArea) => usedArea.includes(area))
+      if (!used) container.remove()
+    }
+  }
 
-  private getPanelsContainer(area: GridAreas) {
+  getPanelsContainer(area: GridAreas) {
     const { panels: panelContainers } = this.containers
     const container = panelContainers.find((container) => container.gridArea === area)
     if (!container) {
@@ -183,7 +182,7 @@ export class UIManager<GridAreas extends string = Areas> {
     return container
   }
 
-  private getGridToolbar(area: GridAreas) {
+  getToolbarsContainer(area: GridAreas) {
     const { toolbars } = this.containers
     const container = toolbars.find((container) => container.gridArea === area)
     if (!container) {
@@ -192,6 +191,13 @@ export class UIManager<GridAreas extends string = Areas> {
     return container
   }
 
+  static createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
+    const temp = document.createElement("div");
+    temp.innerHTML = template;
+    const element = temp.firstElementChild as T;
+    temp.remove();
+    return element;
+  }
 
   dispose() {
     this.innerGrid.remove()
@@ -202,26 +208,34 @@ export class UIManager<GridAreas extends string = Areas> {
     this.outerGrid.remove()
   }
 
-  addPanel(panel: Panel, area: GridAreas) {
+  addPanel(gridArea: GridAreas, ...panels: Panel[]) {
     requestAnimationFrame(() => {
-      const container = this.getPanelsContainer(area)
-      container.appendChild(panel)
+      for (const panel of panels) {
+        const container = this.getPanelsContainer(gridArea)
+        container.appendChild(panel)
+      }
     })
   }
 
-  addToolbar(section: Toolbar, area: GridAreas) {
+  addToolbar(gridArea: GridAreas, ...toolbars: Toolbar[]) {
     requestAnimationFrame(() => {
-      const container = this.getGridToolbar(area)
-      container.appendChild(section)
+      for (const toolbar of toolbars) {
+        const container = this.getToolbarsContainer(gridArea)
+        container.appendChild(toolbar)
+      }
     })
   }
 
-  createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
-    const temp = document.createElement("div");
-    temp.innerHTML = template;
-    const element = temp.firstElementChild as T;
-    temp.remove();
-    return element;
+  updateContainersDirection() {
+    const toolbarContainers = document.querySelectorAll("bim-toolbars-container")
+    for (const container of toolbarContainers) {
+      
+    }
+    
+    const panelContainers = document.querySelectorAll("bim-panels-container")
+    for (const container of panelContainers) {
+      
+    }
   }
 
   setGridTemplate(grid: "outer" | "inner", template: string) {

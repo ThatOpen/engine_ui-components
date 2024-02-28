@@ -8,7 +8,8 @@ const internalStyles = css`
   .parent {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.375rem;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
     user-select: none;
     flex: 1;
   }
@@ -119,9 +120,9 @@ const globalStyles = css`
     /* Icon */
     --bim-icon--fz: var(--bim-ui_size-base);
 
-    /* InputLabel */
-    --bim-input-label--fz: var(--bim-ui_size-sm);
-    --bim-input-label--c: var(--bim-ui_bg-contrast-60);
+    /* Label */
+    --bim-label--fz: var(--bim-ui_size-sm);
+    --bim-label--c: var(--bim-ui_bg-contrast-60);
 
     /* NumberInput */
     --bim-number-input--c: var(--bim-ui_bg-contrast-100);
@@ -223,13 +224,17 @@ const globalStyles = css`
     background-color: transparent;
   }
 
-  bim-toolbar bim-button[vertical] {
-    height: 3.5rem;
+  bim-toolbar:not([vertical]) bim-button[vertical] {
     --bim-icon--fz: var(--bim-ui_size-5xl);
+    min-height: 3.75rem;
   }
 
-  bim-toolbar-group bim-button {
+  bim-toolbar-section:not([vertical]) bim-button {
     --bim-button--jc: flex-start;
+  }
+
+  bim-toolbar-section[vertical] bim-button {
+    --bim-button--jc: center;
   }
 
   /* Grid */
@@ -256,20 +261,20 @@ const globalStyles = css`
     ;
   }
 
-  /* InputLabel */
+  /* Label */
   bim-button {
-    --bim-input-label--c: var(--bim-ui_bg-contrast-80);
-    --bim-input-label--fz: var(--bim-ui_size-xs);
+    --bim-label--c: var(--bim-ui_bg-contrast-80);
+    --bim-label--fz: var(--bim-ui_size-xs);
   }
   
   bim-button:hover,
   bim-button[active] {
-    --bim-input-label--c: white;
+    --bim-label--c: white;
   }
 
   bim-toolbar-section * {
-    --bim-input-label--fz: var(--bim-ui_size-xs);
-    --bim-input-label--c: var(--bim-ui_bg-contrast-100);
+    --bim-label--fz: var(--bim-ui_size-xs);
+    --bim-label--c: var(--bim-ui_bg-contrast-100);
   }
   
   /* Panel */
@@ -285,6 +290,7 @@ const globalStyles = css`
   bim-grid:not([floating]) {
     --bim-toolbars-container--bdrs: 0;
     --bim-toolbars-container--js: auto;
+    --bim-toolbars-container--as: auto;
     --bim-toolbars-container_tabs--bgc: var(--bim-ui_bg-base)
   }
   
@@ -293,6 +299,7 @@ const globalStyles = css`
     --bim-toolbars-container--olw: 1px;
     --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
     --bim-toolbars-container--js: center;
+    --bim-toolbars-container--as: start;
     --bim-toolbars-container_tabs--bgc: transparent;
   }
 `

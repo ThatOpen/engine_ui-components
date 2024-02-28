@@ -111,7 +111,7 @@ export class SelectorInput extends UIComponent {
   render() {
     return html`
       <div class="parent">
-        ${ this.label ? html`<bim-input-label .icon=${this.labelIcon} .label="${this.label}"></bim-input-label>` : null }
+        ${ this.label ? html`<bim-label .icon=${this.labelIcon} .label="${this.label}"></bim-label>` : null }
         <div class="input">
           ${
             this.options?.map((option) =>

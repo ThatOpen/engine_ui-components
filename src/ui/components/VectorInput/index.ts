@@ -52,7 +52,7 @@ export class VectorInput extends UIComponent {
   render() {
     return html`
       <div class="parent">
-        ${ this.label ? html`<bim-input-label .label="${this.label}" @click=${this.focus}></bim-input-label>` : null }
+        ${ this.label ? html`<bim-label .label="${this.label}" @click=${this.focus}></bim-label>` : null }
         <div class="input">
           <bim-number-input ${ref(this._xInput)} .pref="${"X"}" .sufix="${this.sufix}" .value="${this.value.x}" @input=${(e: InputEvent) => this.onInput(e, "x")} @change=${(e: InputEvent) => this.onInput(e, "x")}></bim-number-input>
           <bim-number-input ${ref(this._yInput)} .pref="${"Y"}" .sufix="${this.sufix}" .value="${this.value.y}" @input=${(e: InputEvent) => this.onInput(e, "y")} @change=${(e: InputEvent) => this.onInput(e, "y")}></bim-number-input>

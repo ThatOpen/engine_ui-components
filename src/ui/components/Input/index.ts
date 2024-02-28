@@ -20,15 +20,17 @@ export class Input extends UIComponent {
   ]
 
   static properties = {
-    label: { type: String }
+    label: { type: String, reflect: true },
+    icon: { type: String, reflect: true }
   }
 
   declare label?: string
+  declare icon?: string
 
   render() {
     return html`
       <div class="parent">
-        ${this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label>` : null}
+        ${this.label || this.label ? html`<bim-label .label=${this.label} .icon=${this.icon}></bim-label>` : null}
         <div class="input">
           <slot></slot>
         </div>

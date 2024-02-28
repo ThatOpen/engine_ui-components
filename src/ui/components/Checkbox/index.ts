@@ -83,7 +83,7 @@ export class Checkbox extends UIComponent {
   render() {
     return html`
      <div class="host">
-       ${this.label ? html`<bim-input-label .label="${this.label}"></bim-input-label> ` : null}
+       ${this.label ? html`<bim-label .label="${this.label}"></bim-label> ` : null}
        <input type="checkbox" @change="${this.onChange}" .checked="${this.checked?? false}"> 
      </div>
     `

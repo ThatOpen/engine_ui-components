@@ -132,7 +132,7 @@ export class NumberInput extends UIComponent {
   render() {
     return html`
       <div class="parent">
-        ${this.label ? html`<bim-input-label .label=${this.label}></bim-input-label>` : null}
+        ${this.label ? html`<bim-label .label=${this.label}></bim-label>` : null}
         <div class="input" @mouseup=${this.focus} >
           ${
             this.icon || this.pref ? 

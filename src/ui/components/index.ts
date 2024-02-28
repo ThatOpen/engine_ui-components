@@ -5,14 +5,13 @@ import { Dropdown } from "./Dropdown";
 import { Grid } from "./Grid";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
-import { InputLabel } from "./InputLabel";
+import { Label } from "./Label";
 import { NumberInput } from "./NumberInput";
 import { Panel } from "./Panel";
 import { PanelsContainer } from "./PanelsContainer";
 import { PanelSection } from "./PanelSection";
 import { SelectorInput } from "./SelectorInput";
 import { Table } from "./Table";
-import { Tag } from "./Tag";
 import { Toolbar } from "./Toolbar";
 import { ToolbarGroup } from "./ToolbarGroup";
 import { ToolbarsContainer } from "./ToolbarsContainer";
@@ -28,13 +27,12 @@ declare global {
     "bim-grid": Grid;
     "bim-icon": Icon;
     "bim-input": Input;
-    "bim-input-label": InputLabel;
+    "bim-label": Label;
     "bim-number-input": NumberInput;
     "bim-panel": Panel;
     "bim-panel-section": PanelSection;
     "bim-selector-input": SelectorInput;
     "bim-table": Table;
-    "bim-tag": Tag;
     "bim-toolbar": Toolbar;
     "bim-toolbar-group": ToolbarGroup;
     "bim-toolbars-container": ToolbarsContainer;
@@ -50,14 +48,13 @@ customElements.define("bim-dropdown", Dropdown)
 customElements.define("bim-grid", Grid)
 customElements.define("bim-icon", Icon)
 customElements.define("bim-input", Input)
-customElements.define("bim-input-label", InputLabel)
+customElements.define("bim-label", Label)
 customElements.define("bim-number-input", NumberInput)
 customElements.define("bim-panel", Panel)
 customElements.define("bim-panels-container", PanelsContainer)
 customElements.define("bim-panel-section", PanelSection)
 customElements.define("bim-selector-input", SelectorInput)
 customElements.define("bim-table", Table)
-customElements.define("bim-tag", Tag)
 customElements.define("bim-toolbar", Toolbar)
 customElements.define("bim-toolbar-group", ToolbarGroup)
 customElements.define("bim-toolbars-container", ToolbarsContainer)
@@ -72,13 +69,12 @@ export {
   Grid,
   Icon,
   Input,
-  InputLabel,
+  Label,
   NumberInput,
   Panel,
   PanelSection,
   SelectorInput,
   Table,
-  Tag,
   Toolbar,
   ToolbarGroup,
   ToolbarsContainer,
