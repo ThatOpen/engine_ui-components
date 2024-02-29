@@ -13,16 +13,15 @@ export class Panel extends UIComponent {
 
       :host {
         min-width: 20rem;
-        max-width: 28rem;
       }
 
       .host {
         display: flex;
         flex-direction: column;
         pointer-events: auto;
-        border-radius: var(--bim-panel--bdrs);
-        background-color: var(--bim-panel--bgc);
-        color: var(--bim-panel--c);
+        border-radius: var(--bim-panel--bdrs, var(--bim-ui_size-base));
+        background-color: var(--bim-panel--bgc, var(--bim-ui_bg-base));
+        color: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
       }
 
       .host .title {
@@ -38,7 +37,7 @@ export class Panel extends UIComponent {
       .host .title span,
       .host .title p {
         font-weight: 600;
-        font-size: var(--bim-panel--fz);
+        font-size: var(--bim-panel--fz, var(--bim-ui_size-sm));
       }
 
       .host .sections {
@@ -47,7 +46,7 @@ export class Panel extends UIComponent {
       }
 
       ::slotted(bim-panel-section:not(:last-child)) {
-        border-bottom: 1px solid var(--bim-panel-section--bdc);
+        border-bottom: 1px solid var(--bim-panel-section--bdc, var(--bim-ui_bg-contrast-20));
       }
     `
   ]

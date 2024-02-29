@@ -18,21 +18,21 @@ export class Checkbox extends UIComponent {
       cursor: pointer;
       border: none;
       outline: none;
-      accent-color: var(--bim-checkbox--c);
+      accent-color: var(--bim-checkbox--c, var(--bim-ui_color-main));
     }
     
     input:focus {
-      outline: var(--bim-checkbox--olw) solid var(--bim-checkbox--olc);
+      outline: var(--bim-checkbox--olw, 2px) solid var(--bim-checkbox--olc, var(--bim-ui_color-accent));
     }
   `
   
   static properties = {
-    label: { type: String },
+    label: { type: String, reflect: true },
     checked: { type: Boolean, reflect: true }
   }
 
   declare label?: string
-  declare checked?: boolean
+  declare checked: boolean
 
   private _changeEvent = new Event("change")
 
@@ -48,7 +48,10 @@ export class Checkbox extends UIComponent {
     onChange: () => void
   } | null = null
 
-  protected static _tableHostable = true
+  constructor() {
+    super()
+    this.checked = false
+  }
 
   associateProperty(object: Record<string, any>, key: string) {
     const value = object[key]
@@ -84,7 +87,7 @@ export class Checkbox extends UIComponent {
     return html`
      <div class="host">
        ${this.label ? html`<bim-label .label="${this.label}"></bim-label> ` : null}
-       <input type="checkbox" @change="${this.onChange}" .checked="${this.checked?? false}"> 
+       <input type="checkbox" @change="${this.onChange}" ?checked="${this.checked}"> 
      </div>
     `
   }

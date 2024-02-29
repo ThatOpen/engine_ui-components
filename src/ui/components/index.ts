@@ -16,7 +16,6 @@ import { Toolbar } from "./Toolbar";
 import { ToolbarGroup } from "./ToolbarGroup";
 import { ToolbarsContainer } from "./ToolbarsContainer";
 import { ToolbarSection } from "./ToolbarSection";
-import { VectorInput } from "./VectorInput";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -37,7 +36,6 @@ declare global {
     "bim-toolbar-group": ToolbarGroup;
     "bim-toolbars-container": ToolbarsContainer;
     "bim-toolbar-section": ToolbarSection;
-    "bim-vector-input": VectorInput;
   }
 }
 
@@ -59,7 +57,6 @@ customElements.define("bim-toolbar", Toolbar)
 customElements.define("bim-toolbar-group", ToolbarGroup)
 customElements.define("bim-toolbars-container", ToolbarsContainer)
 customElements.define("bim-toolbar-section", ToolbarSection)
-customElements.define("bim-vector-input", VectorInput)
 
 export {
   Button,
@@ -78,6 +75,5 @@ export {
   Toolbar,
   ToolbarGroup,
   ToolbarsContainer,
-  ToolbarSection,
-  VectorInput
+  ToolbarSection
 }

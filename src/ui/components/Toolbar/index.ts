@@ -2,9 +2,14 @@ import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent"
 import { ToolbarSection } from "../ToolbarSection";
 import { Button } from "../Button";
+import { UIManager } from "../../core/UIManager";
 
 export class Toolbar extends UIComponent {
   static styles = css`
+    :host {
+      --bim-button--bgc: transparent;
+    }
+
     :host([active]) {
       display: block;
     }
@@ -30,10 +35,6 @@ export class Toolbar extends UIComponent {
     :host([vertical]) ::slotted(bim-toolbar-section:not(:last-child)) {
       border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       border-right: none;
-    }
-
-    :host([vertical]) ::slotted(bim-toolbar-section) {
-
     }
   `
 
@@ -110,8 +111,33 @@ export class Toolbar extends UIComponent {
 
   connectedCallback() {
     super.connectedCallback()
+    const managerId = UIManager.generateRandomId()
+    this.setAttribute("data-ui-manager-id", managerId)
+    this.tabElement.setAttribute("data-ui-manager-id", managerId)
     this.tabElement.icon = this.icon
     this.tabElement.addEventListener("click", this.onTabElementClick)
+    this.tabElement.draggable = true
+    this.tabElement.addEventListener("dragstart", (e) => {
+      const uiId = this.getAttribute("data-ui-manager-id")
+      if (e.dataTransfer && uiId) {
+        e.dataTransfer.setData("id", uiId);
+        e.dataTransfer.effectAllowed = "move";
+      }
+      const containers = document.querySelectorAll("bim-toolbars-container")
+      for (const container of containers) {
+        if (container === this.parentElement) continue;
+        container.dropping = true
+      }
+    })
+    this.tabElement.addEventListener("dragend", (e) => {
+      if (e.dataTransfer) {
+        e.dataTransfer.clearData();
+      }
+      const containers = document.querySelectorAll("bim-toolbars-container")
+      for (const container of containers) {
+        container.dropping = false
+      }
+    })
   }
 
   render() {

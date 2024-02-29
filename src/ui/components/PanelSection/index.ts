@@ -22,11 +22,11 @@ export class PanelSection extends UIComponent {
 
       :host(:not([fixed])) .header:hover {
         cursor: pointer;
-        color: var(--bim-panel-section¡hover);
+        color: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
       }
 
       :host(:not([fixed])) .header:hover svg {
-        fill: var(--bim-panel-section¡hover);
+        fill: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
       }
 
       .header {
@@ -36,11 +36,11 @@ export class PanelSection extends UIComponent {
         font-weight: 600;
         user-select: none;
         height: 1.5rem;
-        color: var(--bim-panel-section--c);
+        color: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80));
       }
 
       .header svg {
-        fill: var(--bim-panel-section--c)
+        fill: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80))
       }
 
       .title {
@@ -50,7 +50,7 @@ export class PanelSection extends UIComponent {
       }
 
       .title p {
-        font-size: var(--bim-panel-section--fz);
+        font-size: var(--bim-panel-section--fz, var(--bim-ui_size-sm));
       }
 
       .components-list {

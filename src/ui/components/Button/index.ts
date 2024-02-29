@@ -20,8 +20,15 @@ export class Button extends UIComponent {
     }
 
     :host {
-      background-color: var(--bim-button--bgc);
-      border-radius: var(--bim-button--bdrs)
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
+      --bim-label--fz: var(--bim-ui_size-xs);
+      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
+      border-radius: var(--bim-button--bdrs, var(--bim-ui_size-4xs));
+    }
+
+    :host(:hover), :host([active]) {
+      --bim-label--c: white;
+      background-color: var(--bim-ui_color-main);
     }
 
     .parent {
@@ -34,11 +41,14 @@ export class Button extends UIComponent {
       row-gap: 0.125rem;
       min-width: 1.75rem;
       align-items: center;
-      justify-content: var(--bim-button--jc);
+      justify-content: var(--bim-button--jc, center);
+    }
+
+    .parent svg {
+      fill: var(--bim-label--c)
     }
     
     :host([vertical]) .parent {
-      flex-direction: column;
       padding: 0.375rem;
     }
     
@@ -86,6 +96,24 @@ export class Button extends UIComponent {
     :host(:not([tooltip-visible])) .tooltip {
       display: none;
     }
+
+    .children {
+      position: absolute;
+      left: 6rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 20rem;
+      min-width: 6rem;
+      display: none;
+      flex-direction: column;
+      box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+      padding: 0.75rem 0;
+      border-radius: 1rem;
+      z-index: 20;
+      background-color: var(--bim-dropdown_list--bgc);
+      font-size: var(--bim-dropdown--fz);
+      color: var(--bim-dropdown--c);
+    }
   `
 
   static properties = {
@@ -111,8 +139,6 @@ export class Button extends UIComponent {
   declare active: boolean
   declare disabled: boolean
   declare vertical: boolean
-
-  protected static _tableHostable = true
 
   private _parent = createRef<HTMLDivElement>()
   private _tooltip = createRef<HTMLDivElement>()
@@ -187,10 +213,21 @@ export class Button extends UIComponent {
         <!-- <div ${ref(this._tooltipArrow)} class="tooltip-arrow"></div> -->
       </div>
     `
+
+    const children = html`
+      <div class="children">
+        <slot></slot>
+      </div>
+    `
+
+    const hasChildren = this.hasChildNodes()
+
     return html`
       <div ${ref(this._parent)} class="parent" @mouseenter=${this.onMouseEnter} @mouseleave=${() => this.mouseLeave = true}>
         ${this.label || this.icon ? html`<bim-label .label=${this.label} .icon=${this.icon} ?vertical=${this.vertical} ?label-hidden=${this.labelHidden}></bim-label>` : null}
         ${this.tooltipTitle || this.tooltipText ? tooltipTemplate : null}
+        ${hasChildren ? html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>` : null}
+        ${hasChildren ? children : null}
       </div>
     `
   }

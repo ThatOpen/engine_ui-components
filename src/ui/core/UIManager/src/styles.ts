@@ -9,7 +9,7 @@ const internalStyles = css`
     display: flex;
     flex-wrap: wrap;
     column-gap: 1rem;
-    row-gap: 0.25rem;
+    row-gap: 0.375rem;
     user-select: none;
     flex: 1;
   }
@@ -21,21 +21,28 @@ const internalStyles = css`
   :host([vertical]) .parent {
     flex-direction: column;
   }
-  
-  :host(:not([vertical])) .input {
-    flex: 1;
-    max-width: 20rem;
-  }
-  
-  :host(:not([vertical])[label]) .input {
-    max-width: 13rem;
-  }
 
   .input {
     box-sizing: border-box;
     display: flex;
-    height: 1.75rem;
-    min-width: 6rem;
+    flex-wrap: wrap;
+    min-height: 1.75rem;
+    min-width: 5rem;
+    /* max-width: 20rem; */
+    gap: var(--bim-input--g, 0.375rem);
+    padding: var(--bim-input--p, 0);
+    background-color: var(--bim-input--bgc, transparent);
+    outline: var(--bim-input--olw, 2px) solid var(--bim-input--olc, transparent);
+    border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
+  }
+
+  :host(:not([vertical])) .input {
+    flex: 1;
+    /* max-width: 20rem; */
+  }
+  
+  :host(:not([vertical])[label]) .input {
+    max-width: 13rem;
   }
 `
 
@@ -47,11 +54,11 @@ const scrollbar = css`
 
   ::-webkit-scrollbar-thumb {
     border-radius: 0.25rem;
-    background-color: var(--bim-scrollbar--c);
+    background-color: var(--bim-scrollbar--c, var(--bim-ui_color-main));
   }
   
   ::-webkit-scrollbar-track {
-    background-color: var(--bim-scrollbar--bgc);
+    background-color: var(--bim-scrollbar--bgc, black);
   }
 `
 
@@ -86,88 +93,6 @@ const globalStyles = css`
     --bim-ui_size-5xl: 1.75rem;
     --bim-ui_size-6xl: 1.875rem;
     --bim-ui_size-7xl: 2rem;
-
-    /* Scrollbar */
-    --bim-scrollbar--c: var(--bim-ui_color-main);
-    --bim-scrollbar--bgc: black;
-
-    /* Button */
-    --bim-button--bdrs: var(--bim-ui_size-4xs);
-    --bim-button--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-button--jc: center;
-
-    /* Checkbox */
-    --bim-checkbox--c: var(--bim-ui_color-main);
-    --bim-checkbox--olw: 2px;
-    --bim-checkbox--olc: var(--bim-ui_color-accent);
-
-    /* ColorInput */
-    --bim-color-input--c: var(--bim-ui_bg-contrast-100);
-    --bim-color-input--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-color-input--bdrs: var(--bim-ui_size-4xs);
-
-    /* Dropdown */
-    --bim-dropdown--c: var(--bim-ui_bg-contrast-100);
-    --bim-dropdown--fz: var(--bim-ui_size-xs);
-    --bim-dropdown--bdrs: var(--bim-ui_size-4xs);
-    --bim-dropdown--olw: 2px;
-    --bim-dropdown--olc: transparent;
-    --bim-dropdown--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-dropdown¡focus--c: var(--bim-ui_color-accent);
-    --bim-dropdown¡selected--c: var(--bim-ui_color-main-light);
-    --bim-dropdown_list--bgc: var(--bim-ui_bg-contrast-20);
-
-    /* Icon */
-    --bim-icon--fz: var(--bim-ui_size-base);
-
-    /* Label */
-    --bim-label--fz: var(--bim-ui_size-sm);
-    --bim-label--c: var(--bim-ui_bg-contrast-60);
-
-    /* NumberInput */
-    --bim-number-input--c: var(--bim-ui_bg-contrast-100);
-    --bim-number-input--bdrs: var(--bim-ui_size-4xs);
-    --bim-number-input--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-number-input--olc: transparent;
-    --bim-number-input--olw: 2px;
-    --bim-number-input--fz: var(--bim-ui_size-xs);
-    --bim-number-input¡focus--c: var(--bim-ui_color-accent);
-    --bim-number-input_affixes--c: var(--bim-ui_bg-contrast-60);
-    --bim-number-input_affixes--fz: var(--bim-ui_size-xs);
-
-    /* Panel */
-    --bim-panel--bgc: var(--bim-ui_bg-base);
-    --bim-panel--c: var(--bim-ui_bg-contrast-100);
-    --bim-panel--fz: var(--bim-ui_size-sm);
-
-    /* PanelSection */
-    --bim-panel-section--fz: var(--bim-ui_size-sm);
-    --bim-panel-section--c: var(--bim-ui_bg-contrast-80);
-    --bim-panel-section--bdc: var(--bim-ui_bg-contrast-20);
-    --bim-panel-section¡hover: var(--bim-ui_color-accent);
-
-    /* SelectorInput */
-    --bim-selector-input--bdrs: var(--bim-ui_size-4xs);
-    --bim-selector-input--c: var(--bim-ui_bg-contrast-100);
-    --bim-selector-input--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-selector-input¡hover--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-selector-input¡hover--c: var(--bim-ui_bg-contrast-100);
-    --bim-selector-input¡selected--bgc: var(--bim-ui_color-main);
-    --bim-selector-input¡selected--c: white;
-
-    /* Table */
-    --bim-table_header--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-table_header--c: var(--bim-ui_bg-contrast-100);
-    --bim-table¡striped--c: var(--bim-ui_bg-contrast-10);
-
-    /* Tag */
-
-    /* ToolbarsContainer */
-    --bim-toolbars-container--bgc: var(--bim-ui_bg-base);
-
-    /* ToolbarSection */
-
-    /* VectorInput */
   }
 
   @media (prefers-color-scheme: dark) {
@@ -214,93 +139,14 @@ const globalStyles = css`
     --bim-ui_bg-contrast-100: hsl(210 10% 5%);
   }
 
-  /* Button */  
-  bim-button:hover, 
-  bim-button[active] {
-    background-color: var(--bim-ui_color-main);
-  }
-  
-  bim-toolbar bim-button {
-    background-color: transparent;
-  }
-
+  /* Button */
   bim-toolbar:not([vertical]) bim-button[vertical] {
     --bim-icon--fz: var(--bim-ui_size-5xl);
     min-height: 3.75rem;
   }
 
-  bim-toolbar-section:not([vertical]) bim-button {
-    --bim-button--jc: flex-start;
-  }
-
   bim-toolbar-section[vertical] bim-button {
     --bim-button--jc: center;
-  }
-
-  /* Grid */
-  bim-grid:not([floating]) {
-    --bim-grid--bgc: var(--bim-ui_bg-contrast-20);
-    --bim-grid--g: 1px;
-    --bim-grid--tpl:
-      "toolbar-a toolbar-a toolbar-a" auto
-      "panel-a viewport panel-b" 1fr
-      "panel-a viewport panel-b" 1fr
-      / auto 1fr auto
-    ;
-  }
-  
-  bim-grid[floating] {
-    --bim-grid--bgc: transparent;
-    --bim-grid--p: 1.25rem;
-    --bim-grid--g: 1rem;
-    --bim-grid--tpl:
-      "panel-c" auto
-      "empty" 1fr
-      "panel-d" auto
-      / 1fr
-    ;
-  }
-
-  /* Label */
-  bim-button {
-    --bim-label--c: var(--bim-ui_bg-contrast-80);
-    --bim-label--fz: var(--bim-ui_size-xs);
-  }
-  
-  bim-button:hover,
-  bim-button[active] {
-    --bim-label--c: white;
-  }
-
-  bim-toolbar-section * {
-    --bim-label--fz: var(--bim-ui_size-xs);
-    --bim-label--c: var(--bim-ui_bg-contrast-100);
-  }
-  
-  /* Panel */
-  bim-grid:not([floating]) {
-    --bim-panel--bdrs: 0;
-  }
-
-  bim-grid[floating] {
-    --bim-panel--bdrs: var(--bim-ui_size-base);
-  }
-  
-  /* ToolbarsContainer */ 
-  bim-grid:not([floating]) {
-    --bim-toolbars-container--bdrs: 0;
-    --bim-toolbars-container--js: auto;
-    --bim-toolbars-container--as: auto;
-    --bim-toolbars-container_tabs--bgc: var(--bim-ui_bg-base)
-  }
-  
-  bim-grid[floating] {
-    --bim-toolbars-container--bdrs: var(--bim-ui_size-base);
-    --bim-toolbars-container--olw: 1px;
-    --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
-    --bim-toolbars-container--js: center;
-    --bim-toolbars-container--as: start;
-    --bim-toolbars-container_tabs--bgc: transparent;
   }
 `
 

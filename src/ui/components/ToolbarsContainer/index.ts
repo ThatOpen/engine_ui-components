@@ -10,6 +10,11 @@ export class ToolbarsContainer extends UIComponent {
       align-self: var(--bim-toolbars-container--as);
     }
 
+    :host([dropping]) {
+      justify-self: auto;
+      align-self: auto;
+    }
+
     .parent {
       display: flex;
       pointer-events: auto;
@@ -29,8 +34,6 @@ export class ToolbarsContainer extends UIComponent {
       --bim-button--bdrs: 0;
       --bim-button--bgc: var(--bim-ui_bg-base);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
       background-color: var(--bim-toolbars-container_tabs--bgc);
     }
     
@@ -43,23 +46,33 @@ export class ToolbarsContainer extends UIComponent {
       writing-mode: tb;
     }
     
-    .tabs div {
+    .tabs {
       display: flex;
     }
 
+    :host([toolbars-hidden]) .tabs bim-button:first-child {
+      border-top-left-radius: var(--bim-toolbars-container--bdrs);
+      border-bottom-left-radius: var(--bim-toolbars-container--bdrs)
+    }
+
+    :host([toolbars-hidden]) .tabs bim-button:last-child {
+      border-top-right-radius: var(--bim-toolbars-container--bdrs);
+      border-bottom-right-radius: var(--bim-toolbars-container--bdrs)
+    }
+
     .tabs bim-button:first-child {
-      border-top-left-radius: var(--bim-ui_size-4xs);
+      border-top-left-radius: var(--bim-ui_size-base);
     }
 
     .tabs bim-button:last-child {
-      border-top-right-radius: var(--bim-ui_size-4xs);
+      border-top-right-radius: var(--bim-ui_size-base);
     }
 
     .tabs bim-button {
       font-weight: 600;
     }
 
-    .tabs div bim-button {
+    .tabs bim-button {
       padding: 0.25rem 0.5rem;
     }
 
@@ -75,12 +88,12 @@ export class ToolbarsContainer extends UIComponent {
       flex: 1;
       border-radius: var(--bim-toolbars-container--bdrs);
       outline: var(--bim-toolbars-container--olw) solid var(--bim-toolbars-container--olc);
-      background-color: var(--bim-toolbars-container--bgc);
+      background-color: var(--bim-toolbars-container--bgc, var(--bim-ui_bg-base));
     }
 
     :host(:not([vertical])) .toolbars {
       border-top-left-radius: 0;
-      border-top-right-radius: 0;
+      /* border-top-right-radius: 0; */
     }
     
     :host([vertical]) .toolbars {
@@ -95,19 +108,32 @@ export class ToolbarsContainer extends UIComponent {
     :host([toolbars-hidden]) .toolbars {
       display: none;
     }
+
+    .drop-element {
+      min-width: 80px; 
+      width: 100%; 
+      min-height: 80px; 
+      height: 100%;
+      background-color: #6528d70d;
+      border: 2px dashed var(--bim-ui_color-main);
+      border-radius: 1rem;
+    }
   `
 
   static properties = {
     vertical: { type: Boolean, reflect: true },
     gridArea: { type: String, attribute: false },
     tabsHidden: { type: Boolean, attribute: "tabs-hidden", reflect: true },
-    tab: { type: String, reflect: true },
+    activeTab: { type: String, attribute: "active-tab", reflect: true },
     toolbarsHidden: { type: Boolean, reflect: true, attribute: "toolbars-hidden" },
-    activeToolbar: { type: Object, attribute: false }
+    activeToolbar: { type: Object, attribute: false },
+    dropping: { type: Boolean, reflect: true }
   }
 
   declare tabsHidden: boolean
-
+  declare dropping: boolean
+  
+  private _tabs = createRef()
   private _toolbars: Toolbar[] = []
   private _lastActiveToolbar: Toolbar | null = null
 
@@ -122,7 +148,7 @@ export class ToolbarsContainer extends UIComponent {
           child.active = false
         }
       }
-      this._tab = null
+      this._activeTab = null
     } else if(this._lastActiveToolbar) {
       this._lastActiveToolbar.active = true
     } else if (this._toolbars[0]) {
@@ -133,17 +159,15 @@ export class ToolbarsContainer extends UIComponent {
   get toolbarsHidden() {
     return this._toolbarsHidden
   }
-
-  private _tabs = createRef()
   
-  private _tab: string | null = null
+  private _activeTab: string | null = null
 
-  set tab(value: string | null) {
-    this._tab = null
+  set activeTab(value: string | null) {
+    this._activeTab = null
     for (const child of this.children) {
       if (!(child instanceof Toolbar)) continue;
-      if (!this._tab && child.name === value) {
-        this._tab = value
+      if (!this._activeTab && child.name === value) {
+        this._activeTab = value
         child.active = true
         this._lastActiveToolbar = child
         this.toolbarsHidden = false
@@ -151,11 +175,11 @@ export class ToolbarsContainer extends UIComponent {
         child.active = false
       }
     }
-    if (!this._tab) this.toolbarsHidden = true;
+    if (!this._activeTab) this.toolbarsHidden = true;
   }
 
-  get tab() {
-    return this._tab
+  get activeTab() {
+    return this._activeTab
   }
 
   private _vertical = false
@@ -183,52 +207,76 @@ export class ToolbarsContainer extends UIComponent {
   constructor() {
     super()
     this.tabsHidden = false
+    this.dropping = false
   }
 
-  private updateToolbars() {
-    const { value: tabs } = this._tabs
+  private updateToolbars() {    
     for (const child of this.children) {
-      if (!tabs || !(child instanceof Toolbar) || this._toolbars.includes(child)) continue;
-      if (child.active) {
-        if (this.tab) {
-          child.active = false
-        } else {
-          this.tab = child.name
-        }
-      }
+      if (!(child instanceof Toolbar) || this._toolbars.includes(child)) continue;
+      child.active = false
       this._toolbars.push(child)
       child.vertical = this.vertical
       const { tabElement } = child
-      tabs.append(tabElement)
       tabElement.onclick = () => {
-        this.tab = this.tab === child.name ? null : child.name
+        this.activeTab = this.activeTab === child.name ? null : child.name
       };
     }
     this.updateToolbarsList()
-    if (!this.tab && !this.toolbarsHidden && this._toolbars[0]) this.tab = this._toolbars[0].name;
+    if (!this.activeTab && !this.toolbarsHidden && this._toolbars[0]) this.activeTab = this._toolbars[0].name;
   }
   
   private updateToolbarsList() {
+    const { value: tabs } = this._tabs
     for (const toolbar of this._toolbars) {
       if (![...this.children].includes(toolbar)) {
         this._toolbars = this._toolbars.filter(t => t !== toolbar)
+      } else {
+        tabs?.append(toolbar.tabElement)
       }
     }
   }
 
+  private onDragOver = (e: DragEvent) => {
+    e.preventDefault()
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = "move";
+    }
+  }
+
+  private onDrop = (e: DragEvent) => {
+    e.preventDefault()
+    const id = e.dataTransfer?.getData("id");
+    if (!id) return;
+    const toolbar = document.querySelector(`bim-toolbar[data-ui-manager-id='${id}']`);
+    if (!toolbar) return;
+    this.append(toolbar);
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.addEventListener("dragover", this.onDragOver)
+    this.addEventListener("drop", this.onDrop)
+  }
+  
+  disconnectedCallback() {
+    this.removeEventListener("dragover", this.onDragOver)
+    this.removeEventListener("drop", this.onDrop)
+  }
+
   render() {
-    const tabs = html`
-      <div class="tabs">
-        <div ${ref(this._tabs)}></div>
-      </div>
-    `
+    const tabsTemplate = html`<div class="tabs" ${ref(this._tabs)}></div>`
+    const dropPlaceTemplate = html`<div class="drop-element"></div>`
 
     return html`
       <div class="parent">
-        ${!this.tabsHidden ? tabs : null}
-        <div class="toolbars">
-          <slot @slotchange=${this.updateToolbars}></slot>
-        </div>
+        ${this.dropping ? dropPlaceTemplate : 
+        html`
+          ${!this.tabsHidden ? tabsTemplate : null}
+          <div class="toolbars">
+            <slot @slotchange=${this.updateToolbars}></slot>
+          </div>
+        `
+        }
       </div>
     `
   }

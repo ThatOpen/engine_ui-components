@@ -22,8 +22,8 @@ export class ColorInput extends UIComponent {
         padding-left: 0.5rem;
         align-items: center;
         flex: 1;
-        border-radius: var(--bim-color-input--bdrs);
-        background-color: var(--bim-color-input--bgc);
+        border-radius: var(--bim-color-input--bdrs, var(--bim-ui_size-4xs));
+        background-color: var(--bim-color-input--bgc, var(--bim-ui_bg-contrast-20));
       }
 
       .color-container input[type="color"] {
@@ -49,7 +49,7 @@ export class ColorInput extends UIComponent {
         font-size: 0.75rem;
         background-color: transparent;
         padding: 0%;
-        color: var(--bim-color-input--c);
+        color: var(--bim-color-input--c, var(--bim-ui_bg-contrast-100));
       }
 
       .opacity-container {
@@ -82,8 +82,6 @@ export class ColorInput extends UIComponent {
   private _color = createRef<HTMLInputElement>()
   private _text = createRef<HTMLInputElement>()
   private _opacity = createRef<HTMLInputElement>()
-
-  protected static _tableHostable = true
 
   constructor() {
     super()

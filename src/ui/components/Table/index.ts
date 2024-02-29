@@ -3,10 +3,11 @@ import { UIComponent } from './../../core/UIComponent';
 import { createRef, ref } from 'lit/directives/ref.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { styles } from '../../core/UIManager/src/styles';
+import { UIManager } from '../../core/UIManager';
 
 interface TableComponentCell {
-  component: typeof UIComponent
-  onCreated?: (component: UIComponent) => void
+  template: string
+  onCreated?: (component: HTMLElement) => void
 }
 
 interface TableRow {
@@ -48,8 +49,8 @@ export class Table extends UIComponent {
       }
       
       thead {
-        color: var(--bim-table_header--c);
-        background-color: var(--bim-table_header--bgc);
+        color: var(--bim-table_header--c, var(--bim-ui_bg-contrast-100));
+        background-color: var(--bim-table_header--bgc, var(--bim-ui_bg-contrast-20));
       }
       
       th {
@@ -71,7 +72,7 @@ export class Table extends UIComponent {
       }
 
       :host([striped]) tbody tr:nth-child(even) {
-        background-color: var(--bim-table¡striped--c);
+        background-color: var(--bim-table¡striped--c, var(--bim-ui_bg-contrast-10));
       }
     `
   ]
@@ -228,15 +229,10 @@ export class Table extends UIComponent {
   }
 
   private createCellComponent(cell: TableComponentCell) {
-    const { component, onCreated } = cell
-    if (component._tableHostable) {
-      const instance = new component()
-      if (onCreated) onCreated(instance)
-      return instance
-    } else {
-      console.warn(`You tried to add a ${component.name} component which is not hostable on a table.`)
-      return null
-    }
+    const { template, onCreated } = cell
+    const element = UIManager.createElementFromTemplate(template ?? "")
+    if (onCreated) onCreated(element)
+    return element
   }
 
   private rowClicked(e: PointerEvent) {

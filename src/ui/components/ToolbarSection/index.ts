@@ -5,9 +5,12 @@ import { ToolbarGroup } from "../ToolbarGroup"
 export class ToolbarSection extends UIComponent {
   static styles = css`
     :host {
-      /* height: 100%;
-      width: 100%; */
-      /* margin: 0.5rem; */
+      --bim-label--fz: var(--bim-ui_size-xs);
+      --bim-label--c: var(--bim-ui_bg-contrast-100);
+    }
+
+    :host(:not([vertical])) {
+      --bim-button--jc: flex-start;
     }
 
     .parent {

@@ -1,68 +1,47 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
 
 export class SelectorInput extends UIComponent {
-  static styles = [
-    styles.internalStyles,
-    css`
-      * {
-        margin: 0;
-        padding: 0;
-        border: none;
-        outline: none;
-      }
+  static styles = css`
+    bim-button {
+      --bim-label--fz: var(--bim-selector-input--fz, var(--bim-ui_size-xs));
+      --bim-label--c: var(--bim-selector-input--c, var(--bim-ui_bg-contrast-100));
+      flex: 1;
+      border-radius: 0;
+      background-color: var(--bim-selector-input--bgc, var(--bim-ui_bg-contrast-20));
+      color: var(--bim-selector-input--c, var(--bim-ui_bg-contrast-100));
+    }
 
-      .input button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 0.75rem;
-        column-gap: 0.25rem;
-        height: 100%;
-        width: 100%;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-        font-family: inherit;
-        font-feature-settings: inherit;
-        font-variation-settings: inherit;
-        cursor: pointer;
-        background-color: var(--bim-selector-input--bgc);
-        color: var(--bim-selector-input--c);
-      }
-      
-      .input button:hover {
-        background-color: var(--bim-selector-input¡hover--bgc, #2e2e2e);
-        color: var(--bim-selector-input¡hover--c);
-      }
+    bim-button:hover {
+      background-color: var(--bim-selector-input¡hover--bgc, var(--bim-ui_bg-contrast-20));
+      color: var(--bim-selector-input¡hover--c, var(--bim-ui_bg-contrast-100));
+    }
 
-      .input button[data-selected] {
-        font-weight: 500;
-        background-color: var(--bim-selector-input¡selected--bgc);
-        color: var(--bim-selector-input¡selected--c);
-      }
+    bim-button[data-selected] {
+      --bim-label--c: var(--bim-selector-input¡selected--c, white);
+      background-color: var(--bim-selector-input¡selected--bgc, var(--bim-ui_color-main));
+    }
 
-      .input button:first-child {
-        border-bottom-left-radius: var(--bim-selector-input--bdrs);
-        border-top-left-radius: var(--bim-selector-input--bdrs);
-      }
+    bim-button:first-child {
+      border-bottom-left-radius: var(--bim-selector-input--bdrs, var(--bim-ui_size-4xs));
+      border-top-left-radius: var(--bim-selector-input--bdrs, var(--bim-ui_size-4xs));
+    }
 
-      .input button:last-child {
-        border-bottom-right-radius: var(--bim-selector-input--bdrs);
-        border-top-right-radius: var(--bim-selector-input--bdrs);
-      }
-    `
-  ]
+    bim-button:last-child {
+      border-bottom-right-radius: var(--bim-selector-input--bdrs, var(--bim-ui_size-4xs));
+      border-top-right-radius: var(--bim-selector-input--bdrs, var(--bim-ui_size-4xs));
+    }
+  `
 
   static properties = {
-    labelIcon: { type: String, reflect: true, attribute: "label-icon" },
+    icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
     options: { type: Array<String> },
     value: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true }
   }
 
-  declare labelIcon?: string
+  declare icon?: string
   declare label?: string
   declare vertical: boolean
 
@@ -102,26 +81,21 @@ export class SelectorInput extends UIComponent {
     return this._value
   }
 
-  protected static _tableHostable = true
-
   private onOptionClick(value: string) {
     this.value = value
   }
 
   render() {
     return html`
-      <div class="parent">
-        ${ this.label ? html`<bim-label .icon=${this.labelIcon} .label="${this.label}"></bim-label>` : null }
-        <div class="input">
-          ${
-            this.options?.map((option) =>
-              html`
-              <button @click=${() => this.onOptionClick(option)} ?data-selected=${this.value === option} type="button">${option}</button>
-              `
-            )
-          }
-        </div> 
-      </div>
+      <bim-input ?vertical=${this.vertical} .label=${this.label} .icon=${this.icon}>
+        ${
+          this.options?.map((option) =>
+            html`
+            <bim-button .label=${option} @click=${() => this.onOptionClick(option)} ?data-selected=${this.value === option}></bim-button>
+            `
+          )
+        }
+      </bim-input>
     `
   }
 }

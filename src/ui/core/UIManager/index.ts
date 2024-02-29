@@ -26,10 +26,10 @@ export class UIManager<GridAreas extends string = Areas> {
   // The main working area of the app.
   viewport: HTMLElement
 
-  // The HTMLElement surrounding the viewport.
+  // The grid surrounding the viewport.
   outerGrid = document.createElement("bim-grid") as Grid
 
-  // The HTMLElement inside the viewport.
+  // The grid inside the viewport.
   innerGrid = document.createElement("bim-grid") as Grid
 
   // A configuration object to define the UI behavior.
@@ -87,7 +87,7 @@ export class UIManager<GridAreas extends string = Areas> {
   }
 
   private getGridRows(grid: Grid) {
-    const template = getComputedStyle(grid).getPropertyValue("--bim-grid--tpl")
+    const template = getComputedStyle(grid).gridTemplate
     const rows = template
       .trim()
       .split(/"([^"]*)"/)
@@ -173,6 +173,27 @@ export class UIManager<GridAreas extends string = Areas> {
     }
   }
 
+  static createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
+    const temp = document.createElement("div");
+    temp.innerHTML = template;
+    const element = temp.firstElementChild as T;
+    temp.remove();
+    return element;
+  }
+
+  static generateRandomId() {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let id = "";
+
+    for (let i = 0; i < 10; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      id += characters.charAt(randomIndex);
+    }
+
+    return id;
+  }
+
   getPanelsContainer(area: GridAreas) {
     const { panels: panelContainers } = this.containers
     const container = panelContainers.find((container) => container.gridArea === area)
@@ -189,14 +210,6 @@ export class UIManager<GridAreas extends string = Areas> {
       throw new Error(`UIManager: ${this.GRID_TOOLBAR_PREFIX}${area} wasn't define in --bim-grid--tpl`)
     }
     return container
-  }
-
-  static createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
-    const temp = document.createElement("div");
-    temp.innerHTML = template;
-    const element = temp.firstElementChild as T;
-    temp.remove();
-    return element;
   }
 
   dispose() {

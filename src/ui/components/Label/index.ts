@@ -4,16 +4,9 @@ import { UIComponent } from "../../core/UIComponent"
 export class Label extends UIComponent {
   static styles = css`
     :host {
-      color: var(--bim-label--c);
-      font-size: var(--bim-label--fz);
+      color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
+      font-size: var(--bim-label--fz, var(--bim-ui_size-sm));
       border-radius: var(--bim-ui_size-4xs);
-    }
-
-    :host([tag]) {
-      --bim-label--c: white;
-      --bim-label--fz: var(--bim-ui_size-xs);
-      background-color: var(--bim-ui_color-main);
-      padding: 0 0.625rem;
     }
     
     .parent {
@@ -49,8 +42,6 @@ export class Label extends UIComponent {
   declare label?: string
   declare labelHidden: boolean
   declare vertical: boolean
-
-  protected static _tableHostable = true
 
   constructor() {
     super()

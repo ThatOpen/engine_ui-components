@@ -13,20 +13,32 @@ import { styles } from "../../core/UIManager/src/styles";
 
 export class Dropdown extends UIComponent {
   static styles = [
-    styles.internalStyles,
     styles.scrollbar,
     css`
+      :host {
+        --bim-input--bgc: var(--bim-dropdown--bgc, var(--bim-ui_bg-contrast-20));
+        --bim-input--olw: var(--bim-dropdown--olw, 2px);
+        --bim-input--olc: var(--bim-dropdown--olc, transparent);
+        --bim-input--bdrs: var(--bim-dropdown--bdrs, var(--bim-ui_size-4xs));
+        flex: 1;
+      }
+
+      :host([visible]) {
+        --bim-input--olc: var(--bim-dropdown¡focus--c, var(--bim-ui_color-accent));
+      }
+      
       .input {
+        --bim-label--fz: var(--bim-drodown--fz, var(--bim-ui_size-xs));
+        --bim-label--c: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
+        display: flex;
+        flex: 1;
+        overflow: hidden;
         column-gap: 0.25rem;
         outline: none;
         cursor: pointer;
         align-items: center;
         justify-content: space-between;
         padding: 0 0.5rem;
-        border-radius: var(--bim-dropdown--bdrs);
-        background-color: var(--bim-dropdown--bgc);
-        font-size: var(--bim-dropdown--fz);
-        outline: var(--bim-dropdown--olw) solid var(--bim-dropdown--olc);
       }
 
       .list {
@@ -35,23 +47,19 @@ export class Dropdown extends UIComponent {
         overflow-x: hidden;
         max-height: 20rem;
         min-width: 6rem;
-        display: none;
+        display: flex;
         flex-direction: column;
         box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
         padding: 0.75rem 0;
         border-radius: 1rem;
         z-index: 20;
-        background-color: var(--bim-dropdown_list--bgc);
-        font-size: var(--bim-dropdown--fz);
-        color: var(--bim-dropdown--c);
+        background-color: var(--bim-dropdown_list--bgc, var(--bim-ui_bg-contrast-20));
+        font-size: var(--bim-drodown--fz, var(--bim-ui_size-xs));
+        color: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
       }
 
-      :host([visible]) .list {
-        display: flex !important;
-      }
-
-      :host([visible]) .input {
-        outline: var(--bim-dropdown--olw) solid var(--bim-dropdown¡focus--c);
+      :host(:not([visible])) .list {
+        display: none;
       }
 
       .list > div {
@@ -65,7 +73,7 @@ export class Dropdown extends UIComponent {
 
       .list > div[data-selected] {
         font-weight: 600;
-        color: var(--bim-dropdown¡selected--c)
+        color: var(--bim-dropdown¡selected--c, var(--bim-ui_color-main-light))
       }
 
       .list > div svg {
@@ -74,7 +82,7 @@ export class Dropdown extends UIComponent {
 
       .list > div[data-selected] svg {
         visibility: visible;
-        fill: var(--bim-dropdown¡selected--c);
+        fill: var(--bim-dropdown¡selected--c, var(--bim-ui_color-main-light));
       }
 
       .list > div:hover {
@@ -89,6 +97,7 @@ export class Dropdown extends UIComponent {
   ]
 
   static properties = {
+    icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
     wrapped: { type: Boolean, reflect: true },
     value: { type: Object, attribute: false },
@@ -100,6 +109,7 @@ export class Dropdown extends UIComponent {
     vertical: { type: Boolean, reflect: true }
   }
 
+  declare icon?: string
   declare label?: string
   declare wrapped: boolean
   declare multiple: boolean
@@ -108,6 +118,21 @@ export class Dropdown extends UIComponent {
   declare vertical: boolean
   declare options: Record<string, any>
 
+  private changeEvent = new Event("change")
+  private _inputContainer = createRef<HTMLDivElement>()
+  private _listElement = createRef<HTMLDivElement>()
+
+  private _visible = false
+
+  get visible() {
+    return this._visible
+  }
+
+  set visible(value: boolean) {
+    this._visible = value
+    if (value) this.computePosition()
+  }
+  
   private _value: Record<string, any> = {}
 
   get value() {
@@ -146,21 +171,6 @@ export class Dropdown extends UIComponent {
     this.dispatchEvent(this.changeEvent)
   }
 
-  private changeEvent = new Event("change")
-
-  private _visible = false
-
-  get visible() {
-    return this._visible
-  }
-
-  set visible(value: boolean) {
-    this._visible = value
-    if (value) this.computePosition()
-  }
-
-  protected static _tableHostable = true
-
   constructor() {
     super()
     this.wrapped = false
@@ -171,9 +181,6 @@ export class Dropdown extends UIComponent {
     this.searchBox = false
     this.options = []
   }
-
-  private _inputContainer = createRef<HTMLDivElement>()
-  private _listElement = createRef<HTMLDivElement>()
 
   private computePosition() {
     const { value: inputContainer } = this._inputContainer
@@ -189,20 +196,6 @@ export class Dropdown extends UIComponent {
         top: `${y}px`,
       });
     });
-  }
-  
-  private onWindowMouseUp = (e: MouseEvent) => {
-    if (!this.contains(e.target as Node)) this.visible = false;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('mouseup', this.onWindowMouseUp);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('mouseup', this.onWindowMouseUp);
   }
 
   private onOptionClick(option: string) {
@@ -227,6 +220,20 @@ export class Dropdown extends UIComponent {
       if (rest.length !== 0) this.value = rest
     }
   }
+  
+  private onWindowMouseUp = (e: MouseEvent) => {
+    if (!this.contains(e.target as Node)) this.visible = false;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('mouseup', this.onWindowMouseUp);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('mouseup', this.onWindowMouseUp);
+  }
 
   render() {
     const listElementTemplates: TemplateResult[] = []
@@ -241,7 +248,9 @@ export class Dropdown extends UIComponent {
         </div>
       `)
     }
+
     let inputLabel: string
+
     const values = Array.isArray(this._value)
       ? this._value
       : Object.keys(this._value);
@@ -258,18 +267,18 @@ export class Dropdown extends UIComponent {
         ? `${this.label} (Multiple ${values.length})`
         : `Multiple (${values.length})`
     }
+
     return html`
-      <div class="parent">
-        ${this.label && !this.wrapped ? html`<bim-label .label=${this.label}></bim-label>` : null}
+      <bim-input .label=${this.label} .icon=${this.icon} ?vertical=${this.vertical}>
         <div ${ref(this._inputContainer)} class="input" @click=${() => this.visible = !this.visible}>
-          <bim-label .label=${inputLabel} style="font-size: var(--bim-dropdown--fz); color: var(--bim-dropdown--c); pointer-events: none"></bim-label>
+          <bim-label .label=${inputLabel} style="pointer-events: none; overflow: hidden;"></bim-label>
           <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </div>
         <div ${ref(this._listElement)} class="list">
           ${this.searchBox ? html`SearchBox Here` : null}
           ${listElementTemplates.map(element => element)}
         </div>
-      </div>
+      </bim-input>
     `
   }
 }

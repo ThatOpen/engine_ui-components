@@ -16,10 +16,41 @@ export class Grid extends UIComponent {
     }
     
     :host([floating]) {
+      --bim-grid--bgc: transparent;
+      --bim-grid--p: 1.25rem;
+      --bim-grid--g: 1rem;
+      --bim-grid--tpl:
+        "empty" 1fr
+        "toolbar-b" auto
+        / 1fr
+      ;
+      --bim-toolbars-container--bdrs: var(--bim-ui_size-base);
+      --bim-toolbars-container--olw: 1px;
+      --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
+      --bim-toolbars-container--js: center;
+      --bim-toolbars-container--as: start;
+      --bim-toolbars-container_tabs--bgc: transparent;
+      --bim-panel--bdrs: var(--bim-ui_size-base);
       position: absolute;
       pointer-events: none;
       top: 0px;
       left: 0px;
+    }
+
+    :host(:not([floating])) {
+      --bim-grid--bgc: var(--bim-ui_bg-contrast-20);
+      --bim-grid--g: 1px;
+      --bim-grid--tpl:
+        "toolbar-a toolbar-a toolbar-a" auto
+        "panel-a viewport panel-b" 1fr
+        "panel-a viewport panel-b" 1fr
+        / auto 1fr auto
+      ;
+      --bim-toolbars-container--bdrs: 0;
+      --bim-toolbars-container--js: auto;
+      --bim-toolbars-container--as: auto;
+      --bim-toolbars-container_tabs--bgc: var(--bim-ui_bg-base);
+      --bim-panel--bdrs: 0;
     }
   `
 
