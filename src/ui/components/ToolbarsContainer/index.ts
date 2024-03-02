@@ -271,6 +271,11 @@ export class ToolbarsContainer extends UIComponent {
         html`
           ${!this.tabsHidden ? tabsTemplate : null}
           <div class="toolbars">
+            ${this.vertical ? html`
+              <bim-button icon="material-symbols:toolbar" tooltip-title="Toolbars" style="z-index: 10">
+                <bim-button></bim-button>
+              </bim-button>
+            ` : null}
             <slot @slotchange=${this.updateToolbars}></slot>
           </div>
         `

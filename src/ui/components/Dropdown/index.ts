@@ -107,7 +107,6 @@ export class Dropdown extends UIComponent {
     searchBox: { type: Boolean, reflect: true, attribute: "search-box" },
     vertical: { type: Boolean, reflect: true },
     value: { attribute: false },
-    visibleOptions: { state: true }
   }
 
   declare icon?: string
@@ -120,19 +119,6 @@ export class Dropdown extends UIComponent {
   private _changeEvent = new Event("change")
   private _inputContainer = createRef<HTMLDivElement>()
   private _listElement = createRef<HTMLDivElement>()
-  private _visibilityObserver: IntersectionObserver
-  private _lazyObserver: IntersectionObserver
-  private _optionElements: Option[] = []
-
-  private _visibleOptions: Option[] = []
-
-  set visibleOptions(value: Option[]) {
-    this._visibleOptions = value
-  }
-
-  get visibleOptions() {
-    return this._visibleOptions
-  }
 
   private _visible = false
 
@@ -144,9 +130,8 @@ export class Dropdown extends UIComponent {
     this._visible = value
     if (value) {
       this.computePosition()
-      this.updateOptionsList()
     } else {
-      this.resetOptionsList()
+      this.resetVisibleElements()
     }
   }
   
@@ -179,12 +164,13 @@ export class Dropdown extends UIComponent {
       }
     }
     this._value = _value;
-    this.updateOptionState()
+    this.updateOptionsState()
     this.dispatchEvent(this._changeEvent)
   }
 
   private get _options() {
-    const options = [...this._visibleOptions, ...this._optionElements]
+    // const options = [...this.visibleElements, ...this.elements]
+    const options = [...this.elements]
     for (const child of this.children) {
       if (child instanceof Option) options.push(child)
     }
@@ -193,49 +179,12 @@ export class Dropdown extends UIComponent {
 
   constructor() {
     super()
+    this.useObserver = true
     this.multiple = false
     this.required = false
     this.visible = false
     this.vertical = false
     this.searchBox = false
-    this._visibilityObserver = this.createVisibilityObserver()
-    this._lazyObserver = this.createLazyObserver()
-  }
-  
-  private createVisibilityObserver() {
-    if (this._visibilityObserver) return this._visibilityObserver;
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        const element = entry.target
-        if (!(element instanceof Option)) continue;
-        if (entry.isIntersecting) {
-          element.style.visibility = "visible"
-        } else {
-          element.style.visibility = "hidden"
-        }
-      }
-    }, {
-      root: null,
-      threshold: 0.5
-    })
-    return observer
-  }
-
-  private createLazyObserver() {
-    if (this._lazyObserver) return this._lazyObserver;
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[0]
-      if (!entry.isIntersecting || !(entry.target instanceof Option)) return;
-      const option = entry.target
-      observer.unobserve(option)
-      const newOption = this._optionElements.splice(0, 1)[0]
-      if (newOption) {
-        this.visibleOptions = [...this._visibleOptions, newOption]
-        this._visibilityObserver.observe(newOption)
-        this._lazyObserver.observe(newOption)
-      }
-    }, {threshold: 0.5})
-    return observer
   }
 
   private computePosition() {
@@ -253,8 +202,14 @@ export class Dropdown extends UIComponent {
       });
     });
   }
+  
+  private onWindowMouseUp = (e: MouseEvent) => {
+    if (!this.contains(e.target as Node)) this.visible = false;
+  }
 
-  private onOptionClick(option: any) {
+  private onOptionClick = (e: MouseEvent) => {
+    const element = e.target as Option
+    const option = element.value || element.label
     const selected = this._value.includes(option);
     if (!this.multiple && !this.required && !selected) {
       this.value = [option]
@@ -273,27 +228,21 @@ export class Dropdown extends UIComponent {
       if (rest.length !== 0) this.value = rest
     }
   }
-  
-  private onWindowMouseUp = (e: MouseEvent) => {
-    if (!this.contains(e.target as Node)) this.visible = false;
-  }
 
   private onSlotChange(e: any) {
     const children = e.target.assignedElements()
+    this.observe(children)
     for (const child of children) {
-      child.remove();
       if (!(child instanceof Option)) {
         console.warn("Only bim-option is allowed inside bim-dropdown. Child has been removed.");
         continue;
       }
-      this._optionElements.push(child)
-      if (child.checked) { this.onOptionClick(child.value || child.label) }
-      child.addEventListener("click", () => this.onOptionClick(child.value || child.label))
+      child.removeEventListener("click", this.onOptionClick)
+      child.addEventListener("click", this.onOptionClick)
     }
-    this.updateOptionsList()
   }
 
-  private updateOptionState() {
+  private updateOptionsState() {
     for (const element of this._options) {
       if (!(element instanceof Option)) continue;
       if (this._value.includes(element.value || element.label)) {
@@ -310,31 +259,6 @@ export class Dropdown extends UIComponent {
       return option.label === value || option.value === value
     }) as Option
     return element
-  }
-
-  private updateOptionsList() {
-    if (!this.visible) return;
-    this.resetOptionsList()
-    const elementsToDisplay = 30
-    const elements = this._optionElements.splice(0, elementsToDisplay)
-    if (!(this.children.length === 0 && elements.length > 0)) return;
-    this.visibleOptions = elements
-    if (this._options.length > elementsToDisplay) {
-      for (const element of elements) {
-        this._visibilityObserver.observe(element)
-      }
-      const lastElement = elements[elementsToDisplay - 1]
-      this._lazyObserver.observe(lastElement)
-    }
-  }
-
-  private resetOptionsList() {
-    for (const option of this._options) {
-      this._visibilityObserver.unobserve(option)
-      this._lazyObserver.unobserve(option)
-    }
-    this._optionElements.unshift(...this._visibleOptions)
-    this._visibleOptions = []
   }
 
   connectedCallback() {
@@ -367,7 +291,7 @@ export class Dropdown extends UIComponent {
         </div>
         <div ${ref(this._listElement)} class="list">
           <slot @slotchange=${this.onSlotChange}></slot>
-          ${this._visibleOptions.map((option) => option)}
+          ${this.visibleElements.map((option) => option)}
         </div>
       </bim-input>
     `
