@@ -7,6 +7,7 @@ import { Icon } from "./Icon";
 import { Input } from "./Input";
 import { Label } from "./Label";
 import { NumberInput } from "./NumberInput";
+import { Option } from "./Option";
 import { Panel } from "./Panel";
 import { PanelsContainer } from "./PanelsContainer";
 import { PanelSection } from "./PanelSection";
@@ -28,6 +29,7 @@ declare global {
     "bim-input": Input;
     "bim-label": Label;
     "bim-number-input": NumberInput;
+    "bim-option": Option;
     "bim-panel": Panel;
     "bim-panel-section": PanelSection;
     "bim-selector-input": SelectorInput;
@@ -48,6 +50,7 @@ customElements.define("bim-icon", Icon)
 customElements.define("bim-input", Input)
 customElements.define("bim-label", Label)
 customElements.define("bim-number-input", NumberInput)
+customElements.define("bim-option", Option)
 customElements.define("bim-panel", Panel)
 customElements.define("bim-panels-container", PanelsContainer)
 customElements.define("bim-panel-section", PanelSection)
@@ -68,6 +71,7 @@ export {
   Input,
   Label,
   NumberInput,
+  Option,
   Panel,
   PanelSection,
   SelectorInput,

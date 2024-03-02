@@ -22,6 +22,7 @@ export class Button extends UIComponent {
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-80);
       --bim-label--fz: var(--bim-ui_size-xs);
+      flex: 1;
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-button--bdrs, var(--bim-ui_size-4xs));
     }
@@ -50,6 +51,7 @@ export class Button extends UIComponent {
     
     :host([vertical]) .parent {
       padding: 0.375rem;
+      justify-content: center;
     }
     
     :host(:not([vertical])) .parent {

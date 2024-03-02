@@ -6,11 +6,6 @@ export class PanelSection extends UIComponent {
   static styles = [
     styles.scrollbar,
     css`
-      * {
-        margin: 0;
-        padding: 0;
-      }
-
       :host {
         display: flex;
         flex-direction: column;
@@ -21,6 +16,7 @@ export class PanelSection extends UIComponent {
       }
 
       :host(:not([fixed])) .header:hover {
+        --bim-label--c: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
         cursor: pointer;
         color: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
       }
@@ -54,8 +50,13 @@ export class PanelSection extends UIComponent {
       }
 
       .components-list {
+        display: flex;
         flex-direction: column;
         row-gap: 0.75rem;
+      }
+
+      :host(:not([fixed])[collapsed]) .components-list {
+        display: none;
       }
     `
   ]
@@ -67,7 +68,7 @@ export class PanelSection extends UIComponent {
     collapsed: { type: Boolean, reflect: true }
   }
   
-  declare icon?: String
+  declare icon?: string
   declare name?: string
   declare fixed?: boolean
   declare collapsed?: boolean
@@ -80,30 +81,18 @@ export class PanelSection extends UIComponent {
   render() {
     const header = this.icon || this.name || this.fixed
 
-    const titleTemplate = html`
-      <div class="title">
-        ${ this.icon ? html`<span class="material-icons">${this.icon}</span>` : null }
-        ${ this.name ? html`<p>${this.name}</p>` : null }
-      </div>
-    `
-
     const expandLessSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>`
     const expandMoreSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>`
     const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG
 
     const headerTemplate = html`
       <div class="header" @click=${this.onHeaderClick}>
-        ${ this.icon || this.name ? titleTemplate : null }
+        ${ this.icon || this.name ? html`<bim-label .label=${this.name} .icon=${this.icon}></bim-label>` : null }
         ${ !this.fixed ? expandIcon : null }
       </div>
     `
     
     return html`
-      <style>
-        :host .components-list {
-          display: ${!this.fixed && this.collapsed ? "none" : "flex"} 
-        }
-      </style>
       ${ header ? headerTemplate : null }
       <div class="components-list">
         <slot></slot>

@@ -4,8 +4,8 @@ import { UIComponent } from "../../core/UIComponent";
 export class Icon extends UIComponent {
   static styles = css`
     iconify-icon {
-      height: var(--bim-icon--fz, var(--bim-ui_size-base));
-      width: var(--bim-icon--fz, var(--bim-ui_size-base));
+      height: var(--bim-icon--fz, var(--bim-ui_size-sm));
+      width: var(--bim-icon--fz, var(--bim-ui_size-sm));
     }
   `
 

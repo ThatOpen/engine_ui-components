@@ -15,9 +15,15 @@ export class ToolbarsContainer extends UIComponent {
       align-self: auto;
     }
 
+    /* Parent */
+
     .parent {
       display: flex;
       pointer-events: auto;
+    }
+
+    :host([floating]) .parent {
+      align-items: center;
     }
     
     :host([vertical]) .parent {
@@ -27,6 +33,8 @@ export class ToolbarsContainer extends UIComponent {
     :host(:not([vertical])) .parent {
       flex-direction: column;
     }
+
+    /* Tabs container */
     
     .tabs {
       --bim-label--fz: var(--bim-ui_size-xs);
@@ -34,66 +42,48 @@ export class ToolbarsContainer extends UIComponent {
       --bim-button--bdrs: 0;
       --bim-button--bgc: var(--bim-ui_bg-base);
       display: flex;
-      background-color: var(--bim-toolbars-container_tabs--bgc);
+      width: fit-content;
     }
-    
-    :host(:not([toolbars-hidden])) .tabs {
-      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+
+    :host([floating]) .tabs {
+      overflow: hidden;
+      border-top-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
+      border-top-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
+    }
+
+    :host([floating][toolbars-hidden]) .tabs {
+      border-bottom-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
+      border-bottom-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
     }
 
     :host([vertical]) .tabs {
       display: none;
       writing-mode: tb;
     }
-    
-    .tabs {
-      display: flex;
-    }
-
-    :host([toolbars-hidden]) .tabs bim-button:first-child {
-      border-top-left-radius: var(--bim-toolbars-container--bdrs);
-      border-bottom-left-radius: var(--bim-toolbars-container--bdrs)
-    }
-
-    :host([toolbars-hidden]) .tabs bim-button:last-child {
-      border-top-right-radius: var(--bim-toolbars-container--bdrs);
-      border-bottom-right-radius: var(--bim-toolbars-container--bdrs)
-    }
-
-    .tabs bim-button:first-child {
-      border-top-left-radius: var(--bim-ui_size-base);
-    }
-
-    .tabs bim-button:last-child {
-      border-top-right-radius: var(--bim-ui_size-base);
-    }
 
     .tabs bim-button {
       font-weight: 600;
-    }
-
-    .tabs bim-button {
       padding: 0.25rem 0.5rem;
     }
-
 
     .tabs bim-button:hover,
     .tabs bim-button[active] {
       --bim-label--c: white;
       background-color: var(--bim-ui_color-main);
     }
+
+    /* Toolbars container */
     
     .toolbars {
       display: flex;
       flex: 1;
-      border-radius: var(--bim-toolbars-container--bdrs);
-      outline: var(--bim-toolbars-container--olw) solid var(--bim-toolbars-container--olc);
       background-color: var(--bim-toolbars-container--bgc, var(--bim-ui_bg-base));
     }
-
-    :host(:not([vertical])) .toolbars {
-      border-top-left-radius: 0;
-      /* border-top-right-radius: 0; */
+    
+    :host([floating]) .toolbars {
+      width: 115%;
+      outline: var(--bim-toolbars-container--olw) solid var(--bim-toolbars-container--olc);
+      border-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
     }
     
     :host([vertical]) .toolbars {
@@ -109,6 +99,12 @@ export class ToolbarsContainer extends UIComponent {
       display: none;
     }
 
+    :host(:not([toolbars-hidden]):not([tabs-hidden]):not([floating])) .toolbars {
+      border-top: 1px solid var(--bim-ui_bg-contrast-20);
+    }
+
+    /* Drop element */
+
     .drop-element {
       min-width: 80px; 
       width: 100%; 
@@ -121,15 +117,16 @@ export class ToolbarsContainer extends UIComponent {
   `
 
   static properties = {
+    floating: { type: Boolean, reflect: true },
     vertical: { type: Boolean, reflect: true },
     gridArea: { type: String, attribute: false },
     tabsHidden: { type: Boolean, attribute: "tabs-hidden", reflect: true },
-    activeTab: { type: String, attribute: "active-tab", reflect: true },
+    activeToolbar: { type: String, attribute: "active-toolbar", reflect: true },
     toolbarsHidden: { type: Boolean, reflect: true, attribute: "toolbars-hidden" },
-    activeToolbar: { type: Object, attribute: false },
     dropping: { type: Boolean, reflect: true }
   }
 
+  declare floating: boolean
   declare tabsHidden: boolean
   declare dropping: boolean
   
@@ -162,7 +159,7 @@ export class ToolbarsContainer extends UIComponent {
   
   private _activeTab: string | null = null
 
-  set activeTab(value: string | null) {
+  set activeToolbar(value: string | null) {
     this._activeTab = null
     for (const child of this.children) {
       if (!(child instanceof Toolbar)) continue;
@@ -178,7 +175,7 @@ export class ToolbarsContainer extends UIComponent {
     if (!this._activeTab) this.toolbarsHidden = true;
   }
 
-  get activeTab() {
+  get activeToolbar() {
     return this._activeTab
   }
 
@@ -206,6 +203,7 @@ export class ToolbarsContainer extends UIComponent {
 
   constructor() {
     super()
+    this.floating = false
     this.tabsHidden = false
     this.dropping = false
   }
@@ -218,11 +216,11 @@ export class ToolbarsContainer extends UIComponent {
       child.vertical = this.vertical
       const { tabElement } = child
       tabElement.onclick = () => {
-        this.activeTab = this.activeTab === child.name ? null : child.name
+        this.activeToolbar = this.activeToolbar === child.name ? null : child.name
       };
     }
     this.updateToolbarsList()
-    if (!this.activeTab && !this.toolbarsHidden && this._toolbars[0]) this.activeTab = this._toolbars[0].name;
+    if (!this.activeToolbar && !this.toolbarsHidden && this._toolbars[0]) this.activeToolbar = this._toolbars[0].name;
   }
   
   private updateToolbarsList() {

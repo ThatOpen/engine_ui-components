@@ -6,11 +6,17 @@ export class ToolbarSection extends UIComponent {
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);
-      --bim-label--c: var(--bim-ui_bg-contrast-100);
+      --bim-label--c: var(--bim-ui_bg-contrast-60);
     }
 
     :host(:not([vertical])) {
       --bim-button--jc: flex-start;
+    }
+
+    :host(:not([vertical])) ::slotted(bim-button[vertical]) {
+      --bim-icon--fz: var(--bim-ui_size-5xl);
+      min-height: 3.75rem;
+      min-width: 3.75rem;
     }
 
     .parent {
@@ -21,6 +27,10 @@ export class ToolbarSection extends UIComponent {
       padding: 0.5rem;
       height: 100%;
       justify-content: space-between;
+    }
+
+    :host([label]) .parent {
+      min-height: 5.375rem;
     }
 
     :host([vertical]) .parent {
@@ -99,7 +109,7 @@ export class ToolbarSection extends UIComponent {
         <div class="children">
           <slot @slotchange=${this.updateChildren}></slot>
         </div>
-        ${!this.labelHidden && (this.label || this.icon) ? html`<bim-label .label=${this.label} .icon=${this.icon} style="font-size: 0.75rem"></bim-label>` : null}
+        ${!this.labelHidden && (this.label || this.icon) ? html`<bim-label .label=${this.label} .icon=${this.icon}></bim-label>` : null}
       </div>
     `
   }

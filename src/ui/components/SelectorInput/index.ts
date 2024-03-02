@@ -13,7 +13,7 @@ export class SelectorInput extends UIComponent {
     }
 
     bim-button:hover {
-      background-color: var(--bim-selector-input¡hover--bgc, var(--bim-ui_bg-contrast-20));
+      background-color: var(--bim-selector-input¡hover--bgc, color-mix(in lab, var(--bim-selector-input--bgc, var(--bim-ui_bg-contrast-20)), var(--bim-ui_color-main) 25%));
       color: var(--bim-selector-input¡hover--c, var(--bim-ui_bg-contrast-100));
     }
 

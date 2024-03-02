@@ -6,17 +6,17 @@ export class Panel extends UIComponent {
   static styles = [
     styles.scrollbar,
     css`
-      * {
-        margin: 0;
-        padding: 0;
-      }
-
       :host {
+        --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
+        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
         min-width: 20rem;
+        display: flex;
+        overflow: auto;
       }
 
       .host {
         display: flex;
+        flex: 1;
         flex-direction: column;
         pointer-events: auto;
         border-radius: var(--bim-panel--bdrs, var(--bim-ui_size-base));
@@ -24,25 +24,15 @@ export class Panel extends UIComponent {
         color: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
       }
 
-      .host .title {
-        display: flex;
-        padding: 1rem;
-        justify-content: flex-start;
-        align-items: center;
-        font-weight: 500;
-        column-gap: 0.5rem;
-        user-select: none;
-      }
-
-      .host .title span,
-      .host .title p {
+      .host bim-label {
         font-weight: 600;
-        font-size: var(--bim-panel--fz, var(--bim-ui_size-sm));
+        padding: 1rem;
       }
 
-      .host .sections {
+      .sections {
         display: flex;
         flex-direction: column;
+        overflow: auto;
       }
 
       ::slotted(bim-panel-section:not(:last-child)) {
@@ -56,7 +46,7 @@ export class Panel extends UIComponent {
     name: { type: String, reflect: true },
   }
   
-  declare icon?: String
+  declare icon?: string
   declare name?: string
 
   collapseSections() {
@@ -74,18 +64,9 @@ export class Panel extends UIComponent {
   }
 
   render() {
-    const title = this.icon || this.name
     return html`
       <div class="host">
-        ${title
-          ? html`
-            <div class="title">
-              ${this.icon ? html`<span class="material-icons">${this.icon}</span>` : null}
-              ${this.name ? html`<p>${this.name}</p>` : null}
-            </div>
-          `
-          : null
-        }
+        ${this.name || this.icon ? html`<bim-label .label=${this.name} .icon=${this.icon}></bim-label>` : null}
         <div class="sections">
           <slot></slot>
         </div>

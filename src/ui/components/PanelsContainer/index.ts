@@ -10,8 +10,6 @@ export class PanelsContainer extends UIComponent {
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        overflow: auto;
-        overflow-x: hidden;
         gap: 0.5rem;
       }
 

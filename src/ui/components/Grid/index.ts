@@ -24,7 +24,6 @@ export class Grid extends UIComponent {
         "toolbar-b" auto
         / 1fr
       ;
-      --bim-toolbars-container--bdrs: var(--bim-ui_size-base);
       --bim-toolbars-container--olw: 1px;
       --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
       --bim-toolbars-container--js: center;
@@ -46,7 +45,6 @@ export class Grid extends UIComponent {
         "panel-a viewport panel-b" 1fr
         / auto 1fr auto
       ;
-      --bim-toolbars-container--bdrs: 0;
       --bim-toolbars-container--js: auto;
       --bim-toolbars-container--as: auto;
       --bim-toolbars-container_tabs--bgc: var(--bim-ui_bg-base);
@@ -66,9 +64,19 @@ export class Grid extends UIComponent {
     this.floating = false
   }
 
+  private onSlotChange() {
+    for (const child of this.children) {
+      if (this.floating) {
+        child.setAttribute("floating", "")
+      } else {
+        child.removeAttribute("floating")
+      }
+    }
+  }
+
   render() {
     return html`
-      <slot></slot>
+      <slot @slotchange=${this.onSlotChange}></slot>
     `
   }
 }

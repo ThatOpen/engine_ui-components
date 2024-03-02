@@ -139,14 +139,12 @@ const globalStyles = css`
     --bim-ui_bg-contrast-100: hsl(210 10% 5%);
   }
 
-  /* Button */
-  bim-toolbar:not([vertical]) bim-button[vertical] {
-    --bim-icon--fz: var(--bim-ui_size-5xl);
-    min-height: 3.75rem;
+  bim-grid:not([floating]) bim-toolbars-container {
+    background-color: var(--bim-ui_bg-base);
   }
 
-  bim-toolbar-section[vertical] bim-button {
-    --bim-button--jc: center;
+  bim-grid[floating] bim-toolbars-container {
+    background-color: transparent;
   }
 `
 
