@@ -4,7 +4,8 @@ import { UIComponent } from "../../core/UIComponent";
 export class Option extends UIComponent {
   static styles = css`
     :host {
-      padding: 0 1rem;
+      padding: 0.125rem 0.75rem;
+      border-radius: var(--bim-ui_size-4xs);
     }
     
     :host(:hover) {

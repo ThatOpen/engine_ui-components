@@ -69,6 +69,7 @@ export class Table extends UIComponent {
         height: 2rem;
         border-bottom: 1px solid #2e2e2e;
         position: relative;
+        color: var(--bim-ui_bg-contrast-100);
       }
 
       :host([striped]) tbody tr:nth-child(even) {

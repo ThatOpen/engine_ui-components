@@ -1,6 +1,8 @@
 import { css, html } from "lit"
 import { UIComponent } from "../../core/UIComponent"
 import { styles } from "../../core/UIManager/src/styles"
+import { createRef, ref } from "lit/directives/ref.js"
+import { Panel } from "../Panel"
 
 export class PanelSection extends UIComponent {
   static styles = [
@@ -13,6 +15,7 @@ export class PanelSection extends UIComponent {
         padding: 0.75rem 1rem;
         row-gap: 0.75rem;
         pointer-events: auto;
+        border-top: 1px solid var(--bim-ui_bg-contrast-20)
       }
 
       :host(:not([fixed])) .header:hover {
@@ -26,6 +29,7 @@ export class PanelSection extends UIComponent {
       }
 
       .header {
+        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
         display: flex;
         justify-content: space-between;
         align-items: center;

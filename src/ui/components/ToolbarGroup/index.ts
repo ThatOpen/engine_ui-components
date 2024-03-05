@@ -7,6 +7,10 @@ export class ToolbarGroup extends UIComponent {
       display: grid;
       gap: 0.25rem;
     }
+
+    ::slotted(bim-button[label]:not([vertical])) {
+      --bim-button--jc: flex-start;
+    }
   `
 
   static properties = {

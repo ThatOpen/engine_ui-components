@@ -1,6 +1,7 @@
 import { Button } from "./Button";
 import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
+import { ContextMenu } from "./ContextMenu";
 import { Dropdown } from "./Dropdown";
 import { Grid } from "./Grid";
 import { Icon } from "./Icon";
@@ -44,6 +45,7 @@ declare global {
 customElements.define("bim-button", Button)
 customElements.define("bim-checkbox", Checkbox)
 customElements.define("bim-color-input", ColorInput)
+customElements.define("bim-context-menu", ContextMenu)
 customElements.define("bim-dropdown", Dropdown)
 customElements.define("bim-grid", Grid)
 customElements.define("bim-icon", Icon)

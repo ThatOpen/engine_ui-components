@@ -4,9 +4,10 @@ import { UIComponent } from "../../core/UIComponent"
 export class Label extends UIComponent {
   static styles = css`
     :host {
+      --bim-icon--c: var(--bim-label--c);
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
-      font-size: var(--bim-label--fz, var(--bim-ui_size-sm));
-      border-radius: var(--bim-ui_size-4xs);
+      font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
+      pointer-events: none;
     }
     
     .parent {
@@ -15,7 +16,6 @@ export class Label extends UIComponent {
       column-gap: 0.25rem;
       user-select: none;
       height: 100%;
-      pointer-events: none;
     }
 
     :host([vertical]) .parent {

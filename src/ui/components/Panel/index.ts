@@ -7,24 +7,23 @@ export class Panel extends UIComponent {
     styles.scrollbar,
     css`
       :host {
-        --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
-        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
         min-width: 20rem;
         display: flex;
         overflow: auto;
       }
 
-      .host {
+      .parent {
         display: flex;
         flex: 1;
         flex-direction: column;
         pointer-events: auto;
         border-radius: var(--bim-panel--bdrs, var(--bim-ui_size-base));
         background-color: var(--bim-panel--bgc, var(--bim-ui_bg-base));
-        color: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
       }
 
-      .host bim-label {
+      .parent bim-label {
+        --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
+        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
         font-weight: 600;
         padding: 1rem;
       }
@@ -33,10 +32,6 @@ export class Panel extends UIComponent {
         display: flex;
         flex-direction: column;
         overflow: auto;
-      }
-
-      ::slotted(bim-panel-section:not(:last-child)) {
-        border-bottom: 1px solid var(--bim-panel-section--bdc, var(--bim-ui_bg-contrast-20));
       }
     `
   ]
@@ -65,7 +60,7 @@ export class Panel extends UIComponent {
 
   render() {
     return html`
-      <div class="host">
+      <div class="parent">
         ${this.name || this.icon ? html`<bim-label .label=${this.name} .icon=${this.icon}></bim-label>` : null}
         <div class="sections">
           <slot></slot>

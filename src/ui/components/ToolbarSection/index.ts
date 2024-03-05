@@ -7,10 +7,8 @@ export class ToolbarSection extends UIComponent {
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);
       --bim-label--c: var(--bim-ui_bg-contrast-60);
-    }
-
-    :host(:not([vertical])) {
-      --bim-button--jc: flex-start;
+      width: 100%;
+      height: 100%;
     }
 
     :host(:not([vertical])) ::slotted(bim-button[vertical]) {
@@ -29,7 +27,7 @@ export class ToolbarSection extends UIComponent {
       justify-content: space-between;
     }
 
-    :host([label]) .parent {
+    :host([label]:not([vertical])) .parent {
       min-height: 5.375rem;
     }
 
@@ -92,14 +90,8 @@ export class ToolbarSection extends UIComponent {
   private updateChildren() {
     const children = this.children
     for (const child of children) {
-      if (child instanceof ToolbarGroup) {
-        child.vertical = this.vertical
-      }
-      if (this.vertical) {
-        child.setAttribute("label-hidden", "")
-      } else {
-        child.removeAttribute("label-hidden")
-      }
+      if (child instanceof ToolbarGroup) child.vertical = this.vertical
+      child.toggleAttribute("label-hidden", this.vertical)
     }
   }
 

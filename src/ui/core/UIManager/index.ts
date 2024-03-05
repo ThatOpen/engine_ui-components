@@ -6,8 +6,11 @@ import { styles } from "./src/styles";
 import { ToolbarsContainer } from "../../components/ToolbarsContainer";
 
 export interface ManagerConfig {
-  addGlobalStyles: boolean,
-  onViewportResize: () => void;
+  addGlobalStyles: boolean
+  sectionLabelOnVerticalToolbar: boolean
+  draggableToolbars: boolean
+  draggablePanels: boolean
+  onViewportResize: () => void
 }
 
 type Areas = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
@@ -32,15 +35,24 @@ export class UIManager<GridAreas extends string = Areas> {
   // The grid inside the viewport.
   innerGrid = document.createElement("bim-grid") as Grid
 
-  // A configuration object to define the UI behavior.
-  config: Required<ManagerConfig> = {
+  private static _config: Required<ManagerConfig> = {
     addGlobalStyles: true,
-    onViewportResize: () => {}
+    sectionLabelOnVerticalToolbar: false,
+    draggableToolbars: true,
+    draggablePanels: true,
+    onViewportResize: () => { },
   }
 
-  constructor(viewport: HTMLElement, config?: Partial<ManagerConfig>) {
+  static set config(value: Partial<ManagerConfig>) {
+    this._config = {...UIManager._config, ...value}
+  }
+
+  static get config(): Required<ManagerConfig> {
+    return UIManager._config
+  }
+
+  constructor(viewport: HTMLElement) {
     this.viewport = viewport
-    this.config = { ...this.config, ...config }
     this.createGrid()
     this.createPanelContainers()
     this.createToolbarContainers()
@@ -48,6 +60,7 @@ export class UIManager<GridAreas extends string = Areas> {
   }
 
   private addGlobalStyles() {
+    if (!UIManager.config.addGlobalStyles) return;
     const style = document.createElement("style")
     style.id = "bim-ui"
     style.textContent = styles.globalStyles.cssText
@@ -67,7 +80,6 @@ export class UIManager<GridAreas extends string = Areas> {
   }
 
   private createGrid() {
-    const { onViewportResize } = this.config
     const container = this.viewport.parentElement
     if (!container) {
       throw new Error("UIManager: viewport needs to have a parent to create a grid.")
@@ -82,7 +94,7 @@ export class UIManager<GridAreas extends string = Areas> {
     this.viewport.style.minWidth = "0px";
     this.viewport.style.gridArea = "viewport";
     this.viewport.append(this.innerGrid)
-    const observer = new ResizeObserver(onViewportResize)
+    const observer = new ResizeObserver(UIManager.config.onViewportResize)
     observer.observe(this.viewport)
   }
 

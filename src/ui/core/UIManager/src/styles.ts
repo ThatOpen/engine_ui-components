@@ -28,7 +28,6 @@ const internalStyles = css`
     flex-wrap: wrap;
     min-height: 1.75rem;
     min-width: 5rem;
-    /* max-width: 20rem; */
     gap: var(--bim-input--g, 0.375rem);
     padding: var(--bim-input--p, 0);
     background-color: var(--bim-input--bgc, transparent);
@@ -38,7 +37,6 @@ const internalStyles = css`
 
   :host(:not([vertical])) .input {
     flex: 1;
-    /* max-width: 20rem; */
   }
   
   :host(:not([vertical])[label]) .input {
@@ -93,6 +91,8 @@ const globalStyles = css`
     --bim-ui_size-5xl: 1.75rem;
     --bim-ui_size-6xl: 1.875rem;
     --bim-ui_size-7xl: 2rem;
+    --bim-ui_size-8xl: 2.125rem;
+    --bim-ui_size-9xl: 2.25rem;
   }
 
   @media (prefers-color-scheme: dark) {

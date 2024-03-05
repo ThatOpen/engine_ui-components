@@ -3,9 +3,15 @@ import { UIComponent } from "../../core/UIComponent";
 
 export class Icon extends UIComponent {
   static styles = css`
+    :host {
+      height: var(--bim-icon--fz, var(--bim-ui_size-sm));
+      width: var(--bim-icon--fz, var(--bim-ui_size-sm));
+    }
+    
     iconify-icon {
       height: var(--bim-icon--fz, var(--bim-ui_size-sm));
       width: var(--bim-icon--fz, var(--bim-ui_size-sm));
+      color: var(--bim-icon--c);
     }
   `
 
@@ -17,7 +23,7 @@ export class Icon extends UIComponent {
 
   render() {
     return html`
-      <iconify-icon .icon=${this.icon} inline height="none"></iconify-icon>
+      <iconify-icon .icon=${this.icon} height="none"></iconify-icon>
     `
   }
 }

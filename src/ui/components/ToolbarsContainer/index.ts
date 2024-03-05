@@ -2,6 +2,7 @@ import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
 import { Toolbar } from "../Toolbar";
 import { createRef, ref } from "lit/directives/ref.js";
+import { Button } from "../Button";
 
 export class ToolbarsContainer extends UIComponent {
   static styles = css`
@@ -28,6 +29,7 @@ export class ToolbarsContainer extends UIComponent {
     
     :host([vertical]) .parent {
       height: 100%;
+      flex-direction: column;
     }
     
     :host(:not([vertical])) .parent {
@@ -47,13 +49,15 @@ export class ToolbarsContainer extends UIComponent {
 
     :host([floating]) .tabs {
       overflow: hidden;
-      border-top-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
-      border-top-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
+      border-top-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs));
+      border-top-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs));
+      box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+      outline: var(--bim-toolbars-container--olw) solid var(--bim-toolbars-container--olc);
     }
 
     :host([floating][toolbars-hidden]) .tabs {
-      border-bottom-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
-      border-bottom-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
+      border-bottom-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs));
+      border-bottom-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs));
     }
 
     :host([vertical]) .tabs {
@@ -63,7 +67,7 @@ export class ToolbarsContainer extends UIComponent {
 
     .tabs bim-button {
       font-weight: 600;
-      padding: 0.25rem 0.5rem;
+      height: var(--bim-ui_size-9xl);
     }
 
     .tabs bim-button:hover,
@@ -75,15 +79,24 @@ export class ToolbarsContainer extends UIComponent {
     /* Toolbars container */
     
     .toolbars {
+      overflow: auto;
       display: flex;
       flex: 1;
       background-color: var(--bim-toolbars-container--bgc, var(--bim-ui_bg-base));
     }
+
+    :host([floating]:not([vertical])) .toolbars {
+      width: 120%;
+    }
     
     :host([floating]) .toolbars {
-      width: 115%;
       outline: var(--bim-toolbars-container--olw) solid var(--bim-toolbars-container--olc);
-      border-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-xs));
+      border-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs)) ;
+      box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+    }
+    
+    :host([floating][vertical]) .toolbars {
+      border-radius: var(--bim-toolbars-container--bdrs, 0 0 var(--bim-ui_size-4xs) var(--bim-ui_size-4xs)) ;
     }
     
     :host([vertical]) .toolbars {
@@ -103,12 +116,25 @@ export class ToolbarsContainer extends UIComponent {
       border-top: 1px solid var(--bim-ui_bg-contrast-20);
     }
 
+    /* More toolbars button */
+    .parent > bim-button {
+      --bim-button--bgc: var(--bim-ui_bg-base);
+      --bim-button--bdrs: var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0 0;
+      --bim-button--olw: 1px;
+      --bim-button--olc: var(--bim-ui_bg-contrast-20);
+      width: 100%;
+    }
+
+    :host([toolbars-hidden]) .parent > bim-button {
+      --bim-button--bdrs: var(--bim-ui_size-4xs);
+    }
+    
     /* Drop element */
 
     .drop-element {
-      min-width: 80px; 
+      min-width: 40px; 
       width: 100%; 
-      min-height: 80px; 
+      min-height: 40px; 
       height: 100%;
       background-color: #6528d70d;
       border: 2px dashed var(--bim-ui_color-main);
@@ -131,6 +157,7 @@ export class ToolbarsContainer extends UIComponent {
   declare dropping: boolean
   
   private _tabs = createRef()
+  private _toolbarsButton = createRef<Button>()
   private _toolbars: Toolbar[] = []
   private _lastActiveToolbar: Toolbar | null = null
 
@@ -225,11 +252,12 @@ export class ToolbarsContainer extends UIComponent {
   
   private updateToolbarsList() {
     const { value: tabs } = this._tabs
+    const { value: toolbarsButton } = this._toolbarsButton
     for (const toolbar of this._toolbars) {
       if (![...this.children].includes(toolbar)) {
         this._toolbars = this._toolbars.filter(t => t !== toolbar)
       } else {
-        tabs?.append(toolbar.tabElement)
+        this.vertical ? toolbarsButton?.append(toolbar.tabElement) : tabs?.append(toolbar.tabElement)
       }
     }
   }
@@ -263,23 +291,18 @@ export class ToolbarsContainer extends UIComponent {
 
   render() {
     const tabsTemplate = html`<div class="tabs" ${ref(this._tabs)}></div>`
+    const toolbarsBtnTemplate = html`<bim-button ${ref(this._toolbarsButton)} style="flex-grow: 0;"></bim-button>`
     const dropPlaceTemplate = html`<div class="drop-element"></div>`
 
     return html`
       <div class="parent">
-        ${this.dropping ? dropPlaceTemplate : 
-        html`
-          ${!this.tabsHidden ? tabsTemplate : null}
+        ${!this.vertical ? tabsTemplate : null}
+        ${this.vertical ? toolbarsBtnTemplate : null}
+        ${this.dropping ? dropPlaceTemplate : html`
           <div class="toolbars">
-            ${this.vertical ? html`
-              <bim-button icon="material-symbols:toolbar" tooltip-title="Toolbars" style="z-index: 10">
-                <bim-button></bim-button>
-              </bim-button>
-            ` : null}
             <slot @slotchange=${this.updateToolbars}></slot>
           </div>
-        `
-        }
+        `}
       </div>
     `
   }

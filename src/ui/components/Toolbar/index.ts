@@ -8,6 +8,8 @@ export class Toolbar extends UIComponent {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
+      background-color: var(--bim-ui_bg-base);
+      border-radius: var(--bim-ui_size-4xs);
     }
 
     :host([active]) {
@@ -99,7 +101,7 @@ export class Toolbar extends UIComponent {
     const children = this.children;
     for (const child of children) {
       if (child instanceof ToolbarSection) {
-        child.labelHidden = this.vertical
+        child.labelHidden = this.vertical // May be in the UIManager config
         child.vertical = this.vertical
       }
     }

@@ -1,16 +1,9 @@
-import {
-  computePosition,
-  flip,
-  shift,
-  offset,
-  inline
-  //@ts-ignore
-} from "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.1/+esm";
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
 import { createRef, ref } from "lit/directives/ref.js";
 import { styles } from "../../core/UIManager/src/styles";
 import { Option } from "../Option"; 
+import { ContextMenu } from "../ContextMenu";
 
 export class Dropdown extends UIComponent {
   static styles = [
@@ -41,60 +34,6 @@ export class Dropdown extends UIComponent {
         justify-content: space-between;
         padding: 0 0.5rem;
       }
-
-      .list {
-        --bim-label--fz: var(--bim-ui_size-xs);
-        position: absolute;
-        overflow-y: auto;
-        overflow-x: hidden;
-        max-height: 20rem;
-        min-width: 6rem;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
-        padding: 0.75rem 0;
-        border-radius: 1rem;
-        z-index: 20;
-        background-color: var(--bim-dropdown_list--bgc, var(--bim-ui_bg-contrast-20));
-        font-size: var(--bim-drodown--fz, var(--bim-ui_size-xs));
-        color: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
-      }
-
-      :host(:not([visible])) .list {
-        display: none;
-      }
-
-      .list > div {
-        display: flex;
-        padding: 0 1rem;
-        height: 2rem;
-        justify-content: space-between;
-        align-items: center;
-        column-gap: 1.25rem;
-      }
-
-      .list > div[data-selected] {
-        font-weight: 600;
-        color: var(--bim-dropdown¡selected--c, var(--bim-ui_color-main-light))
-      }
-
-      .list > div svg {
-        visibility: hidden;
-      }
-
-      .list > div[data-selected] svg {
-        visibility: visible;
-        fill: var(--bim-dropdown¡selected--c, var(--bim-ui_color-main-light));
-      }
-
-      .list > div:hover {
-        cursor: pointer;
-        background-color: #00000024;
-      }
-
-      .list > div p {
-        white-space: nowrap;
-      }
     `
   ]
 
@@ -118,7 +57,7 @@ export class Dropdown extends UIComponent {
 
   private _changeEvent = new Event("change")
   private _inputContainer = createRef<HTMLDivElement>()
-  private _listElement = createRef<HTMLDivElement>()
+  private _listElement = createRef<ContextMenu>()
 
   private _visible = false
 
@@ -128,11 +67,7 @@ export class Dropdown extends UIComponent {
 
   set visible(value: boolean) {
     this._visible = value
-    if (value) {
-      this.computePosition()
-    } else {
-      this.resetVisibleElements()
-    }
+    if (!value) this.resetVisibleElements()
   }
   
   private _value: any[] = []
@@ -185,22 +120,6 @@ export class Dropdown extends UIComponent {
     this.visible = false
     this.vertical = false
     this.searchBox = false
-  }
-
-  private computePosition() {
-    const { value: inputContainer } = this._inputContainer
-    const { value: list } = this._listElement
-    if (!(inputContainer && list)) return;
-    computePosition(inputContainer, list, {
-      placement: "right",
-      middleware: [offset(10), inline(), flip(), shift({ padding: 5 })],
-    }).then((data: { x: number; y: number }) => {
-      const { x, y } = data;
-      Object.assign(list.style, {
-        left: `${x}px`,
-        top: `${y}px`,
-      });
-    });
   }
   
   private onWindowMouseUp = (e: MouseEvent) => {
@@ -284,15 +203,15 @@ export class Dropdown extends UIComponent {
     }
 
     return html`
-      <bim-input .label=${this.label} .icon=${this.icon} ?vertical=${this.vertical}>
+      <bim-input .label=${this.label} .icon=${this.icon} .vertical=${this.vertical}>
         <div ${ref(this._inputContainer)} class="input" @click=${() => this.visible = !this.visible}>
           <bim-label .label=${inputLabel} style="pointer-events: none; overflow: hidden;"></bim-label>
           <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </div>
-        <div ${ref(this._listElement)} class="list">
+        <bim-context-menu ${ref(this._listElement)} .visible=${this.visible}>
           <slot @slotchange=${this.onSlotChange}></slot>
           ${this.visibleElements.map((option) => option)}
-        </div>
+        </bim-context-menu>
       </bim-input>
     `
   }
