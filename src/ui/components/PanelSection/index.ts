@@ -58,8 +58,7 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
         display: flex;
         flex-direction: column;
         row-gap: 0.75rem;
-        padding: 0 1rem 1rem;
-        /* background-color: var(--bim-panel-section--bgc, var(--bim-ui_bg-base)); */
+        padding: 0.125rem 1rem 1rem;
       }
 
       :host(:not([fixed])[collapsed]) .components {

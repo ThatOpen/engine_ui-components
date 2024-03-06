@@ -44,7 +44,7 @@ export class Input extends UIComponent implements HasValue, HasName {
     }
     
     :host(:not([vertical])[label]) .input {
-      max-width: 15rem;
+      max-width: 13rem;
     }
   `
 

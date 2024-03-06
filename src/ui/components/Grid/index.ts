@@ -29,7 +29,7 @@ export class Grid extends UIComponent {
       --bim-toolbars-container--js: center;
       --bim-toolbars-container--as: start;
       --bim-toolbars-container_tabs--bgc: transparent;
-      --bim-panel--bdrs: var(--bim-ui_size-base);
+      --bim-panel--bdrs: var(--bim-ui_size-4xs);
       position: absolute;
       pointer-events: none;
       top: 0px;

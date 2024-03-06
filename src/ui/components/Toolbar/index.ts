@@ -54,13 +54,10 @@ export class Toolbar extends UIComponent implements HasName {
   declare icon?: string
   declare labelsHidden: boolean
 
-  private onActiveChange = new Event("activechange")
-
   private _active = true
 
   set active(value: boolean) {
     this._active = value
-    this.dispatchEvent(this.onActiveChange)
   }
 
   get active() {

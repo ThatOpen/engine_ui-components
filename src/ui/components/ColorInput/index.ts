@@ -5,6 +5,10 @@ import { HasName, HasValue } from "../../core/types";
 
 export class ColorInput extends UIComponent implements HasValue, HasName {
   static styles = css`
+    :host {
+      flex: 1
+    }
+    
     .color-container {
       position: relative;
       outline: none;

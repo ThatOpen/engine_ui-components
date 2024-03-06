@@ -195,12 +195,16 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
 
   render() {
     let inputLabel: string
+    let inputImg: string | undefined
+    let inputIcon: string | undefined
 
     if (this._value.length === 0) {
       inputLabel = "Select an option..."
     } else if (this._value.length === 1) {
       const option = this.findOption(this._value[0])
       inputLabel = option?.label || option?.value
+      inputImg = option?.img
+      inputIcon = option?.icon
     } else {
       inputLabel = `Multiple (${this._value.length})`
     }
@@ -208,7 +212,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     return html`
       <bim-input .label=${this.label} .icon=${this.icon} .vertical=${this.vertical}>
         <div ${ref(this._inputContainer)} class="input" @click=${() => this.visible = !this.visible}>
-          <bim-label .label=${inputLabel} style="pointer-events: none; overflow: hidden;"></bim-label>
+          <bim-label .label=${inputLabel} .img=${inputImg} .icon=${inputIcon} style="overflow: hidden;"></bim-label>
           <svg style="flex-shrink: 0" xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#9ca3af"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </div>
         <bim-context-menu ${ref(this._listElement)} .visible=${this.visible}>
