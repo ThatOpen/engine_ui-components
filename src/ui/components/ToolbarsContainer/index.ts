@@ -3,9 +3,12 @@ import { UIComponent } from "../../core/UIComponent";
 import { Toolbar } from "../Toolbar";
 import { createRef, ref } from "lit/directives/ref.js";
 import { Button } from "../Button";
+import { styles } from "../../core/UIManager/src/styles"
 
 export class ToolbarsContainer extends UIComponent {
-  static styles = css`
+  static styles = [
+    styles.scrollbar,
+    css`
     :host {
       justify-self: var(--bim-toolbars-container--js);
       align-self: var(--bim-toolbars-container--as);
@@ -141,6 +144,7 @@ export class ToolbarsContainer extends UIComponent {
       border-radius: 1rem;
     }
   `
+  ]
 
   static properties = {
     floating: { type: Boolean, reflect: true },
@@ -190,7 +194,7 @@ export class ToolbarsContainer extends UIComponent {
     this._activeTab = null
     for (const child of this.children) {
       if (!(child instanceof Toolbar)) continue;
-      if (!this._activeTab && child.name === value) {
+      if (!this._activeTab && child.label === value) {
         this._activeTab = value
         child.active = true
         this._lastActiveToolbar = child
@@ -241,13 +245,13 @@ export class ToolbarsContainer extends UIComponent {
       child.active = false
       this._toolbars.push(child)
       child.vertical = this.vertical
-      const { tabElement } = child
+      const { activationButton: tabElement } = child
       tabElement.onclick = () => {
-        this.activeToolbar = this.activeToolbar === child.name ? null : child.name
+        this.activeToolbar = this.activeToolbar === child.label ? null : child.label
       };
     }
     this.updateToolbarsList()
-    if (!this.activeToolbar && !this.toolbarsHidden && this._toolbars[0]) this.activeToolbar = this._toolbars[0].name;
+    if (!this.activeToolbar && !this.toolbarsHidden && this._toolbars[0]) this.activeToolbar = this._toolbars[0].label;
   }
   
   private updateToolbarsList() {
@@ -257,7 +261,7 @@ export class ToolbarsContainer extends UIComponent {
       if (![...this.children].includes(toolbar)) {
         this._toolbars = this._toolbars.filter(t => t !== toolbar)
       } else {
-        this.vertical ? toolbarsButton?.append(toolbar.tabElement) : tabs?.append(toolbar.tabElement)
+        this.vertical ? toolbarsButton?.append(toolbar.activationButton) : tabs?.append(toolbar.activationButton)
       }
     }
   }

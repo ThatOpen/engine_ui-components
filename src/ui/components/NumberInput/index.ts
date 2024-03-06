@@ -1,8 +1,9 @@
 import { css, html } from "lit"
 import { createRef, ref } from "lit/directives/ref.js"
 import { UIComponent } from "../../core/UIComponent"
+import { HasName, HasValue } from "../../core/types"
 
-export class NumberInput extends UIComponent {
+export class NumberInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
       flex: 1;
@@ -32,7 +33,7 @@ export class NumberInput extends UIComponent {
       background-color: transparent;
       outline: none;
       border: none;
-      width: 1.25rem;
+      padding: 0;
       flex-grow: 1;
       text-align: right;
       font-family: inherit;
@@ -48,42 +49,77 @@ export class NumberInput extends UIComponent {
   `
 
   static properties = {
-    pref: { type: String, reflect: true },
-    icon: { type: String },
-    sufix: { type: String, reflect: true },
-    value: { type: Number, reflect: true },
+    name: { type: String, reflect: true },
+    icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
+    pref: { type: String, reflect: true },
+    min: { type: Number, reflect: true },
+    value: { type: Number, reflect: true },
+    max: { type: Number, reflect: true },
+    sufix: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true }
   }
 
-  declare pref?: string
+  declare name?: string
   declare icon?: string
-  declare sufix?: string
   declare label?: string
-  declare value: number
+  declare pref?: string
+  declare min?: number
+  declare max?: number
+  declare sufix?: string
   declare vertical: boolean
 
   private _canFocus = true
   private _inputRef = createRef<HTMLInputElement>()
-  
-  private onInput() {
+  onValueChange = new Event("input")
+
+  private _value: number = 0
+
+  set value(data: number) {
+    this._value = data
+    this.dispatchEvent(this.onValueChange)
+  }
+
+  get value() {
+    return this._value
+  }
+
+  private get _isInputValid() {
     const { value: input } = this._inputRef
-    if (!input) return
-    const value = Number(input.value)
-    if (input.value === "-") return
-    if (isNaN(value)) {
-      input.value = this.value.toString()
-    } else {
-      this.value = value
-      input.value = value.toString()
-      this.dispatchEvent(new Event("input"))
-    }
+    if (!input) return false;
+    const number = Number(input.value)
+    return !isNaN(number)
   }
 
   constructor() {
     super()
     this.value = 0
     this.vertical = false
+  }
+
+  private onInput(e: Event) {
+    e.stopPropagation()
+    const { value: input } = this._inputRef
+    if (!input) return
+    let value = input.value;
+
+    value = value.replace(/[^0-9.-]/g, ''); // Only allow numbers, dots, and minus
+    value = value.replace(/(\..*)\./g, '$1');
+    if (value.indexOf('-') !== -1) {
+      value = value.charAt(0) + value.substring(1).replace(/-/g, '');
+    }
+    // if (!isNaN(Number(value))) {
+    //   value = this.min ? Math.max(Number(value), this.min) : value
+    //   value = this.max ? Math.min(Number(value), this.max) : value
+    // }
+
+    input.value = value;
+    if (this._isInputValid) this.value = Number(input.value)
+  }
+
+  private onBlur() {
+    const { value: input } = this._inputRef
+    if (input && !this._isInputValid) input.value = this.value.toString()
   }
   
   private drag(e: MouseEvent) {
@@ -96,7 +132,7 @@ export class NumberInput extends UIComponent {
       const { clientX: endPosition } = e
       const value = initialValue + (endPosition - startPosition)
       input.value = value.toString()
-      this.onInput()
+      // this.onInput()
     }
     document.addEventListener("mousemove", onMouseMove)
     document.addEventListener("mouseup", () => {
@@ -115,7 +151,7 @@ export class NumberInput extends UIComponent {
     return html`
       <bim-input .label=${this.label} .icon=${this.icon} ?vertical=${this.vertical}>
         ${this.pref || this.icon ? html`<bim-label .label=${this.pref}></bim-label>` : null}
-        <input ${ref(this._inputRef)} type="text" @input=${this.onInput} @change=${this.onInput} .value=${this.value.toString()}> 
+        <input ${ref(this._inputRef)} type="text" size="1" @input=${this.onInput} @change=${this.onInput} @blur=${this.onBlur} .value=${this.value.toString()}> 
         ${this.sufix ? html`<bim-label .label=${this.sufix}></bim-label>` : null}
       </bim-input>
     `

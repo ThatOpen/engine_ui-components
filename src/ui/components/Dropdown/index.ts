@@ -4,8 +4,9 @@ import { createRef, ref } from "lit/directives/ref.js";
 import { styles } from "../../core/UIManager/src/styles";
 import { Option } from "../Option"; 
 import { ContextMenu } from "../ContextMenu";
+import { HasName, HasValue } from "../../core/types";
 
-export class Dropdown extends UIComponent {
+export class Dropdown extends UIComponent implements HasValue, HasName {
   static styles = [
     styles.scrollbar,
     css`
@@ -38,6 +39,7 @@ export class Dropdown extends UIComponent {
   ]
 
   static properties = {
+    name: { type: String, reflect: true },
     icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
     multiple: { type: Boolean, reflect: true },
@@ -48,6 +50,7 @@ export class Dropdown extends UIComponent {
     value: { attribute: false },
   }
 
+  declare name?: string
   declare icon?: string
   declare label?: string
   declare multiple: boolean
@@ -55,9 +58,9 @@ export class Dropdown extends UIComponent {
   declare searchBox: boolean
   declare vertical: boolean
 
-  private _changeEvent = new Event("change")
   private _inputContainer = createRef<HTMLDivElement>()
   private _listElement = createRef<ContextMenu>()
+  onValueChange = new Event("change")
 
   private _visible = false
 
@@ -100,7 +103,7 @@ export class Dropdown extends UIComponent {
     }
     this._value = _value;
     this.updateOptionsState()
-    this.dispatchEvent(this._changeEvent)
+    this.dispatchEvent(this.onValueChange)
   }
 
   private get _options() {

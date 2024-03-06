@@ -8,6 +8,7 @@ import { ToolbarsContainer } from "../../components/ToolbarsContainer";
 export interface ManagerConfig {
   addGlobalStyles: boolean
   sectionLabelOnVerticalToolbar: boolean
+  multiPanels: boolean //Displays a dropdown to select an active panel in a bim-panels-container
   draggableToolbars: boolean
   draggablePanels: boolean
   onViewportResize: () => void
@@ -38,9 +39,10 @@ export class UIManager<GridAreas extends string = Areas> {
   private static _config: Required<ManagerConfig> = {
     addGlobalStyles: true,
     sectionLabelOnVerticalToolbar: false,
+    multiPanels: false,
     draggableToolbars: true,
     draggablePanels: true,
-    onViewportResize: () => { },
+    onViewportResize: () => { }
   }
 
   static set config(value: Partial<ManagerConfig>) {

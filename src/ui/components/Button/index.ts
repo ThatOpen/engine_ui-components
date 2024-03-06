@@ -138,8 +138,8 @@ export class Button extends UIComponent {
   declare label?: string
   declare labelHidden: boolean
   declare tooltipVisible: boolean
-  declare tooltipText: boolean
-  declare tooltipTitle: boolean
+  declare tooltipText: string
+  declare tooltipTitle: string
   declare tooltipTime: number
   declare active: boolean
   declare disabled: boolean

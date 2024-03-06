@@ -1,62 +1,19 @@
 import { css } from "lit";
 
-const internalStyles = css`
-  :host {
-    flex: 1;
-  }
-
-  .parent {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 1rem;
-    row-gap: 0.375rem;
-    user-select: none;
-    flex: 1;
-  }
-
-  :host(:not([vertical])) .parent {
-    justify-content: space-between;
-  }
-  
-  :host([vertical]) .parent {
-    flex-direction: column;
-  }
-
-  .input {
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    min-height: 1.75rem;
-    min-width: 5rem;
-    gap: var(--bim-input--g, 0.375rem);
-    padding: var(--bim-input--p, 0);
-    background-color: var(--bim-input--bgc, transparent);
-    outline: var(--bim-input--olw, 2px) solid var(--bim-input--olc, transparent);
-    border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
-  }
-
-  :host(:not([vertical])) .input {
-    flex: 1;
-  }
-  
-  :host(:not([vertical])[label]) .input {
-    max-width: 13rem;
-  }
-`
-
 const scrollbar = css`
   ::-webkit-scrollbar {
-    width: 0.5rem;
+    width: 0.4rem;
+    height: 0.4rem;
     overflow: hidden;
   }
 
   ::-webkit-scrollbar-thumb {
     border-radius: 0.25rem;
-    background-color: var(--bim-scrollbar--c, var(--bim-ui_color-main));
+    background-color: var(--bim-scrollbar--c, color-mix(in lab, var(--bim-ui_color-main), white 15%));
   }
   
   ::-webkit-scrollbar-track {
-    background-color: var(--bim-scrollbar--bgc, black);
+    background-color: var(--bim-scrollbar--bgc, var(--bim-ui_bg-base));
   }
 `
 
@@ -73,7 +30,6 @@ const globalStyles = css`
 
     /* Colors */
     --bim-ui_color-main: #6528D7;
-    --bim-ui_color-main-light: #9D6BFF;
     --bim-ui_color-accent: #BCF124;
 
     /* Sizes */
@@ -150,6 +106,5 @@ const globalStyles = css`
 
 export const styles = {
   scrollbar,
-  internalStyles,
   globalStyles
 }

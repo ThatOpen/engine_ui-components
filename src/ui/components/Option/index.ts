@@ -4,7 +4,10 @@ import { UIComponent } from "../../core/UIComponent";
 export class Option extends UIComponent {
   static styles = css`
     :host {
-      padding: 0.125rem 0.75rem;
+      --bim-label--c: var(--bim-ui_bg-contrast-100);
+      box-sizing: border-box;
+      flex: 1;
+      padding: 0rem 0.75rem;
       border-radius: var(--bim-ui_size-4xs);
     }
     
@@ -14,17 +17,17 @@ export class Option extends UIComponent {
     }
 
     :host([checked]) {
-      --bim-label--c: var(--bim-ui_color-main-light);
+      --bim-label--c: color-mix(in lab, var(--bim-ui_color-main), white 30%);
       font-weight: 600;
     }
 
     :host([checked]) svg {
-      fill: var(--bim-ui_color-main-light)
+      fill: color-mix(in lab, var(--bim-ui_color-main), white 30%)
     }
 
     .parent {
       display: flex;
-      justify-content: space-between;
+      justify-content: var(--bim-option--jc, space-between);
       column-gap: 0.5rem;
       align-items: center;
       min-height: 1.75rem;
@@ -50,12 +53,14 @@ export class Option extends UIComponent {
     value: { attribute: false },
     icon: { type: String, reflect: true },
     checked: { type: Boolean, reflect: true },
-    checkbox: { type: Boolean, reflect: true }
+    checkbox: { type: Boolean, reflect: true },
+    noMark: { type: Boolean, attribute: "no-mark", reflect: true }
   }
 
   declare label?: string
   declare icon?: string
   declare checked: boolean
+  declare noMark: boolean
   declare checkbox: boolean
   declare value: any
 
@@ -63,16 +68,17 @@ export class Option extends UIComponent {
     super()
     this.checked = false
     this.checkbox = false
+    this.noMark = false
   }
 
   render() {
     return html`
       <div class="parent">
         <div style="display: flex; column-gap: 0.375rem">
-          ${this.checkbox ? html`<bim-checkbox style="pointer-events: none" ?checked=${this.checked}></bim-checkbox>` : null}
+          ${this.checkbox && !this.noMark ? html`<bim-checkbox style="pointer-events: none" .checked=${this.checked}></bim-checkbox>` : null}
           <bim-label .label=${this.label} .icon=${this.icon}></bim-label>
         </div>
-        ${!this.checkbox && this.checked ? html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>` : null}
+        ${!this.checkbox && !this.noMark && this.checked ? html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>` : null}
       </div>
     `
   }

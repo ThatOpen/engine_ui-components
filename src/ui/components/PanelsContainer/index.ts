@@ -1,6 +1,7 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent"
 import { styles } from "../../core/UIManager/src/styles";
+import { Panel } from "../Panel";
 
 export class PanelsContainer extends UIComponent {
   static styles = [
@@ -26,10 +27,10 @@ export class PanelsContainer extends UIComponent {
 
   static properties = {
     horizontal: { type: Boolean, reflect: true },
-    gridArea: { type: String, attribute: false }
+    gridArea: { attribute: false }
   }
 
-  declare horizontal?: boolean
+  declare horizontal: boolean
 
   private _gridArea: string = ""
 
@@ -42,9 +43,24 @@ export class PanelsContainer extends UIComponent {
     this.style.gridArea = `panel-${value}`
   }
 
+  constructor() {
+    super()
+    this.horizontal = false
+  }
+
+  private onSlotChange(e: any) {
+    const children = e.target.assignedElements() as HTMLElement[]
+    let hasActivePanel = false
+    for (const child of children) {
+      if (!(child instanceof Panel)) continue;
+      hasActivePanel && (child.active = false)
+      hasActivePanel || (hasActivePanel = child.active)
+    }
+  }
+
   render() {
     return html`
-      <slot></slot>
+      <slot @slotchange=${this.onSlotChange}></slot>
     `
   }
 }

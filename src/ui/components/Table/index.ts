@@ -45,7 +45,7 @@ export class Table extends UIComponent {
         margin: 0;
         padding: 0;
         font-size: 0.75rem;
-        border: 1px solid #2e2e2e;
+        /* border: 1px solid var(--bim-ui_bg-contrast-40); */
       }
       
       thead {
@@ -67,7 +67,7 @@ export class Table extends UIComponent {
       
       tr {
         height: 2rem;
-        border-bottom: 1px solid #2e2e2e;
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
         position: relative;
         color: var(--bim-ui_bg-contrast-100);
       }
@@ -88,12 +88,14 @@ export class Table extends UIComponent {
     carets: { type: Boolean, reflect: true },
     branches: { type: Boolean, reflect: true },
     striped: { type: Boolean, reflect: true },
+    firstColCenter: { type: Boolean, attribute: "first-col-center", reflect: true }
   }
 
   declare headersVisible: boolean
   declare selectableRows: boolean
   declare carets: boolean
   declare striped: boolean
+  declare firstColCenter: boolean
   
   private _indentHighlighted?: string = undefined
 
@@ -161,6 +163,7 @@ export class Table extends UIComponent {
     this.selectableRows = false
     this.carets = true
     this.striped = true
+    this.firstColCenter = false
   }
 
   private createSVGLine(indentation = 0) {
@@ -197,10 +200,10 @@ export class Table extends UIComponent {
     const indentation = _indentation + ADDITIONAL_INDENTATION
     const divStyle = {
       display: "flex",
-      justifyContent: `${headerIndex === 0? `left` : "center"}`,
+      justifyContent: `${headerIndex === 0 && !this.firstColCenter? `left` : "center"}`,
       alignItems: "center",
       columnGap: "0.25rem",
-      marginLeft: `${headerIndex === 0 ? `${(indentation + (this.carets && !children ? 1 : 0)).toString()}rem` : 0}`,
+      marginLeft: `${headerIndex === 0 && !this.firstColCenter? `${(indentation + (this.carets && !children ? 1 : 0)).toString()}rem` : 0}`,
     }
     const indents: TemplateResult[] = []
     if (headerIndex === 0) {

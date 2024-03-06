@@ -3,8 +3,9 @@ import { UIComponent } from "../../core/UIComponent"
 import { ToolbarSection } from "../ToolbarSection";
 import { Button } from "../Button";
 import { UIManager } from "../../core/UIManager";
+import { HasName } from "../../core/types";
 
-export class Toolbar extends UIComponent {
+export class Toolbar extends UIComponent implements HasName {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
@@ -41,7 +42,7 @@ export class Toolbar extends UIComponent {
   `
 
   static properties = {
-    name: { type: String, reflect: true },
+    label: { type: String, reflect: true },
     icon: { type: String, reflect: true },
     labelsHidden: { type: Boolean, attribute: "labels-hidden", reflect: true },
     vertical: { type: Boolean, reflect: true },
@@ -49,7 +50,7 @@ export class Toolbar extends UIComponent {
     active: { type: Boolean, reflect: true }
   }
 
-  declare name: string
+  declare label: string
   declare icon?: string
   declare labelsHidden: boolean
 
@@ -88,20 +89,20 @@ export class Toolbar extends UIComponent {
     this.style.gridArea = `toolbar-${value}`
   }
 
-  tabElement: Button = document.createElement("bim-button")
+  activationButton: Button = document.createElement("bim-button")
 
   constructor() {
     super()
     this.labelsHidden = false
     this.active = false
-    this.name = "Toolbar"
+    this.label = "Toolbar"
   }
 
   private updateSections() {
     const children = this.children;
     for (const child of children) {
       if (child instanceof ToolbarSection) {
-        child.labelHidden = this.vertical // May be in the UIManager config
+        child.labelHidden = this.vertical && !UIManager.config.sectionLabelOnVerticalToolbar
         child.vertical = this.vertical
       }
     }
@@ -115,11 +116,11 @@ export class Toolbar extends UIComponent {
     super.connectedCallback()
     const managerId = UIManager.generateRandomId()
     this.setAttribute("data-ui-manager-id", managerId)
-    this.tabElement.setAttribute("data-ui-manager-id", managerId)
-    this.tabElement.icon = this.icon
-    this.tabElement.addEventListener("click", this.onTabElementClick)
-    this.tabElement.draggable = true
-    this.tabElement.addEventListener("dragstart", (e) => {
+    this.activationButton.setAttribute("data-ui-manager-id", managerId)
+    this.activationButton.icon = this.icon
+    this.activationButton.addEventListener("click", this.onTabElementClick)
+    this.activationButton.draggable = true
+    this.activationButton.addEventListener("dragstart", (e) => {
       const uiId = this.getAttribute("data-ui-manager-id")
       if (e.dataTransfer && uiId) {
         e.dataTransfer.setData("id", uiId);
@@ -131,7 +132,7 @@ export class Toolbar extends UIComponent {
         container.dropping = true
       }
     })
-    this.tabElement.addEventListener("dragend", (e) => {
+    this.activationButton.addEventListener("dragend", (e) => {
       if (e.dataTransfer) {
         e.dataTransfer.clearData();
       }
@@ -143,8 +144,8 @@ export class Toolbar extends UIComponent {
   }
 
   render() {
-    this.tabElement.label = this.name
-    this.tabElement.active = this.active
+    this.activationButton.label = this.label
+    this.activationButton.active = this.active
     return html`
       <div class="parent">
         <slot @slotchange=${this.updateSections}></slot>

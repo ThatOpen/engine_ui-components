@@ -1,157 +1,149 @@
 import { css, html } from "lit"
 import { createRef, ref } from "lit/directives/ref.js"
 import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { HasName, HasValue } from "../../core/types";
 
-export class ColorInput extends UIComponent {
-  static styles = [
-    styles.internalStyles,
-    css`
-      * {
-        outline: none;
-        border: none;
-      }
+export class ColorInput extends UIComponent implements HasValue, HasName {
+  static styles = css`
+    .color-container {
+      position: relative;
+      outline: none;
+      display: flex;
+      height: 100%;
+      gap: 0.5rem;
+      justify-content: flex-start;
+      padding-left: 0.5rem;
+      align-items: center;
+      flex: 1;
+      border-radius: var(--bim-color-input--bdrs, var(--bim-ui_size-4xs));
+      background-color: var(--bim-color-input--bgc, var(--bim-ui_bg-contrast-20));
+    }
 
-      .color-container {
-        position: relative;
-        outline: none;
-        display: flex;
-        height: 100%;
-        gap: 0.5rem;
-        justify-content: flex-start;
-        padding-left: 0.5rem;
-        align-items: center;
-        flex: 1;
-        border-radius: var(--bim-color-input--bdrs, var(--bim-ui_size-4xs));
-        background-color: var(--bim-color-input--bgc, var(--bim-ui_bg-contrast-20));
-      }
+    .color-container input[type="color"] {
+      position: absolute;
+      bottom: -0.25rem;
+      visibility: hidden;
+      width: 0;
+      height: 0;
+    }
+    
+    .color-container .sample {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 0.125rem;
+      background-color: #fff;
+    }
 
-      .color-container input[type="color"] {
-        position: absolute;
-        bottom: -0.25rem;
-        visibility: hidden;
-        width: 0;
-        height: 0;
-      }
-      
-      .color-container .sample {
-        width: 1rem;
-        height: 1rem;
-        border-radius: 0.125rem;
-        background-color: #fff;
-      }
+    .color-container input[type="text"] {
+      height: 100%;
+      flex: 1;
+      width: 1.25rem;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      background-color: transparent;
+      padding: 0%;
+      outline: none;
+      border: none;
+      color: var(--bim-color-input--c, var(--bim-ui_bg-contrast-100));
+    }
 
-      .color-container input[type="text"] {
-        height: 100%;
-        flex: 1;
-        width: 1.25rem;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        background-color: transparent;
-        padding: 0%;
-        color: var(--bim-color-input--c, var(--bim-ui_bg-contrast-100));
-      }
-
-      .opacity-container {
-        outline: none;
-        display: flex;
-        height: 100%;
-        justify-content: flex-start;
-        padding-left: 0.5rem;
-        align-items: center;
-        border-radius: 0.375rem;
-        border-color: #bec0c4;
-        background-color: #2e2e2e;
-      }
-    `
-  ]
+    bim-number-input {
+      flex-grow: 0;
+    }
+  `
 
   static properties = {
-    label: { type: String },
-    transparent: { type: Boolean, reflect: true },
-    opacity: { type: Number },
-    value: { type: Object }
+    name: { type: String, reflect: true },
+    icon: { type: String, reflect: true },
+    label: { type: String, reflect: true },
+    color: { type: Number, reflect: true },
+    opacity: { type: Number, reflect: true },
+    value: { type: Object, attribute: false }
   }
 
+  declare name?: string
   declare label?: string
-  declare transparent: boolean
-  declare opacity: number
-  declare value: { color: string, opacity: number }
+  declare icon?: string
+  
+  private DEFAULT_COLOR = "#bcf124"
+  private _colorInput = createRef<HTMLInputElement>()
+  private _textInput = createRef<HTMLInputElement>()
+  onValueChange = new Event("input")
 
-  private _sample = createRef<HTMLDivElement>()
-  private _color = createRef<HTMLInputElement>()
-  private _text = createRef<HTMLInputElement>()
-  private _opacity = createRef<HTMLInputElement>()
+  private _color: string = "#bcf124"
+
+  set color(value: string) {
+    this._color = value
+    this.dispatchEvent(this.onValueChange)
+  }
+
+  get color() {
+    return this._color
+  }
+
+  private _opacity: number | null = null
+
+  set opacity(value: number | null) {
+    this._opacity = value
+    this.dispatchEvent(this.onValueChange)
+  }
+
+  get opacity() {
+    return this._opacity
+  }
+
+  set value(_value: { color: string, opacity?: number }) {
+    const { color, opacity } = _value
+    this.color = color
+    opacity && (this.opacity = opacity)
+  }
+
+  get value() {
+    const value: { color: string, opacity?: number } = {
+      color: this.color
+    }
+    this.opacity && (value.opacity = this.opacity)
+    return value
+  }
 
   constructor() {
     super()
-    this.transparent = false
-    this.opacity = 1
-    this.value = {
-      color: "#bcf124",
-      opacity: 1
-    }
+    this.color = this.DEFAULT_COLOR
+  }
+
+  private onColorInput() {
+    const { value: colorInput } = this._colorInput
+    if (!(colorInput)) return;
+    this.color = colorInput.value
+  }
+
+  private onTextInput(e: Event) {
+    e.stopPropagation()
+    const { value: textInput } = this._textInput
+    if (!textInput) return "";
+    const { value: inputValue } = textInput
+    let value = inputValue.replace(/[^a-fA-F0-9]/g, '');
+    if (!value.startsWith('#')) value = '#' + value;
+    textInput.value = value.slice(0, 7);
+    if (textInput.value.length === 7) this.color = textInput.value
   }
 
   focus() {
-    const { value } = this._color
+    const { value } = this._colorInput
     if (!value) return;
     value.click()
   }
 
-  associateMaterial(material: THREE.Material) {
-    this.transparent = material.transparent
-    material.opacity
-  }
-
-  private onColorInput() {
-    const { value: colorInput } = this._color
-    const { value: textInput } = this._text
-    if (!(colorInput && textInput)) return;
-    const { value } = colorInput
-    textInput.value = value
-    this.value = { color: value, opacity: this.opacity }
-  }
-
-  private onTextInput() {
-    const { value: colorInput } = this._color
-    const { value: textInput } = this._text
-    if (!(colorInput && textInput)) return;
-    const value = this._textValue
-    colorInput.value = value
-  }
-
-  private get _textValue() {
-    const { value: textInput } = this._text
-    if (!textInput) return "";
-    const { value: inputValue } = textInput
-    textInput.value = inputValue.slice(0, 7)
-    return textInput.value
-  }
-
   render() {
-    const opacityTemplate = html`
-      <div class="opacity-container">
-        <input ${ref(this._opacity)} type="text">
-      </div>
-    `
-
     return html`
-     <div class="parent">
-      ${ this.label ? html`<bim-label .label="${this.label}"></bim-label>` : null }
-      <div class="input">
+      <bim-input .label=${this.label} .icon=${this.icon}>
         <div class="color-container">
-          <input ${ref(this._color)} @input="${this.onColorInput}" type="color" .value="${this.value.color}">
-          <div ${ref(this._sample)} @click=${this.focus} class="sample" style="background-color: ${this.value.color}"></div>
-          <input ${ref(this._text)} @input="${this.onTextInput}" .value="${this.value.color}" type="text">
+          <input ${ref(this._colorInput)} @input="${this.onColorInput}" type="color" .value="${this.color}">
+          <div @click=${this.focus} class="sample" style="background-color: ${this.color}"></div>
+          <input ${ref(this._textInput)} @input="${this.onTextInput}" .value="${this.color}" type="text">
         </div>
-        ${
-          this.transparent
-          ? opacityTemplate
-          : null
-        }
-      </div>
-     </div>
+        ${ this.opacity ? html`<bim-number-input sufix="%" .value=${this.opacity}></bim-number-input>` : null }
+      </bim-input>
     `
   }
 }
