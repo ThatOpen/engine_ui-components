@@ -26,6 +26,7 @@ export class Input extends UIComponent implements HasValue, HasName {
     }
 
     .input {
+      /* overflow: hidden; */
       box-sizing: border-box;
       display: flex;
       flex-wrap: wrap;

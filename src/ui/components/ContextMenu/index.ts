@@ -62,7 +62,7 @@ export class ContextMenu extends UIComponent {
   }
 
   updatePosition(target?: HTMLElement) {
-    const targetElement = target || this.parentElement
+    const targetElement = target || this.parentNode
     if (!targetElement) {
       this.visible = false
       console.warn("No target element found for context-menu.")
