@@ -4,7 +4,6 @@ import { UIComponent } from "../../core/UIComponent"
 import { HasName, HasValue } from "../../core/types"
 
 // TODO: Improve slider by defining a step.
-// FIX: Can't define a dot if no number is after it.
 
 export class NumberInput extends UIComponent implements HasValue, HasName {
   static styles = css`
@@ -71,6 +70,7 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       position: absolute;
       top: 0;
       left: 0;
+      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
     }
   `
 
@@ -98,7 +98,6 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   declare vertical: boolean
   declare slider: boolean
 
-  private _canFocus = true
   private _input = createRef<HTMLInputElement>()
   onValueChange = new Event("input")
 
@@ -124,20 +123,24 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
 
     let value = _value
     value = value.replace(/[^0-9.-]/g, ''); // Only allow numbers, dots, and minus
-    value = value.replace(/(\..*)\./g, '$1');
-    if (value.indexOf('-') !== -1) {
-      value = value.charAt(0) + value.substring(1).replace(/-/g, '');
+    value = value.replace(/(\..*)\./g, '$1'); // Only allow one dot
+    input && (input.value = value)
+    if (value.endsWith(".")) return;
+    if (value.lastIndexOf('-') > 0) {
+      value = value[0] + value.substring(1).replace(/-/g, '');
     }
-
+    input && (input.value = value)
+    if (value === "-" || value === "-0") return;
+    
     let numericValue = Number(value)
-
+    
     if (isNaN(numericValue)) return;
-
+    
     numericValue = this.min !== undefined ? Math.max(numericValue, this.min) : numericValue
     numericValue = this.max !== undefined ? Math.min(numericValue, this.max) : numericValue
 
-    input && (input.value = numericValue.toString())
     this.value = numericValue
+    input && (input.value = this.value.toString())
     this.dispatchEvent(this.onValueChange)
   }
 
@@ -148,7 +151,6 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   
   private onSliderMouseDown(e: MouseEvent) {
     document.body.style.cursor = "w-resize"
-    this._canFocus = false
     const { clientX: startPosition } = e
     const initialValue = this.value
     const onMouseMove = (e: MouseEvent) => {
@@ -160,21 +162,20 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     document.addEventListener("mouseup", () => {
       document.removeEventListener("mousemove", onMouseMove)
       document.body.style.cursor = "default"
-      this._canFocus = true
     })
   }
 
   focus() {
     const { value } = this._input
-    if (!(value && this._canFocus)) return;
+    if (!value) return;
     value.focus()
   }
 
   render() {
     const regularTemplate = html`
-      ${this.pref || this.icon ? html`<bim-label .label=${this.pref} .icon=${this.icon}></bim-label>` : null}
+      ${this.pref || this.icon ? html`<bim-label style="pointer-events: auto" @mousedown=${this.onSliderMouseDown} .label=${this.pref} .icon=${this.icon}></bim-label>` : null}
       <input ${ref(this._input)} type="text" size="1" @input=${this.onInput} @change=${this.onInput} @blur=${this.onBlur} .value=${this.value.toString()}> 
-      ${this.sufix ? html`<bim-label .label=${this.sufix}></bim-label>` : null}
+      ${this.sufix ? html`<bim-label style="pointer-events: auto" @mousedown=${this.onSliderMouseDown} .label=${this.sufix}></bim-label>` : null}
     `
 
     const min = this.min ?? -Infinity
