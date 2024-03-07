@@ -58,11 +58,6 @@ export class ToolbarsContainer extends UIComponent {
       outline: var(--bim-toolbars-container--olw) solid var(--bim-toolbars-container--olc);
     }
 
-    :host([floating][toolbars-hidden]) .tabs {
-      border-bottom-left-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs));
-      border-bottom-right-radius: var(--bim-toolbars-container--bdrs, var(--bim-ui_size-4xs));
-    }
-
     :host([vertical]) .tabs {
       display: none;
       writing-mode: tb;
@@ -111,11 +106,7 @@ export class ToolbarsContainer extends UIComponent {
       border-top-right-radius: 0;
     }
 
-    :host([toolbars-hidden]) .toolbars {
-      display: none;
-    }
-
-    :host(:not([toolbars-hidden]):not([tabs-hidden]):not([floating])) .toolbars {
+    :host(:not([tabs-hidden]):not([floating])) .toolbars {
       border-top: 1px solid var(--bim-ui_bg-contrast-20);
     }
 
@@ -128,8 +119,8 @@ export class ToolbarsContainer extends UIComponent {
       width: 100%;
     }
 
-    :host([toolbars-hidden]) .parent > bim-button {
-      --bim-button--bdrs: var(--bim-ui_size-4xs);
+    :host(:not([floating])) .parent > bim-button {
+      --bim-button--bdrs: 0;
     }
     
     /* Drop element */
@@ -151,64 +142,12 @@ export class ToolbarsContainer extends UIComponent {
     vertical: { type: Boolean, reflect: true },
     gridArea: { type: String, attribute: false },
     tabsHidden: { type: Boolean, attribute: "tabs-hidden", reflect: true },
-    activeToolbar: { type: String, attribute: "active-toolbar", reflect: true },
-    toolbarsHidden: { type: Boolean, reflect: true, attribute: "toolbars-hidden" },
     dropping: { type: Boolean, reflect: true }
   }
 
   declare floating: boolean
   declare tabsHidden: boolean
   declare dropping: boolean
-  
-  private _tabs = createRef()
-  private _toolbarsButton = createRef<Button>()
-  private _toolbars: Toolbar[] = []
-  private _lastActiveToolbar: Toolbar | null = null
-
-  private _toolbarsHidden = false
-
-  set toolbarsHidden(value: boolean) {
-    this._toolbarsHidden = value
-    if (value) {
-      for (const child of this.children) {
-        if (child instanceof Toolbar) {
-          if (!this._lastActiveToolbar && child.active) this._lastActiveToolbar = child;
-          child.active = false
-        }
-      }
-      this._activeTab = null
-    } else if(this._lastActiveToolbar) {
-      this._lastActiveToolbar.active = true
-    } else if (this._toolbars[0]) {
-      this._toolbars[0].active = true
-    }
-  }
-
-  get toolbarsHidden() {
-    return this._toolbarsHidden
-  }
-  
-  private _activeTab: string | null = null
-
-  set activeToolbar(value: string | null) {
-    this._activeTab = null
-    for (const child of this.children) {
-      if (!(child instanceof Toolbar)) continue;
-      if (!this._activeTab && child.label === value) {
-        this._activeTab = value
-        child.active = true
-        this._lastActiveToolbar = child
-        this.toolbarsHidden = false
-      } else {
-        child.active = false
-      }
-    }
-    if (!this._activeTab) this.toolbarsHidden = true;
-  }
-
-  get activeToolbar() {
-    return this._activeTab
-  }
 
   private _vertical = false
 
@@ -240,31 +179,18 @@ export class ToolbarsContainer extends UIComponent {
   }
 
   private updateToolbars() {    
+    let hasActivePanel = false
     for (const child of this.children) {
-      if (!(child instanceof Toolbar) || this._toolbars.includes(child)) continue;
-      child.active = false
-      this._toolbars.push(child)
+      if (!(child instanceof Toolbar)) continue;
+      hasActivePanel && (child.active = false)
+      hasActivePanel || (hasActivePanel = child.active)
+      this._activationButtons.push(child.activationButton)
       child.vertical = this.vertical
-      const { activationButton: tabElement } = child
-      tabElement.onclick = () => {
-        this.activeToolbar = this.activeToolbar === child.label ? null : child.label
-      };
     }
-    this.updateToolbarsList()
-    if (!this.activeToolbar && !this.toolbarsHidden && this._toolbars[0]) this.activeToolbar = this._toolbars[0].label;
+    this.requestUpdate()
   }
-  
-  private updateToolbarsList() {
-    const { value: tabs } = this._tabs
-    const { value: toolbarsButton } = this._toolbarsButton
-    for (const toolbar of this._toolbars) {
-      if (![...this.children].includes(toolbar)) {
-        this._toolbars = this._toolbars.filter(t => t !== toolbar)
-      } else {
-        this.vertical ? toolbarsButton?.append(toolbar.activationButton) : tabs?.append(toolbar.activationButton)
-      }
-    }
-  }
+
+  private _activationButtons: Button[] = []
 
   private onDragOver = (e: DragEvent) => {
     e.preventDefault()
@@ -294,8 +220,8 @@ export class ToolbarsContainer extends UIComponent {
   }
 
   render() {
-    const tabsTemplate = html`<div class="tabs" ${ref(this._tabs)}></div>`
-    const toolbarsBtnTemplate = html`<bim-button ${ref(this._toolbarsButton)} style="flex-grow: 0;"></bim-button>`
+    const tabsTemplate = html`<div class="tabs">${this._activationButtons}</div>`
+    const toolbarsBtnTemplate = html`<bim-button style="flex-grow: 0;">${this._activationButtons}</bim-button>`
     const dropPlaceTemplate = html`<div class="drop-element"></div>`
 
     return html`

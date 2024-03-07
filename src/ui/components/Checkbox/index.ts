@@ -35,36 +35,27 @@ export class Checkbox extends UIComponent implements HasValue {
 
   declare name?: string
   declare label?: string
+  declare value: boolean
+  declare checked: boolean
 
   onValueChange = new Event("change")
-  private _checked = false
 
-  set checked(value: boolean) {
-    this._checked = value
-    this.dispatchEvent(this.onValueChange)
-  }
-
-  get checked() {
-    return this._checked
-  }
-
-  set value(data: boolean) {
-    this.checked = data
-  }
-
-  get value() {
-    return this.checked
+  constructor() {
+    super()
+    this.checked = false
   }
 
   private onChange(e: Event) {
+    e.stopPropagation()
     this.checked = (e.target as HTMLInputElement).checked
+    this.dispatchEvent(this.onValueChange)
   }
   
   render() {
     return html`
      <div class="host">
        ${this.label ? html`<bim-label .label="${this.label}"></bim-label> ` : null}
-       <input type="checkbox" @change="${this.onChange}" ?checked="${this.checked}"> 
+       <input type="checkbox" @change="${this.onChange}" .checked="${this.checked}"> 
      </div>
     `
   }

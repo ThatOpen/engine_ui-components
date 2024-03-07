@@ -195,7 +195,7 @@ export class UIManager<GridAreas extends string = Areas> {
     return element;
   }
 
-  static generateRandomId() {
+  static newRandomId() {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let id = "";
@@ -206,6 +206,12 @@ export class UIManager<GridAreas extends string = Areas> {
     }
 
     return id;
+  }
+
+  // Gets a document element with data-ui-id set to uiID
+  static getElement<T extends HTMLElement = HTMLElement>(uiID: string) {
+    const element = document.querySelector<T>(`[data-ui-id='${uiID}']`)
+    return element
   }
 
   getPanelsContainer(area: GridAreas) {

@@ -75,10 +75,6 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
   
   private _value: any[] = []
 
-  get value() {
-    return this._value
-  }
-
   set value(value: any[]) {
     if (this.required && Object.keys(value).length === 0) {
       console.warn(`bim-dropdown was set as required but not value is set. Nothing has changed.`);
@@ -103,11 +99,13 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     }
     this._value = _value;
     this.updateOptionsState()
-    this.dispatchEvent(this.onValueChange)
+  }
+
+  get value() {
+    return this._value
   }
 
   private get _options() {
-    // const options = [...this.visibleElements, ...this.elements]
     const options = [...this.elements]
     for (const child of this.children) {
       if (child instanceof Option) options.push(child)
@@ -149,6 +147,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
       const rest = this._value.filter((v) => v !== option)
       if (rest.length !== 0) this.value = rest
     }
+    this.dispatchEvent(this.onValueChange)
   }
 
   private onSlotChange(e: any) {

@@ -28,10 +28,6 @@ export class ToolbarSection extends UIComponent implements HasName {
       justify-content: space-between;
     }
 
-    :host([label]:not([vertical])) .parent {
-      min-height: 5.375rem;
-    }
-
     :host([vertical]) .parent {
       flex-direction: row-reverse;
     }

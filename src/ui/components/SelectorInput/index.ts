@@ -63,7 +63,6 @@ export class SelectorInput extends UIComponent implements HasValue, HasName {
         option.checked = true
         this._value = value
         valueSet = true
-        this.dispatchEvent(this.onValueChange)
       } else {
         option.checked = false
       }
@@ -95,6 +94,7 @@ export class SelectorInput extends UIComponent implements HasValue, HasName {
     const element = e.target as Option
     const option = element.value || element.label
     this.value = option
+    this.dispatchEvent(this.onValueChange)
   }
 
   render() {

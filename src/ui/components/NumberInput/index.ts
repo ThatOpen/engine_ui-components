@@ -77,7 +77,7 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
 
   set value(data: number) {
     this._value = data
-    this.dispatchEvent(this.onValueChange)
+    
   }
 
   get value() {
@@ -114,7 +114,10 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     // }
 
     input.value = value;
-    if (this._isInputValid) this.value = Number(input.value)
+    if (this._isInputValid) {
+      this.value = Number(input.value)
+      this.dispatchEvent(this.onValueChange)
+    }
   }
 
   private onBlur() {

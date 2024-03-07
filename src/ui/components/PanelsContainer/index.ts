@@ -50,11 +50,12 @@ export class PanelsContainer extends UIComponent {
 
   private onSlotChange(e: any) {
     const children = e.target.assignedElements() as HTMLElement[]
-    let hasActivePanel = false
+    const lastChild = children[children.length - 1]
     for (const child of children) {
       if (!(child instanceof Panel)) continue;
-      hasActivePanel && (child.active = false)
-      hasActivePanel || (hasActivePanel = child.active)
+      if (lastChild instanceof Panel && lastChild.active && child !== lastChild) {
+        child.active = false
+      }
     }
   }
 

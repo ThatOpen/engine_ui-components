@@ -17,7 +17,7 @@ export class Grid extends UIComponent {
     
     :host([floating]) {
       --bim-grid--bgc: transparent;
-      --bim-grid--p: 1.25rem;
+      --bim-grid--p: 1rem;
       --bim-grid--g: 1rem;
       --bim-grid--tpl:
         "empty" 1fr

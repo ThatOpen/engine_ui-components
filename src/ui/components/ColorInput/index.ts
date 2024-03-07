@@ -68,33 +68,12 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
   declare name?: string
   declare label?: string
   declare icon?: string
+  declare color: string
+  declare opacity?: number
   
-  private DEFAULT_COLOR = "#bcf124"
   private _colorInput = createRef<HTMLInputElement>()
   private _textInput = createRef<HTMLInputElement>()
   onValueChange = new Event("input")
-
-  private _color: string = "#bcf124"
-
-  set color(value: string) {
-    this._color = value
-    this.dispatchEvent(this.onValueChange)
-  }
-
-  get color() {
-    return this._color
-  }
-
-  private _opacity: number | null = null
-
-  set opacity(value: number | null) {
-    this._opacity = value
-    this.dispatchEvent(this.onValueChange)
-  }
-
-  get opacity() {
-    return this._opacity
-  }
 
   set value(_value: { color: string, opacity?: number }) {
     const { color, opacity } = _value
@@ -112,13 +91,14 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
 
   constructor() {
     super()
-    this.color = this.DEFAULT_COLOR
+    this.color = "#bcf124"
   }
 
   private onColorInput() {
     const { value: colorInput } = this._colorInput
     if (!(colorInput)) return;
     this.color = colorInput.value
+    this.dispatchEvent(this.onValueChange)
   }
 
   private onTextInput(e: Event) {
@@ -129,7 +109,10 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     let value = inputValue.replace(/[^a-fA-F0-9]/g, '');
     if (!value.startsWith('#')) value = '#' + value;
     textInput.value = value.slice(0, 7);
-    if (textInput.value.length === 7) this.color = textInput.value
+    if (textInput.value.length === 7) {
+      this.color = textInput.value
+      this.dispatchEvent(this.onValueChange)
+    }
   }
 
   focus() {
