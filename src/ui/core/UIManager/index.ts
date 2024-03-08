@@ -5,7 +5,11 @@ import { Toolbar } from "../../components/Toolbar";
 import { styles } from "./src/styles";
 import { ToolbarsContainer } from "../../components/ToolbarsContainer";
 
+// Do not manually update the gridArea of a container, it must remain constant.
+
 export interface ManagerConfig {
+  panelsContainerPrefix: string
+  toolbarsContainerPrefix: string
   addGlobalStyles: boolean
   sectionLabelOnVerticalToolbar: boolean
   multiPanels: boolean //Displays a dropdown to select an active panel in a bim-panels-container
@@ -14,36 +18,53 @@ export interface ManagerConfig {
   onViewportResize: () => void
 }
 
-type Areas = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
+type Area = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
 
-export type UIOrientation = "horizontal" | "vertical";
-
-export class UIManager<GridAreas extends string = Areas> {
-  private PANEL_CONTAINER_PREFIX = "panel-"
-  private GRID_TOOLBAR_PREFIX = "toolbar-"
-
+export class UIManager<GridArea extends string = Area> {
+  private _viewportResizeObserver = new ResizeObserver(UIManager.config.onViewportResize)
+  
   private containers: {
     panels: PanelsContainer[]
     toolbars: ToolbarsContainer[]
   } = { panels: [], toolbars: [] }
-  
-  // The main working area of the app.
-  viewport: HTMLElement
 
   // The grid surrounding the viewport.
-  outerGrid = document.createElement("bim-grid") as Grid
+  private _outerGrid: Grid | null = null
+  get outerGrid() {
+    if (!this._outerGrid) {
+      const grid = document.createElement("bim-grid")
+      grid.floating = false
+      this._outerGrid = grid
+      this.setupViewport()
+    }
+    return this._outerGrid
+  }
 
   // The grid inside the viewport.
-  innerGrid = document.createElement("bim-grid") as Grid
+  private _innerGrid: Grid | null = null
+  get innerGrid() {
+    if (!this._innerGrid) {
+      const grid = document.createElement("bim-grid")
+      grid.floating = true
+      this._innerGrid = grid
+      this.setupViewport()
+    }
+    return this._innerGrid
+  }
 
   private static _config: Required<ManagerConfig> = {
+    panelsContainerPrefix: "panel-",
+    toolbarsContainerPrefix: "toolbar-",
     addGlobalStyles: true,
     sectionLabelOnVerticalToolbar: false,
     multiPanels: false,
     draggableToolbars: true,
     draggablePanels: true,
-    onViewportResize: () => { }
+    onViewportResize: () => { },
   }
+
+  // The main working area of the app.
+  viewport: HTMLElement
 
   static set config(value: Partial<ManagerConfig>) {
     this._config = {...UIManager._config, ...value}
@@ -55,9 +76,7 @@ export class UIManager<GridAreas extends string = Areas> {
 
   constructor(viewport: HTMLElement) {
     this.viewport = viewport
-    this.createGrid()
-    this.createPanelContainers()
-    this.createToolbarContainers()
+    this.setupViewport()
     this.addGlobalStyles()
   }
 
@@ -74,117 +93,86 @@ export class UIManager<GridAreas extends string = Areas> {
     }
   }
 
-  private validateGridTemplates() {
-    // Outer must have viewport
-    // Inner must not have viewport
-    // There must be no repeated panels/toolbars
-    throw new Error("UIManager: You've passed an invalid grid template.")
+  private isValidGridTemplate(grid: Grid) {
+    const areas = grid.areas
+    if (grid === this.outerGrid && !areas.includes("viewport")) {
+      throw new Error("UIManager: outer grid must have a viewport area defined in its template.")
+    }
+    if (grid === this.innerGrid && areas.includes("viewport")) {
+      throw new Error("UIManager: inner grid must not have a viewport area defined in its template.")
+    }
+    const secondGridAreas = grid === this.outerGrid ? this.innerGrid.areas : this.outerGrid.areas
+    const allAreas = [...areas, ...secondGridAreas]
+    const hasRepeatedAreas = allAreas.length !== new Set(allAreas).size;
+    if (hasRepeatedAreas) {
+      throw new Error("UIManager: there are repeated areas between the outer and inner grid templates.")
+    }
+    return true
   }
 
-  private createGrid() {
+  private setupViewport() {
     const container = this.viewport.parentElement
     if (!container) {
       throw new Error("UIManager: viewport needs to have a parent to create a grid.")
     }
-    container.append(this.outerGrid)
-    container.style.overflow = "auto"
-    this.outerGrid.append(this.viewport)
-    this.outerGrid.floating = false
-    this.innerGrid.floating = true
+    if (container !== this.outerGrid) {
+      container.append(this.outerGrid)
+      container.style.overflow = "auto"
+      this.outerGrid.append(this.viewport)
+    }
     this.viewport.style.position = "relative"
     this.viewport.style.minHeight = "0px";
     this.viewport.style.minWidth = "0px";
     this.viewport.style.gridArea = "viewport";
     this.viewport.append(this.innerGrid)
-    const observer = new ResizeObserver(UIManager.config.onViewportResize)
-    observer.observe(this.viewport)
+    this._viewportResizeObserver.observe(this.viewport)
   }
 
-  private getGridRows(grid: Grid) {
-    const template = getComputedStyle(grid).gridTemplate
-    const rows = template
-      .trim()
-      .split(/"([^"]*)"/)
-      .map((value, index) => {if (index % 2 !== 0) {return value}})
-      .filter((value) => value !== undefined) as string[];
-    return rows
-  }
-  
-  private createPanelContainers() {
-    // Request animation frame is needed because in the first render of the page
-    // the browser has not computed CSS variables yet.
-    requestAnimationFrame(() => {
-      const { panels: panelContainers } = this.containers
-      for (const grid of [this.outerGrid, this.innerGrid]) {
-        const rows = this.getGridRows(grid)
-        for (const [rowIndex, row] of rows.entries()) {
-          const columns = row.trim().split(/\s+/);
-          for (const column of columns) {
-            const isPanelContainer = RegExp(/\b\w*panel-\b/g).test(column);
-            if (!isPanelContainer) continue;
-            const columnArea = column.split(this.PANEL_CONTAINER_PREFIX)[1] as GridAreas
-            const existingContainer = panelContainers.find((container) => container.gridArea === columnArea)
-            if (existingContainer) {
-              grid.append(existingContainer);
-              continue
-            };
-            const abovePanel = rowIndex > 0 && rows[rowIndex - 1].includes(column);
-            const belowPanel = rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
-            const element = document.createElement("bim-panels-container") as PanelsContainer
-            panelContainers.push(element)
-            element.horizontal = !(abovePanel || belowPanel)
-            element.gridArea = columnArea
-            grid.append(element);
-          }
-        }
+  private createContainers() {
+    const missingContainersArea = new Set<string>()
+    const rows = [...this.outerGrid.rows, ...this.innerGrid.rows]
+    
+    // Finds missing areas
+    for (const row of rows) {
+      const columns = row.trim().split(/\s+/);
+      for (const column of columns) {
+        const panelsContainer = this.containers.panels.find((container) => container.style.gridArea === column)
+        const toolbarsContainer = this.containers.toolbars.find((container) => container.style.gridArea === column)
+        if (panelsContainer || toolbarsContainer) continue;
+        missingContainersArea.add(column)
       }
-      this.removeUnusedLayoutElements()
-    })
-  }
-
-  private createToolbarContainers() {
-    // Request animation frame is needed because in the first render of the page
-    // the browser has not computed CSS variables yet.
-    requestAnimationFrame(() => {
-      const { toolbars } = this.containers
-      for (const grid of [this.outerGrid, this.innerGrid]) {
-        const rows = this.getGridRows(grid)
-        for (const [rowIndex, row] of rows.entries()) {
-          const columns = row.trim().split(/\s+/);
-          for (const column of columns) {
-            const isToolbar = RegExp(/\b\w*toolbar-\b/g).test(column);
-            if (!isToolbar) continue;
-            const columnArea = column.split(this.GRID_TOOLBAR_PREFIX)[1] as GridAreas
-            const existingContainer = toolbars.find((container) => container.gridArea === columnArea)
-            if (existingContainer) {
-              grid.append(existingContainer);
-              continue
-            };
-            const abovePanel = rowIndex > 0 && rows[rowIndex - 1].includes(column);
-            const belowPanel = rowIndex < rows.length - 1 && rows[rowIndex + 1].includes(column);
-            const element = document.createElement("bim-toolbars-container") as ToolbarsContainer
-            toolbars.push(element)
-            element.vertical = abovePanel || belowPanel
-            element.gridArea = columnArea
-            grid.append(element);
-          }
-        }
-      }
-      this.removeUnusedLayoutElements()
-    })
-  }
-  
-  private removeUnusedLayoutElements() {
-    const { panels: panelContainers } = this.containers
-    const usedAreas = [
-      ...this.getGridRows(this.outerGrid),
-      ...this.getGridRows(this.innerGrid)
-    ]
-    for (const container of panelContainers) {
-      const area = `${this.PANEL_CONTAINER_PREFIX}${container.gridArea}`
-      const used = usedAreas.find((usedArea) => usedArea.includes(area))
-      if (!used) container.remove()
     }
+    
+    // Create the containers for missing areas
+    for (const area of missingContainersArea) {
+      if (area.startsWith(UIManager.config.panelsContainerPrefix)) {
+        const container = document.createElement("bim-panels-container") as PanelsContainer
+        container.style.gridArea = area
+        this.containers.panels.push(container)
+      } else if (area.startsWith(UIManager.config.toolbarsContainerPrefix)) {
+        const container = document.createElement("bim-toolbars-container") as ToolbarsContainer
+        container.style.gridArea = area
+        this.containers.toolbars.push(container)
+      }
+    }
+  }
+
+  private getPanelsContainer(area: GridArea) {
+    const { panels: panelContainers } = this.containers
+    const container = panelContainers.find((container) => container.gridArea === area)
+    if (!container) {
+      throw new Error(`UIManager: ${UIManager.config.panelsContainerPrefix}${area} wasn't define in --bim-grid--tpl`)
+    }
+    return container
+  }
+
+  private getToolbarsContainer(area: GridArea) {
+    const { toolbars } = this.containers
+    const container = toolbars.find((container) => container.gridArea === area)
+    if (!container) {
+      throw new Error(`UIManager: ${UIManager.config.toolbarsContainerPrefix}${area} wasn't define in --bim-grid--tpl`)
+    }
+    return container
   }
 
   static createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
@@ -208,75 +196,70 @@ export class UIManager<GridAreas extends string = Areas> {
     return id;
   }
 
-  // Gets a document element with data-ui-id set to uiID
-  static getElement<T extends HTMLElement = HTMLElement>(uiID: string) {
-    const element = document.querySelector<T>(`[data-ui-id='${uiID}']`)
+  // Gets a document element based on data-ui-id
+  static getElement<T extends HTMLElement = HTMLElement>(id: string) {
+    const element = document.querySelector<T>(`[data-ui-id='${id}']`)
     return element
-  }
-
-  getPanelsContainer(area: GridAreas) {
-    const { panels: panelContainers } = this.containers
-    const container = panelContainers.find((container) => container.gridArea === area)
-    if (!container) {
-      throw new Error(`UIManager: ${this.PANEL_CONTAINER_PREFIX}${area} wasn't define in --bim-grid--tpl`)
-    }
-    return container
-  }
-
-  getToolbarsContainer(area: GridAreas) {
-    const { toolbars } = this.containers
-    const container = toolbars.find((container) => container.gridArea === area)
-    if (!container) {
-      throw new Error(`UIManager: ${this.GRID_TOOLBAR_PREFIX}${area} wasn't define in --bim-grid--tpl`)
-    }
-    return container
   }
 
   dispose() {
     this.innerGrid.remove()
+    this._innerGrid = null
     const outerGridParent = this.outerGrid.parentNode
-    if (outerGridParent) {
-      outerGridParent.append(this.viewport)
-    }
+    if (outerGridParent) outerGridParent.append(this.viewport)
     this.outerGrid.remove()
+    this._outerGrid = null
+    this.containers = { panels: [], toolbars: [] }
+    this._viewportResizeObserver.unobserve(this.viewport)
+    UIManager.config.onViewportResize()
   }
 
-  addPanel(gridArea: GridAreas, ...panels: Panel[]) {
-    requestAnimationFrame(() => {
-      for (const panel of panels) {
-        const container = this.getPanelsContainer(gridArea)
-        container.appendChild(panel)
-      }
-    })
+  addPanel(gridArea: GridArea, ...panels: Panel[]) {
+    for (const panel of panels) {
+      const container = this.getPanelsContainer(gridArea)
+      container.appendChild(panel)
+    }
   }
 
-  addToolbar(gridArea: GridAreas, ...toolbars: Toolbar[]) {
-    requestAnimationFrame(() => {
-      for (const toolbar of toolbars) {
-        const container = this.getToolbarsContainer(gridArea)
-        container.appendChild(toolbar)
-      }
-    })
+  addToolbar(gridArea: GridArea, ...toolbars: Toolbar[]) {
+    for (const toolbar of toolbars) {
+      const container = this.getToolbarsContainer(gridArea)
+      container.appendChild(toolbar)
+    }
   }
 
   updateContainersDirection() {
-    const toolbarContainers = document.querySelectorAll("bim-toolbars-container")
-    for (const container of toolbarContainers) {
-      
-    }
-    
-    const panelContainers = document.querySelectorAll("bim-panels-container")
-    for (const container of panelContainers) {
-      
+    const grids = [this.outerGrid, this.innerGrid]
+    const containers = [...this.containers.panels, ...this.containers.toolbars]
+    const containersProcessed = []
+    for (const grid of grids) {
+      for (const container of containers) {
+        try {
+          const isVertical = grid.isVerticalArea(container.style.gridArea)
+          if (container instanceof ToolbarsContainer) {
+            container.vertical = isVertical
+          } else {
+            container.horizontal = !isVertical
+          }
+          grid.append(container)
+          containersProcessed.push(container)
+        } catch (error) {
+          if (!containersProcessed.includes(container)) {
+            container.remove()
+          }
+        }
+      }
     }
   }
 
   setGridTemplate(grid: "outer" | "inner", template: string) {
     const element = grid === "inner" ? this.innerGrid : this.outerGrid
-    const style = getComputedStyle(element)
-    if (style.getPropertyValue('--bim-grid--tpl')) {
-      element.style.setProperty('--bim-grid--tpl', template);
+    element.style.gridTemplate = template
+    const isValidTemplate = this.isValidGridTemplate(element)
+    if (!isValidTemplate) {
+      throw new Error(`UIManager: You've passed an invalid ${grid} grid template.`)
     }
-    this.createPanelContainers()
+    this.createContainers()
+    this.updateContainersDirection()
   }
 }

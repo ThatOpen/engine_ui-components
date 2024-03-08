@@ -2,6 +2,7 @@ import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent"
 import { styles } from "../../core/UIManager/src/styles";
 import { Panel } from "../Panel";
+import { UIManager } from "../../core/UIManager";
 
 export class PanelsContainer extends UIComponent {
   static styles = [
@@ -32,15 +33,13 @@ export class PanelsContainer extends UIComponent {
 
   declare horizontal: boolean
 
-  private _gridArea: string = ""
-
   get gridArea() {
-    return this._gridArea
+    const area = this.style.gridArea.split(`${UIManager.config.panelsContainerPrefix}`)[1]
+    return area
   }
 
   set gridArea(value: string) {
-    this._gridArea = value
-    this.style.gridArea = `panel-${value}`
+    this.style.gridArea = `${UIManager.config.panelsContainerPrefix}${value}`
   }
 
   constructor() {

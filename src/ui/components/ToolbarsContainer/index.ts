@@ -4,6 +4,7 @@ import { Toolbar } from "../Toolbar";
 import { createRef, ref } from "lit/directives/ref.js";
 import { Button } from "../Button";
 import { styles } from "../../core/UIManager/src/styles"
+import { UIManager } from "../../core/UIManager";
 
 export class ToolbarsContainer extends UIComponent {
   static styles = [
@@ -160,15 +161,13 @@ export class ToolbarsContainer extends UIComponent {
     return this._vertical
   }
 
-  private _gridArea: string = ""
-
   get gridArea() {
-    return this._gridArea
+    const area = this.style.gridArea.split(`${UIManager.config.toolbarsContainerPrefix}`)[1]
+    return area
   }
 
   set gridArea(value: string) {
-    this._gridArea = value
-    this.style.gridArea = `toolbar-${value}`
+    this.style.gridArea = `${UIManager.config.toolbarsContainerPrefix}${value}`
   }
 
   constructor() {
