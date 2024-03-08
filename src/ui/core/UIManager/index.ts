@@ -76,7 +76,6 @@ export class UIManager<GridArea extends string = Area> {
 
   constructor(viewport: HTMLElement) {
     this.viewport = viewport
-    this.setupViewport()
     this.addGlobalStyles()
   }
 
@@ -93,7 +92,7 @@ export class UIManager<GridArea extends string = Area> {
     }
   }
 
-  private isValidGridTemplate(grid: Grid) {
+  private verifyGridTemplate(grid: Grid) {
     const areas = grid.areas
     if (grid === this.outerGrid && !areas.includes("viewport")) {
       throw new Error("UIManager: outer grid must have a viewport area defined in its template.")
@@ -107,7 +106,6 @@ export class UIManager<GridArea extends string = Area> {
     if (hasRepeatedAreas) {
       throw new Error("UIManager: there are repeated areas between the outer and inner grid templates.")
     }
-    return true
   }
 
   private setupViewport() {
@@ -128,51 +126,28 @@ export class UIManager<GridArea extends string = Area> {
     this._viewportResizeObserver.observe(this.viewport)
   }
 
-  private createContainers() {
-    const missingContainersArea = new Set<string>()
-    const rows = [...this.outerGrid.rows, ...this.innerGrid.rows]
-    
-    // Finds missing areas
-    for (const row of rows) {
-      const columns = row.trim().split(/\s+/);
-      for (const column of columns) {
-        const panelsContainer = this.containers.panels.find((container) => container.style.gridArea === column)
-        const toolbarsContainer = this.containers.toolbars.find((container) => container.style.gridArea === column)
-        if (panelsContainer || toolbarsContainer) continue;
-        missingContainersArea.add(column)
+  private updateGridContainers(grid: Grid) {
+    this.verifyGridTemplate(grid)
+    for (const row of grid.rows) {
+      const areas = row.trim().split(/\s+/);
+      for (const area of areas) {
+        const panelsContainer = this.containers.panels.find((container) => container.style.gridArea === area)
+        const toolbarsContainer = this.containers.toolbars.find((container) => container.style.gridArea === area)
+        if (panelsContainer) {
+          grid.append(panelsContainer)
+        } else if (toolbarsContainer) {
+          grid.append(toolbarsContainer)
+        } else if (area.startsWith(UIManager.config.panelsContainerPrefix)) {
+          const container = document.createElement("bim-panels-container") as PanelsContainer
+          container.style.gridArea = area
+          this.containers.panels.push(container)
+        } else if (area.startsWith(UIManager.config.toolbarsContainerPrefix)) {
+          const container = document.createElement("bim-toolbars-container") as ToolbarsContainer
+          container.style.gridArea = area
+          this.containers.toolbars.push(container)
+        }
       }
     }
-    
-    // Create the containers for missing areas
-    for (const area of missingContainersArea) {
-      if (area.startsWith(UIManager.config.panelsContainerPrefix)) {
-        const container = document.createElement("bim-panels-container") as PanelsContainer
-        container.style.gridArea = area
-        this.containers.panels.push(container)
-      } else if (area.startsWith(UIManager.config.toolbarsContainerPrefix)) {
-        const container = document.createElement("bim-toolbars-container") as ToolbarsContainer
-        container.style.gridArea = area
-        this.containers.toolbars.push(container)
-      }
-    }
-  }
-
-  private getPanelsContainer(area: GridArea) {
-    const { panels: panelContainers } = this.containers
-    const container = panelContainers.find((container) => container.gridArea === area)
-    if (!container) {
-      throw new Error(`UIManager: ${UIManager.config.panelsContainerPrefix}${area} wasn't define in --bim-grid--tpl`)
-    }
-    return container
-  }
-
-  private getToolbarsContainer(area: GridArea) {
-    const { toolbars } = this.containers
-    const container = toolbars.find((container) => container.gridArea === area)
-    if (!container) {
-      throw new Error(`UIManager: ${UIManager.config.toolbarsContainerPrefix}${area} wasn't define in --bim-grid--tpl`)
-    }
-    return container
   }
 
   static createElementFromTemplate<T extends HTMLElement = HTMLElement>(template: string) {
@@ -214,6 +189,24 @@ export class UIManager<GridArea extends string = Area> {
     UIManager.config.onViewportResize()
   }
 
+  getPanelsContainer(area: GridArea) {
+    const { panels: panelContainers } = this.containers
+    const container = panelContainers.find((container) => container.gridArea === area)
+    if (!container) {
+      throw new Error(`UIManager: ${UIManager.config.panelsContainerPrefix}${area} wasn't define in --bim-grid--tpl`)
+    }
+    return container
+  }
+
+  getToolbarsContainer(area: GridArea) {
+    const { toolbars } = this.containers
+    const container = toolbars.find((container) => container.gridArea === area)
+    if (!container) {
+      throw new Error(`UIManager: ${UIManager.config.toolbarsContainerPrefix}${area} wasn't define in --bim-grid--tpl`)
+    }
+    return container
+  }
+
   addPanel(gridArea: GridArea, ...panels: Panel[]) {
     for (const panel of panels) {
       const container = this.getPanelsContainer(gridArea)
@@ -228,38 +221,9 @@ export class UIManager<GridArea extends string = Area> {
     }
   }
 
-  updateContainersDirection() {
-    const grids = [this.outerGrid, this.innerGrid]
-    const containers = [...this.containers.panels, ...this.containers.toolbars]
-    const containersProcessed = []
-    for (const grid of grids) {
-      for (const container of containers) {
-        try {
-          const isVertical = grid.isVerticalArea(container.style.gridArea)
-          if (container instanceof ToolbarsContainer) {
-            container.vertical = isVertical
-          } else {
-            container.horizontal = !isVertical
-          }
-          grid.append(container)
-          containersProcessed.push(container)
-        } catch (error) {
-          if (!containersProcessed.includes(container)) {
-            container.remove()
-          }
-        }
-      }
-    }
-  }
-
   setGridTemplate(grid: "outer" | "inner", template: string) {
     const element = grid === "inner" ? this.innerGrid : this.outerGrid
     element.style.gridTemplate = template
-    const isValidTemplate = this.isValidGridTemplate(element)
-    if (!isValidTemplate) {
-      throw new Error(`UIManager: You've passed an invalid ${grid} grid template.`)
-    }
-    this.createContainers()
-    this.updateContainersDirection()
+    this.updateGridContainers(element)
   }
 }

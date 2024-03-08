@@ -9,27 +9,18 @@ export class Grid extends UIComponent {
       width: 100%;
       overflow: hidden;
       box-sizing: border-box;
-      background-color: var(--bim-grid--bgc);
-      grid-template: var(--bim-grid--tpl);
-      padding: var(--bim-grid--p);
-      gap: var(--bim-grid--g);
     }
     
     :host([floating]) {
-      --bim-grid--bgc: transparent;
-      --bim-grid--p: 1rem;
-      --bim-grid--g: 1rem;
-      /* --bim-grid--tpl:
-        "empty" 1fr
-        "toolbar-b" auto
-        / 1fr
-      ; */
       --bim-toolbars-container--olw: 1px;
       --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
       --bim-toolbars-container--js: center;
       --bim-toolbars-container--as: start;
       --bim-toolbars-container_tabs--bgc: transparent;
       --bim-panel--bdrs: var(--bim-ui_size-4xs);
+      background-color: transparent;
+      padding: 1rem;
+      gap: 1rem;
       position: absolute;
       pointer-events: none;
       top: 0px;
@@ -37,18 +28,12 @@ export class Grid extends UIComponent {
     }
 
     :host(:not([floating])) {
-      --bim-grid--bgc: var(--bim-ui_bg-contrast-20);
-      --bim-grid--g: 1px;
-      /* --bim-grid--tpl:
-        "toolbar-a toolbar-a toolbar-a" auto
-        "panel-a viewport panel-b" 1fr
-        "panel-a viewport panel-b" 1fr
-        / auto 1fr auto
-      ; */
       --bim-toolbars-container--js: auto;
       --bim-toolbars-container--as: auto;
       --bim-toolbars-container_tabs--bgc: var(--bim-ui_bg-base);
       --bim-panel--bdrs: 0;
+      background-color: var(--bim-ui_bg-contrast-20);
+      gap: 1px;
     }
   `
 
@@ -83,12 +68,20 @@ export class Grid extends UIComponent {
     this.floating = false
   }
 
-  private onSlotChange() {
-    for (const child of this.children) {
-      if (this.floating) {
-        child.setAttribute("floating", "")
-      } else {
-        child.removeAttribute("floating")
+  private onSlotChange(e: any) {
+    const children = e.target.assignedElements() as HTMLElement[]
+    for (const child of children) {
+      child.toggleAttribute("floating", this.floating)
+      try {
+        const isVertical = this.isVerticalArea(child.style.gridArea)
+        if ("horizontal" in child) {
+          child.horizontal = !isVertical
+        } else if ("vertical" in child) {
+          child.vertical = isVertical
+        }
+      } catch (error) {
+        // Means the gridArea of the child is not present in this grid template
+        child.remove()
       }
     }
   }
