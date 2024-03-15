@@ -8,8 +8,8 @@ export class ViewCube extends UIComponent {
     :host {
       position: absolute;
       z-index: 999;
-      top: 2rem;
-      right: 2rem;
+      bottom: 1rem;
+      right: 1rem;
     }
 
     .parent {
@@ -121,7 +121,7 @@ export class ViewCube extends UIComponent {
 
   constructor() {
     super()
-    this.size = 80;
+    this.size = 60;
   }
 
   private getCameraCSSMatrix(matrix: number[]) {

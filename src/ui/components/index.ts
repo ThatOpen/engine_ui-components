@@ -12,8 +12,13 @@ import { Option } from "./Option";
 import { Panel } from "./Panel";
 import { PanelsContainer } from "./PanelsContainer";
 import { PanelSection } from "./PanelSection";
+import { Script } from "./Script";
 import { SelectorInput } from "./SelectorInput";
 import { Table } from "./Table";
+import { TableCell } from "./Table/src/TableCell";
+import { TableChildren } from "./Table/src/TableChildren";
+import { TableGroup } from "./Table/src/TableGroup";
+import { TableRow } from "./Table/src/TableRow";
 import { Toolbar } from "./Toolbar";
 import { ToolbarGroup } from "./ToolbarGroup";
 import { ToolbarsContainer } from "./ToolbarsContainer";
@@ -34,8 +39,13 @@ declare global {
     "bim-option": Option;
     "bim-panel": Panel;
     "bim-panel-section": PanelSection;
+    "bim-script": Script;
     "bim-selector-input": SelectorInput;
     "bim-table": Table;
+    "bim-table-cell": TableCell;
+    "bim-table-children": TableChildren;
+    "bim-table-group": TableGroup;
+    "bim-table-row": TableRow;
     "bim-toolbar": Toolbar;
     "bim-toolbar-group": ToolbarGroup;
     "bim-toolbars-container": ToolbarsContainer;
@@ -58,8 +68,13 @@ customElements.define("bim-option", Option)
 customElements.define("bim-panel", Panel)
 customElements.define("bim-panels-container", PanelsContainer)
 customElements.define("bim-panel-section", PanelSection)
+customElements.define("bim-script", Script)
 customElements.define("bim-selector-input", SelectorInput)
 customElements.define("bim-table", Table)
+customElements.define("bim-table-cell", TableCell)
+customElements.define("bim-table-children", TableChildren)
+customElements.define("bim-table-group", TableGroup)
+customElements.define("bim-table-row", TableRow)
 customElements.define("bim-toolbar", Toolbar)
 customElements.define("bim-toolbar-group", ToolbarGroup)
 customElements.define("bim-toolbars-container", ToolbarsContainer)
@@ -79,8 +94,13 @@ export {
   Option,
   Panel,
   PanelSection,
+  Script,
   SelectorInput,
   Table,
+  TableCell,
+  TableChildren,
+  TableGroup,
+  TableRow,
   Toolbar,
   ToolbarGroup,
   ToolbarsContainer,

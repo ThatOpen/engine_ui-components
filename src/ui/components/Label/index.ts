@@ -8,6 +8,7 @@ export class Label extends UIComponent {
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
       font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
       pointer-events: none;
+      overflow: hidden;
     }
     
     .parent {

@@ -76,7 +76,7 @@ export class Button extends UIComponent {
       justify-content: center;
     }
     
-    :host(:not([vertical]):not([label-hidden])[label]) .button {
+    :host(:not([label-hidden])[label]) .button {
       padding: 0 0.75rem;
     }
 
