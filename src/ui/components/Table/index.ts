@@ -2,23 +2,9 @@ import { css, html } from 'lit';
 import { UIComponent } from './../../core/UIComponent';
 import { styles } from '../../core/UIManager/src/styles';
 import { TableChildren } from './src/TableChildren';
-import { TableRow } from './src/TableRow';
+import { TableRow, TableRowData } from './src/TableRow';
+import { TableGroupData } from './src/TableGroup';
 import { createRef, ref } from 'lit/directives/ref.js';
-
-interface TableComponentCell {
-  template: string
-  onCreated?: (component: HTMLElement) => void
-}
-
-export interface RowData {
-  [key: string]: string | TableComponentCell
-}
-
-export interface TableGroup {
-  id?: string
-  data: RowData
-  children?: TableGroup[];
-}
 
 export interface ColumnData {
   name: string
@@ -47,6 +33,7 @@ export class Table extends UIComponent {
   ]
   
   static properties = {
+    _value: { type: Object, state: true },
     columns: { type: Array, attribute: false },
     rows: { type: Object, attribute: false },
     carets: { type: Boolean, reflect: true },
@@ -62,14 +49,17 @@ export class Table extends UIComponent {
   declare carets: boolean
   declare striped: boolean
   declare firstColCenter: boolean
+  declare private _value: TableGroupData[]
 
   private _children = createRef<TableChildren>()
   private _headerRow = createRef<TableRow>()
   private _columnsChange = new Event("columns-change")
-  private _rows: TableGroup[] = []
+  
+  private _rows: TableGroupData[] = []
 
-  set rows(data: TableGroup[]) {
+  set rows(data: TableGroupData[]) {
     this._rows = data
+    this._value = data
     const computed = this.computeMissingColumns(data)
     if (computed) this.columns = this._columns
   }
@@ -96,7 +86,7 @@ export class Table extends UIComponent {
   }
 
   private get _headerRowData() {
-    const data: RowData = {}
+    const data: TableRowData = {}
     for (const column of this.columns) {
       if (typeof column === "string") {
         data[column] = column
@@ -118,7 +108,7 @@ export class Table extends UIComponent {
     this.firstColCenter = false
   }
 
-  private computeMissingColumns(row: TableGroup[]): boolean {
+  private computeMissingColumns(row: TableGroupData[]): boolean {
     let computed = false
     for (const data of row) {
       const { children, data: rowData } = data
@@ -139,18 +129,29 @@ export class Table extends UIComponent {
     return computed
   }
 
-  findRowIndentation(target: RowData, tableGroups = this.rows, level = 0): number | undefined {
+  getRowIndentation(target: TableRowData, tableGroups = this.rows, level = 0): number | undefined {
     for (const tableGroup of tableGroups) {
       if (tableGroup.data === target) return level
       if (tableGroup.children) {
-        const childLevel = this.findRowIndentation(target, tableGroup.children, level + 1);
+        const childLevel = this.getRowIndentation(target, tableGroup.children, level + 1);
+        if (childLevel !== undefined) return childLevel
+      }
+    }
+    return
+  }
+
+  getGroupIndentation(target: TableGroupData, tableGroups = this.rows, level = 0): number | undefined {
+    for (const tableGroup of tableGroups) {
+      if (tableGroup === target) return level
+      if (tableGroup.children) {
+        const childLevel = this.getGroupIndentation(target, tableGroup.children, level + 1);
         if (childLevel !== undefined) return childLevel
       }
     }
     return
   }
   
-  firstUpdated() {
+  updated() {
     const { value: headerRow } = this._headerRow
     if (headerRow) {
       headerRow.isHeader = true
@@ -161,12 +162,17 @@ export class Table extends UIComponent {
     
     const { value: children } = this._children
     if (children) {
-      children.groups = this.rows
+      children.groups = this._value
       children.table = this
       children.style.gridArea = "Body"
       children.style.backgroundColor = "transparent"
     }
     
+  }
+
+  filter() {
+    this._value = [this._rows[0]]
+    this.requestUpdate()
   }
 
   render() {
@@ -182,3 +188,5 @@ export class Table extends UIComponent {
     `
   }
 }
+
+export * from "./src"

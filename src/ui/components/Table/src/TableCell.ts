@@ -18,7 +18,7 @@ export class TableCell extends UIComponent {
 
   declare column?: string
 
-  table?: Table
+  table = this.closest<Table>("bim-table")
 
   render() {
     return html`

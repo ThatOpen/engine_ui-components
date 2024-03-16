@@ -81,6 +81,8 @@ customElements.define("bim-toolbars-container", ToolbarsContainer)
 customElements.define("bim-toolbar-section", ToolbarSection)
 customElements.define("bim-view-cube", ViewCube)
 
+export * from "./Table"
+
 export {
   Button,
   Checkbox,
