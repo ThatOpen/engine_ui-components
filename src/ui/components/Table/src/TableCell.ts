@@ -10,6 +10,16 @@ export class TableCell extends UIComponent {
       align-items: center;
       justify-content: center;
     }
+    
+    ::slotted(*) {
+      --bim-input--bgc: transparent;
+      --bim-input--olc: var(--bim-ui_bg-contrast-20);
+      --bim-input--olw: 1px;
+    }
+    
+    ::slotted(bim-input) {
+      --bim-input--olw: 0;
+    }
   `
 
   static properties = {

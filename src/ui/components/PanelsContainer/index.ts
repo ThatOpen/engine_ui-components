@@ -14,6 +14,10 @@ export class PanelsContainer extends UIComponent {
         pointer-events: none;
         gap: 0.5rem;
       }
+      
+      :host(:not([floating])) {
+        background-color: var(--bim-ui_bg-base);
+      }
 
       :host([horizontal]) {
         flex-direction: row;

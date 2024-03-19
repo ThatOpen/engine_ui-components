@@ -6,12 +6,13 @@ import { HasName, HasValue } from "../../core/types";
 export class SelectorInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
-      --bim-input--g: var(--bim-ui_size-4xs) 0;
+      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
+      --bim-input--g: 0;
       --bim-option--jc: center;
+      flex: 1;
     }
 
     ::slotted(bim-option) {
-      background-color: var(--bim-selector-input--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: 0;
     }
 

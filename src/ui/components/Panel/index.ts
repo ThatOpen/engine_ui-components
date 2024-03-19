@@ -35,6 +35,7 @@ export class Panel extends UIComponent implements HasName, HasValue {
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
         font-weight: 600;
         padding: 1rem;
+        flex-shrink: 0;
       }
 
       .sections {

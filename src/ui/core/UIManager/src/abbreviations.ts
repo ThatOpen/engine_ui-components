@@ -2,6 +2,7 @@
 
 export const abbreviations = {
   borderRadius: "bdrs",
+  borderStyle: "bds",
   borderColor: "bdc",
   backgroundColor: "bgc",
   color: "c",

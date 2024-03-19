@@ -27,6 +27,7 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
 
       .header {
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
+        flex-shrink: 0;
         position: sticky;
         top: 0;
         display: flex;

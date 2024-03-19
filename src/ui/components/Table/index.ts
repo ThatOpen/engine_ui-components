@@ -16,6 +16,7 @@ export class Table extends UIComponent {
     styles.scrollbar,
     css`
       :host {
+        --bim-button--bgc: transparent;
         position: relative;
         overflow: auto;
       }
@@ -29,6 +30,13 @@ export class Table extends UIComponent {
         color: var(--bim-table_header--c, var(--bim-ui_bg-contrast-100));
         background-color: var(--bim-table_header--bgc, var(--bim-ui_bg-contrast-20));
       }
+
+      .controls {
+        display: flex;
+        gap: 0.375rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+      }
     `
   ]
   
@@ -36,7 +44,6 @@ export class Table extends UIComponent {
     _value: { type: Object, state: true },
     columns: { type: Array, attribute: false },
     rows: { type: Object, attribute: false },
-    carets: { type: Boolean, reflect: true },
     branches: { type: Boolean, reflect: true },
     striped: { type: Boolean, reflect: true },
     headersHidden: { type: Boolean, attribute: "headers-hidden", reflect: true },
@@ -46,7 +53,6 @@ export class Table extends UIComponent {
 
   declare minColWidth: string
   declare headersHidden: boolean
-  declare carets: boolean
   declare striped: boolean
   declare firstColCenter: boolean
   declare private _value: TableGroupData[]
@@ -60,6 +66,7 @@ export class Table extends UIComponent {
   set rows(data: TableGroupData[]) {
     this._rows = data
     this._value = data
+    this._columns = []
     const computed = this.computeMissingColumns(data)
     if (computed) this.columns = this._columns
   }
@@ -103,7 +110,6 @@ export class Table extends UIComponent {
     this.columns = []
     this.minColWidth = "4rem"
     this.headersHidden = false
-    this.carets = true
     this.striped = true
     this.firstColCenter = false
   }
@@ -150,6 +156,16 @@ export class Table extends UIComponent {
     }
     return
   }
+
+  /**
+   * 
+   * @param indentationLevel 
+   * @param color Any valid CSS color, even CSS variables.
+   */
+  setIndentationColor(indentationLevel: number, color: string) {
+    const event = new CustomEvent<{ indentationLevel: number, color: string }>("indentation", { detail: { indentationLevel, color } })
+    this.dispatchEvent(event)
+  }
   
   updated() {
     const { value: headerRow } = this._headerRow
@@ -182,6 +198,14 @@ export class Table extends UIComponent {
 
     return html`
       <div class="parent">
+        <div class="controls">
+          <!-- <bim-text-input></bim-text-input> -->
+          <div style="display: flex; gap: 0.375rem; width: 15rem;">
+            <bim-button icon="solar:filter-bold" label="Filter"></bim-button>
+            <bim-button icon="solar:sort-vertical-bold" label="Sort"></bim-button>
+            <bim-button icon="material-symbols:ad-group-outline-rounded" label="Group"></bim-button>
+          </div>
+        </div>
         ${!this.headersHidden ? headerRowTemplate : null}
         <bim-table-children ${ref(this._children)}></bim-table-children>
       </div>

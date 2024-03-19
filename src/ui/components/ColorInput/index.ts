@@ -6,7 +6,8 @@ import { HasName, HasValue } from "../../core/types";
 export class ColorInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
-      flex: 1
+      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
+      flex: 1;
     }
     
     .color-container {
@@ -20,7 +21,6 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
       align-items: center;
       flex: 1;
       border-radius: var(--bim-color-input--bdrs, var(--bim-ui_size-4xs));
-      background-color: var(--bim-color-input--bgc, var(--bim-ui_bg-contrast-20));
     }
 
     .color-container input[type="color"] {

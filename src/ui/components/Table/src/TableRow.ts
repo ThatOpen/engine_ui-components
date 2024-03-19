@@ -20,8 +20,8 @@ export class TableRow extends UIComponent {
       position: relative;
       grid-area: Data;
       display: grid;
-      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
-      min-height: 2rem;
+      min-height: 2.25rem;
+      /* border-bottom: 1px solid var(--bim-ui_bg-contrast-20); */
     }
   `
 
@@ -49,12 +49,14 @@ export class TableRow extends UIComponent {
 
   set table(value: Table | null) {
     if (this._table) {
+      this.columns = []
       this._table.removeEventListener("columns-change", this.onTableColumnsChange)
     }
     this._table = value
     if (this._table) {
       this.columns = this._table.columns
       this._table.addEventListener("columns-change", this.onTableColumnsChange)
+      this._table.addEventListener("indentation", this.onTableIndentationColorChange)
     }
   }
 
@@ -67,6 +69,16 @@ export class TableRow extends UIComponent {
     this.columns = []
     this.data = {}
     this.isHeader = false
+  }
+
+  private onTableIndentationColorChange = (e: any) => {
+    if (!this.table) return
+    const detail = e.detail as { indentationLevel: number, color: string }
+    const { indentationLevel, color } = detail
+    const indentation = this.table?.getRowIndentation(this.data)
+    if (indentation === indentationLevel) {
+      this.style.backgroundColor = color
+    }
   }
 
   private onTableColumnsChange = () => {
