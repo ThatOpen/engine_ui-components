@@ -1,5 +1,5 @@
-import { css, html } from "lit"
-import { UIComponent } from "../../core/UIComponent"
+import { css, html } from "lit";
+import { UIComponent } from "../../core/UIComponent";
 
 export class Label extends UIComponent {
   static styles = css`
@@ -10,7 +10,7 @@ export class Label extends UIComponent {
       pointer-events: none;
       overflow: hidden;
     }
-    
+
     .parent {
       display: flex;
       align-items: center;
@@ -36,15 +36,21 @@ export class Label extends UIComponent {
       border-radius: 100%;
       margin-right: 0.125rem;
     }
-    
+
     :host(:not([vertical])) img {
-      max-height: var(--bim-label_icon--sz, calc(var(--bim-label--fz, var(--bim-ui_size-xs)) * 1.5));
+      max-height: var(
+        --bim-label_icon--sz,
+        calc(var(--bim-label--fz, var(--bim-ui_size-xs)) * 1.5)
+      );
     }
-    
+
     :host([vertical]) img {
-      max-height: var(--bim-label_icon--sz, calc(var(--bim-label--fz, var(--bim-ui_size-xs)) * 4));
+      max-height: var(
+        --bim-label_icon--sz,
+        calc(var(--bim-label--fz, var(--bim-ui_size-xs)) * 4)
+      );
     }
-  `
+  `;
 
   static properties = {
     label: { type: String, reflect: true },
@@ -53,29 +59,35 @@ export class Label extends UIComponent {
     icon: { type: String, reflect: true },
     iconHidden: { type: Boolean, attribute: "icon-hidden", reflect: true },
     vertical: { type: Boolean, reflect: true },
-  }
+  };
 
-  declare icon?: string
-  declare img?: string
-  declare iconHidden: boolean
-  declare label?: string
-  declare labelHidden: boolean
-  declare vertical: boolean
+  declare icon?: string;
+  declare img?: string;
+  declare iconHidden: boolean;
+  declare label?: string;
+  declare labelHidden: boolean;
+  declare vertical: boolean;
 
   constructor() {
-    super()
-    this.iconHidden = false
-    this.labelHidden = false
-    this.vertical = false
+    super();
+    this.iconHidden = false;
+    this.labelHidden = false;
+    this.vertical = false;
   }
 
   render() {
     return html`
       <div class="parent">
-        ${ this.img ? html`<img .src=${this.img} .alt=${this.label || ""} />` : null }
-        ${ !this.iconHidden && this.icon ? html`<bim-icon .icon=${this.icon}></bim-icon>` : null }
-        ${ !this.labelHidden && this.label ? html`<label>${this.label}</label>` : null }
+        ${this.img
+          ? html`<img .src=${this.img} .alt=${this.label || ""} />`
+          : null}
+        ${!this.iconHidden && this.icon
+          ? html`<bim-icon .icon=${this.icon}></bim-icon>`
+          : null}
+        ${!this.labelHidden && this.label
+          ? html`<label>${this.label}</label>`
+          : null}
       </div>
-    `
+    `;
   }
 }

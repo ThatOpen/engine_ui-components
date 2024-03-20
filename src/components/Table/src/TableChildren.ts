@@ -13,23 +13,25 @@ export class TableChildren extends UIComponent {
     :host([hidden]) {
       display: none;
     }
-  `
+  `;
 
   static properties = {
-    groups: { type: Array, attribute: false }
-  }
+    groups: { type: Array, attribute: false },
+  };
 
-  declare groups?: TableGroupData[]
-  table = this.closest<Table>("bim-table")
+  declare groups?: TableGroupData[];
+  table = this.closest<Table>("bim-table");
 
   render() {
     return html`
       ${this.groups?.map((group) => {
-        const tableGroup = document.createElement("bim-table-group") as TableGroup
-        tableGroup.group = group
-        tableGroup.table = this.table
-        return tableGroup
+        const tableGroup = document.createElement(
+          "bim-table-group",
+        ) as TableGroup;
+        tableGroup.group = group;
+        tableGroup.table = this.table;
+        return tableGroup;
       })}
-    `
+    `;
   }
 }

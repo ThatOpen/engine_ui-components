@@ -1,7 +1,7 @@
-import * as THREE from "three"
+import * as THREE from "three";
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
 import { createRef, ref } from "lit/directives/ref.js";
+import { UIComponent } from "../../core/UIComponent";
 
 export class ViewCube extends UIComponent {
   static styles = css`
@@ -13,7 +13,7 @@ export class ViewCube extends UIComponent {
     }
 
     .parent {
-      perspective: 400px
+      perspective: 400px;
     }
 
     .cube {
@@ -21,7 +21,7 @@ export class ViewCube extends UIComponent {
       transform-style: preserve-3d;
       transform: translateZ(-300px);
     }
-    
+
     .face {
       position: absolute;
       display: flex;
@@ -32,14 +32,14 @@ export class ViewCube extends UIComponent {
       text-align: center;
       transition: all 0.2s;
       color: var(--bim-view-cube--c, white);
-      font-size: var(--bim-view-cube--fz, --bim-ui_size-2xl)
+      font-size: var(--bim-view-cube--fz, --bim-ui_size-2xl);
     }
 
     .x-direction {
       // background-color: var(--bim-view-cube_x--bgc, #c93830DD);
       background-color: var(--bim-view-cube_x--bgc, #01a6bcde);
     }
-    
+
     .x-direction:hover {
       background-color: var(--bim-ui_color-accent, white);
     }
@@ -48,11 +48,11 @@ export class ViewCube extends UIComponent {
       // background-color: var(--bim-view-cube_y--bgc, #54ff19DD);
       background-color: var(--bim-view-cube_y--bgc, #8d0ec8de);
     }
-    
+
     .y-direction:hover {
       background-color: var(--bim-ui_color-accent, white);
     }
-    
+
     .z-direction {
       // background-color: var(--bim-view-cube_z--bgc, #3041c9DD);
       background-color: var(--bim-view-cube_z--bgc, #2718afde);
@@ -85,8 +85,7 @@ export class ViewCube extends UIComponent {
     .face-left {
       transform: rotateY(-90deg) rotateX(180deg);
     }
-
-  `
+  `;
 
   static properties = {
     size: { type: Number, reflect: true },
@@ -95,32 +94,32 @@ export class ViewCube extends UIComponent {
     topText: { type: String, attribute: "top-text", reflect: true },
     bottomText: { type: String, attribute: "bottom-text", reflect: true },
     frontText: { type: String, attribute: "front-text", reflect: true },
-    backText: { type: String, attribute: "back-text", reflect: true }
-  }
+    backText: { type: String, attribute: "back-text", reflect: true },
+  };
 
-  declare size: number
-  declare rightText: string
-  declare leftText: string
-  declare topText: string
-  declare bottomText: string
-  declare frontText: string
-  declare backText: string
+  declare size: number;
+  declare rightText: string;
+  declare leftText: string;
+  declare topText: string;
+  declare bottomText: string;
+  declare frontText: string;
+  declare backText: string;
 
-  private _matrix = new THREE.Matrix4()
-  private _cube = createRef<HTMLDivElement>()
-  private _onRightClick = new Event("right-click")
-  private _onLeftClick = new Event("left-click")
-  private _onTopClick = new Event("top-click")
-  private _onBottomClick = new Event("bottom-click")
-  private _onFrontClick = new Event("front-click")
-  private _onBackClick = new Event("back-click")
+  private _matrix = new THREE.Matrix4();
+  private _cube = createRef<HTMLDivElement>();
+  private _onRightClick = new Event("right-click");
+  private _onLeftClick = new Event("left-click");
+  private _onTopClick = new Event("top-click");
+  private _onBottomClick = new Event("bottom-click");
+  private _onFrontClick = new Event("front-click");
+  private _onBackClick = new Event("back-click");
 
   private _epsilon = (value: number) => {
     return Math.abs(value) < 1e-10 ? 0 : value;
   };
 
   constructor() {
-    super()
+    super();
     this.size = 60;
   }
 
@@ -147,55 +146,86 @@ export class ViewCube extends UIComponent {
 
   updateOrientation(matrix: number[]) {
     if (matrix.length !== 16) return;
-    const { value: cube } = this._cube
+    const { value: cube } = this._cube;
     if (!cube) return;
-    this._matrix.extractRotation(new THREE.Matrix4().fromArray(matrix))
-    const cssMatrix3D = this.getCameraCSSMatrix(this._matrix.elements)
+    this._matrix.extractRotation(new THREE.Matrix4().fromArray(matrix));
+    const cssMatrix3D = this.getCameraCSSMatrix(this._matrix.elements);
     cube.style.transform = `translateZ(-300px) ${cssMatrix3D}`;
   }
 
   render() {
     return html`
       <style>
-        .face, .cube {
+        .face,
+        .cube {
           width: ${this.size}px;
           height: ${this.size}px;
         }
 
         .face-right {
-          translate: ${this.size/2}px 0 0;
+          translate: ${this.size / 2}px 0 0;
         }
 
         .face-left {
-          translate: ${-this.size/2}px 0 0;
+          translate: ${-this.size / 2}px 0 0;
         }
 
         .face-top {
-          translate: 0 ${this.size/2}px 0;
+          translate: 0 ${this.size / 2}px 0;
         }
 
         .face-bottom {
-          translate: 0 ${-this.size/2}px 0;
+          translate: 0 ${-this.size / 2}px 0;
         }
 
         .face-front {
-          translate: 0 0 ${this.size/2}px;
+          translate: 0 0 ${this.size / 2}px;
         }
 
         .face-back {
-          translate: 0 0 ${-this.size/2}px;
+          translate: 0 0 ${-this.size / 2}px;
         }
       </style>
       <div class="parent">
         <div ${ref(this._cube)} class="cube">
-          <div class="face x-direction face-right" @click=${() => this.dispatchEvent(this._onRightClick)}>${this.rightText}</div>
-          <div class="face x-direction face-left" @click=${() => this.dispatchEvent(this._onLeftClick)}>${this.leftText}</div>
-          <div class="face y-direction face-top" @click=${() => this.dispatchEvent(this._onTopClick)}>${this.topText}</div>
-          <div class="face y-direction face-bottom" @click=${() => this.dispatchEvent(this._onBottomClick)}>${this.bottomText}</div>
-          <div class="face z-direction face-front" @click=${() => this.dispatchEvent(this._onFrontClick)}>${this.frontText}</div>
-          <div class="face z-direction face-back" @click=${() => this.dispatchEvent(this._onBackClick)}>${this.backText}</div>
+          <div
+            class="face x-direction face-right"
+            @click=${() => this.dispatchEvent(this._onRightClick)}
+          >
+            ${this.rightText}
+          </div>
+          <div
+            class="face x-direction face-left"
+            @click=${() => this.dispatchEvent(this._onLeftClick)}
+          >
+            ${this.leftText}
+          </div>
+          <div
+            class="face y-direction face-top"
+            @click=${() => this.dispatchEvent(this._onTopClick)}
+          >
+            ${this.topText}
+          </div>
+          <div
+            class="face y-direction face-bottom"
+            @click=${() => this.dispatchEvent(this._onBottomClick)}
+          >
+            ${this.bottomText}
+          </div>
+          <div
+            class="face z-direction face-front"
+            @click=${() => this.dispatchEvent(this._onFrontClick)}
+          >
+            ${this.frontText}
+          </div>
+          <div
+            class="face z-direction face-back"
+            @click=${() => this.dispatchEvent(this._onBackClick)}
+          >
+            ${this.backText}
+          </div>
         </div>
       </div>
-    `
+    `;
   }
 }

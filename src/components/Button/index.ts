@@ -3,13 +3,13 @@ import {
   flip,
   shift,
   offset,
-  inline
-  //@ts-ignore
+  inline,
+  // @ts-ignore
 } from "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.1/+esm";
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
-import 'iconify-icon';
 import { createRef, ref } from "lit/directives/ref.js";
+import { UIComponent } from "../../core/UIComponent";
+import "iconify-icon";
 import { ContextMenu } from "../ContextMenu";
 
 export class Button extends UIComponent {
@@ -33,7 +33,7 @@ export class Button extends UIComponent {
       row-gap: 0.125rem;
       column-gap: 0.125rem;
     }
-    
+
     .button,
     .children {
       box-sizing: border-box;
@@ -50,7 +50,7 @@ export class Button extends UIComponent {
     .button {
       flex-grow: 1;
     }
-    
+
     :host(:not([label-hidden])[label]) .button {
       justify-content: var(--bim-button--jc, center);
     }
@@ -75,7 +75,7 @@ export class Button extends UIComponent {
     :host([vertical]) .parent {
       justify-content: center;
     }
-    
+
     :host(:not([label-hidden])[label]) .button {
       padding: 0 0.75rem;
     }
@@ -90,12 +90,15 @@ export class Button extends UIComponent {
     }
 
     ::slotted(bim-button) {
-      --bim-button--bgc: var(--bim-context-menu--bgc, var(--bim-ui_bg-contrast-20));
+      --bim-button--bgc: var(
+        --bim-context-menu--bgc,
+        var(--bim-ui_bg-contrast-20)
+      );
       --bim-button--bdrs: var(--bim-ui_size-4xs);
       --bim-button--olw: 0;
       --bim-button--olc: transparent;
     }
-    
+
     .tooltip {
       position: absolute;
       padding: 0.75rem;
@@ -108,7 +111,7 @@ export class Button extends UIComponent {
       font-size: var(--bim-ui_size-xs);
       border-radius: var(--bim-ui_size-4xs);
       background-color: var(--bim-ui_bg-contrast-20);
-      color: var(--bim-ui_bg-contrast-100)
+      color: var(--bim-ui_bg-contrast-100);
     }
 
     .tooltip p {
@@ -119,7 +122,7 @@ export class Button extends UIComponent {
     :host(:not([tooltip-visible])) .tooltip {
       display: none;
     }
-  `
+  `;
 
   static properties = {
     label: { type: String, reflect: true },
@@ -129,56 +132,60 @@ export class Button extends UIComponent {
     icon: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true },
     tooltipTime: { type: Number, attribute: "tooltip-time", reflect: true },
-    tooltipVisible: { type: Boolean, attribute: "tooltip-visible", reflect: true },
+    tooltipVisible: {
+      type: Boolean,
+      attribute: "tooltip-visible",
+      reflect: true,
+    },
     tooltipTitle: { type: String, attribute: "tooltip-title", reflect: true },
     tooltipText: { type: String, attribute: "tooltip-text", reflect: true },
-  }
+  };
 
-  declare icon?: string
-  declare label?: string
-  declare labelHidden: boolean
-  declare tooltipVisible: boolean
-  declare tooltipText: string
-  declare tooltipTitle: string
-  declare tooltipTime: number
-  declare active: boolean
-  declare disabled: boolean
-  declare vertical: boolean
+  declare icon?: string;
+  declare label?: string;
+  declare labelHidden: boolean;
+  declare tooltipVisible: boolean;
+  declare tooltipText: string;
+  declare tooltipTitle: string;
+  declare tooltipTime: number;
+  declare active: boolean;
+  declare disabled: boolean;
+  declare vertical: boolean;
 
-  private _parent = createRef<HTMLDivElement>()
-  private _tooltip = createRef<HTMLDivElement>()
-  private _contextMenu = createRef<ContextMenu>()
-  private timeoutID?: number
+  private _parent = createRef<HTMLDivElement>();
+  private _tooltip = createRef<HTMLDivElement>();
+  private _contextMenu = createRef<ContextMenu>();
+  private timeoutID?: number;
 
-  private _mouseLeave = false
+  private _mouseLeave = false;
 
   set mouseLeave(value: boolean) {
-    this._mouseLeave = value
+    this._mouseLeave = value;
     if (value) {
-      this.tooltipVisible = false
-      clearTimeout(this.timeoutID)
+      this.tooltipVisible = false;
+      clearTimeout(this.timeoutID);
     }
   }
 
   get mouseLeave() {
-    return this._mouseLeave
+    return this._mouseLeave;
   }
 
   constructor() {
-    super()
-    this.labelHidden = false
-    this.active = false
-    this.disabled = false
-    this.vertical = false
-    this.tooltipVisible = false
-    this.tooltipTime = 700
-    this.mouseLeave = true
-    this.addEventListener("click", (e) => e.stopPropagation())
+    super();
+    this.labelHidden = false;
+    this.active = false;
+    this.disabled = false;
+    this.vertical = false;
+    this.tooltipVisible = false;
+    this.tooltipTime = 700;
+    this.mouseLeave = true;
+    this.addEventListener("click", (e) => e.stopPropagation());
   }
 
   private computeTooltipPosition() {
-    const { value: parent } = this._parent
-    const { value: tooltip } = this._tooltip
+    const { value: parent } = this._parent;
+    const { value: tooltip } = this._tooltip;
     if (!(parent && tooltip)) return;
     computePosition(parent, tooltip, {
       placement: "bottom",
@@ -194,86 +201,120 @@ export class Button extends UIComponent {
 
   private onMouseEnter() {
     if (!(this.tooltipTitle || this.tooltipText)) return;
-    this.mouseLeave = false
+    this.mouseLeave = false;
     this.timeoutID = setTimeout(() => {
       if (this.mouseLeave) return;
-      this.computeTooltipPosition()
-      this.tooltipVisible = true
-    }, this.tooltipTime)
+      this.computeTooltipPosition();
+      this.tooltipVisible = true;
+    }, this.tooltipTime);
   }
 
   private onChildrenClick(e: MouseEvent) {
-    e.stopPropagation()
-    const { value: contextMenu } = this._contextMenu
+    e.stopPropagation();
+    const { value: contextMenu } = this._contextMenu;
     if (!contextMenu) return;
-    contextMenu.visible = !contextMenu.visible
+    contextMenu.visible = !contextMenu.visible;
   }
 
   private onSlotChange(e: any) {
-    const { value: contextMenu } = this._contextMenu
-    const children = e.target.assignedElements()
+    const { value: contextMenu } = this._contextMenu;
+    const children = e.target.assignedElements();
     for (const child of children) {
       if (!(child instanceof Button)) {
-        child.remove()
-        console.warn("Only bim-button is allowed inside bim-button. Child has been removed.");
+        child.remove();
+        console.warn(
+          "Only bim-button is allowed inside bim-button. Child has been removed.",
+        );
         continue;
       }
-      child.addEventListener("click", () => contextMenu?.updatePosition())
+      child.addEventListener("click", () => contextMenu?.updatePosition());
     }
-    this.requestUpdate()
+    this.requestUpdate();
   }
 
   private onWindowMouseUp = (e: MouseEvent) => {
-    const { value: contextMenu } = this._contextMenu
-    if (!this.contains(e.target as Node) && contextMenu) contextMenu.visible = false;
-  }
+    const { value: contextMenu } = this._contextMenu;
+    if (!this.contains(e.target as Node) && contextMenu)
+      contextMenu.visible = false;
+  };
 
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('mouseup', this.onWindowMouseUp);
+    window.addEventListener("mouseup", this.onWindowMouseUp);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener('mouseup', this.onWindowMouseUp);
+    window.removeEventListener("mouseup", this.onWindowMouseUp);
   }
 
   render() {
     const tooltipTemplate = html`
       <div ${ref(this._tooltip)} class="tooltip">
-        ${this.tooltipTitle ? html`<p style="text-wrap: nowrap;"><strong>${this.tooltipTitle}</strong></p>` : null}
-        ${this.tooltipText ? html`<p style="width: 9rem;">${this.tooltipText}</p>` : null}
+        ${this.tooltipTitle
+          ? html`<p style="text-wrap: nowrap;">
+              <strong>${this.tooltipTitle}</strong>
+            </p>`
+          : null}
+        ${this.tooltipText
+          ? html`<p style="width: 9rem;">${this.tooltipText}</p>`
+          : null}
       </div>
-    `
+    `;
 
-    const hasChildren = this.children.length > 0
+    const hasChildren = this.children.length > 0;
 
     return html`
       <style>
         .button {
-          border-radius: var(--bim-button--bdrs, ${hasChildren ? "var(--bim-ui_size-4xs) 0 0 var(--bim-ui_size-4xs)" : "var(--bim-ui_size-4xs)" });
+          border-radius: var(
+            --bim-button--bdrs,
+            ${hasChildren
+              ? "var(--bim-ui_size-4xs) 0 0 var(--bim-ui_size-4xs)"
+              : "var(--bim-ui_size-4xs)"}
+          );
         }
         .children {
-          border-radius: var(--bim-button--bdrs, ${hasChildren ? "0 var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0" : "var(--bim-ui_size-4xs)" });
+          border-radius: var(
+            --bim-button--bdrs,
+            ${hasChildren
+              ? "0 var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0"
+              : "var(--bim-ui_size-4xs)"}
+          );
         }
       </style>
       <div ${ref(this._parent)} class="parent">
-        ${this.label || this.icon ? html`
-          <div class="button" @mouseenter=${this.onMouseEnter} @mouseleave=${() => this.mouseLeave = true}>
-            <bim-label .label=${this.label} .icon=${this.icon} .vertical=${this.vertical} .labelHidden=${this.labelHidden}></bim-label>
-          </div>
-        ` : null}
+        ${this.label || this.icon
+          ? html`
+              <div
+                class="button"
+                @mouseenter=${this.onMouseEnter}
+                @mouseleave=${() => (this.mouseLeave = true)}
+              >
+                <bim-label
+                  .label=${this.label}
+                  .icon=${this.icon}
+                  .vertical=${this.vertical}
+                  .labelHidden=${this.labelHidden}
+                ></bim-label>
+              </div>
+            `
+          : null}
         ${this.tooltipTitle || this.tooltipText ? tooltipTemplate : null}
-        ${hasChildren ? html`
-          <div class="children" @click=${this.onChildrenClick}>
-            <bim-icon icon="ic:round-plus"></bim-icon>
-          </div>
-          ` : null
-        }
-        <bim-context-menu ${ref(this._contextMenu)} style="row-gap: var(--bim-ui_size-4xs)">
+        ${hasChildren
+          ? html`
+              <div class="children" @click=${this.onChildrenClick}>
+                <bim-icon icon="ic:round-plus"></bim-icon>
+              </div>
+            `
+          : null}
+        <bim-context-menu
+          ${ref(this._contextMenu)}
+          style="row-gap: var(--bim-ui_size-4xs)"
+        >
           <slot @slotchange=${this.onSlotChange}></slot>
         </bim-context-menu>
       </div>
-    `
+    `;
   }
 }

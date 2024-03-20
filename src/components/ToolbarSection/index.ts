@@ -1,7 +1,7 @@
-import { css, html } from "lit"
-import { UIComponent } from "../../core/UIComponent"
-import { ToolbarGroup } from "../ToolbarGroup"
-import { HasName } from "../../core/types"
+import { css, html } from "lit";
+import { UIComponent } from "../../core/UIComponent";
+import { ToolbarGroup } from "../ToolbarGroup";
+import { HasName } from "../../core/types";
 
 export class ToolbarSection extends UIComponent implements HasName {
   static styles = css`
@@ -35,60 +35,59 @@ export class ToolbarSection extends UIComponent implements HasName {
     :host([vertical]) .parent > bim-label {
       writing-mode: tb;
     }
-    
+
     .children {
       display: flex;
       gap: 0.25rem;
     }
 
     :host([vertical]) .children {
-      flex-direction: column
+      flex-direction: column;
     }
-
-  `
+  `;
 
   static properties = {
     label: { type: String, reflect: true },
     icon: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true },
     labelHidden: { type: Boolean, attribute: "label-hidden", reflect: true },
-  }
+  };
 
-  declare label?: string
-  declare icon?: string
+  declare label?: string;
+  declare icon?: string;
 
-  private _vertical = false
+  private _vertical = false;
 
   set vertical(value: boolean) {
-    this._vertical = value
-    this.updateChildren()
+    this._vertical = value;
+    this.updateChildren();
   }
 
   get vertical() {
-    return this._vertical
+    return this._vertical;
   }
 
-  private _labelHidden = false
+  private _labelHidden = false;
 
   set labelHidden(value: boolean) {
-    this._labelHidden = value
-    this.updateChildren()
+    this._labelHidden = value;
+    this.updateChildren();
   }
 
   get labelHidden() {
-    return this._labelHidden
+    return this._labelHidden;
   }
 
   constructor() {
-    super()
-    this.labelHidden = false
+    super();
+    this.labelHidden = false;
   }
 
   private updateChildren() {
-    const children = this.children
+    const children = this.children;
     for (const child of children) {
-      if (child instanceof ToolbarGroup) child.vertical = this.vertical
-      child.toggleAttribute("label-hidden", this.vertical)
+      if (child instanceof ToolbarGroup) child.vertical = this.vertical;
+      child.toggleAttribute("label-hidden", this.vertical);
     }
   }
 
@@ -98,8 +97,13 @@ export class ToolbarSection extends UIComponent implements HasName {
         <div class="children">
           <slot @slotchange=${this.updateChildren}></slot>
         </div>
-        ${!this.labelHidden && (this.label || this.icon) ? html`<bim-label .label=${this.label} .icon=${this.icon}></bim-label>` : null}
+        ${!this.labelHidden && (this.label || this.icon)
+          ? html`<bim-label
+              .label=${this.label}
+              .icon=${this.icon}
+            ></bim-label>`
+          : null}
       </div>
-    `
+    `;
   }
 }

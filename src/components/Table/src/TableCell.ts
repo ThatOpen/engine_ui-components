@@ -10,34 +10,34 @@ export class TableCell extends UIComponent {
       align-items: center;
       justify-content: center;
     }
-    
+
     ::slotted(*) {
       --bim-input--bgc: transparent;
       --bim-input--olc: var(--bim-ui_bg-contrast-20);
       --bim-input--olw: 1px;
     }
-    
+
     ::slotted(bim-input) {
       --bim-input--olw: 0;
     }
-  `
+  `;
 
   static properties = {
-    column: { type: String, reflect: true }
-  }
+    column: { type: String, reflect: true },
+  };
 
-  declare column?: string
+  declare column?: string;
 
-  table = this.closest<Table>("bim-table")
+  table = this.closest<Table>("bim-table");
 
   render() {
     return html`
       <style>
         :host {
-          grid-area: ${this.column ?? "unset"}
+          grid-area: ${this.column ?? "unset"};
         }
       </style>
       <slot></slot>
-    `
+    `;
   }
 }

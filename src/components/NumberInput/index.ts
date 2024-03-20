@@ -1,7 +1,7 @@
-import { css, html } from "lit"
-import { createRef, ref } from "lit/directives/ref.js"
-import { UIComponent } from "../../core/UIComponent"
-import { HasName, HasValue } from "../../core/types"
+import { css, html } from "lit";
+import { createRef, ref } from "lit/directives/ref.js";
+import { UIComponent } from "../../core/UIComponent";
+import { HasName, HasValue } from "../../core/types";
 
 // TODO: Improve slider by defining a step.
 
@@ -9,7 +9,10 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
       flex: 1;
-      --bim-input--bgc: var(--bim-number-input--bgc, var(--bim-ui_bg-contrast-20));
+      --bim-input--bgc: var(
+        --bim-number-input--bgc,
+        var(--bim-ui_bg-contrast-20)
+      );
       --bim-input--olw: var(--bim-number-input--olw, 2px);
       --bim-input--olc: var(--bim-number-input--olc, transparent);
       --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
@@ -18,12 +21,21 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
 
     :host(:focus) {
       --bim-input--olw: var(--bim-number-input--olw, 2px);
-      --bim-input--olc: var(--bim-number-input¡focus--c, var(--bim-ui_color-accent));
+      --bim-input--olc: var(
+        --bim-number-input¡focus--c,
+        var(--bim-ui_color-accent)
+      );
     }
 
     :host(:not([slider])) bim-label {
-      --bim-label--c: var(--bim-number-input_affixes--c, var(--bim-ui_bg-contrast-60));
-      --bim-label--fz: var(--bim-number-input_affixes--fz, var(--bim-ui_size-xs));
+      --bim-label--c: var(
+        --bim-number-input_affixes--c,
+        var(--bim-ui_bg-contrast-60)
+      );
+      --bim-label--fz: var(
+        --bim-number-input_affixes--fz,
+        var(--bim-ui_size-xs)
+      );
     }
 
     p {
@@ -62,8 +74,8 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       display: flex;
       justify-content: center;
       width: 100%;
-    }    
-    
+    }
+
     .slider-indicator {
       height: 100%;
       background-color: var(--bim-ui_color-main);
@@ -72,7 +84,7 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       left: 0;
       border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
     }
-  `
+  `;
 
   static properties = {
     name: { type: String, reflect: true },
@@ -84,121 +96,165 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     max: { type: Number, reflect: true },
     sufix: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true },
-    slider: { type: Boolean, reflect: true }
-  }
+    slider: { type: Boolean, reflect: true },
+  };
 
-  declare name?: string
-  declare icon?: string
-  declare label?: string
-  declare pref?: string
-  declare min?: number
-  declare max?: number
-  declare sufix?: string
-  declare value: number
-  declare vertical: boolean
-  declare slider: boolean
+  declare name?: string;
+  declare icon?: string;
+  declare label?: string;
+  declare pref?: string;
+  declare min?: number;
+  declare max?: number;
+  declare sufix?: string;
+  declare value: number;
+  declare vertical: boolean;
+  declare slider: boolean;
 
-  private _input = createRef<HTMLInputElement>()
-  onValueChange = new Event("input")
+  private _input = createRef<HTMLInputElement>();
+  onValueChange = new Event("input");
 
   constructor() {
-    super()
-    this.value = 0
-    this.vertical = false
-    this.slider = false
-    if ((this.min && this.max) && (this.min > this.max || this.max < this.min)) {
-      throw new Error("bim-number-input min value can't be greater than max and max can't be lower than min.")
+    super();
+    this.value = 0;
+    this.vertical = false;
+    this.slider = false;
+    if (this.min && this.max && (this.min > this.max || this.max < this.min)) {
+      throw new Error(
+        "bim-number-input min value can't be greater than max and max can't be lower than min.",
+      );
     }
   }
 
   private onInput(e: Event) {
-    e.stopPropagation()
-    const { value: input } = this._input
-    if (!input) return
-    this.setValue(input.value)
+    e.stopPropagation();
+    const { value: input } = this._input;
+    if (!input) return;
+    this.setValue(input.value);
   }
-  
+
   private setValue(_value: string) {
-    const { value: input } = this._input
+    const { value: input } = this._input;
 
-    let value = _value
-    value = value.replace(/[^0-9.-]/g, ''); // Only allow numbers, dots, and minus
-    value = value.replace(/(\..*)\./g, '$1'); // Only allow one dot
-    input && (input.value = value)
+    let value = _value;
+    value = value.replace(/[^0-9.-]/g, ""); // Only allow numbers, dots, and minus
+    value = value.replace(/(\..*)\./g, "$1"); // Only allow one dot
+    if (input) input.value = value;
     if (value.endsWith(".")) return;
-    if (value.lastIndexOf('-') > 0) {
-      value = value[0] + value.substring(1).replace(/-/g, '');
+    if (value.lastIndexOf("-") > 0) {
+      value = value[0] + value.substring(1).replace(/-/g, "");
     }
-    input && (input.value = value)
+    if (input) input.value = value;
     if (value === "-" || value === "-0") return;
-    
-    let numericValue = Number(value)
-    
-    if (isNaN(numericValue)) return;
-    
-    numericValue = this.min !== undefined ? Math.max(numericValue, this.min) : numericValue
-    numericValue = this.max !== undefined ? Math.min(numericValue, this.max) : numericValue
 
-    this.value = numericValue
-    input && (input.value = this.value.toString())
-    this.dispatchEvent(this.onValueChange)
+    let numericValue = Number(value);
+
+    if (Number.isNaN(numericValue)) return;
+
+    numericValue =
+      this.min !== undefined ? Math.max(numericValue, this.min) : numericValue;
+    numericValue =
+      this.max !== undefined ? Math.min(numericValue, this.max) : numericValue;
+
+    this.value = numericValue;
+    if (input) input.value = this.value.toString();
+    this.dispatchEvent(this.onValueChange);
   }
 
   private onBlur() {
-    const { value: input } = this._input
-    if (input && isNaN(Number(input.value))) input.value = this.value.toString()
+    const { value: input } = this._input;
+    if (input && Number.isNaN(Number(input.value)))
+      input.value = this.value.toString();
   }
-  
+
   private onSliderMouseDown(e: MouseEvent) {
-    document.body.style.cursor = "w-resize"
-    const { clientX: startPosition } = e
-    const initialValue = this.value
+    document.body.style.cursor = "w-resize";
+    const { clientX: startPosition } = e;
+    const initialValue = this.value;
     const onMouseMove = (e: MouseEvent) => {
-      const { clientX: endPosition } = e
-      const value = initialValue + (endPosition - startPosition)
-      this.setValue(value.toString())
-    }
-    document.addEventListener("mousemove", onMouseMove)
+      const { clientX: endPosition } = e;
+      const value = initialValue + (endPosition - startPosition);
+      this.setValue(value.toString());
+    };
+    document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", () => {
-      document.removeEventListener("mousemove", onMouseMove)
-      document.body.style.cursor = "default"
-    })
+      document.removeEventListener("mousemove", onMouseMove);
+      document.body.style.cursor = "default";
+    });
   }
 
   focus() {
-    const { value } = this._input
+    const { value } = this._input;
     if (!value) return;
-    value.focus()
+    value.focus();
   }
 
   render() {
     const regularTemplate = html`
-      ${this.pref || this.icon ? html`<bim-label style="pointer-events: auto" @mousedown=${this.onSliderMouseDown} .label=${this.pref} .icon=${this.icon}></bim-label>` : null}
-      <input ${ref(this._input)} type="text" size="1" @input=${this.onInput} @change=${this.onInput} @blur=${this.onBlur} .value=${this.value.toString()}> 
-      ${this.sufix ? html`<bim-label style="pointer-events: auto" @mousedown=${this.onSliderMouseDown} .label=${this.sufix}></bim-label>` : null}
-    `
+      ${this.pref || this.icon
+        ? html`<bim-label
+            style="pointer-events: auto"
+            @mousedown=${this.onSliderMouseDown}
+            .label=${this.pref}
+            .icon=${this.icon}
+          ></bim-label>`
+        : null}
+      <input
+        ${ref(this._input)}
+        type="text"
+        size="1"
+        @input=${this.onInput}
+        @change=${this.onInput}
+        @blur=${this.onBlur}
+        .value=${this.value.toString()}
+      />
+      ${this.sufix
+        ? html`<bim-label
+            style="pointer-events: auto"
+            @mousedown=${this.onSliderMouseDown}
+            .label=${this.sufix}
+          ></bim-label>`
+        : null}
+    `;
 
-    const min = this.min ?? -Infinity
-    const max = this.max ?? +Infinity
-    const normalizedValue = 100 * (this.value - min) / (max - min)
+    const min = this.min ?? -Infinity;
+    const max = this.max ?? +Infinity;
+    const normalizedValue = (100 * (this.value - min)) / (max - min);
     const sliderTemplate = html`
       <style>
         .slider-indicator {
-          width: ${`${normalizedValue}%`}
+          width: ${`${normalizedValue}%`};
         }
       </style>
       <div class="slider" @mousedown=${this.onSliderMouseDown}>
         <div class="slider-indicator"></div>
-        ${this.pref || this.icon ? html`<bim-label style="z-index: 1; margin-right: 0.125rem" .label=${this.pref + ": "} .icon=${this.icon}></bim-label>` : null}
-        <bim-label style="z-index: 1;" .label=${this.value.toString()}></bim-label>
-        ${this.sufix ? html`<bim-label style="z-index: 1;" .label=${this.sufix}></bim-label>` : null}
+        ${this.pref || this.icon
+          ? html`<bim-label
+              style="z-index: 1; margin-right: 0.125rem"
+              .label=${`${this.pref}: `}
+              .icon=${this.icon}
+            ></bim-label>`
+          : null}
+        <bim-label
+          style="z-index: 1;"
+          .label=${this.value.toString()}
+        ></bim-label>
+        ${this.sufix
+          ? html`<bim-label
+              style="z-index: 1;"
+              .label=${this.sufix}
+            ></bim-label>`
+          : null}
       </div>
-    `
+    `;
 
     return html`
-      <bim-input .label=${this.label} .icon=${this.icon} .vertical=${this.vertical}>
+      <bim-input
+        .label=${this.label}
+        .icon=${this.icon}
+        .vertical=${this.vertical}
+      >
         ${this.slider ? sliderTemplate : regularTemplate}
       </bim-input>
-    `
+    `;
   }
 }

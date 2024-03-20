@@ -10,7 +10,7 @@ export class Grid extends UIComponent {
       overflow: hidden;
       box-sizing: border-box;
     }
-    
+
     :host([floating]) {
       --bim-toolbars-container--olw: 1px;
       --bim-toolbars-container--olc: var(--bim-ui_bg-contrast-20);
@@ -35,70 +35,77 @@ export class Grid extends UIComponent {
       background-color: var(--bim-ui_bg-contrast-20);
       gap: 1px;
     }
-  `
+  `;
 
   static properties = {
-    floating: { type: Boolean, reflect: true }
-  }
+    floating: { type: Boolean, reflect: true },
+  };
 
-  declare floating: boolean
-  declare template: string
+  declare floating: boolean;
+  declare template: string;
 
   get rows() {
-    const template = this.style.gridTemplate
+    const template = this.style.gridTemplate;
     const rows = template
       .trim()
       .split(/"([^"]*)"/)
-      .map((value, index) => {if (index % 2 !== 0) {return value}})
-      .filter((value) => value !== undefined) as string[];
-    return rows
+      .map((value, index) => {
+        if (index % 2 !== 0) {
+          return value;
+        }
+        return null;
+      })
+      .filter((value) => value !== null) as string[];
+    return rows;
   }
 
   get areas() {
-    const areas = new Set<string>()
+    const areas = new Set<string>();
     for (const row of this.rows) {
       const columns = row.trim().split(/\s+/);
-      for (const column of columns) areas.add(column)
+      for (const column of columns) areas.add(column);
     }
-    return [...areas]
+    return [...areas];
   }
 
   constructor() {
-    super()
-    this.floating = false
+    super();
+    this.floating = false;
   }
 
   private onSlotChange(e: any) {
-    const children = e.target.assignedElements() as HTMLElement[]
+    const children = e.target.assignedElements() as HTMLElement[];
     for (const child of children) {
-      child.toggleAttribute("floating", this.floating)
+      child.toggleAttribute("floating", this.floating);
       try {
-        const isVertical = this.isVerticalArea(child.style.gridArea)
+        const isVertical = this.isVerticalArea(child.style.gridArea);
         if ("horizontal" in child) {
-          child.horizontal = !isVertical
+          child.horizontal = !isVertical;
         } else if ("vertical" in child) {
-          child.vertical = isVertical
+          child.vertical = isVertical;
         }
       } catch (error) {
         // Means the gridArea of the child is not present in this grid template
-        child.remove()
+        child.remove();
       }
     }
   }
-  
+
   isVerticalArea(area: string) {
-    const { rows } = this
-    const row = rows.find((row) => row.includes(area))
-    if (!row) throw new Error(`${area} wasn't defined in the grid-template of this bim-grid`)
-    const index = rows.indexOf(row)
+    const { rows } = this;
+    const row = rows.find((row) => row.includes(area));
+    if (!row)
+      throw new Error(
+        `${area} wasn't defined in the grid-template of this bim-grid`,
+      );
+    const index = rows.indexOf(row);
     const abovePanel = index > 0 && rows[index - 1].includes(area);
-    const belowPanel = index < rows.length - 1 && rows[index + 1].includes(area);
-    return abovePanel || belowPanel
+    const belowPanel =
+      index < rows.length - 1 && rows[index + 1].includes(area);
+    return abovePanel || belowPanel;
   }
 
   render() {
-    return html`
-      <slot @slotchange=${this.onSlotChange}></slot>
-    `
+    return html` <slot @slotchange=${this.onSlotChange}></slot> `;
   }
 }

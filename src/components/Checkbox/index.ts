@@ -1,6 +1,6 @@
-import { css, html } from "lit"
-import { UIComponent } from "../../core/UIComponent"
-import { HasValue } from "../../core/types"
+import { css, html } from "lit";
+import { UIComponent } from "../../core/UIComponent";
+import { HasValue } from "../../core/types";
 
 export class Checkbox extends UIComponent implements HasValue {
   static styles = css`
@@ -21,42 +21,49 @@ export class Checkbox extends UIComponent implements HasValue {
       outline: none;
       accent-color: var(--bim-checkbox--c, var(--bim-ui_color-main));
     }
-    
+
     input:focus {
-      outline: var(--bim-checkbox--olw, 2px) solid var(--bim-checkbox--olc, var(--bim-ui_color-accent));
+      outline: var(--bim-checkbox--olw, 2px) solid
+        var(--bim-checkbox--olc, var(--bim-ui_color-accent));
     }
-  `
-  
+  `;
+
   static properties = {
     name: { type: String, reflect: true },
     label: { type: String, reflect: true },
-    checked: { type: Boolean, reflect: true }
-  }
+    checked: { type: Boolean, reflect: true },
+  };
 
-  declare name?: string
-  declare label?: string
-  declare value: boolean
-  declare checked: boolean
+  declare name?: string;
+  declare label?: string;
+  declare value: boolean;
+  declare checked: boolean;
 
-  onValueChange = new Event("change")
+  onValueChange = new Event("change");
 
   constructor() {
-    super()
-    this.checked = false
+    super();
+    this.checked = false;
   }
 
   private onChange(e: Event) {
-    e.stopPropagation()
-    this.checked = (e.target as HTMLInputElement).checked
-    this.dispatchEvent(this.onValueChange)
+    e.stopPropagation();
+    this.checked = (e.target as HTMLInputElement).checked;
+    this.dispatchEvent(this.onValueChange);
   }
-  
+
   render() {
     return html`
-     <div class="host">
-       ${this.label ? html`<bim-label .label="${this.label}"></bim-label> ` : null}
-       <input type="checkbox" @change="${this.onChange}" .checked="${this.checked}"> 
-     </div>
-    `
+      <div class="host">
+        ${this.label
+          ? html`<bim-label .label="${this.label}"></bim-label> `
+          : null}
+        <input
+          type="checkbox"
+          @change="${this.onChange}"
+          .checked="${this.checked}"
+        />
+      </div>
+    `;
   }
 }

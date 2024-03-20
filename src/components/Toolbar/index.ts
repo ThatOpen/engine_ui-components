@@ -1,5 +1,5 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent"
+import { UIComponent } from "../../core/UIComponent";
 import { ToolbarSection } from "../ToolbarSection";
 import { Button } from "../Button";
 import { UIManager } from "../../core/UIManager";
@@ -39,7 +39,7 @@ export class Toolbar extends UIComponent implements HasName {
       border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       border-right: none;
     }
-  `
+  `;
 
   static properties = {
     label: { type: String, reflect: true },
@@ -47,110 +47,114 @@ export class Toolbar extends UIComponent implements HasName {
     labelsHidden: { type: Boolean, attribute: "labels-hidden", reflect: true },
     vertical: { type: Boolean, reflect: true },
     gridArea: { type: String, attribute: false },
-    active: { type: Boolean, reflect: true }
-  }
+    active: { type: Boolean, reflect: true },
+  };
 
-  declare label: string
-  declare icon?: string
-  declare labelsHidden: boolean
+  declare label: string;
+  declare icon?: string;
+  declare labelsHidden: boolean;
 
-  private _managerID = UIManager.newRandomId()
+  private _managerID = UIManager.newRandomId();
 
-  private _active = true
+  private _active = true;
 
   set active(value: boolean) {
-    this._active = value
-    this.activationButton.active = value
+    this._active = value;
+    this.activationButton.active = value;
     if (value) {
-      const parentChildren = this.parentElement?.children?? []
+      const parentChildren = this.parentElement?.children ?? [];
       for (const child of parentChildren) {
         if (child instanceof Toolbar && child !== this) {
-          child.active = false
+          child.active = false;
         }
       }
     }
   }
 
   get active() {
-    return this._active
+    return this._active;
   }
 
-  private _vertical = false
+  private _vertical = false;
 
   set vertical(value: boolean) {
-    this._vertical = value
-    this.updateSections()
+    this._vertical = value;
+    this.updateSections();
   }
 
   get vertical() {
-    return this._vertical
+    return this._vertical;
   }
 
-  private _gridArea: string = ""
+  private _gridArea: string = "";
 
   get gridArea() {
-    return this._gridArea
+    return this._gridArea;
   }
 
   set gridArea(value: string) {
-    this._gridArea = value
-    this.style.gridArea = `toolbar-${value}`
+    this._gridArea = value;
+    this.style.gridArea = `toolbar-${value}`;
   }
 
-  activationButton: Button = document.createElement("bim-button")
+  activationButton: Button = document.createElement("bim-button");
 
   constructor() {
-    super()
-    this.setAttribute("data-ui-manager-id", this._managerID)
-    this.labelsHidden = false
-    this.active = false
-    this.label = "Toolbar"
-    this.setActivationButton()
+    super();
+    this.setAttribute("data-ui-manager-id", this._managerID);
+    this.labelsHidden = false;
+    this.active = false;
+    this.label = "Toolbar";
+    this.setActivationButton();
   }
-  
+
   private setActivationButton() {
-    this.activationButton.draggable = true
-    this.activationButton.addEventListener("click", () => this.active = !this.active)
-    this.activationButton.setAttribute("data-ui-manager-id", this._managerID)
+    this.activationButton.draggable = true;
+    this.activationButton.addEventListener(
+      "click",
+      () => (this.active = !this.active),
+    );
+    this.activationButton.setAttribute("data-ui-manager-id", this._managerID);
     this.activationButton.addEventListener("dragstart", (e) => {
-      const id = this.getAttribute("data-ui-manager-id")
+      const id = this.getAttribute("data-ui-manager-id");
       if (e.dataTransfer && id) {
         e.dataTransfer.setData("id", id);
         e.dataTransfer.effectAllowed = "move";
       }
-      const containers = document.querySelectorAll("bim-toolbars-container")
+      const containers = document.querySelectorAll("bim-toolbars-container");
       for (const container of containers) {
         if (container === this.parentElement) continue;
-        container.dropping = true
+        container.dropping = true;
       }
-    })
+    });
     this.activationButton.addEventListener("dragend", (e) => {
       if (e.dataTransfer) e.dataTransfer.clearData();
-      const containers = document.querySelectorAll("bim-toolbars-container")
+      const containers = document.querySelectorAll("bim-toolbars-container");
       for (const container of containers) {
-        container.dropping = false
+        container.dropping = false;
       }
-    })
+    });
   }
 
   private updateSections() {
     const children = this.children;
     for (const child of children) {
       if (child instanceof ToolbarSection) {
-        child.labelHidden = this.vertical && !UIManager.config.sectionLabelOnVerticalToolbar
-        child.vertical = this.vertical
+        child.labelHidden =
+          this.vertical && !UIManager.config.sectionLabelOnVerticalToolbar;
+        child.vertical = this.vertical;
       }
     }
   }
 
   render() {
-    this.activationButton.label = this.label
-    this.activationButton.active = this.active
-    this.activationButton.icon = this.icon
+    this.activationButton.label = this.label;
+    this.activationButton.active = this.active;
+    this.activationButton.icon = this.icon;
     return html`
       <div class="parent">
         <slot @slotchange=${this.updateSections}></slot>
       </div>
-    `
+    `;
   }
 }

@@ -58,36 +58,36 @@ declare global {
   }
 }
 
-customElements.define("bim-button", Button)
-customElements.define("bim-checkbox", Checkbox)
-customElements.define("bim-color-input", ColorInput)
-customElements.define("bim-context-menu", ContextMenu)
-customElements.define("bim-dropdown", Dropdown)
-customElements.define("bim-grid", Grid)
-customElements.define("bim-icon", Icon)
-customElements.define("bim-input", Input)
-customElements.define("bim-label", Label)
-customElements.define("bim-number-input", NumberInput)
-customElements.define("bim-option", Option)
-customElements.define("bim-panel", Panel)
-customElements.define("bim-panels-container", PanelsContainer)
-customElements.define("bim-panel-section", PanelSection)
-customElements.define("bim-scene-2d", Scene2D)
-customElements.define("bim-script", Script)
-customElements.define("bim-selector-input", SelectorInput)
-customElements.define("bim-table", Table)
-customElements.define("bim-table-cell", TableCell)
-customElements.define("bim-table-children", TableChildren)
-customElements.define("bim-table-group", TableGroup)
-customElements.define("bim-table-row", TableRow)
-customElements.define("bim-text-input", TextInput)
-customElements.define("bim-toolbar", Toolbar)
-customElements.define("bim-toolbar-group", ToolbarGroup)
-customElements.define("bim-toolbars-container", ToolbarsContainer)
-customElements.define("bim-toolbar-section", ToolbarSection)
-customElements.define("bim-view-cube", ViewCube)
+customElements.define("bim-button", Button);
+customElements.define("bim-checkbox", Checkbox);
+customElements.define("bim-color-input", ColorInput);
+customElements.define("bim-context-menu", ContextMenu);
+customElements.define("bim-dropdown", Dropdown);
+customElements.define("bim-grid", Grid);
+customElements.define("bim-icon", Icon);
+customElements.define("bim-input", Input);
+customElements.define("bim-label", Label);
+customElements.define("bim-number-input", NumberInput);
+customElements.define("bim-option", Option);
+customElements.define("bim-panel", Panel);
+customElements.define("bim-panels-container", PanelsContainer);
+customElements.define("bim-panel-section", PanelSection);
+customElements.define("bim-scene-2d", Scene2D);
+customElements.define("bim-script", Script);
+customElements.define("bim-selector-input", SelectorInput);
+customElements.define("bim-table", Table);
+customElements.define("bim-table-cell", TableCell);
+customElements.define("bim-table-children", TableChildren);
+customElements.define("bim-table-group", TableGroup);
+customElements.define("bim-table-row", TableRow);
+customElements.define("bim-text-input", TextInput);
+customElements.define("bim-toolbar", Toolbar);
+customElements.define("bim-toolbar-group", ToolbarGroup);
+customElements.define("bim-toolbars-container", ToolbarsContainer);
+customElements.define("bim-toolbar-section", ToolbarSection);
+customElements.define("bim-view-cube", ViewCube);
 
-export * from "./Table"
+export * from "./Table";
 
 export {
   Button,
@@ -115,5 +115,5 @@ export {
   ToolbarGroup,
   ToolbarsContainer,
   ToolbarSection,
-  ViewCube
-}
+  ViewCube,
+};

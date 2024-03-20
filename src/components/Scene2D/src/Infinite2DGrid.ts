@@ -15,7 +15,7 @@ export class Infinite2dGrid {
   private _regenerateDelay = 200;
   private _regenerateCounter = 0;
 
-  readonly material = new THREE.LineBasicMaterial()
+  readonly material = new THREE.LineBasicMaterial();
 
   grids: {
     main: THREE.LineSegments;
@@ -26,26 +26,26 @@ export class Infinite2dGrid {
   maxRegenerateRetrys = 4;
   gridsFactor = 5;
 
-  private _scaleX = 1
+  private _scaleX = 1;
 
   set scaleX(value: number) {
-    this._scaleX = value
-    this.regenerate()
+    this._scaleX = value;
+    this.regenerate();
   }
 
   get scaleX() {
-    return this._scaleX
+    return this._scaleX;
   }
 
-  private _scaleY = 1
+  private _scaleY = 1;
 
   set scaleY(value: number) {
-    this._scaleY = value
-    this.regenerate()
+    this._scaleY = value;
+    this.regenerate();
   }
 
   get scaleY() {
-    return this._scaleY
+    return this._scaleY;
   }
 
   constructor(camera: THREE.Camera, container: HTMLElement) {
@@ -89,7 +89,7 @@ export class Infinite2dGrid {
 
     const matrix = this._frustumMat.multiplyMatrices(
       this._camera.projectionMatrix,
-      this._camera.matrixWorldInverse
+      this._camera.matrixWorldInverse,
     );
     this._frustum.setFromProjectionMatrix(matrix);
 
@@ -192,7 +192,7 @@ export class Infinite2dGrid {
 
   private newNumber(offset: number) {
     const text = document.createElement("div");
-    text.style.color = "var(--bim-ui_bg-contrast-100)"
+    text.style.color = "var(--bim-ui_bg-contrast-100)";
     text.style.fontSize = "12px";
     text.textContent = `${offset}`;
     if (text.textContent.length > 6) {

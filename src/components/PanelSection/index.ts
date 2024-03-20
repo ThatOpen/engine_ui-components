@@ -1,7 +1,7 @@
-import { css, html } from "lit"
-import { UIComponent } from "../../core/UIComponent"
-import { styles } from "../../core/UIManager/src/styles"
-import { HasName, HasValue } from "../../core/types"
+import { css, html } from "lit";
+import { UIComponent } from "../../core/UIComponent";
+import { styles } from "../../core/UIManager/src/styles";
+import { HasName, HasValue } from "../../core/types";
 
 export class PanelSection extends UIComponent implements HasName, HasValue {
   static styles = [
@@ -12,11 +12,14 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
         flex-direction: column;
         height: 100%;
         pointer-events: auto;
-        border-top: 1px solid var(--bim-ui_bg-contrast-20)
+        border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
       :host(:not([fixed])) .header:hover {
-        --bim-label--c: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
+        --bim-label--c: var(
+          --bim-panel-section¡hover,
+          var(--bim-ui_color-accent)
+        );
         cursor: pointer;
         color: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
       }
@@ -42,7 +45,7 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
       }
 
       .header svg {
-        fill: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80))
+        fill: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80));
       }
 
       .title {
@@ -65,73 +68,94 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
       :host(:not([fixed])[collapsed]) .components {
         display: none;
       }
-    `
-  ]
+    `,
+  ];
 
   static properties = {
     icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
     name: { type: String, reflect: true },
     fixed: { type: Boolean, reflect: true },
-    collapsed: { type: Boolean, reflect: true }
-  }
-  
-  declare icon?: string
-  declare label?: string
-  declare name?: string
-  declare fixed?: boolean
-  declare collapsed?: boolean
+    collapsed: { type: Boolean, reflect: true },
+  };
 
-  onValueChange = new Event("change")
+  declare icon?: string;
+  declare label?: string;
+  declare name?: string;
+  declare fixed?: boolean;
+  declare collapsed?: boolean;
+
+  onValueChange = new Event("change");
 
   get value() {
-    const value: Record<string, any> = {}
+    const value: Record<string, any> = {};
     for (const _child of this.children) {
-      const child = _child as any
+      const child = _child as any;
       if ("value" in child) {
-        value[child.name || child.label] = child.value
+        value[child.name || child.label] = child.value;
       }
     }
-    return value
+    return value;
   }
 
   set value(data: Record<string, any>) {
-    const children = [...this.children]
+    const children = [...this.children];
     for (const key in data) {
       const _input = children.find((_child) => {
-        const child = _child as any
-        return child.name === key || child.label === key
-      })
+        const child = _child as any;
+        return child.name === key || child.label === key;
+      });
       if (!_input) continue;
-      const input = _input as any
-      input.value = data[key]
+      const input = _input as any;
+      input.value = data[key];
     }
   }
 
   private onHeaderClick() {
     if (this.fixed) return;
-    this.collapsed = !this.collapsed
+    this.collapsed = !this.collapsed;
   }
 
   render() {
-    const header = this.label || this.icon || this.name || this.fixed
+    const header = this.label || this.icon || this.name || this.fixed;
 
-    const expandLessSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>`
-    const expandMoreSVG = html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>`
-    const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG
+    const expandLessSVG = html`<svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="1.125rem"
+      viewBox="0 0 24 24"
+      width="1.125rem"
+    >
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+    </svg>`;
+    const expandMoreSVG = html`<svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="1.125rem"
+      viewBox="0 0 24 24"
+      width="1.125rem"
+    >
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
+    </svg>`;
+    const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG;
 
     const headerTemplate = html`
       <div class="header" @click=${this.onHeaderClick}>
-        ${ this.label || this.icon || this.name ? html`<bim-label .label=${this.label || this.name} .icon=${this.icon}></bim-label>` : null }
-        ${ !this.fixed ? expandIcon : null }
+        ${this.label || this.icon || this.name
+          ? html`<bim-label
+              .label=${this.label || this.name}
+              .icon=${this.icon}
+            ></bim-label>`
+          : null}
+        ${!this.fixed ? expandIcon : null}
       </div>
-    `
-    
+    `;
+
     return html`
-      ${ header ? headerTemplate : null }
+      ${header ? headerTemplate : null}
       <div class="components">
         <slot></slot>
       </div>
-    `
+    `;
   }
 }

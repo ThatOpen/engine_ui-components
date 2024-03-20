@@ -1,15 +1,15 @@
 import { css, html } from "lit";
+import { createRef, ref } from "lit/directives/ref.js";
 import { UIComponent } from "../../../core/UIComponent";
 import { Table } from "../index";
 import { TableRow, TableRowData } from "./TableRow";
 import { TableChildren } from "./TableChildren";
-import { createRef, ref } from "lit/directives/ref.js";
 
 export interface TableGroupData {
-  data: TableRowData
+  data: TableRowData;
   children?: TableGroupData[];
-  id?: string
-  childrenHidden?: boolean
+  id?: string;
+  childrenHidden?: boolean;
 }
 
 export class TableGroup extends UIComponent {
@@ -51,49 +51,56 @@ export class TableGroup extends UIComponent {
     }
 
     .caret svg {
-      fill: var(--bim-ui_bg-contrast-60)
+      fill: var(--bim-ui_bg-contrast-60);
     }
-  `
+  `;
 
   static properties = {
     group: { type: Object, attribute: false },
-    childrenHidden: { type: Boolean, attribute: "children-hidden", reflect: true }
-  }
-  
-  private _row = createRef<TableRow>()
-  private _children = createRef<TableChildren>()
-  private _branch = createRef<HTMLDivElement>()
-  
-  declare group: TableGroupData
-  declare childrenHidden: boolean
-  table = this.closest<Table>("bim-table")
+    childrenHidden: {
+      type: Boolean,
+      attribute: "children-hidden",
+      reflect: true,
+    },
+  };
+
+  private _row = createRef<TableRow>();
+  private _children = createRef<TableChildren>();
+  private _branch = createRef<HTMLDivElement>();
+
+  declare group: TableGroupData;
+  declare childrenHidden: boolean;
+  table = this.closest<Table>("bim-table");
 
   constructor() {
-    super()
-    this.group = { data: {} }
-    this.childrenHidden = false
+    super();
+    this.group = { data: {} };
+    this.childrenHidden = false;
   }
 
   firstUpdated() {
-    const { value: row } = this._row
+    const { value: row } = this._row;
     if (row) {
-      row.data = this.group.data
-      row.table = this.table
+      row.data = this.group.data;
+      row.table = this.table;
     }
 
-    const { value: children } = this._children
+    const { value: children } = this._children;
     if (children) {
-      children.groups = this.group.children
-      children.table = this.table
+      children.groups = this.group.children;
+      children.table = this.table;
     }
   }
 
   render() {
-    const indentation = this.table?.getGroupIndentation(this.group) ?? 0
+    const indentation = this.table?.getGroupIndentation(this.group) ?? 0;
 
     const childrenTemplate = html`
-      <bim-table-children ${ref(this._children)} .hidden=${this.childrenHidden}></bim-table-children>
-    `
+      <bim-table-children
+        ${ref(this._children)}
+        .hidden=${this.childrenHidden}
+      ></bim-table-children>
+    `;
 
     const verticalBranchTemplate = html`
       <style>
@@ -102,7 +109,7 @@ export class TableGroup extends UIComponent {
         }
       </style>
       <div class="branch branch-vertical" ${ref(this._branch)}></div>
-    `
+    `;
 
     const horizontalBranchTemplate = html`
       <style>
@@ -111,46 +118,59 @@ export class TableGroup extends UIComponent {
         }
       </style>
       <div class="branch branch-horizontal"></div>
-    `
+    `;
 
     const childrenHiddenCaret = html`
       <svg
         height="9.5"
         width="7.5"
         viewBox="0 0 4.6666672 7.3333333"
-        xmlns="http://www.w3.org/2000/svg">
-        <path d="m 1.7470835,6.9583848 2.5899999,-2.59 c 0.39,-0.39 0.39,-1.02 0,-1.41 L 1.7470835,0.36838483 c -0.63,-0.62000003 -1.71000005,-0.18 -1.71000005,0.70999997 v 5.17 c 0,0.9 1.08000005,1.34 1.71000005,0.71 z" />
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m 1.7470835,6.9583848 2.5899999,-2.59 c 0.39,-0.39 0.39,-1.02 0,-1.41 L 1.7470835,0.36838483 c -0.63,-0.62000003 -1.71000005,-0.18 -1.71000005,0.70999997 v 5.17 c 0,0.9 1.08000005,1.34 1.71000005,0.71 z"
+        />
       </svg>
-    `
+    `;
 
     const childrenVisibleCaret = html`
       <svg
         height="6.5"
         width="9.5"
         viewBox="0 0 5.9111118 5.0175439"
-        xmlns="http://www.w3.org/2000/svg">
-        <path d="M -0.33616196,1.922522 2.253838,4.5125219 c 0.39,0.39 1.02,0.39 1.41,0 L 6.2538379,1.922522 c 0.6200001,-0.63 0.18,-1.71000007 -0.7099999,-1.71000007 H 0.37383804 c -0.89999997,0 -1.33999997,1.08000007 -0.71,1.71000007 z" />
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M -0.33616196,1.922522 2.253838,4.5125219 c 0.39,0.39 1.02,0.39 1.41,0 L 6.2538379,1.922522 c 0.6200001,-0.63 0.18,-1.71000007 -0.7099999,-1.71000007 H 0.37383804 c -0.89999997,0 -1.33999997,1.08000007 -0.71,1.71000007 z"
+        />
       </svg>
-    `
-    
+    `;
+
     const caretTemplate = html`
       <style>
         .caret {
           left: ${0.125 + indentation}rem;
         }
       </style>
-      <div class="caret" @click=${() => this.childrenHidden = !this.childrenHidden}>
+      <div
+        class="caret"
+        @click=${() => (this.childrenHidden = !this.childrenHidden)}
+      >
         ${this.childrenHidden ? childrenHiddenCaret : childrenVisibleCaret}
       </div>
-    `
-    
+    `;
+
     return html`
-      ${this.group.children && !this.childrenHidden ? verticalBranchTemplate : null}
+      ${this.group.children && !this.childrenHidden
+        ? verticalBranchTemplate
+        : null}
       <bim-table-row ${ref(this._row)}>
-        ${this.group.children ? caretTemplate : null }
-        ${indentation === 0 || this.group.children && !this.childrenHidden ? null : horizontalBranchTemplate}
+        ${this.group.children ? caretTemplate : null}
+        ${indentation === 0 || (this.group.children && !this.childrenHidden)
+          ? null
+          : horizontalBranchTemplate}
       </bim-table-row>
       ${this.group.children ? childrenTemplate : null}
-    `
+    `;
   }
 }

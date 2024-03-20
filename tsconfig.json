@@ -12,12 +12,34 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "jsx": "preserve",
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // "allowJs": false,                         
+    // "declaration": true,                      
+    // "sourceMap": true,                        
+    // "outDir": "./dist",                       
+    // "composite": true,                        
+    // "allowSyntheticDefaultImports": true,
+    // "preserveSymlinks": true,                 
+    // "forceConsistentCasingInFileNames": true  
   },
-  "include": ["src"]
+  "include": ["testing", "src"],
+  "exclude": ["src/**/*.test.ts", "src/test"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "readme": "README.md",
+    "includeVersion": true,
+    "excludeExternals": true,
+    "excludeNotDocumented": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "excludeReferences": true
+  },
 }

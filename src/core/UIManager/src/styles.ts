@@ -9,16 +9,19 @@ const scrollbar = css`
 
   ::-webkit-scrollbar-thumb {
     border-radius: 0.25rem;
-    background-color: var(--bim-scrollbar--c, color-mix(in lab, var(--bim-ui_color-main), white 15%));
+    background-color: var(
+      --bim-scrollbar--c,
+      color-mix(in lab, var(--bim-ui_color-main), white 15%)
+    );
   }
-  
+
   ::-webkit-scrollbar-track {
     background-color: var(--bim-scrollbar--bgc, var(--bim-ui_bg-base));
   }
-`
+`;
 
 const globalStyles = css`
-  :root { 
+  :root {
     /* Backgrounds */
     --bim-ui_bg-base: hsl(210 10% 5%);
     --bim-ui_bg-contrast-10: hsl(210 10% 10%);
@@ -29,8 +32,8 @@ const globalStyles = css`
     --bim-ui_bg-contrast-100: hsl(210 10% 95%);
 
     /* Colors */
-    --bim-ui_color-main: #6528D7;
-    --bim-ui_color-accent: #BCF124;
+    --bim-ui_color-main: #6528d7;
+    --bim-ui_color-accent: #bcf124;
 
     /* Sizes */
     --bim-ui_size-4xs: 0.375rem;
@@ -102,9 +105,9 @@ const globalStyles = css`
   bim-grid[floating] bim-toolbars-container {
     background-color: transparent;
   }
-`
+`;
 
 export const styles = {
   scrollbar,
-  globalStyles
-}
+  globalStyles,
+};

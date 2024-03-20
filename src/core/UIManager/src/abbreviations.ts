@@ -11,10 +11,10 @@ export const abbreviations = {
   outlineColor: "olc",
   outlineWidth: "olw",
   scrollbar: "sb",
-  template: "tpl", //Not from emmet
+  template: "tpl", // Not from emmet
   padding: "p",
   gap: "g",
   display: "d",
   justifySelf: "js",
   justifyContent: "jc",
-}
+};

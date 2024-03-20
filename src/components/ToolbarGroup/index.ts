@@ -11,39 +11,39 @@ export class ToolbarGroup extends UIComponent {
     ::slotted(bim-button[label]:not([vertical])) {
       --bim-button--jc: flex-start;
     }
-  `
+  `;
 
   static properties = {
     rows: { type: Number, reflect: true },
-    vertical: { type: Boolean, reflect: true }
-  }
+    vertical: { type: Boolean, reflect: true },
+  };
 
-  declare rows: number
-  
-  private _vertical = false
+  declare rows: number;
+
+  private _vertical = false;
 
   set vertical(value: boolean) {
-    this._vertical = value
-    this.updateChildren()
+    this._vertical = value;
+    this.updateChildren();
   }
 
   get vertical() {
-    return this._vertical
+    return this._vertical;
   }
 
   constructor() {
-    super()
-    this.rows = 2
-    this.vertical = false
+    super();
+    this.rows = 2;
+    this.vertical = false;
   }
 
   private updateChildren() {
-    const children = this.children
+    const children = this.children;
     for (const child of children) {
       if (this.vertical) {
-        child.setAttribute("label-hidden", "")
+        child.setAttribute("label-hidden", "");
       } else {
-        child.removeAttribute("label-hidden")
+        child.removeAttribute("label-hidden");
       }
     }
   }
@@ -59,6 +59,6 @@ export class ToolbarGroup extends UIComponent {
       <div class="parent">
         <slot @slotchange=${this.updateChildren}></slot>
       </div>
-    `
+    `;
   }
 }
