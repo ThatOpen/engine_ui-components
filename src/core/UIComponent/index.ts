@@ -1,4 +1,16 @@
-import { LitElement } from "lit";
+/* eslint-disable no-dupe-class-members */
+import { LitElement, TemplateResult, render } from "lit";
+
+export type StatelessComponent<T extends HTMLElement> = (
+  Root?: T,
+) => TemplateResult;
+
+export type StatefullComponent<
+  S extends Record<string, any>,
+  T extends HTMLElement,
+> = (state: S, Root?: T) => TemplateResult;
+
+export type UpdateFunction<T extends Record<string, any>> = (state: T) => void;
 
 export class UIComponent extends LitElement {
   private _lazyLoadObserver: IntersectionObserver | null = null;
@@ -66,6 +78,40 @@ export class UIComponent extends LitElement {
     for (const element of elementsToRemove) element.remove();
     this.observeLastElement();
   };
+
+  static create<T extends HTMLElement, U extends Record<string, any>>(
+    template: StatefullComponent<U, T>,
+    state: U,
+  ): [element: T, update: UpdateFunction<U>];
+
+  static create<T extends HTMLElement>(template: StatelessComponent<T>): T;
+
+  static create<T extends HTMLElement, U extends Record<string, any>>(
+    template: StatefullComponent<U, T> | StatelessComponent<T>,
+    initialState?: U,
+  ): T | [element: T, update: UpdateFunction<U>] {
+    if (template.length > 0 && typeof initialState === "undefined") {
+      throw new Error("Initial state is required for statefull components");
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    if (template.length === 0) {
+      const statelessTemplate = template as StatelessComponent<T>;
+      render(statelessTemplate(), fragment);
+      const element = fragment.firstElementChild as unknown as T;
+      return element;
+    }
+
+    const statefullTemplate = template as StatefullComponent<U, T>;
+    const update = (state: U) => {
+      render(statefullTemplate(state), fragment);
+    };
+
+    update(initialState as U);
+    const element = fragment.firstElementChild as unknown as T;
+    return [element, update];
+  }
 
   getInnerElement<T extends HTMLElement = HTMLElement>(id: string) {
     const element = this.querySelector<T>(`[data-ui-id='${id}']`);
