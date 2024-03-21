@@ -147,6 +147,11 @@ export class Toolbar extends UIComponent implements HasName {
     }
   }
 
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.activationButton.remove();
+  }
+
   render() {
     this.activationButton.label = this.label;
     this.activationButton.active = this.active;

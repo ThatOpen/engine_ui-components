@@ -109,6 +109,11 @@ export class Panel extends UIComponent implements HasName, HasValue {
     this.activationButton.onclick = () => (this.active = !this.active);
   }
 
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.activationButton.remove();
+  }
+
   collapseSections() {
     const sections = this.querySelectorAll("bim-panel-section");
     for (const section of sections) section.collapsed = true;
