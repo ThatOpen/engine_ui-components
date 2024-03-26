@@ -55,8 +55,8 @@ export class Button extends UIComponent {
       justify-content: var(--bim-button--jc, center);
     }
 
-    .button:hover,
-    .children:hover {
+    :host(:hover) .button,
+    :host(:hover) .children {
       --bim-label--c: white;
       --bim-icon--c: white;
       fill: white;
@@ -90,6 +90,7 @@ export class Button extends UIComponent {
     }
 
     ::slotted(bim-button) {
+      --bim-icon--fz: var(--bim-ui_size-base);
       --bim-button--bgc: var(
         --bim-context-menu--bgc,
         var(--bim-ui_bg-contrast-20)
@@ -206,7 +207,7 @@ export class Button extends UIComponent {
       if (this.mouseLeave) return;
       this.computeTooltipPosition();
       this.tooltipVisible = true;
-    }, this.tooltipTime);
+    }, this.tooltipTime) as unknown as number;
   }
 
   private onChildrenClick(e: MouseEvent) {

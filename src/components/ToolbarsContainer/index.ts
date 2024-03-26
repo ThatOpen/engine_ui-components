@@ -50,6 +50,10 @@ export class ToolbarsContainer extends UIComponent {
         width: fit-content;
       }
 
+      :host([tabs-hidden]) .tabs {
+        display: none;
+      }
+
       :host([floating]) .tabs {
         overflow: hidden;
         border-top-left-radius: var(
@@ -95,6 +99,7 @@ export class ToolbarsContainer extends UIComponent {
 
       :host([floating]:not([vertical])) .toolbars {
         width: 120%;
+        justify-content: center;
       }
 
       :host([floating]) .toolbars {
@@ -143,13 +148,15 @@ export class ToolbarsContainer extends UIComponent {
       /* Drop element */
 
       .drop-element {
-        min-width: 40px;
+        box-sizing: border-box;
+        min-width: 2.75rem;
         width: 100%;
-        min-height: 40px;
+        min-height: 2.75rem;
         height: 100%;
         background-color: #6528d70d;
         border: 2px dashed var(--bim-ui_color-main);
         border-radius: 1rem;
+        z-index: 1000;
       }
     `,
   ];
@@ -229,6 +236,8 @@ export class ToolbarsContainer extends UIComponent {
       `bim-toolbar[data-ui-manager-id='${id}']`,
     );
     if (!toolbar) return;
+    const toolbarIsChild = [...this.children].includes(toolbar);
+    if (toolbarIsChild) return;
     this.append(toolbar);
   };
 

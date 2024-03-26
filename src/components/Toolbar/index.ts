@@ -109,7 +109,7 @@ export class Toolbar extends UIComponent implements HasName {
   }
 
   private setActivationButton() {
-    this.activationButton.draggable = true;
+    this.activationButton.draggable = UIManager.config.draggableToolbars;
     this.activationButton.addEventListener(
       "click",
       () => (this.active = !this.active),

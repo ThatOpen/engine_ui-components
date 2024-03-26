@@ -1,11 +1,11 @@
 export interface HasValue {
-  value: any
-  onValueChange: Event
+  value: any;
+  onValueChange: Event;
 }
 
 export interface HasName {
-  name?: string
-  label?: string
+  name?: string;
+  label?: string;
 }
 
 // Query builder types
@@ -20,7 +20,7 @@ export type QueryConditions =
 export type ConditionFunctions = {
   [queryCondition in QueryConditions]: (
     leftValue: string | boolean | number,
-    rightValue: string | boolean | number
+    rightValue: string | boolean | number,
   ) => boolean;
 };
 

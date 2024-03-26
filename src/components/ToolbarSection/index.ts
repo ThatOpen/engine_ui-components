@@ -15,7 +15,6 @@ export class ToolbarSection extends UIComponent implements HasName {
     :host(:not([vertical])) ::slotted(bim-button[vertical]) {
       --bim-icon--fz: var(--bim-ui_size-5xl);
       min-height: 3.75rem;
-      min-width: 3.75rem;
     }
 
     .parent {

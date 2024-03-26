@@ -41,8 +41,19 @@ export class Grid extends UIComponent {
     floating: { type: Boolean, reflect: true },
   };
 
+  static containerTags: { [name: string]: string } = {
+    panels: "bim-panels-container",
+    toolbars: "bim-toolbars-container",
+  };
+
   declare floating: boolean;
   declare template: string;
+
+  private _containers: { [type: string]: HTMLElement[] } = {};
+  private _onLayoutChange = new Event("layout-change");
+
+  layouts: { [name: string]: string } = {};
+  childrenElements: Set<HTMLElement> = new Set();
 
   get rows() {
     const template = this.style.gridTemplate;
@@ -59,7 +70,7 @@ export class Grid extends UIComponent {
     return rows;
   }
 
-  get areas() {
+  get layoutAreas() {
     const areas = new Set<string>();
     for (const row of this.rows) {
       const columns = row.trim().split(/\s+/);
@@ -73,9 +84,14 @@ export class Grid extends UIComponent {
     this.floating = false;
   }
 
+  static addContainerTag(type: string, tag: string) {
+    Grid.containerTags[type] = tag;
+  }
+
   private onSlotChange(e: any) {
     const children = e.target.assignedElements() as HTMLElement[];
     for (const child of children) {
+      this.childrenElements.add(child);
       child.toggleAttribute("floating", this.floating);
       try {
         const isVertical = this.isVerticalArea(child.style.gridArea);
@@ -84,11 +100,64 @@ export class Grid extends UIComponent {
         } else if ("vertical" in child) {
           child.vertical = isVertical;
         }
-      } catch (error) {
-        // Means the gridArea of the child is not present in this grid template
+      } catch (err) {
+        //
+      }
+    }
+  }
+
+  private updateContainers() {
+    const { layoutAreas } = this;
+    for (const area of layoutAreas) {
+      if (!area.startsWith("c-")) continue;
+      const type = area.split("-")[1];
+      const id = area.split("-")[2];
+      if (!id) {
+        throw new Error(
+          `bim-grid: you defined a container area without an id (${area})`,
+        );
+      }
+      this.createContainer(type, id);
+    }
+    this.cleanup();
+  }
+
+  cleanup() {
+    const { layoutAreas } = this;
+    for (const child of this.childrenElements) {
+      const { gridArea } = child.style;
+      if (layoutAreas.includes(gridArea)) {
+        this.append(child);
+      } else {
         child.remove();
       }
     }
+  }
+
+  createContainer(type: string, id: string) {
+    const area = `c-${type}-${id}`;
+    if (!(type in this._containers)) this._containers[type] = [];
+    const containers = this._containers[type];
+    let container = containers.find((cont) => cont.style.gridArea === area);
+    if (!container) {
+      const tag = Grid.containerTags[type] ?? "div";
+      container = document.createElement(tag);
+      container.style.gridArea = area;
+      containers.push(container);
+      this.childrenElements.add(container);
+    }
+    return container;
+  }
+
+  setLayout(name: string) {
+    const layout = this.layouts[name];
+    if (!layout) {
+      console.warn(`bim-grid: ${name} layout is not defined.`);
+      return;
+    }
+    this.style.gridTemplate = layout;
+    this.updateContainers();
+    this.dispatchEvent(this._onLayoutChange);
   }
 
   isVerticalArea(area: string) {
@@ -103,6 +172,29 @@ export class Grid extends UIComponent {
     const belowPanel =
       index < rows.length - 1 && rows[index + 1].includes(area);
     return abovePanel || belowPanel;
+  }
+
+  getContainer(type: string, id: string, force = true) {
+    const gridArea = `c-${type}-${id}`;
+    const containers = this._containers[type];
+    if (force) {
+      const container = this.createContainer(type, id);
+      return container;
+    }
+    if (!containers) {
+      throw new Error(
+        `bim-grid: container of type "${type}" is not defined in this grid.`,
+      );
+    }
+    const container = containers.find(
+      (cont) => cont.style.gridArea === gridArea,
+    );
+    if (!container) {
+      throw new Error(
+        `bim-grid: there is no container with id "${id}" in this grid.`,
+      );
+    }
+    return container;
   }
 
   render() {

@@ -26,6 +26,7 @@ import { ToolbarGroup } from "./ToolbarGroup";
 import { ToolbarsContainer } from "./ToolbarsContainer";
 import { ToolbarSection } from "./ToolbarSection";
 import { ViewCube } from "./ViewCube";
+import { Viewport } from "./Viewport";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -55,6 +56,7 @@ declare global {
     "bim-toolbars-container": ToolbarsContainer;
     "bim-toolbar-section": ToolbarSection;
     "bim-view-cube": ViewCube;
+    "bim-viewport": Viewport;
   }
 }
 
@@ -86,6 +88,7 @@ customElements.define("bim-toolbar-group", ToolbarGroup);
 customElements.define("bim-toolbars-container", ToolbarsContainer);
 customElements.define("bim-toolbar-section", ToolbarSection);
 customElements.define("bim-view-cube", ViewCube);
+customElements.define("bim-viewport", Viewport);
 
 export * from "./Table";
 
@@ -116,4 +119,5 @@ export {
   ToolbarsContainer,
   ToolbarSection,
   ViewCube,
+  Viewport,
 };
