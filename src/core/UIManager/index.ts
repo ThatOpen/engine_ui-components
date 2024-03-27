@@ -1,8 +1,6 @@
 import { styles } from "./src/styles";
 
 export interface ManagerConfig {
-  panelsContainerPrefix: string;
-  toolbarsContainerPrefix: string;
   addGlobalStyles: boolean;
   sectionLabelOnVerticalToolbar: boolean;
   multiPanels: boolean; // Displays a dropdown to select an active panel in a bim-panels-container
@@ -12,8 +10,6 @@ export interface ManagerConfig {
 
 export class UIManager {
   private static _config: Required<ManagerConfig> = {
-    panelsContainerPrefix: "panel-",
-    toolbarsContainerPrefix: "toolbar-",
     addGlobalStyles: true,
     sectionLabelOnVerticalToolbar: false,
     multiPanels: false,
