@@ -56,7 +56,7 @@ export class Toolbar extends UIComponent implements HasName {
 
   private _managerID = UIManager.newRandomId();
 
-  private _active = true;
+  private _active = false;
 
   set active(value: boolean) {
     this._active = value;
@@ -101,10 +101,6 @@ export class Toolbar extends UIComponent implements HasName {
 
   constructor() {
     super();
-    this.setAttribute("data-ui-manager-id", this._managerID);
-    this.labelsHidden = false;
-    this.active = false;
-    this.label = "Toolbar";
     this.setActivationButton();
   }
 
@@ -145,6 +141,10 @@ export class Toolbar extends UIComponent implements HasName {
         child.vertical = this.vertical;
       }
     }
+  }
+
+  firstUpdated() {
+    this.setAttribute("data-ui-manager-id", this._managerID);
   }
 
   disconnectedCallback() {

@@ -50,6 +50,7 @@ export class TextInput extends UIComponent implements HasName, HasValue {
     super();
     this.value = "";
     this.placeholder = "";
+    this.vertical = false;
   }
 
   private onInputChange(e: Event) {

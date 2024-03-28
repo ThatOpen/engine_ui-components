@@ -42,7 +42,7 @@
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-prettier": "5.1.3",
-    "openbim-components": "file:../../thatopen-components",
+    "openbim-components": "file:../engine_components",
     "prettier": "3.2.5",
     "three": "0.160.1",
     "typescript": "5.4.2",

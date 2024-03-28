@@ -74,6 +74,7 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       display: flex;
       justify-content: center;
       width: 100%;
+      height: 100%;
     }
 
     .slider-indicator {

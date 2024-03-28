@@ -62,12 +62,14 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     label: { type: String, reflect: true },
     color: { type: Number, reflect: true },
     opacity: { type: Number, reflect: true },
+    vertical: { type: Number, reflect: true },
     value: { type: Object, attribute: false },
   };
 
   declare name?: string;
   declare label?: string;
   declare icon?: string;
+  declare vertical: boolean;
   declare color: string;
   declare opacity?: number;
 
@@ -92,6 +94,7 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
   constructor() {
     super();
     this.color = "#bcf124";
+    this.vertical = false;
   }
 
   private onColorInput() {
@@ -123,7 +126,11 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
 
   render() {
     return html`
-      <bim-input .label=${this.label} .icon=${this.icon}>
+      <bim-input
+        .label=${this.label}
+        .icon=${this.icon}
+        .vertical="${this.vertical}"
+      >
         <div class="color-container">
           <input
             ${ref(this._colorInput)}

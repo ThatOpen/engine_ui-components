@@ -3,7 +3,6 @@ import { UIComponent } from "../../UIComponent";
 import { Toolbar } from "../Toolbar";
 import { Button } from "../Button";
 import { styles } from "../../UIManager/src/styles";
-import { UIManager } from "../../UIManager";
 
 export class ToolbarsContainer extends UIComponent {
   static styles = [
@@ -169,9 +168,9 @@ export class ToolbarsContainer extends UIComponent {
     dropping: { type: Boolean, reflect: true },
   };
 
-  declare floating: boolean;
-  declare tabsHidden: boolean;
-  declare dropping: boolean;
+  declare floating: boolean; // default: false
+  declare tabsHidden: boolean; // default: false
+  declare dropping: boolean; // default: false
 
   private _vertical = false;
 
@@ -184,13 +183,6 @@ export class ToolbarsContainer extends UIComponent {
     return this._vertical;
   }
 
-  constructor() {
-    super();
-    this.floating = false;
-    this.tabsHidden = false;
-    this.dropping = false;
-  }
-
   private updateToolbars() {
     let hasActivePanel = false;
     for (const child of this.children) {
@@ -200,8 +192,6 @@ export class ToolbarsContainer extends UIComponent {
       } else {
         hasActivePanel = child.active;
       }
-      // hasActivePanel && (child.active = false);
-      // hasActivePanel || (hasActivePanel = child.active);
       this._activationButtons.push(child.activationButton);
       child.vertical = this.vertical;
     }
@@ -212,9 +202,7 @@ export class ToolbarsContainer extends UIComponent {
 
   private onDragOver = (e: DragEvent) => {
     e.preventDefault();
-    if (e.dataTransfer) {
-      e.dataTransfer.effectAllowed = "move";
-    }
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
   };
 
   private onDrop = (e: DragEvent) => {
@@ -230,15 +218,10 @@ export class ToolbarsContainer extends UIComponent {
     this.append(toolbar);
   };
 
-  connectedCallback() {
-    super.connectedCallback();
+  constructor() {
+    super();
     this.addEventListener("dragover", this.onDragOver);
     this.addEventListener("drop", this.onDrop);
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener("dragover", this.onDragOver);
-    this.removeEventListener("drop", this.onDrop);
   }
 
   render() {

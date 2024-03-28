@@ -1,31 +1,34 @@
+import * as components from "../components";
 import { styles } from "./src/styles";
 
-export interface ManagerConfig {
+export interface UIManagerConfig {
   addGlobalStyles: boolean;
   sectionLabelOnVerticalToolbar: boolean;
   multiPanels: boolean; // Displays a dropdown to select an active panel in a bim-panels-container
   draggableToolbars: boolean;
   draggablePanels: boolean;
+  logTagNamesOnRegistration: boolean;
 }
 
 export class UIManager {
-  private static _config: Required<ManagerConfig> = {
+  private static _config: Required<UIManagerConfig> = {
     addGlobalStyles: true,
     sectionLabelOnVerticalToolbar: false,
     multiPanels: false,
     draggableToolbars: true,
     draggablePanels: true,
+    logTagNamesOnRegistration: false,
   };
 
-  static set config(value: Partial<ManagerConfig>) {
+  static set config(value: Partial<UIManagerConfig>) {
     this._config = { ...UIManager._config, ...value };
   }
 
-  static get config(): Required<ManagerConfig> {
+  static get config(): Required<UIManagerConfig> {
     return UIManager._config;
   }
 
-  static addGlobalStyles() {
+  private static addGlobalStyles() {
     if (!UIManager.config.addGlobalStyles) return;
     let style = document.querySelector("style[id='bim-ui']");
     if (style) return;
@@ -40,53 +43,36 @@ export class UIManager {
     }
   }
 
+  private static getComponentTag(name: string) {
+    const prefixedName = `bim-${name}`;
+    const converted = prefixedName
+      .replace(/([a-z0-9])([A-Z\d])/g, "$1-$2")
+      .toLowerCase();
+    return converted;
+  }
+
+  private static defineCustomElement(constructor: new () => HTMLElement) {
+    const constructorName = constructor.prototype.constructor.name;
+    const tagName = UIManager.getComponentTag(constructorName);
+    if (UIManager.config.logTagNamesOnRegistration)
+      console.log(`${constructorName} → ${tagName}`);
+    if (!customElements.get(tagName))
+      customElements.define(tagName, constructor);
+  }
+
+  static registerComponents() {
+    UIManager.addGlobalStyles();
+    for (const component in components) {
+      const _components = components as any;
+      const elementClass = _components[component] as new () => HTMLElement;
+      UIManager.defineCustomElement(elementClass);
+    }
+  }
+
   static removeGlobalStyles() {
     const style = document.querySelector("style[id='bim-ui']");
     if (style) style.remove();
   }
-
-  // private verifyGridTemplate(grid: Grid) {
-  //   const areas = grid.areas;
-  //   if (grid === this.outerGrid && !areas.includes("viewport")) {
-  //     throw new Error(
-  //       "UIManager: outer grid must have a viewport area defined in its template.",
-  //     );
-  //   }
-  //   if (grid === this.innerGrid && areas.includes("viewport")) {
-  //     throw new Error(
-  //       "UIManager: inner grid must not have a viewport area defined in its template.",
-  //     );
-  //   }
-  //   const secondGridAreas =
-  //     grid === this.outerGrid ? this.innerGrid.areas : this.outerGrid.areas;
-  //   const allAreas = [...areas, ...secondGridAreas];
-  //   const hasRepeatedAreas = allAreas.length !== new Set(allAreas).size;
-  //   if (hasRepeatedAreas) {
-  //     throw new Error(
-  //       "UIManager: there are repeated areas between the outer and inner grid templates.",
-  //     );
-  //   }
-  // }
-
-  // private setupViewport() {
-  //   const container = this.viewport.parentElement;
-  //   if (!container) {
-  //     throw new Error(
-  //       "UIManager: viewport needs to have a parent to create a grid.",
-  //     );
-  //   }
-  //   if (container !== this.outerGrid) {
-  //     container.append(this.outerGrid);
-  //     container.style.overflow = "auto";
-  //     this.outerGrid.append(this.viewport);
-  //   }
-  //   this.viewport.style.position = "relative";
-  //   this.viewport.style.minHeight = "0px";
-  //   this.viewport.style.minWidth = "0px";
-  //   this.viewport.style.gridArea = "viewport";
-  //   this.viewport.append(this.innerGrid);
-  //   this._viewportResizeObserver.observe(this.viewport);
-  // }
 
   static createElementFromTemplate<T extends HTMLElement = HTMLElement>(
     template: string,

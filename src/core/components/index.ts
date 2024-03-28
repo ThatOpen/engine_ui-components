@@ -33,6 +33,7 @@ declare global {
     "bim-button": Button;
     "bim-checkbox": Checkbox;
     "bim-color-input": ColorInput;
+    "bim-context-menu": ContextMenu;
     "bim-dropdown": Dropdown;
     "bim-grid": Grid;
     "bim-icon": Icon;
@@ -41,6 +42,7 @@ declare global {
     "bim-number-input": NumberInput;
     "bim-option": Option;
     "bim-panel": Panel;
+    "bim-panels-container": PanelsContainer;
     "bim-panel-section": PanelSection;
     "bim-scene-2d": Scene2D;
     "bim-script": Script;
@@ -60,62 +62,32 @@ declare global {
   }
 }
 
-customElements.define("bim-button", Button);
-customElements.define("bim-checkbox", Checkbox);
-customElements.define("bim-color-input", ColorInput);
-customElements.define("bim-context-menu", ContextMenu);
-customElements.define("bim-dropdown", Dropdown);
-customElements.define("bim-grid", Grid);
-customElements.define("bim-icon", Icon);
-customElements.define("bim-input", Input);
-customElements.define("bim-label", Label);
-customElements.define("bim-number-input", NumberInput);
-customElements.define("bim-option", Option);
-customElements.define("bim-panel", Panel);
-customElements.define("bim-panels-container", PanelsContainer);
-customElements.define("bim-panel-section", PanelSection);
-customElements.define("bim-scene-2d", Scene2D);
-customElements.define("bim-script", Script);
-customElements.define("bim-selector-input", SelectorInput);
-customElements.define("bim-table", Table);
-customElements.define("bim-table-cell", TableCell);
-customElements.define("bim-table-children", TableChildren);
-customElements.define("bim-table-group", TableGroup);
-customElements.define("bim-table-row", TableRow);
-customElements.define("bim-text-input", TextInput);
-customElements.define("bim-toolbar", Toolbar);
-customElements.define("bim-toolbar-group", ToolbarGroup);
-customElements.define("bim-toolbars-container", ToolbarsContainer);
-customElements.define("bim-toolbar-section", ToolbarSection);
-customElements.define("bim-view-cube", ViewCube);
-customElements.define("bim-viewport", Viewport);
-
-export {
-  Button,
-  Checkbox,
-  ColorInput,
-  Dropdown,
-  Grid,
-  Icon,
-  Input,
-  Label,
-  NumberInput,
-  Option,
-  Panel,
-  PanelSection,
-  Scene2D,
-  Script,
-  SelectorInput,
-  Table,
-  TableCell,
-  TableChildren,
-  TableGroup,
-  TableRow,
-  TextInput,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarsContainer,
-  ToolbarSection,
-  ViewCube,
-  Viewport,
-};
+export * from "./Button";
+export * from "./Checkbox";
+export * from "./ColorInput";
+export * from "./ContextMenu";
+export * from "./Dropdown";
+export * from "./Grid";
+export * from "./Icon";
+export * from "./Input";
+export * from "./Label";
+export * from "./NumberInput";
+export * from "./Option";
+export * from "./Panel";
+export * from "./PanelsContainer";
+export * from "./PanelSection";
+export * from "./Scene2D";
+export * from "./Script";
+export * from "./SelectorInput";
+export * from "./Table";
+export * from "./Table/src/TableCell";
+export * from "./Table/src/TableChildren";
+export * from "./Table/src/TableGroup";
+export * from "./Table/src/TableRow";
+export * from "./TextInput";
+export * from "./Toolbar";
+export * from "./ToolbarGroup";
+export * from "./ToolbarsContainer";
+export * from "./ToolbarSection";
+export * from "./ViewCube";
+export * from "./Viewport";

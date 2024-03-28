@@ -29,11 +29,13 @@ export class Checkbox extends UIComponent implements HasValue {
   `;
 
   static properties = {
+    icon: { type: String, reflect: true },
     name: { type: String, reflect: true },
     label: { type: String, reflect: true },
     checked: { type: Boolean, reflect: true },
   };
 
+  declare icon?: string;
   declare name?: string;
   declare label?: string;
   declare value: boolean;
@@ -56,7 +58,10 @@ export class Checkbox extends UIComponent implements HasValue {
     return html`
       <div class="host">
         ${this.label
-          ? html`<bim-label .label="${this.label}"></bim-label> `
+          ? html`<bim-label
+              .label="${this.label}"
+              .icon="${this.icon}"
+            ></bim-label> `
           : null}
         <input
           type="checkbox"
