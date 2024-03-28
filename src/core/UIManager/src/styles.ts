@@ -75,6 +75,9 @@ const globalStyles = css`
       --bim-ui_bg-contrast-60: hsl(210 10% 40%);
       --bim-ui_bg-contrast-80: hsl(210 10% 20%);
       --bim-ui_bg-contrast-100: hsl(210 10% 5%);
+
+      --bim-ui_color-main: #6528d7;
+      --bim-ui_color-accent: #6528d7;
     }
   }
 
@@ -96,6 +99,9 @@ const globalStyles = css`
     --bim-ui_bg-contrast-60: hsl(210 10% 40%);
     --bim-ui_bg-contrast-80: hsl(210 10% 20%);
     --bim-ui_bg-contrast-100: hsl(210 10% 5%);
+
+    --bim-ui_color-main: #6528d7;
+    --bim-ui_color-accent: #6528d7;
   }
 
   bim-grid:not([floating]) bim-toolbars-container {

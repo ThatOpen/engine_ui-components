@@ -13,7 +13,7 @@ export class TextInput extends UIComponent implements HasName, HasValue {
       background-color: transparent;
       outline: none;
       border: none;
-      flex: 1;
+      width: 100%;
       padding: 0 var(--bim-ui_size-3xs);
       border-radius: var(--bim-text-input--bdrs, var(--bim-ui_size-4xs));
       color: var(--bim-text-input--c, var(--bim-ui_bg-contrast-100));
