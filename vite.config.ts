@@ -1,6 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+/* eslint-disable import/no-extraneous-dependencies */
 import dts from "vite-plugin-dts";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
@@ -12,13 +11,14 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["three", "openbim-components"],
+      external: ["three", "openbim-components", "monaco-editor"],
       output: {
         assetFileNames: "assets/[name][extname]",
         entryFileNames: "[name].js",
         globals: {
           three: "THREE",
           "openbim-components": "OBC",
+          "monaco-editor": "monaco",
         },
       },
     },

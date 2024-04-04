@@ -1,11 +1,4 @@
-import {
-  computePosition,
-  flip,
-  shift,
-  offset,
-  inline,
-  // @ts-ignore
-} from "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.1/+esm";
+import { computePosition, flip, shift, offset, inline } from "@floating-ui/dom";
 import { css, html } from "lit";
 import { UIComponent } from "../../UIComponent";
 import { styles } from "../../UIManager/src/styles";
@@ -65,7 +58,7 @@ export class ContextMenu extends UIComponent {
   }
 
   updatePosition(target?: HTMLElement) {
-    const targetElement = target || this.parentNode;
+    const targetElement = target || (this.parentNode as HTMLElement);
     if (!targetElement) {
       this.visible = false;
       console.warn("No target element found for context-menu.");

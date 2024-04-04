@@ -2,7 +2,6 @@ import { css, html } from "lit";
 import { UIComponent } from "../../UIComponent";
 import { styles } from "../../UIManager/src/styles";
 import { Panel } from "../Panel";
-import { UIManager } from "../../UIManager";
 
 export class PanelsContainer extends UIComponent {
   static styles = [

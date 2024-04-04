@@ -7,7 +7,6 @@ export class Label extends UIComponent {
       --bim-icon--c: var(--bim-label--c);
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
       font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
-      pointer-events: none;
       overflow: hidden;
     }
 
@@ -68,16 +67,16 @@ export class Label extends UIComponent {
   declare labelHidden: boolean;
   declare vertical: boolean;
 
-  constructor() {
-    super();
-    this.iconHidden = false;
-    this.labelHidden = false;
-    this.vertical = false;
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.iconHidden === undefined) this.iconHidden = false;
+    if (this.labelHidden === undefined) this.labelHidden = false;
+    if (this.vertical === undefined) this.vertical = false;
   }
 
   render() {
     return html`
-      <div class="parent">
+      <div class="parent" title=${this.label}>
         ${this.img
           ? html`<img .src=${this.img} .alt=${this.label || ""} />`
           : null}

@@ -1,11 +1,4 @@
-import {
-  computePosition,
-  flip,
-  shift,
-  offset,
-  inline,
-  // @ts-ignore
-} from "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.1/+esm";
+import { computePosition, flip, shift, offset, inline } from "@floating-ui/dom";
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
 import { UIComponent } from "../../UIComponent";
@@ -21,6 +14,10 @@ export class Button extends UIComponent {
 
     :host(:not([disabled]):hover) {
       cursor: pointer;
+    }
+
+    bim-label {
+      pointer-events: none;
     }
 
     .parent {

@@ -131,19 +131,6 @@ export class ToolbarsContainer extends UIComponent {
         border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      /* More toolbars button */
-      .parent > bim-button {
-        --bim-button--bgc: var(--bim-ui_bg-base);
-        --bim-button--bdrs: var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0 0;
-        --bim-button--olw: 1px;
-        --bim-button--olc: var(--bim-ui_bg-contrast-20);
-        width: 100%;
-      }
-
-      :host(:not([floating])) .parent > bim-button {
-        --bim-button--bdrs: 0;
-      }
-
       /* Drop element */
 
       .drop-element {

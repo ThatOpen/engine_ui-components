@@ -8,9 +8,11 @@ import { css, html, LitElement } from "lit";
 import * as monaco from "monaco-editor";
 // import styles from "monaco-editor/min/vs/editor/editor.main.css";
 
+// @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 
+// @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import TsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 import { createRef, ref } from "lit/directives/ref.js";
@@ -42,7 +44,6 @@ export class Script extends LitElement {
   declare autoRun: boolean;
 
   private _container = createRef<HTMLDivElement>();
-  private _onCodeEval = new Event("code-eval");
   editor?: monaco.editor.IStandaloneCodeEditor;
   codeInput: Record<string, any> = {};
   codeReturn: any = undefined;
@@ -87,7 +88,7 @@ export class Script extends LitElement {
     }
     code(this.codeInput).then((res) => {
       this.codeReturn = res
-      this.dispatchEvent(this._onCodeEval)
+      this.dispatchEvent(new Event("code-eval"))
     })
     `;
     eval(code);

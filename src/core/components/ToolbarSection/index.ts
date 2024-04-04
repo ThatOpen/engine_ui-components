@@ -77,17 +77,16 @@ export class ToolbarSection extends UIComponent implements HasName {
     return this._labelHidden;
   }
 
-  constructor() {
-    super();
-    this.labelHidden = false;
-  }
-
   private updateChildren() {
     const children = this.children;
     for (const child of children) {
       if (child instanceof ToolbarGroup) child.vertical = this.vertical;
       child.toggleAttribute("label-hidden", this.vertical);
     }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
   }
 
   render() {

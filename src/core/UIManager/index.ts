@@ -7,7 +7,6 @@ export interface UIManagerConfig {
   multiPanels: boolean; // Displays a dropdown to select an active panel in a bim-panels-container
   draggableToolbars: boolean;
   draggablePanels: boolean;
-  logTagNamesOnRegistration: boolean;
 }
 
 export class UIManager {
@@ -17,7 +16,6 @@ export class UIManager {
     multiPanels: false,
     draggableToolbars: true,
     draggablePanels: true,
-    logTagNamesOnRegistration: false,
   };
 
   static set config(value: Partial<UIManagerConfig>) {
@@ -43,30 +41,59 @@ export class UIManager {
     }
   }
 
-  private static getComponentTag(name: string) {
-    const prefixedName = `bim-${name}`;
-    const converted = prefixedName
-      .replace(/([a-z0-9])([A-Z\d])/g, "$1-$2")
-      .toLowerCase();
-    return converted;
-  }
-
-  private static defineCustomElement(constructor: new () => HTMLElement) {
-    const constructorName = constructor.prototype.constructor.name;
-    const tagName = UIManager.getComponentTag(constructorName);
-    if (UIManager.config.logTagNamesOnRegistration)
-      console.log(`${constructorName} → ${tagName}`);
-    if (!customElements.get(tagName))
-      customElements.define(tagName, constructor);
+  private static defineCustomElement(
+    tag: string,
+    constructor: new () => HTMLElement,
+  ) {
+    if (!customElements.get(tag)) customElements.define(tag, constructor);
   }
 
   static registerComponents() {
     UIManager.addGlobalStyles();
-    for (const component in components) {
-      const _components = components as any;
-      const elementClass = _components[component] as new () => HTMLElement;
-      UIManager.defineCustomElement(elementClass);
-    }
+    UIManager.defineCustomElement("bim-button", components.Button);
+    UIManager.defineCustomElement("bim-checkbox", components.Checkbox);
+    UIManager.defineCustomElement("bim-color-input", components.ColorInput);
+    UIManager.defineCustomElement("bim-context-menu", components.ContextMenu);
+    UIManager.defineCustomElement("bim-dropdown", components.Dropdown);
+    UIManager.defineCustomElement("bim-grid", components.Grid);
+    UIManager.defineCustomElement("bim-icon", components.Icon);
+    UIManager.defineCustomElement("bim-input", components.Input);
+    UIManager.defineCustomElement("bim-label", components.Label);
+    UIManager.defineCustomElement("bim-number-input", components.NumberInput);
+    UIManager.defineCustomElement("bim-option", components.Option);
+    UIManager.defineCustomElement("bim-panel", components.Panel);
+    UIManager.defineCustomElement(
+      "bim-panels-container",
+      components.PanelsContainer,
+    );
+    UIManager.defineCustomElement("bim-panel-section", components.PanelSection);
+    UIManager.defineCustomElement("bim-scene-2d", components.Scene2D);
+    // UIManager.defineCustomElement("bim-script", components.Script);
+    UIManager.defineCustomElement(
+      "bim-selector-input",
+      components.SelectorInput,
+    );
+    UIManager.defineCustomElement("bim-table", components.Table);
+    UIManager.defineCustomElement("bim-table-cell", components.TableCell);
+    UIManager.defineCustomElement(
+      "bim-table-children",
+      components.TableChildren,
+    );
+    UIManager.defineCustomElement("bim-table-group", components.TableGroup);
+    UIManager.defineCustomElement("bim-table-row", components.TableRow);
+    UIManager.defineCustomElement("bim-text-input", components.TextInput);
+    UIManager.defineCustomElement("bim-toolbar", components.Toolbar);
+    UIManager.defineCustomElement("bim-toolbar-group", components.ToolbarGroup);
+    UIManager.defineCustomElement(
+      "bim-toolbar-section",
+      components.ToolbarSection,
+    );
+    UIManager.defineCustomElement(
+      "bim-toolbars-container",
+      components.ToolbarsContainer,
+    );
+    UIManager.defineCustomElement("bim-view-cube", components.ViewCube);
+    UIManager.defineCustomElement("bim-viewport", components.Viewport);
   }
 
   static removeGlobalStyles() {

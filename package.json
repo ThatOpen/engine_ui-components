@@ -17,7 +17,8 @@
     "url": "https://github.com/ThatOpen/engine_ui-components/issues"
   },
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -26,8 +27,8 @@
     "url": "git+https://github.com/ThatOpen/engine_ui-components.git"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "vite --host",
+    "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
@@ -42,19 +43,22 @@
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-prettier": "5.1.3",
+    "monaco-editor": "0.47.0",
     "openbim-components": "file:../engine_components",
     "prettier": "3.2.5",
     "three": "0.160.1",
     "typescript": "5.4.2",
     "vite": "5.1.6",
-    "vite-plugin-dts": "3.7.3"
+    "vite-plugin-dts": "3.7.3",
+    "web-ifc": "0.0.51"
   },
   "dependencies": {
+    "@floating-ui/dom": "1.6.3",
     "iconify-icon": "2.0.0",
-    "lit": "3.1.2",
-    "monaco-editor": "0.47.0"
+    "lit": "3.1.2"
   },
   "peerDependencies": {
+    "monaco-editor": "0.47.0",
     "openbim-components": ">=1.6.0",
     "three": ">=0.155.0"
   }

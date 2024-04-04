@@ -10,6 +10,11 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
       flex: 1;
     }
 
+    :host(:focus) {
+      --bim-input--olw: var(--bim-number-input--olw, 2px);
+      --bim-input--olc: var(--bim-ui_color-accent);
+    }
+
     .color-container {
       position: relative;
       outline: none;
@@ -60,10 +65,9 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     name: { type: String, reflect: true },
     icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
-    color: { type: Number, reflect: true },
+    color: { type: String, reflect: true },
     opacity: { type: Number, reflect: true },
-    vertical: { type: Number, reflect: true },
-    value: { type: Object, attribute: false },
+    vertical: { type: Boolean, reflect: true },
   };
 
   declare name?: string;
@@ -91,13 +95,8 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     return value;
   }
 
-  constructor() {
-    super();
-    this.color = "#bcf124";
-    this.vertical = false;
-  }
-
-  private onColorInput() {
+  private onColorInput(e: Event) {
+    e.stopPropagation();
     const { value: colorInput } = this._colorInput;
     if (!colorInput) return;
     this.color = colorInput.value;
@@ -116,6 +115,12 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
       this.color = textInput.value;
       this.dispatchEvent(this.onValueChange);
     }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this.color) this.color = "#bcf124";
+    if (this.vertical === undefined) this.vertical = false;
   }
 
   focus() {
