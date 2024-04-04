@@ -11,13 +11,11 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["three", "openbim-components", "monaco-editor"],
+      external: ["monaco-editor"],
       output: {
         assetFileNames: "assets/[name][extname]",
         entryFileNames: "[name].js",
         globals: {
-          three: "THREE",
-          "openbim-components": "OBC",
           "monaco-editor": "monaco",
         },
       },

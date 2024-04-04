@@ -1,8 +1,7 @@
-import * as components from "../components";
+import * as components from "../../components";
 import { styles } from "./src/styles";
 
 export interface UIManagerConfig {
-  addGlobalStyles: boolean;
   sectionLabelOnVerticalToolbar: boolean;
   multiPanels: boolean; // Displays a dropdown to select an active panel in a bim-panels-container
   draggableToolbars: boolean;
@@ -11,7 +10,6 @@ export interface UIManagerConfig {
 
 export class UIManager {
   private static _config: Required<UIManagerConfig> = {
-    addGlobalStyles: true,
     sectionLabelOnVerticalToolbar: false,
     multiPanels: false,
     draggableToolbars: true,
@@ -27,7 +25,6 @@ export class UIManager {
   }
 
   private static addGlobalStyles() {
-    if (!UIManager.config.addGlobalStyles) return;
     let style = document.querySelector("style[id='bim-ui']");
     if (style) return;
     style = document.createElement("style");
@@ -41,10 +38,7 @@ export class UIManager {
     }
   }
 
-  private static defineCustomElement(
-    tag: string,
-    constructor: new () => HTMLElement,
-  ) {
+  static defineCustomElement(tag: string, constructor: new () => HTMLElement) {
     if (!customElements.get(tag)) customElements.define(tag, constructor);
   }
 
@@ -67,7 +61,6 @@ export class UIManager {
       components.PanelsContainer,
     );
     UIManager.defineCustomElement("bim-panel-section", components.PanelSection);
-    UIManager.defineCustomElement("bim-scene-2d", components.Scene2D);
     // UIManager.defineCustomElement("bim-script", components.Script);
     UIManager.defineCustomElement(
       "bim-selector-input",
@@ -92,11 +85,10 @@ export class UIManager {
       "bim-toolbars-container",
       components.ToolbarsContainer,
     );
-    UIManager.defineCustomElement("bim-view-cube", components.ViewCube);
     UIManager.defineCustomElement("bim-viewport", components.Viewport);
   }
 
-  static removeGlobalStyles() {
+  static removeStyles() {
     const style = document.querySelector("style[id='bim-ui']");
     if (style) style.remove();
   }
