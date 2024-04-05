@@ -35,7 +35,6 @@ export class SelectorInput extends UIComponent implements HasValue, HasName {
     name: { type: String, reflect: true },
     icon: { type: String, reflect: true },
     label: { type: String, reflect: true },
-    options: { type: Array<String> },
     value: { attribute: false },
     vertical: { type: Boolean, reflect: true },
   };

@@ -1,60 +1,28 @@
 {
-  "name": "@thatopen/ui-components",
-  "description": "Collection of web components (UI components) meant to be used, but not limited to, BIM applications.",
-  "version": "0.1.0",
+  "name": "engine_ui-components",
+  "description": "Collection of web components meant to be used, but not limited to, BIM applications.",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
   ],
-  "keywords": [
-    "bim",
-    "ui",
-    "components",
-    "ribbon",
-    "toolbar"
-  ],
+  "scripts": {
+    "build-core": "npm run build -w @thatopen/ui-components",
+    "build-obc": "npm run build -w @thatopen/ui-components-obc",
+    "build-three": "npm run build -w @thatopen/ui-components-three",
+    "build-webifc": "npm run build -w @thatopen/ui-components-webifc",
+    "build-all": "npm run build -w @thatopen/ui-components && npm run build -w @thatopen/ui-components-obc && npm run build -w @thatopen/ui-components-three && npm run build -w @thatopen/ui-components-webifc"
+  },
   "license": "MIT",
   "homepage": "https://github.com/ThatOpen/engine_ui-components#readme",
   "bugs": {
     "url": "https://github.com/ThatOpen/engine_ui-components/issues"
   },
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ThatOpen/engine_ui-components.git"
   },
-  "scripts": {
-    "dev": "vite --host",
-    "build": "tsc --p ./tsconfig-build.json && vite build",
-    "prepublishOnly": "npm run build"
-  },
-  "devDependencies": {
-    "@types/node": "20.11.30",
-    "@typescript-eslint/eslint-plugin": "7.2.0",
-    "@typescript-eslint/parser": "7.2.0",
-    "eslint": "8.57.0",
-    "eslint-config-airbnb-base": "15.0.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-lit": "1.11.0",
-    "eslint-plugin-prettier": "5.1.3",
-    "monaco-editor": "0.47.0",
-    "prettier": "3.2.5",
-    "typescript": "5.4.2",
-    "vite": "5.1.6",
-    "vite-plugin-dts": "3.7.3"
-  },
-  "dependencies": {
-    "@floating-ui/dom": "1.6.3",
-    "iconify-icon": "2.0.0",
-    "lit": "3.1.2"
-  },
-  "peerDependencies": {
-    "monaco-editor": "0.47.0"
-  }
+  "workspaces": [
+    "./packages/*",
+    "./testing"
+  ]
 }
