@@ -2,6 +2,7 @@
 import dts from "vite-plugin-dts";
 import { defineConfig } from "vite";
 import { resolve } from "path";
+import * as packageJson from "./package.json";
 
 export default defineConfig({
   build: {
@@ -11,7 +12,7 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["monaco-editor"],
+      external: Object.keys(packageJson.peerDependencies),
       output: {
         assetFileNames: "assets/[name][extname]",
         entryFileNames: "[name].js",
