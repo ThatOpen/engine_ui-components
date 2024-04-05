@@ -14,15 +14,12 @@
 
 <h1>BIM UI Components <img src="resources/favicon.ico" width="22"/></h1>
 
-[![NPM Package][npm]][npm-url]
-[![NPM Package][npm-downloads]][npm-url]
-[![Tests](https://github.com/ThatOpen/engine_components/actions/workflows/tests.yml/badge.svg)](https://github.com/ThatOpen/engine_components/actions/workflows/tests.yaml)
-
 BIM UI Components is the ultimate set of user interface elements you need to create fully featured BIM applications 🚀
+<br></br>
 
 ## How it works? 🤓
-This library is a monorepo where separate but correlated repositories exists in the packages folder. The repositories are:
-
+This library is a monorepo where separate but correlated repositories exists in the packages folder. The main repository resides in ui-components.
+<br></br>
 * **@thatopen/ui-components:** This is the core library. Here, you will find all the core components needed to build your user interfaces, so you can expect a button, panel, toolbar, table, inputs, and some other components.
 <br></br>
 
@@ -36,9 +33,10 @@ Think on the following repositories as plug-n-play functional components that us
 * **@thatopen/ui-components-three:** As all the apps working with openbim-components relies on [ThreeJS](https://threejs.org/), we thought is a good idea to include pre-made components that takes data from ThreeJS and makes it possible to work with it using the UI. For example, here you can expect to have a transform panel that let's you modify the position, scale and rotation of any THREE.Mesh, or a panel to manage your THREE.Mesh materials.
 
 * **@thatopen/ui-components-web-ifc:** You know [web-ifc](https://github.com/ThatOpen/engine_web-ifc) is the core of That Open Engine, at the end is the library that let's create, read, update and save raw IFC files. How could would be to have UI that works with data from web-ifc? Well, that's what you can expect from this repository. Here you will find things like a table to display the spatial structure from a raw IFC file, to a table that displays the attributes of a given entity.
+<br></br>
 
 > [!IMPORTANT]
-> All the implementation libraries need @thatopen/ui-components to be installed.
+> All the implementation libraries need @thatopen/ui-components to be installed along with the respective packages they are giving UIs to. See the respective package.json files in each repository.
 
 ### Why a monorepo? 🤷‍♀️
 Easy, because we care about your final app bundle size. You see, the repositories that contains implementations of the UIComponents for different libraries, relies on the libraries to be installed in the project because they're required as peerDependencies. So, if we included all the pre-built UIComponents from `@thatopen/ui-components-three` in the core library, you will always need to have ThreeJS installed in your project even tough you're not using it.
