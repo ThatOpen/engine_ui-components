@@ -1,18 +1,17 @@
-// eslint-disable-next-line import/no-unresolved
 import * as OBC from "openbim-components";
-import * as THREE from "three";
+import * as BUI from "@thatopen/ui-components";
 import { html } from "lit";
 
-export const loadIfcBtn = (state: {
+interface LoadIfcUIState {
   loader: OBC.FragmentIfcLoader;
-  scene: THREE.Scene;
-}) => {
-  const { loader, scene } = state;
+}
+
+const template = (state: LoadIfcUIState) => {
+  const { loader } = state;
   const onBtnClick = () => {
     const fileOpener = document.createElement("input");
     fileOpener.type = "file";
     fileOpener.accept = ".ifc";
-    fileOpener.style.display = "none";
     fileOpener.onchange = async () => {
       if (fileOpener.files === null || fileOpener.files.length === 0) return;
       const file = fileOpener.files[0];
@@ -20,6 +19,7 @@ export const loadIfcBtn = (state: {
       const data = new Uint8Array(buffer);
       const model = await loader.load(data);
       model.name = file.name;
+      const scene = loader.components.scene.get();
       scene.add(model);
       fileOpener.remove();
     };
@@ -29,10 +29,16 @@ export const loadIfcBtn = (state: {
   return html`
     <bim-button
       data-ui-id="import-ifc"
-      vertical
       label="IFC"
       icon="mage:box-3d-fill"
       @click=${onBtnClick}
     ></bim-button>
   `;
+};
+
+export const loadIfcBtnElement = (state: LoadIfcUIState) => {
+  const [loadIfcBtn]: [BUI.Button, BUI.UpdateFunction<LoadIfcUIState>] =
+    BUI.UIComponent.create(template, state);
+
+  return loadIfcBtn;
 };
