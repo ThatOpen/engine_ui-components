@@ -12,7 +12,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
 
     /* Linting */
     "strict": true,
@@ -20,14 +19,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    // "allowJs": false,                         
-    // "declaration": true,                      
-    // "sourceMap": true,                        
-    // "outDir": "./dist",                       
-    // "composite": true,                        
-    // "allowSyntheticDefaultImports": true,
-    // "preserveSymlinks": true,                 
-    // "forceConsistentCasingInFileNames": true  
+    "allowJs": false,
+    "preserveSymlinks": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["testing", "src"],
   "exclude": ["src/**/*.test.ts", "src/test"],

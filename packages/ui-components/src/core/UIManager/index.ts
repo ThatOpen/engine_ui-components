@@ -93,16 +93,6 @@ export class UIManager {
     if (style) style.remove();
   }
 
-  static createElementFromTemplate<T extends HTMLElement = HTMLElement>(
-    template: string,
-  ) {
-    const temp = document.createElement("div");
-    temp.innerHTML = template;
-    const element = temp.firstElementChild as T;
-    temp.remove();
-    return element;
-  }
-
   static newRandomId() {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

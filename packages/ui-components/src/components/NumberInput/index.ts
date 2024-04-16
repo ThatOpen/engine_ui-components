@@ -94,6 +94,8 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     pref: { type: String, reflect: true },
     min: { type: Number, reflect: true },
     value: { type: Number, reflect: true },
+    step: { type: Number, reflect: true },
+    sensitivity: { type: Number, reflect: true },
     max: { type: Number, reflect: true },
     sufix: { type: String, reflect: true },
     vertical: { type: Boolean, reflect: true },
@@ -105,6 +107,8 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   declare label?: string;
   declare pref?: string;
   declare min?: number;
+  declare step?: number;
+  declare sensitivity?: number;
   declare max?: number;
   declare sufix?: string;
   declare value: number;
@@ -173,8 +177,13 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     const initialValue = this.value;
     const onMouseMove = (e: MouseEvent) => {
       const { clientX: endPosition } = e;
-      const value = initialValue + (endPosition - startPosition);
-      this.setValue(value.toString());
+      const step = this.step ?? 1;
+      const stepDecimals = step.toString().split(".")[1]?.length || 0;
+      const hardness = 1 / (this.sensitivity ?? 1);
+      const calc = (endPosition - startPosition) / hardness;
+      if (Math.floor(Math.abs(calc)) !== Math.abs(calc)) return;
+      const value = initialValue + calc * step;
+      this.setValue(value.toFixed(stepDecimals));
     };
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", () => {

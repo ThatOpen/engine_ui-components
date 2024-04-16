@@ -10,7 +10,7 @@ export type StatefullComponent<
   T extends HTMLElement,
 > = (state: S, Root?: T) => TemplateResult;
 
-export type UpdateFunction<T extends Record<string, any>> = (state: T) => void;
+export type UpdateFunction<T extends Record<string, any>> = (state?: T) => void;
 
 export class UIComponent extends LitElement {
   private _lazyLoadObserver: IntersectionObserver | null = null;
@@ -104,8 +104,10 @@ export class UIComponent extends LitElement {
     }
 
     const statefullTemplate = template as StatefullComponent<U, T>;
-    const update = (state: U) => {
-      render(statefullTemplate(state), fragment);
+    const update = (state?: U) => {
+      const _state = state ?? initialState;
+      if (!_state) return;
+      render(statefullTemplate(_state), fragment);
     };
 
     update(initialState as U);

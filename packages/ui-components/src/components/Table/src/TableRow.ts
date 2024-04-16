@@ -102,7 +102,11 @@ export class TableRow extends UIComponent {
         content.label = value;
       } else {
         const { template, onCreated } = value;
-        content = UIManager.createElementFromTemplate(template);
+        // TODO: Change this to a LitTemplate
+        const temp = document.createElement("div");
+        temp.innerHTML = template;
+        content = temp.firstElementChild as HTMLElement;
+        temp.remove();
         if (onCreated) onCreated(content);
       }
       const cell = document.createElement("bim-table-cell");

@@ -53,6 +53,10 @@ export class Option extends UIComponent {
       outline: var(--bim-checkbox--olw, 2px) solid
         var(--bim-checkbox--olc, var(--bim-ui_color-accent));
     }
+
+    bim-label {
+      pointer-events: none;
+    }
   `;
 
   static properties = {
@@ -85,7 +89,7 @@ export class Option extends UIComponent {
 
   render() {
     return html`
-      <div class="parent">
+      <div class="parent" .title=${this.label ?? ""}>
         <div style="display: flex; column-gap: 0.375rem">
           ${this.checkbox && !this.noMark
             ? html`<bim-checkbox
