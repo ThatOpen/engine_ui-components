@@ -1,10 +1,12 @@
 // eslint-disable-next-line import/no-unresolved
 import * as OBC from "openbim-components";
-import { html } from "lit";
-import { Dropdown } from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui-components";
 
 export const ifcEntityDropdown = () => {
-  const dropdown = document.createElement("bim-dropdown") as Dropdown;
+  const dropdown = document.createElement(
+    "bim-dropdown",
+  ) as unknown as BUI.Dropdown;
+
   dropdown.onchange = () => {
     const value = dropdown.value as number[];
     console.log(value);
@@ -23,5 +25,5 @@ export const ifcEntityDropdown = () => {
 
   dropdown.value = [5716631];
 
-  return html`${dropdown}`;
+  return BUI.html`${dropdown}`;
 };

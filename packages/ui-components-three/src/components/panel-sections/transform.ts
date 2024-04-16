@@ -1,17 +1,17 @@
 import * as THREE from "three";
-import { TemplateResult, html } from "lit";
-import { NumberInput, Input } from "@thatopen/ui-components";
+import { TemplateResult } from "lit";
+import * as BUI from "@thatopen/ui-components";
 
 const onPositionChange = (e: Event, position: THREE.Vector3) => {
-  const input = e.target as NumberInput;
-  const parent = input.parentElement as Input;
+  const input = e.target as BUI.NumberInput;
+  const parent = input.parentElement as BUI.Input;
   const { x, y, z } = parent.value;
   position.set(x, y, z);
 };
 
 const onRotationChange = (e: Event, rotation: THREE.Euler) => {
-  const input = e.target as NumberInput;
-  const parent = input.parentElement as Input;
+  const input = e.target as BUI.NumberInput;
+  const parent = input.parentElement as BUI.Input;
   const { x, y, z } = parent.value;
   rotation.set(
     THREE.MathUtils.degToRad(x),
@@ -21,8 +21,8 @@ const onRotationChange = (e: Event, rotation: THREE.Euler) => {
 };
 
 const onScaleChange = (e: Event, scale: THREE.Vector3) => {
-  const input = e.target as NumberInput;
-  const parent = input.parentElement as Input;
+  const input = e.target as BUI.NumberInput;
+  const parent = input.parentElement as BUI.Input;
   const { x, y, z } = parent.value;
   scale.set(x, y, z);
 };
@@ -41,7 +41,7 @@ export const transformPanelSection = (
 
   let positionTemplate: TemplateResult | null = null;
   if (position) {
-    positionTemplate = html`
+    positionTemplate = BUI.html`
       <bim-input name="position" label="Position" vertical>
         <bim-number-input
           name="x"
@@ -70,7 +70,7 @@ export const transformPanelSection = (
 
   let rotationTemplate: TemplateResult | null = null;
   if (rotation) {
-    rotationTemplate = html`
+    rotationTemplate = BUI.html`
       <bim-input name="rotation" label="Rotation" vertical>
         <bim-number-input
           slider
@@ -108,7 +108,7 @@ export const transformPanelSection = (
 
   let scaleTemplate: TemplateResult | null = null;
   if (scale) {
-    scaleTemplate = html`
+    scaleTemplate = BUI.html`
       <bim-input name="scale" label="Scale" vertical>
         <bim-number-input
           slider
@@ -141,7 +141,7 @@ export const transformPanelSection = (
     `;
   }
 
-  return html`
+  return BUI.html`
     <bim-panel-section
       label="Transform"
       name="transform"

@@ -1,5 +1,5 @@
 import * as OBC from "openbim-components";
-import { html } from "lit";
+import * as BUI from "@thatopen/ui-components";
 
 interface FragmentExploderUIState {
   exploder: OBC.FragmentExploder;
@@ -8,11 +8,28 @@ interface FragmentExploderUIState {
 const template = (state: FragmentExploderUIState) => {
   const { exploder } = state;
 
-  return html`
+  const onBtnClick = () => {
+    if (exploder.enabled) {
+      exploder.reset();
+    } else {
+      exploder.explode();
+    }
+  };
+
+  return BUI.html`
     <bim-button
       label="Explode"
       icon="icon-park-solid:split-branch"
-      @click=${exploder.enabled ? exploder.reset() : exploder.explode()}
+      @click=${onBtnClick}
     ></bim-button>
   `;
+};
+
+export const fragmentExploderBtnElement = (state: FragmentExploderUIState) => {
+  const [fragmentExploderBtn] = BUI.UIComponent.create<
+    BUI.Button,
+    FragmentExploderUIState
+  >(template, state);
+
+  return fragmentExploderBtn;
 };

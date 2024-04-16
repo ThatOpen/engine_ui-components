@@ -1,6 +1,5 @@
 import * as THREE from "three";
-// @ts-ignore
-import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 /**
  * An infinite lightweight 2D grid that can be used for any

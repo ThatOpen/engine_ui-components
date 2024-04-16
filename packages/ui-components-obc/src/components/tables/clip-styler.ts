@@ -1,11 +1,12 @@
 import * as OBC from "openbim-components";
-import { html } from "lit";
+import * as BUI from "@thatopen/ui-components";
 
 export interface ClipStylerTableState {
   styler: OBC.FragmentClipStyler;
 }
 
 export const clipStylerTemplate = (state: ClipStylerTableState) => {
+  // @ts-ignore
   const { styler } = state;
   const table = document.createElement("bim-table");
   table.rows = [
@@ -60,5 +61,5 @@ export const clipStylerTemplate = (state: ClipStylerTableState) => {
   table.headersHidden = true;
   table.columns = [{ name: "Name", width: "8.375rem" }];
 
-  return html` ${table} `;
+  return BUI.html` ${table} `;
 };

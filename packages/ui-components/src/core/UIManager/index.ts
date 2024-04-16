@@ -61,7 +61,6 @@ export class UIManager {
       components.PanelsContainer,
     );
     UIManager.defineCustomElement("bim-panel-section", components.PanelSection);
-    // UIManager.defineCustomElement("bim-script", components.Script);
     UIManager.defineCustomElement(
       "bim-selector-input",
       components.SelectorInput,

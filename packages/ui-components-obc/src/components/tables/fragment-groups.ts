@@ -1,6 +1,5 @@
 import * as OBC from "openbim-components";
 import * as BUI from "@thatopen/ui-components";
-import { TemplateResult, html } from "lit";
 
 interface FragmentGroupsUIState {
   manager: OBC.FragmentManager;
@@ -9,12 +8,12 @@ interface FragmentGroupsUIState {
 const template = (state: FragmentGroupsUIState) => {
   const { manager } = state;
 
-  const labels: TemplateResult[] = [];
+  const labels = [];
   for (const model of manager.groups) {
-    labels.push(html`<bim-label label=${model.uuid}></bim-label>`);
+    labels.push(BUI.html`<bim-label label=${model.uuid}></bim-label>`);
   }
 
-  return html`
+  return BUI.html`
     <bim-panel-section label="Models"> ${labels} </bim-panel-section>
   `;
 };

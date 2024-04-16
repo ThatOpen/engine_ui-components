@@ -1,6 +1,5 @@
 import * as OBC from "openbim-components";
 import * as BUI from "@thatopen/ui-components";
-import { html } from "lit";
 
 interface LoadIfcUIState {
   loader: OBC.FragmentIfcLoader;
@@ -26,7 +25,7 @@ const template = (state: LoadIfcUIState) => {
     fileOpener.click();
   };
 
-  return html`
+  return BUI.html`
     <bim-button
       data-ui-id="import-ifc"
       label="IFC"
