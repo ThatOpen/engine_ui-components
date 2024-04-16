@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { TemplateResult, html } from "lit";
+import * as BUI from "@thatopen/ui-components";
+import { TemplateResult } from "lit";
 import { transformPanelSection } from "../panel-sections/transform";
 import { meshGraphicsPanelSection } from "../panel-sections/mesh-graphics";
 import { materialPanelSection } from "../panel-sections/material";
@@ -33,7 +34,7 @@ export const meshPanel = (state: MeshPanelState) => {
     materialSection = materialPanelSection(material, { collapsed: true });
   }
 
-  return html`
+  return BUI.html`
     <bim-panel label="Static Mesh">
       ${transformSection} ${meshGraphicsSection} ${materialSection}
     </bim-panel>

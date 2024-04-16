@@ -1,22 +1,21 @@
 import * as THREE from "three";
-import { html } from "lit";
-import { Checkbox, NumberInput } from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui-components";
 
 export const meshGraphicsPanelSection = (
   mesh: THREE.Mesh,
   options?: { collapsed?: boolean },
 ) => {
   const onVisibleChange = (e: Event) => {
-    const input = e.target as Checkbox;
+    const input = e.target as BUI.Checkbox;
     mesh.visible = input.checked;
   };
 
   const onRenderOrderChange = (e: Event) => {
-    const input = e.target as NumberInput;
+    const input = e.target as BUI.NumberInput;
     mesh.renderOrder = input.value;
   };
 
-  return html`
+  return BUI.html`
     <bim-panel-section
       label="Graphics"
       name="graphics"

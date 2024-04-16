@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import * as OBC from "openbim-components";
-import { html } from "lit";
-import { TableGroupData } from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui-components";
 
 export const toolsTable = (state: { components: OBC.Components }) => {
   const { components } = state;
@@ -17,7 +16,7 @@ export const toolsTable = (state: { components: OBC.Components }) => {
 
   for (const component of coreComponents) {
     if ("tableGroupData" in component) {
-      const configTableGroup = component.tableGroupData as TableGroupData;
+      const configTableGroup = component.tableGroupData as BUI.TableGroupData;
       table.rows = [...table.rows, configTableGroup];
     }
   }
@@ -25,7 +24,7 @@ export const toolsTable = (state: { components: OBC.Components }) => {
   for (const name in tools.list) {
     const tool = tools.list[name];
     if (!("tableGroupData" in tool)) continue;
-    const configTableGroup = tool.tableGroupData as TableGroupData;
+    const configTableGroup = tool.tableGroupData as BUI.TableGroupData;
     table.rows = [...table.rows, configTableGroup];
   }
 
@@ -36,7 +35,7 @@ export const toolsTable = (state: { components: OBC.Components }) => {
     // { name: "Exposed", width: "7rem" }
   ];
 
-  return html` <bim-panel label="Settings">
+  return BUI.html` <bim-panel label="Settings">
     <bim-panel-section label="Tools" icon="tabler:hammer"
       >${table}
     </bim-panel-section>

@@ -1,7 +1,6 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../../core/UIComponent";
 import { Table, ColumnData } from "../index";
-import { UIManager } from "../../../core/UIManager";
 import { TableCell } from "./TableCell";
 
 interface TableComponentCell {

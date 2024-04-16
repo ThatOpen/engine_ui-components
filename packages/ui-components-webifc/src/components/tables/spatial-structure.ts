@@ -1,6 +1,5 @@
 import * as WEBIFC from "web-ifc";
-import { html } from "lit";
-import { Table } from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui-components";
 
 interface Node {
   type: string;
@@ -36,12 +35,12 @@ export const spatialStructureTable = async (state: {
 }) => {
   const { api, modelID } = state;
 
-  const table = new Table();
+  const table = new BUI.Table();
   table.headersHidden = true;
 
   const spatialStructure = await api.properties.getSpatialStructure(modelID);
 
   table.rows = [await processNode(api, modelID, spatialStructure)];
 
-  return html`${table}`;
+  return BUI.html`${table}`;
 };

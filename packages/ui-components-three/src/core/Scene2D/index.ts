@@ -1,9 +1,7 @@
 import * as THREE from "three";
 import { css, html } from "lit";
-// @ts-ignore
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-// @ts-ignore
-import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import { UIComponent } from "@thatopen/ui-components";
 import { Infinite2dGrid } from "./src/Infinite2DGrid";
 

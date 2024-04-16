@@ -1,6 +1,6 @@
-import { TemplateResult, html } from "lit";
+import { TemplateResult } from "lit";
 import * as THREE from "three";
-import { ColorInput, NumberInput, Checkbox } from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui-components";
 
 const attributesToGenerate = [
   "metalness",
@@ -10,26 +10,26 @@ const attributesToGenerate = [
 ];
 
 const onColorChange = (e: Event, color: THREE.Color) => {
-  const input = e.target as ColorInput;
+  const input = e.target as BUI.ColorInput;
   color.set(input.color);
 };
 
 const onMetalnessChange = (e: Event, material: THREE.Material) => {
-  const input = e.target as NumberInput;
+  const input = e.target as BUI.NumberInput;
   if ("metalness" in material) {
     material.metalness = input.value / 100;
   }
 };
 
 const onRoughnessChange = (e: Event, material: THREE.Material) => {
-  const input = e.target as NumberInput;
+  const input = e.target as BUI.NumberInput;
   if ("roughness" in material) {
     material.roughness = input.value / 100;
   }
 };
 
 const onTransparentChange = (e: Event, material: THREE.Material) => {
-  const input = e.target as Checkbox;
+  const input = e.target as BUI.Checkbox;
   material.transparent = input.checked;
 };
 
@@ -82,7 +82,7 @@ export const materialPanelSection = (
   let colorTemplate: TemplateResult | null = null;
   if ("color" in material && material.color instanceof THREE.Color) {
     const color = material.color;
-    colorTemplate = html`
+    colorTemplate = BUI.html`
       <bim-color-input
         name="color"
         label="Color"
@@ -95,7 +95,7 @@ export const materialPanelSection = (
   let metalnessTemplate: TemplateResult | null = null;
   if ("metalness" in material) {
     const metalness = material.metalness as number;
-    metalnessTemplate = html`<bim-number-input
+    metalnessTemplate = BUI.html`<bim-number-input
       slider
       name="metalness"
       label="Metalness"
@@ -111,7 +111,7 @@ export const materialPanelSection = (
   let roughnessTemplate: TemplateResult | null = null;
   if ("roughness" in material) {
     const roughness = material.roughness as number;
-    roughnessTemplate = html`<bim-number-input
+    roughnessTemplate = BUI.html`<bim-number-input
       slider
       name="roughness"
       label="Roughness"
@@ -126,14 +126,14 @@ export const materialPanelSection = (
 
   let pbrTemplate: TemplateResult | null = null;
   if (metalnessTemplate || roughnessTemplate) {
-    pbrTemplate = html`
+    pbrTemplate = BUI.html`
       <bim-input name="pbrData">
         ${metalnessTemplate} ${roughnessTemplate}
       </bim-input>
     `;
   }
 
-  return html`
+  return BUI.html`
     <bim-panel-section
       .label=${sectionName}
       name="material"
@@ -144,13 +144,13 @@ export const materialPanelSection = (
           label="Stone"
           img="resources/stone.jpg"
           vertical
-          no-mark
+          ?noMark=${true}
         ></bim-option>
         <bim-option
           label="Glass"
           img="resources/glass.jpg"
           vertical
-          no-mark
+          ?noMark=${true}
         ></bim-option>
       </bim-dropdown>
       ${colorTemplate} ${pbrTemplate}
