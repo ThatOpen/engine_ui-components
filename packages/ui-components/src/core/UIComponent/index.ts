@@ -1,16 +1,13 @@
 /* eslint-disable no-dupe-class-members */
 import { LitElement, TemplateResult, render } from "lit";
 
-export type StatelessComponent<T extends HTMLElement> = (
-  Root?: T,
+export type StatelessComponent = () => TemplateResult;
+
+export type StatefullComponent<S extends Record<string, any>> = (
+  state: S,
 ) => TemplateResult;
 
-export type StatefullComponent<
-  S extends Record<string, any>,
-  T extends HTMLElement,
-> = (state: S, Root?: T) => TemplateResult;
-
-export type UpdateFunction<T extends Record<string, any>> = (state?: T) => void;
+type UpdateFunction<S extends Record<string, any>> = (state?: Partial<S>) => S;
 
 export class UIComponent extends LitElement {
   private _lazyLoadObserver: IntersectionObserver | null = null;
@@ -79,49 +76,42 @@ export class UIComponent extends LitElement {
     this.observeLastElement();
   };
 
-  static create<T extends HTMLElement, U extends Record<string, any>>(
-    template: StatefullComponent<U, T>,
-    state: U,
-  ): [element: T, update: UpdateFunction<U>];
+  static create<T extends HTMLElement, S extends Record<string, any>>(
+    template: StatefullComponent<S>,
+    state: S,
+  ): [element: T, update: UpdateFunction<S>];
 
-  static create<T extends HTMLElement>(template: StatelessComponent<T>): T;
+  static create<T extends HTMLElement>(template: StatelessComponent): T;
 
-  static create<T extends HTMLElement, U extends Record<string, any>>(
-    template: StatefullComponent<U, T> | StatelessComponent<T>,
-    initialState?: U,
-  ): T | [element: T, update: UpdateFunction<U>] {
-    if (template.length > 0 && typeof initialState === "undefined") {
-      throw new Error("Initial state is required for statefull components");
-    }
-
+  static create<T extends HTMLElement, S extends Record<string, any>>(
+    template: StatefullComponent<S> | StatelessComponent,
+    initialState?: S,
+  ): T | [element: T, update: UpdateFunction<S>] {
     const fragment = document.createDocumentFragment();
 
     if (template.length === 0) {
-      const statelessTemplate = template as StatelessComponent<T>;
+      const statelessTemplate = template as StatelessComponent;
       render(statelessTemplate(), fragment);
       const element = fragment.firstElementChild as unknown as T;
       return element;
     }
 
-    const statefullTemplate = template as StatefullComponent<U, T>;
-    const update = (state?: U) => {
-      const _state = state ?? initialState;
-      if (!_state) return;
-      render(statefullTemplate(_state), fragment);
+    if (!initialState)
+      throw new Error(
+        "UIComponent: Initial state is required for statefull components.",
+      );
+
+    let currentState = initialState;
+
+    const statefullTemplate = template as StatefullComponent<S>;
+    const update = (state?: Partial<S>) => {
+      currentState = { ...currentState, ...state };
+      render(statefullTemplate(currentState), fragment);
+      return currentState;
     };
 
-    update(initialState as U);
+    update(initialState);
     const element = fragment.firstElementChild as unknown as T;
     return [element, update];
-  }
-
-  getInnerElement<T extends HTMLElement = HTMLElement>(id: string) {
-    const element = this.querySelector<T>(`[data-ui-id='${id}']`);
-    if (!element) {
-      throw new Error(
-        `There is no element with attribute data-ui-id='${id}' in this UIComponent.`,
-      );
-    }
-    return element;
   }
 }

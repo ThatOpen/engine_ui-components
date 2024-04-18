@@ -69,6 +69,10 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
       :host(:not([fixed])[collapsed]) .components {
         display: none;
       }
+
+      bim-label {
+        pointer-events: none;
+      }
     `,
   ];
 
@@ -129,6 +133,7 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
       <path d="M0 0h24v24H0V0z" fill="none" />
       <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
     </svg>`;
+
     const expandMoreSVG = html`<svg
       xmlns="http://www.w3.org/2000/svg"
       height="1.125rem"
@@ -138,6 +143,7 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
       <path d="M0 0h24v24H0z" fill="none" />
       <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
     </svg>`;
+
     const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG;
 
     const headerTemplate = html`

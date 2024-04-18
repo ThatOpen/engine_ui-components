@@ -5,6 +5,7 @@
     "Juan Hoyos (https://github.com/HoyosJuan)"
   ],
   "scripts": {
+    "dev": "vite --host",
     "build-core": "npm run build -w @thatopen/ui-components",
     "build-obc": "npm run build -w @thatopen/ui-components-obc",
     "build-three": "npm run build -w @thatopen/ui-components-three",

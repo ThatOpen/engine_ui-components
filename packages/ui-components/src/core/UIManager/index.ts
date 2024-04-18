@@ -87,11 +87,6 @@ export class UIManager {
     UIManager.defineCustomElement("bim-viewport", components.Viewport);
   }
 
-  static removeStyles() {
-    const style = document.querySelector("style[id='bim-ui']");
-    if (style) style.remove();
-  }
-
   static newRandomId() {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
