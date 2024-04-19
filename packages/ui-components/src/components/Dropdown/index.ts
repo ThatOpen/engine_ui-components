@@ -1,11 +1,13 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
+import { customElement, property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
 import { Option } from "../Option";
 import { ContextMenu } from "../ContextMenu";
 import { HasName, HasValue } from "../../core/types";
 
+@customElement("bim-dropdown")
 export class Dropdown extends UIComponent implements HasValue, HasName {
   static styles = [
     styles.scrollbar,
@@ -45,30 +47,103 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
   ];
 
   static properties = {
-    name: { type: String, reflect: true },
-    icon: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    multiple: { type: Boolean, reflect: true },
-    required: { type: Boolean, reflect: true },
     visible: { type: Boolean, reflect: true },
-    searchBox: { type: Boolean, reflect: true, attribute: "search-box" },
-    vertical: { type: Boolean, reflect: true },
     value: { attribute: false },
   };
 
-  declare name?: string;
-  declare icon?: string;
-  declare label?: string;
-  declare multiple: boolean;
-  declare required: boolean;
-  declare searchBox: boolean;
-  declare vertical: boolean;
+  /**
+   * The name of the dropdown.
+   * @type {string}
+   * @default undefined
+   * @example
+   * <bim-dropdown name="exampleName"></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.name = 'exampleName';
+   */
+  @property({ type: String, reflect: true })
+  name?: string;
+
+  /**
+   * The icon to be displayed in the dropdown.
+   * @type {string}
+   * @default undefined
+   * @example
+   * <bim-dropdown icon="exampleIcon"></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.icon = 'exampleIcon';
+   */
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  /**
+   * The label to be displayed in the dropdown.
+   * @type {string}
+   * @default undefined
+   * @example
+   * <bim-dropdown label="Example Label"></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.label = 'Example Label';
+   */
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  /**
+   * Indicates whether multiple options can be selected in the dropdown.
+   * @type {boolean}
+   * @default false
+   * @example
+   * <bim-dropdown multiple></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.multiple = true;
+   */
+  @property({ type: Boolean, reflect: true })
+  multiple: boolean;
+
+  /**
+   * Indicates whether a selection is required in the dropdown.
+   * @type {boolean}
+   * @default false
+   * @example
+   * <bim-dropdown required></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.required = true;
+   */
+  @property({ type: Boolean, reflect: true })
+  required: boolean;
+
+  /**
+   * Indicates whether the dropdown should be displayed vertically.
+   * @type {boolean}
+   * @default false
+   * @example
+   * <bim-dropdown vertical></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.vertical = true;
+   */
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
 
   private _inputContainer = createRef<HTMLDivElement>();
   private _listElement = createRef<ContextMenu>();
-  onValueChange = new Event("change");
 
   private _visible = false;
+
+  /**
+   * Indicates whether the dropdown it-self (not the component) is visible.
+   * @type {boolean}
+   * @default false
+   * @example
+   * <bim-dropdown visible></bim-dropdown>
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.visible = true;
+   */
 
   get visible() {
     return this._visible;
@@ -80,6 +155,14 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
   }
 
   private _value: any[] = [];
+
+  /**
+   * The selected values in the dropdown. This is an instance property, not an HTMLElement attribute.
+   * @type {any[]}
+   * @example
+   * const dropdown = document.createElement('bim-dropdown');
+   * dropdown.value = ['option1', 'option2'];
+   */
 
   set value(value: any[]) {
     if (this.required && Object.keys(value).length === 0) {
@@ -121,6 +204,8 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     return options;
   }
 
+  onValueChange = new Event("change");
+
   constructor() {
     super();
     this.useObserver = true;
@@ -128,7 +213,6 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     this.required = false;
     this.visible = false;
     this.vertical = false;
-    this.searchBox = false;
   }
 
   private onWindowMouseUp = (e: MouseEvent) => {

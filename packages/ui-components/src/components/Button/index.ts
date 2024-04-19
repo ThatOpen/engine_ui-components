@@ -1,10 +1,12 @@
 import { computePosition, flip, shift, offset, inline } from "@floating-ui/dom";
 import { css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { UIComponent } from "../../core/UIComponent";
 import "iconify-icon";
 import { ContextMenu } from "../ContextMenu";
 
+@customElement("bim-button")
 export class Button extends UIComponent {
   static styles = css`
     :host {
@@ -122,33 +124,123 @@ export class Button extends UIComponent {
     }
   `;
 
-  static properties = {
-    label: { type: String, reflect: true },
-    labelHidden: { type: Boolean, attribute: "label-hidden", reflect: true },
-    active: { type: Boolean, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-    icon: { type: String, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-    tooltipTime: { type: Number, attribute: "tooltip-time", reflect: true },
-    tooltipVisible: {
-      type: Boolean,
-      attribute: "tooltip-visible",
-      reflect: true,
-    },
-    tooltipTitle: { type: String, attribute: "tooltip-title", reflect: true },
-    tooltipText: { type: String, attribute: "tooltip-text", reflect: true },
-  };
+  /**
+   * The label to be displayed on the button.
+   * @type {string}
+   * @default undefined
+   * @example <bim-button label="Click me"></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   */
+  @property({ type: String, reflect: true })
+  label?: string;
 
-  declare icon?: string;
-  declare label?: string;
-  declare labelHidden: boolean;
-  declare tooltipVisible: boolean;
-  declare tooltipText: string;
-  declare tooltipTitle: string;
-  declare tooltipTime: number;
-  declare active: boolean;
-  declare disabled: boolean;
-  declare vertical: boolean;
+  /**
+   * A boolean attribute which, if present, indicates that the label should be hidden.
+   * @type {boolean}
+   * @default false
+   * @example <bim-button label="Click me" label-hidden></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.labelHidden = true;
+   */
+  @property({ type: Boolean, attribute: "label-hidden", reflect: true })
+  labelHidden: boolean;
+
+  /**
+   * A boolean attribute which, if present, indicates that the button is active.
+   * @type {boolean}
+   * @default false
+   * @example <bim-button label="Click me" active></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.active = true;
+   */
+  @property({ type: Boolean, reflect: true })
+  active: boolean;
+
+  /**
+   * A boolean attribute which, if present, indicates that the button is disabled.
+   * @type {boolean}
+   * @default false
+   * @example <bim-button label="Click me" disabled></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.disabled = true;
+   */
+  @property({ type: Boolean, reflect: true, attribute: "disabled" })
+  disabled: boolean;
+
+  /**
+   * The icon to be displayed on the button.
+   * @type {string}
+   * @default undefined
+   * @example <bim-button icon="my-icon"></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.icon = 'my-icon';
+   */
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  /**
+   * A boolean attribute which, if present, indicates that the button should be displayed vertically.
+   * @type {boolean}
+   * @default false
+   * @example <bim-button label="Click me" vertical></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.vertical = true;
+   */
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  /**
+   * The time (in milliseconds) to wait before showing the tooltip when hovering over the button.
+   * @type {number}
+   * @default 700
+   * @example <bim-button label="Click me" tooltip-time="1000"></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.tooltipTime = 1000;
+   */
+  @property({ type: Number, attribute: "tooltip-time", reflect: true })
+  tooltipTime: number;
+
+  /**
+   * A boolean attribute which, if present, indicates that the tooltip should be visible.
+   * @type {boolean}
+   * @default false
+   * @example <bim-button label="Click me" tooltip-visible></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.tooltipVisible = true;
+   */
+  @property({ type: Boolean, attribute: "tooltip-visible", reflect: true })
+  tooltipVisible: boolean;
+
+  /**
+   * The title of the tooltip to be displayed when hovering over the button.
+   * @type {string}
+   * @default undefined
+   * @example <bim-button label="Click me" tooltip-title="Button Tooltip"></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.tooltipTitle = 'Button Tooltip';
+   */
+  @property({ type: String, attribute: "tooltip-title", reflect: true })
+  tooltipTitle?: string;
+
+  /**
+   * The text of the tooltip to be displayed when hovering over the button.
+   * @type {string}
+   * @default undefined
+   * @example <bim-button label="Click me" tooltip-text="This is a tooltip"></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.tooltipText = 'This is a tooltip';
+   */
+  @property({ type: String, attribute: "tooltip-text", reflect: true })
+  tooltipText?: string;
 
   private _parent = createRef<HTMLDivElement>();
   private _tooltip = createRef<HTMLDivElement>();
@@ -157,7 +249,7 @@ export class Button extends UIComponent {
 
   private _mouseLeave = false;
 
-  set mouseLeave(value: boolean) {
+  private set mouseLeave(value: boolean) {
     this._mouseLeave = value;
     if (value) {
       this.tooltipVisible = false;
@@ -165,7 +257,7 @@ export class Button extends UIComponent {
     }
   }
 
-  get mouseLeave() {
+  private get mouseLeave() {
     return this._mouseLeave;
   }
 
@@ -302,7 +394,7 @@ export class Button extends UIComponent {
         ${hasChildren
           ? html`
               <div class="children" @click=${this.onChildrenClick}>
-                <bim-icon icon="ic:round-plus"></bim-icon>
+                <bim-icon .icon=${"ic:round-plus"}></bim-icon>
               </div>
             `
           : null}
