@@ -1,0 +1,12 @@
+Take note of the following web component:
+
+$Open file
+
+Generate a well-documented JSDoc for these web component properties $Selected code. For each property, you MUST analice the full code and include in the JSDoc a detailed description of the property making sure to mention what to expect when the property changes. You must include the following tags:
+
+- @type showing the data type of the property. It must only show the data type, nothing more.
+- @default showing the property default value based on the constructor. It must only contain its default value, nothing more.
+- @example showing how to use the property in HTML. It must only contain the code snippet, nothing more.
+- @example showing how to use the property in JavaScript, making sure the code snippet includes the instancing of the web component. It must only contain the code snippet, nothing more.
+
+Give me the answer in just one code snippet and after each JSDoc write the property declaration again so I can just copy-paste your answer. 

@@ -1,8 +1,10 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
+import { customElement, property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { HasName, HasValue } from "../../core/types";
 
+@customElement("bim-color-input")
 export class ColorInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
@@ -61,25 +63,95 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     }
   `;
 
-  static properties = {
-    name: { type: String, reflect: true },
-    icon: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    color: { type: String, reflect: true },
-    opacity: { type: Number, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-  };
+  /**
+   * The name of the color input.
+   * @type {string}
+   * @default undefined
+   * @example
+   * <bim-color-input name="colorInput"></bim-color-input>
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.name = 'colorInput';
+   */
+  @property({ type: String, reflect: true })
+  name?: string;
 
-  declare name?: string;
-  declare label?: string;
-  declare icon?: string;
-  declare vertical: boolean;
-  declare color: string;
-  declare opacity?: number;
+  /**
+   * The label for the color input.
+   * @type {string}
+   * @default undefined
+   * @example
+   * <bim-color-input label="Select a color"></bim-color-input>
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.label = 'Select a color';
+   */
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  /**
+   * The icon for the color input.
+   * @type {string}
+   * @default undefined
+   * @example
+   * <bim-color-input icon="palette"></bim-color-input>
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.icon = 'palette';
+   */
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  /**
+   * A boolean attribute which, if present, indicates that the color input should be displayed vertically.
+   * @type {boolean}
+   * @default false
+   * @example
+   * <bim-color-input vertical></bim-color-input>
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.vertical = true;
+   */
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  /**
+   * The opacity of the color input.
+   * @type {number}
+   * @default undefined
+   * @example
+   * <bim-color-input opacity="0.5"></bim-color-input>
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.opacity = 0.5;
+   */
+  @property({ type: Number, reflect: true })
+  opacity?: number;
+
+  /**
+   * The color value of the color input in hexadecimal format.
+   * @type {string}
+   * @default #bcf124
+   * @example
+   * <bim-color-input color="#ff0000"></bim-color-input>
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.color = '#ff0000';
+   */
+  @property({ type: String, reflect: true })
+  color!: string;
 
   private _colorInput = createRef<HTMLInputElement>();
   private _textInput = createRef<HTMLInputElement>();
   onValueChange = new Event("input");
+
+  /**
+   * Represents both the color and opacity values combined into a single object. This is an instance property, not an HTMLElement attribute.
+   * @type {Object}
+   * @example
+   * const colorInput = document.createElement('bim-color-input');
+   * colorInput.value = { color: '#ff0000', opacity: 0.5 };
+   */
 
   set value(_value: { color: string; opacity?: number }) {
     const { color, opacity } = _value;
@@ -117,12 +189,20 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     }
   }
 
+  constructor() {
+    super();
+    this.vertical = false;
+  }
+
   connectedCallback() {
     super.connectedCallback();
     if (!this.color) this.color = "#bcf124";
-    if (this.vertical === undefined) this.vertical = false;
   }
 
+  /**
+   * Focuses on the color input by programmatically triggering a click event on the underlying color input element.
+   * If the color input element is not available, the function does nothing.
+   */
   focus() {
     const { value } = this._colorInput;
     if (!value) return;
