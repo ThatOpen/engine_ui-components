@@ -2,7 +2,7 @@
 import * as OBC from "openbim-components";
 import * as BUI from "@thatopen/ui-components";
 
-export const ifcEntityDropdown = () => {
+export const ifcEntities = () => {
   const dropdown = document.createElement(
     "bim-dropdown",
   ) as unknown as BUI.Dropdown;

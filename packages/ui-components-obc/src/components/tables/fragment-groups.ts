@@ -5,7 +5,7 @@ interface FragmentGroupsUIState {
   manager: OBC.FragmentManager;
 }
 
-const template = (state: FragmentGroupsUIState) => {
+export const fragmentGroupsListTemplate = (state: FragmentGroupsUIState) => {
   const { manager } = state;
 
   const labels = [];
@@ -13,23 +13,17 @@ const template = (state: FragmentGroupsUIState) => {
     labels.push(BUI.html`<bim-label label=${model.uuid}></bim-label>`);
   }
 
-  return BUI.html`
-    <bim-panel-section label="Models"> ${labels} </bim-panel-section>
-  `;
+  return BUI.html`<div>${labels}</div>`;
 };
 
-export const fragmentGroupsListElement = (state: FragmentGroupsUIState) => {
-  const { manager } = state;
-  const [fragmentGroupsList, updateFragmentGroupsList]: [
-    BUI.PanelSection,
-    BUI.UpdateFunction<FragmentGroupsUIState>,
-  ] = BUI.UIComponent.create<BUI.PanelSection, FragmentGroupsUIState>(
-    template,
-    state,
-  );
+export const fragmentGroupsList = (manager: OBC.FragmentManager) => {
+  const [element, updateElement] = BUI.UIComponent.create<
+    BUI.Table,
+    FragmentGroupsUIState
+  >(fragmentGroupsListTemplate, { manager });
 
-  manager.onFragmentsLoaded.add(() => updateFragmentGroupsList());
-  manager.onFragmentsDisposed.add(() => updateFragmentGroupsList());
+  manager.onFragmentsLoaded.add(() => updateElement());
+  manager.onFragmentsDisposed.add(() => updateElement());
 
-  return fragmentGroupsList;
+  return element;
 };

@@ -1,11 +1,11 @@
 import * as OBC from "openbim-components";
 import * as BUI from "@thatopen/ui-components";
 
-export interface ClipStylerTableState {
+interface ClipStylerUIState {
   styler: OBC.FragmentClipStyler;
 }
 
-export const clipStylerTemplate = (state: ClipStylerTableState) => {
+export const clipStylerTemplate = (state: ClipStylerUIState) => {
   // @ts-ignore
   const { styler } = state;
   const table = document.createElement("bim-table");
