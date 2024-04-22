@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { HasName, HasValue } from "../../core/types";
 
-// TODO: Improve slider by defining a step.
-
+// HTML tag: bim-number-input
 export class NumberInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
@@ -85,38 +85,208 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       left: 0;
       border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
     }
+
+    bim-input {
+      display: flex;
+    }
   `;
 
-  static properties = {
-    name: { type: String, reflect: true },
-    icon: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    pref: { type: String, reflect: true },
-    min: { type: Number, reflect: true },
-    value: { type: Number, reflect: true },
-    step: { type: Number, reflect: true },
-    sensitivity: { type: Number, reflect: true },
-    max: { type: Number, reflect: true },
-    sufix: { type: String, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-    slider: { type: Boolean, reflect: true },
-  };
+  /**
+   * The `name` property is used to specify the name of the number input component.
+   * This can be useful for identifying the component in forms or JavaScript.
+   * When the property changes, it updates the component's attribute to reflect the new name.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-number-input name="age"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.name = 'age';
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: String, reflect: true })
+  name?: string;
 
-  declare name?: string;
-  declare icon?: string;
-  declare label?: string;
-  declare pref?: string;
-  declare min?: number;
-  declare step?: number;
-  declare sensitivity?: number;
-  declare max?: number;
-  declare sufix?: string;
-  declare value: number;
-  declare vertical: boolean;
-  declare slider: boolean;
+  /**
+   * The `icon` property allows specifying an icon identifier to be used within the number input component,
+   * potentially for decorative or instructional purposes. Changes to this property may affect the appearance
+   * or layout of the component, depending on how the icon is used within the component's template.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-number-input icon="user-icon"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.icon = 'user-icon';
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  /**
+   * The `label` property is used to define a text label associated with the number input component.
+   * This label can provide context or instructions to the user. When the label property changes,
+   * the component updates to display the new label text.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-number-input label="Enter your age"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.label = 'Enter your age';
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  /**
+   * The `pref` property is used to specify a prefix for the value in the number input component.
+   * This could be a currency symbol, a unit, or any other kind of prefix. The prefix is displayed
+   * inside the input field before the value. When the property changes, the displayed prefix updates accordingly.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-number-input pref="$"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.pref = '$';
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: String, reflect: true })
+  pref?: string;
+
+  /**
+   * The `min` property defines the minimum value that can be entered in the number input component.
+   * It is used to validate the input and ensure that the value does not go below this minimum.
+   * When the property changes, the component enforces the new minimum value.
+   *
+   * @type {Number}
+   * @default undefined
+   * @example <bim-number-input min="0"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.min = 0;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Number, reflect: true })
+  min?: number;
+
+  /**
+   * The `value` property represents the current value of the number input component.
+   * It is a crucial property that holds the actual number input by the user or set programmatically.
+   * Changes to this property update the displayed value in the component and can trigger validation
+   * against the `min` and `max` properties if they are set.
+   *
+   * @type {Number}
+   * @default 0
+   * @example <bim-number-input value="10"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.value = 10;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Number, reflect: true })
+  value: number;
+
+  /**
+   * The `step` property determines the amount by which the value should increase or decrease
+   * when the user interacts with the component's stepping mechanism. It is used for incremental
+   * changes to the value. When the property changes, the step size for value changes is updated.
+   *
+   * @type {Number}
+   * @default undefined
+   * @example <bim-number-input step="5"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.step = 5;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Number, reflect: true })
+  step?: number;
+
+  /**
+   * The `sensitivity` property affects how sensitive the slider is to mouse movements when adjusting
+   * the value. A higher sensitivity means smaller movements are needed to change the value. This property
+   * is particularly relevant when the `slider` property is enabled. Changes to this property adjust how
+   * the slider responds to input.
+   *
+   * @type {Number}
+   * @default undefined
+   * @example <bim-number-input sensitivity="10"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.sensitivity = 10;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Number, reflect: true })
+  sensitivity?: number;
+
+  /**
+   * The `max` property defines the maximum value that can be entered in the number input component.
+   * It is used to validate the input and ensure that the value does not exceed this maximum.
+   * When the property changes, the component enforces the new maximum value.
+   *
+   * @type {Number}
+   * @default undefined
+   * @example <bim-number-input max="100"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.max = 100;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Number, reflect: true })
+  max?: number;
+
+  /**
+   * The `sufix` property is used to specify a suffix for the value in the number input component.
+   * Similar to the `pref` property, but the suffix is displayed after the value. It could be a unit of measure,
+   * a percentage symbol, etc. When the property changes, the displayed suffix updates accordingly.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-number-input sufix="%"></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.sufix = '%';
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: String, reflect: true })
+  sufix?: string;
+
+  /**
+   * The `vertical` property indicates whether the slider (if enabled) should be displayed vertically.
+   * This can affect the layout and behavior of the slider component within the number input.
+   * When the property changes, the orientation of the slider adjusts accordingly.
+   *
+   * @type {Boolean}
+   * @default false
+   * @example <bim-number-input vertical></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.vertical = true;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  /**
+   * The `slider` property enables a slider interface for the number input component, allowing users
+   * to adjust the value by dragging the slider. When enabled, it changes the component's UI to include
+   * a slider. When the property changes, the component toggles between a regular input field and a slider view.
+   *
+   * @type {Boolean}
+   * @default false
+   * @example <bim-number-input slider></bim-number-input>
+   * @example
+   * const numberInput = document.createElement('bim-number-input');
+   * numberInput.slider = true;
+   * document.body.appendChild(numberInput);
+   */
+  @property({ type: Boolean, reflect: true })
+  slider: boolean;
 
   private _input = createRef<HTMLInputElement>();
-  onValueChange = new Event("input");
+  readonly onValueChange = new Event("input");
 
   constructor() {
     super();
@@ -192,13 +362,21 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     });
   }
 
+  /**
+   * Sets focus to the input element of the number input component.
+   * This method is useful for programmatically focusing the input element, for example,
+   * in response to a user action or to emphasize the input in the UI.
+   *
+   * If the input element reference is not available (not yet rendered or disconnected),
+   * this method will do nothing.
+   */
   focus() {
     const { value } = this._input;
     if (!value) return;
     value.focus();
   }
 
-  render() {
+  protected render() {
     const regularTemplate = html`
       ${this.pref || this.icon
         ? html`<bim-label

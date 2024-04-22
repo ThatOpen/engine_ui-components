@@ -1,10 +1,11 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { HasName, HasValue } from "../../core/types";
+import { NumberInput } from "../NumberInput";
 
-@customElement("bim-color-input")
+// HTML tag: bim-color-input
 export class ColorInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
@@ -17,6 +18,11 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
       --bim-input--olc: var(--bim-ui_color-accent);
     }
 
+    .parent {
+      display: flex;
+      gap: 0.375rem;
+    }
+
     .color-container {
       position: relative;
       outline: none;
@@ -24,7 +30,7 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
       height: 100%;
       gap: 0.5rem;
       justify-content: flex-start;
-      padding-left: 0.5rem;
+      padding: 0 0.5rem;
       align-items: center;
       flex: 1;
       border-radius: var(--bim-color-input--bdrs, var(--bim-ui_size-4xs));
@@ -48,7 +54,7 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     .color-container input[type="text"] {
       height: 100%;
       flex: 1;
-      width: 1.25rem;
+      width: 3.25rem;
       text-transform: uppercase;
       font-size: 0.75rem;
       background-color: transparent;
@@ -210,38 +216,47 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
   }
 
   render() {
+    const onOpacityInput = (e: Event) => {
+      const input = e.target as NumberInput;
+      this.opacity = input.value;
+      this.dispatchEvent(this.onValueChange);
+    };
+
     return html`
-      <bim-input
-        .label=${this.label}
-        .icon=${this.icon}
-        .vertical="${this.vertical}"
-      >
-        <div class="color-container">
-          <input
-            ${ref(this._colorInput)}
-            @input="${this.onColorInput}"
-            type="color"
-            .value="${this.color}"
-          />
-          <div
-            @click=${this.focus}
-            class="sample"
-            style="background-color: ${this.color}"
-          ></div>
-          <input
-            ${ref(this._textInput)}
-            @input="${this.onTextInput}"
-            .value="${this.color}"
-            type="text"
-          />
-        </div>
+      <div class="parent">
+        <bim-input
+          .label=${this.label}
+          .icon=${this.icon}
+          .vertical="${this.vertical}"
+        >
+          <div class="color-container">
+            <input
+              ${ref(this._colorInput)}
+              @input="${this.onColorInput}"
+              type="color"
+              .value="${this.color}"
+            />
+            <div
+              @click=${this.focus}
+              class="sample"
+              style="background-color: ${this.color}"
+            ></div>
+            <input
+              ${ref(this._textInput)}
+              @input="${this.onTextInput}"
+              .value="${this.color}"
+              type="text"
+            />
+          </div>
+        </bim-input>
         ${this.opacity
           ? html`<bim-number-input
-              sufix="%"
+              @input=${onOpacityInput}
+              .sufix=${"%"}
               .value=${this.opacity}
             ></bim-number-input>`
           : null}
-      </bim-input>
+      </div>
     `;
   }
 }

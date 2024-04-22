@@ -147,7 +147,11 @@ export class PanelSection extends UIComponent implements HasName, HasValue {
     const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG;
 
     const headerTemplate = html`
-      <div class="header" @click=${this.onHeaderClick}>
+      <div
+        class="header"
+        title=${this.label ?? ""}
+        @click=${this.onHeaderClick}
+      >
         ${this.label || this.icon || this.name
           ? html`<bim-label
               .label=${this.label || this.name}
