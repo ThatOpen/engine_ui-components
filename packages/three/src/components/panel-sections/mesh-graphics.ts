@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 
 export const meshGraphics = (
   mesh: THREE.Mesh,

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
-import { UIComponent } from "@thatopen/ui-components";
+import { UIComponent } from "@thatopen/ui";
 
 export class ViewCube extends UIComponent {
   static styles = css`

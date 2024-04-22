@@ -6,10 +6,10 @@
   ],
   "scripts": {
     "dev": "vite --host",
-    "build-core": "npm run build -w @thatopen/ui-components",
-    "build-obc": "npm run build -w @thatopen/ui-components-obc",
-    "build-three": "npm run build -w @thatopen/ui-components-three",
-    "build-webifc": "npm run build -w @thatopen/ui-components-webifc",
+    "build-core": "npm run build -w @thatopen/ui",
+    "build-obc": "npm run build -w @thatopen/ui-obc",
+    "build-three": "npm run build -w @thatopen/ui-three",
+    "build-webifc": "npm run build -w @thatopen/ui-webifc",
     "build-libraries": "npm run build-core && npm run build-obc && npm run build-three && npm run build-webifc",
     "build-examples": "vite build --config ./vite.config-examples.ts",
     "build-all": "npm run build-examples && npm run build-libraries"

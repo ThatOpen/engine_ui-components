@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { TemplateResult } from "lit";
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 
 const onPositionChange = (e: Event, position: THREE.Vector3) => {
   const input = e.target as BUI.NumberInput;
