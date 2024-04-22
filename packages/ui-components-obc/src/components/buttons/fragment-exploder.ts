@@ -25,7 +25,7 @@ const template = (state: FragmentExploderUIState) => {
   `;
 };
 
-export const fragmentExploderBtnElement = (state: FragmentExploderUIState) => {
+export const fragmentExploder = (state: FragmentExploderUIState) => {
   const [fragmentExploderBtn] = BUI.UIComponent.create<
     BUI.Button,
     FragmentExploderUIState

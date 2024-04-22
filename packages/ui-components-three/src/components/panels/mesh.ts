@@ -1,42 +1,48 @@
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui-components";
-import { TemplateResult } from "lit";
-import { transformPanelSection } from "../panel-sections/transform";
-import { meshGraphicsPanelSection } from "../panel-sections/mesh-graphics";
-import { materialPanelSection } from "../panel-sections/material";
+import { panelSections } from "..";
 
-export interface MeshPanelState {
-  mesh?: THREE.Mesh;
+interface MeshUIState {
+  mesh: THREE.Mesh;
 }
 
-export const meshPanel = (state: MeshPanelState) => {
+export const meshTemplate = (state: MeshUIState) => {
   const { mesh } = state;
 
-  let transformSection: TemplateResult | undefined;
-  let meshGraphicsSection: TemplateResult | undefined;
-  let materialSection: TemplateResult | undefined;
+  const meshGraphicsSection = panelSections.meshGraphics(mesh, {
+    collapsed: true,
+  });
 
-  if (mesh) {
-    meshGraphicsSection = meshGraphicsPanelSection(mesh, { collapsed: true });
+  const transform = {
+    position: mesh.position,
+    rotation: mesh.rotation,
+    scale: mesh.scale,
+  };
 
-    const transform = {
-      position: mesh.position,
-      rotation: mesh.rotation,
-      scale: mesh.scale,
-    };
+  const transformSection = panelSections.meshTransform(transform, {
+    collapsed: false,
+  });
 
-    transformSection = transformPanelSection(transform, { collapsed: false });
+  const material = Array.isArray(mesh.material)
+    ? mesh.material[0]
+    : mesh.material;
 
-    const material = Array.isArray(mesh.material)
-      ? mesh.material[0]
-      : mesh.material;
-
-    materialSection = materialPanelSection(material, { collapsed: true });
-  }
+  const materialSection = panelSections.material(material);
 
   return BUI.html`
     <bim-panel label="Static Mesh">
       ${transformSection} ${meshGraphicsSection} ${materialSection}
     </bim-panel>
   `;
+};
+
+export const mesh = (mesh: THREE.Mesh) => {
+  const [element] = BUI.UIComponent.create<BUI.Panel, MeshUIState>(
+    meshTemplate,
+    {
+      mesh,
+    },
+  );
+
+  return element;
 };

@@ -1,13 +1,13 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
 import { Option } from "../Option";
 import { ContextMenu } from "../ContextMenu";
 import { HasName, HasValue } from "../../core/types";
 
-@customElement("bim-dropdown")
+// HTML tag: bim-dropdown
 export class Dropdown extends UIComponent implements HasValue, HasName {
   static styles = [
     styles.scrollbar,

@@ -35,9 +35,11 @@ const template = (state: LoadIfcUIState) => {
   `;
 };
 
-export const loadIfcBtnElement = (state: LoadIfcUIState) => {
-  const [loadIfcBtn]: [BUI.Button, BUI.UpdateFunction<LoadIfcUIState>] =
-    BUI.UIComponent.create(template, state);
+export const loadIfc = (state: LoadIfcUIState) => {
+  const [loadIfcBtn] = BUI.UIComponent.create<BUI.Button, LoadIfcUIState>(
+    template,
+    state,
+  );
 
   return loadIfcBtn;
 };

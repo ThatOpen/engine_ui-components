@@ -1,6 +1,8 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 
+// HTML tag: bim-label
 export class Label extends UIComponent {
   static styles = css`
     :host {
@@ -51,32 +53,102 @@ export class Label extends UIComponent {
     }
   `;
 
-  static properties = {
-    label: { type: String, reflect: true },
-    img: { type: String, reflect: true },
-    labelHidden: { type: Boolean, attribute: "label-hidden", reflect: true },
-    icon: { type: String, reflect: true },
-    iconHidden: { type: Boolean, attribute: "icon-hidden", reflect: true },
-    vertical: { type: Boolean, reflect: true },
-  };
+  /**
+   * Represents the text label of the component. This is the primary content displayed by the component.
+   * When the `label` property changes, the displayed text updates to reflect the new value. If the label is hidden (controlled by `labelHidden`), changing this property will not affect the visibility of the label.
+   * @type {String}
+   * @default undefined
+   * @example <bim-label label="Example Label"></bim-label>
+   * @example
+   * const labelComponent = document.createElement('bim-label');
+   * labelComponent.label = 'Example Label';
+   * document.body.appendChild(labelComponent);
+   */
+  @property({ type: String, reflect: true })
+  label?: string;
 
-  declare icon?: string;
-  declare img?: string;
-  declare iconHidden: boolean;
-  declare label?: string;
-  declare labelHidden: boolean;
-  declare vertical: boolean;
+  /**
+   * Specifies the image URL for the component. When set, an `<img>` element is rendered within the component.
+   * Changing this property updates the source of the image. If the property is not set or removed, the image will not be displayed.
+   * @type {String}
+   * @default undefined
+   * @example <bim-label img="path/to/image.png"></bim-label>
+   * @example
+   * const labelComponent = document.createElement('bim-label');
+   * labelComponent.img = 'path/to/image.png';
+   * document.body.appendChild(labelComponent);
+   */
+  @property({ type: String, reflect: true })
+  img?: string;
 
-  connectedCallback() {
-    super.connectedCallback();
-    if (this.iconHidden === undefined) this.iconHidden = false;
-    if (this.labelHidden === undefined) this.labelHidden = false;
-    if (this.vertical === undefined) this.vertical = false;
+  /**
+   * Controls the visibility of the label text. When `true`, the label text is not rendered to the user.
+   * Changing this property to `true` hides the label text if it was previously visible. Setting it to `false` will show the label text if it is defined.
+   * @type {Boolean}
+   * @default false
+   * @example <bim-label label-hidden></bim-label>
+   * @example
+   * const labelComponent = document.createElement('bim-label');
+   * labelComponent.labelHidden = true;
+   * document.body.appendChild(labelComponent);
+   */
+  @property({ type: Boolean, attribute: "label-hidden", reflect: true })
+  labelHidden: boolean;
+
+  /**
+   * Specifies the icon to be used in the component. This property is intended for displaying an icon alongside the label or image.
+   * When the `icon` property changes, the displayed icon updates accordingly. If the icon is hidden (controlled by `iconHidden`), changing this property will not affect the visibility of the icon.
+   * Note: The actual rendering of the icon is managed by a nested `<bim-icon>` component in the shadow DOM.
+   * @type {String}
+   * @default undefined
+   * @example <bim-label icon="example-icon"></bim-label>
+   * @example
+   * const labelComponent = document.createElement('bim-label');
+   * labelComponent.icon = 'example-icon';
+   * document.body.appendChild(labelComponent);
+   */
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  /**
+   * Controls the visibility of the icon. When `true`, the icon is not rendered to the user.
+   * Changing this property to `true` hides the icon if it was previously visible. Setting it to `false` will show the icon if it is defined.
+   * Note: This does not affect the visibility of the label or image, only the icon.
+   * @type {Boolean}
+   * @default false
+   * @example <bim-label icon-hidden></bim-label>
+   * @example
+   * const labelComponent = document.createElement('bim-label');
+   * labelComponent.iconHidden = true;
+   * document.body.appendChild(labelComponent);
+   */
+  @property({ type: Boolean, attribute: "icon-hidden", reflect: true })
+  iconHidden: boolean;
+
+  /**
+   * Determines the orientation of the component. When `true`, the component's contents (label, image, and icon) are stacked vertically.
+   * Changing this property affects the layout of the component, switching between a horizontal and vertical arrangement of its contents.
+   * @type {Boolean}
+   * @default false
+   * @example <bim-label vertical></bim-label>
+   * @example
+   * const labelComponent = document.createElement('bim-label');
+   * labelComponent.vertical = true;
+   * document.body.appendChild(labelComponent);
+   */
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  constructor() {
+    super();
+    this.iconHidden = false;
+    this.labelHidden = false;
+    this.vertical = false;
   }
 
   render() {
     return html`
-      <div class="parent" title=${this.label}>
+      <div class="parent" .title=${(this.label = "")}>
         ${this.img
           ? html`<img .src=${this.img} .alt=${this.label || ""} />`
           : null}

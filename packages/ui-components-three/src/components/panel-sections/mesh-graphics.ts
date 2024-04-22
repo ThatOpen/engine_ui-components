@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui-components";
 
-export const meshGraphicsPanelSection = (
+export const meshGraphics = (
   mesh: THREE.Mesh,
   options?: { collapsed?: boolean },
 ) => {

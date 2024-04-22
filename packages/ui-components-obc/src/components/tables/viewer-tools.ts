@@ -2,7 +2,9 @@
 import * as OBC from "openbim-components";
 import * as BUI from "@thatopen/ui-components";
 
-export const toolsTable = (state: { components: OBC.Components }) => {
+export const componentsConfiguration = (state: {
+  components: OBC.Components;
+}) => {
   const { components } = state;
   const { tools } = components;
 

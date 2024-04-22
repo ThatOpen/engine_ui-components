@@ -27,7 +27,7 @@ const onScaleChange = (e: Event, scale: THREE.Vector3) => {
   scale.set(x, y, z);
 };
 
-export const transformPanelSection = (
+export const meshTransform = (
   transform: {
     position?: THREE.Vector3;
     rotation?: THREE.Euler;

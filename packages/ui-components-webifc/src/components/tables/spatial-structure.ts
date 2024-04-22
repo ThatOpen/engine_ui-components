@@ -29,7 +29,7 @@ const processNode = async (api: WEBIFC.IfcAPI, modelID: number, node: Node) => {
   return tableGroup;
 };
 
-export const spatialStructureTable = async (state: {
+export const spatialStructure = async (state: {
   api: WEBIFC.IfcAPI;
   modelID: number;
 }) => {
