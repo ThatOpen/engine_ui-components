@@ -1,6 +1,6 @@
 {
-  "name": "@thatopen/ui-components-webifc",
-  "description": "Collection of web components (UI components) implementations to use with web-ifc.",
+  "name": "@thatopen/ui-obc",
+  "description": "Collection of web components (UI components) implementations to use with openbim-components.",
   "version": "0.1.0",
   "author": "That Open Company",
   "contributors": [
@@ -14,7 +14,7 @@
     "toolbar"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-webifc#readme",
+  "homepage": "https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-obc#readme",
   "bugs": {
     "url": "https://github.com/ThatOpen/engine_ui-components/issues"
   },
@@ -26,7 +26,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-webifc.git"
+    "url": "git+https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-obc.git"
   },
   "scripts": {
     "dev": "vite --host",
@@ -34,11 +34,14 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
+    "@types/three": "0.160.0",
     "lit": "3.1.2",
-    "web-ifc": "0.0.51"
+    "openbim-components": "1.4.20",
+    "three": "0.160.1"
   },
   "peerDependencies": {
     "@thatopen/ui-components": ">=0.1.0",
-    "web-ifc": "0.0.51"
+    "openbim-components": ">=1.6.0",
+    "three": "0.160.1"
   }
 }

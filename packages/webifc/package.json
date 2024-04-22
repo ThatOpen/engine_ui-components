@@ -1,6 +1,6 @@
 {
-  "name": "@thatopen/ui-components-three",
-  "description": "Collection of web components (UI components) implementations to use with ThreeJS.",
+  "name": "@thatopen/ui-webifc",
+  "description": "Collection of web components (UI components) implementations to use with web-ifc.",
   "version": "0.1.0",
   "author": "That Open Company",
   "contributors": [
@@ -14,7 +14,7 @@
     "toolbar"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-three#readme",
+  "homepage": "https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-webifc#readme",
   "bugs": {
     "url": "https://github.com/ThatOpen/engine_ui-components/issues"
   },
@@ -26,7 +26,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-three.git"
+    "url": "git+https://github.com/ThatOpen/engine_ui-components/tree/main/packages/ui-components-webifc.git"
   },
   "scripts": {
     "dev": "vite --host",
@@ -34,12 +34,11 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/three": "0.160.0",
     "lit": "3.1.2",
-    "three": "0.160.1"
+    "web-ifc": "0.0.51"
   },
   "peerDependencies": {
     "@thatopen/ui-components": ">=0.1.0",
-    "three": "0.160.1"
+    "web-ifc": "0.0.51"
   }
 }
