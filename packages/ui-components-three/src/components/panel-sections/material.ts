@@ -2,164 +2,136 @@ import { TemplateResult } from "lit";
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui-components";
 
-const attributesToGenerate = [
-  "metalness",
-  "roughness",
-  "depthTest",
-  "wireframe",
-];
+interface MaterialUIState {
+  material: THREE.Material;
+}
 
-const onColorChange = (e: Event, color: THREE.Color) => {
-  const input = e.target as BUI.ColorInput;
-  color.set(input.color);
+const colorTemplate = (material: THREE.Material) => {
+  if (!("color" in material && material.color instanceof THREE.Color))
+    return null;
+
+  const { color } = material;
+
+  const onChange = (e: Event) => {
+    const input = e.target as BUI.ColorInput;
+    const { color: inputColor, opacity } = input;
+    color.set(inputColor);
+    if (material.transparent && opacity) material.opacity = opacity / 100;
+  };
+
+  return BUI.html`
+    <bim-color-input
+      name="color"
+      label="Color"
+      color=${`#${(material.color as THREE.Color).getHexString()}`}
+      @input=${onChange}
+      .opacity=${material.transparent ? material.opacity * 100 : null}
+    ></bim-color-input>
+  `;
 };
 
-const onMetalnessChange = (e: Event, material: THREE.Material) => {
-  const input = e.target as BUI.NumberInput;
-  if ("metalness" in material) {
+const metalnessTemplate = (material: THREE.Material) => {
+  if (!("metalness" in material && typeof material.metalness === "number"))
+    return null;
+
+  const { metalness } = material;
+
+  const onChange = (e: Event) => {
+    const input = e.target as BUI.NumberInput;
     material.metalness = input.value / 100;
-  }
-};
+  };
 
-const onRoughnessChange = (e: Event, material: THREE.Material) => {
-  const input = e.target as BUI.NumberInput;
-  if ("roughness" in material) {
-    material.roughness = input.value / 100;
-  }
-};
-
-const onTransparentChange = (e: Event, material: THREE.Material) => {
-  const input = e.target as BUI.Checkbox;
-  material.transparent = input.checked;
-};
-
-export const materialPanelSection = (
-  material: THREE.Material,
-  options?: { collapsed?: boolean },
-) => {
-  const inputs: HTMLElement[] = [];
-
-  for (const key of attributesToGenerate) {
-    if (!(key in material)) continue;
-    // @ts-ignore
-    const value = material[key];
-    const label = key[0].toUpperCase() + key.slice(1);
-    let input: any;
-    if (value instanceof THREE.Color) {
-      // @ts-ignore
-      const color = material[key] as THREE.Color;
-      input = document.createElement("bim-color-input");
-      input.name = key;
-      input.color = `#${color.getHexString()}`;
-      input.label = label;
-      input.addEventListener("input", () => {
-        color.set(input.value.color);
-      });
-    } else if (typeof value === "number") {
-      input = document.createElement("bim-number-input");
-      input.name = key;
-      input.label = label;
-      input.value = value;
-      input.addEventListener("input", () => {
-        // @ts-ignore
-        material[key] = input.value;
-      });
-    } else if (typeof value === "boolean") {
-      input = document.createElement("bim-checkbox");
-      input.name = key;
-      input.label = label;
-      input.checked = value;
-      input.addEventListener("change", () => {
-        // @ts-ignore
-        material[key] = input.checked;
-      });
-    }
-    if (input) inputs.push(input);
-  }
-
-  const sectionName = `Material${material.name !== "" ? `: ${material.name}` : ""}`;
-
-  let colorTemplate: TemplateResult | null = null;
-  if ("color" in material && material.color instanceof THREE.Color) {
-    const color = material.color;
-    colorTemplate = BUI.html`
-      <bim-color-input
-        name="color"
-        label="Color"
-        .color=${`#${(material.color as THREE.Color).getHexString()}`}
-        @input=${(e: Event) => onColorChange(e, color)}
-      ></bim-color-input>
-    `;
-  }
-
-  let metalnessTemplate: TemplateResult | null = null;
-  if ("metalness" in material) {
-    const metalness = material.metalness as number;
-    metalnessTemplate = BUI.html`<bim-number-input
+  return BUI.html`<bim-number-input
       slider
       name="metalness"
       label="Metalness"
       sufix="%"
       min="0"
-      .value=${metalness * 100}
+      value=${metalness * 100}
       max="100"
-      @input=${(e: Event) => onMetalnessChange(e, material)}
+      @input=${onChange}
       vertical
     ></bim-number-input>`;
-  }
+};
 
-  let roughnessTemplate: TemplateResult | null = null;
-  if ("roughness" in material) {
-    const roughness = material.roughness as number;
-    roughnessTemplate = BUI.html`<bim-number-input
-      slider
-      name="roughness"
-      label="Roughness"
-      sufix="%"
-      min="0"
-      .value=${roughness * 100}
-      max="100"
-      @input=${(e: Event) => onRoughnessChange(e, material)}
-      vertical
-    ></bim-number-input>`;
-  }
+const roughnessTemplate = (material: THREE.Material) => {
+  if (!("roughness" in material && typeof material.roughness === "number"))
+    return null;
+
+  const { roughness } = material;
+
+  const onChange = (e: Event) => {
+    const input = e.target as BUI.NumberInput;
+    material.roughness = input.value / 100;
+  };
+
+  return BUI.html`<bim-number-input
+    slider
+    name="roughness"
+    label="Roughness"
+    sufix="%"
+    min="0"
+    value=${roughness * 100}
+    max="100"
+    @input=${onChange}
+    vertical
+  ></bim-number-input>`;
+};
+
+const transparencyTemplate = (material: THREE.Material) => {
+  const onChange = (e: Event) => {
+    const input = e.target as BUI.Checkbox;
+    material.transparent = input.checked;
+  };
+
+  return BUI.html`
+    <bim-checkbox
+      name="transparent"
+      label="Transparent"
+      .checked=${material.transparent}
+      @change=${onChange}
+    ></bim-checkbox>
+  `;
+};
+
+export const materialTemplate = (state: MaterialUIState) => {
+  const { material } = state;
 
   let pbrTemplate: TemplateResult | null = null;
   if (metalnessTemplate || roughnessTemplate) {
     pbrTemplate = BUI.html`
       <bim-input name="pbrData">
-        ${metalnessTemplate} ${roughnessTemplate}
+        ${metalnessTemplate(material)} ${roughnessTemplate(material)}
       </bim-input>
     `;
   }
 
   return BUI.html`
-    <bim-panel-section
-      .label=${sectionName}
-      name="material"
-      .collapsed=${options?.collapsed}
-    >
-      <bim-dropdown required>
-        <bim-option
-          label="Stone"
-          img="resources/stone.jpg"
-          vertical
-          ?noMark=${true}
-        ></bim-option>
-        <bim-option
-          label="Glass"
-          img="resources/glass.jpg"
-          vertical
-          ?noMark=${true}
-        ></bim-option>
-      </bim-dropdown>
-      ${colorTemplate} ${pbrTemplate}
-      <bim-checkbox
-        name="transparent"
-        label="Transparent"
-        .checked=${material.transparent}
-        @change=${(e: Event) => onTransparentChange(e, material)}
-      ></bim-checkbox>
-    </bim-panel-section>
+    <div style="display: flex; flex-direction: column; gap: 0.75rem">
+      ${colorTemplate(material)} 
+      ${pbrTemplate}
+      ${transparencyTemplate(material)}
+    </div>
   `;
+};
+
+export const material = (material: THREE.Material) => {
+  const component = BUI.UIComponent.create<HTMLDivElement, MaterialUIState>(
+    materialTemplate,
+    { material },
+  );
+
+  const [element, updateElement] = component;
+
+  const transparentCheckbox = element.querySelector<BUI.Checkbox>(
+    "bim-checkbox[name='transparent']",
+  );
+
+  if (transparentCheckbox) {
+    transparentCheckbox.addEventListener("change", () => {
+      updateElement();
+    });
+  }
+
+  return component;
 };
