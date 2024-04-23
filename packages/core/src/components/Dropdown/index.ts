@@ -43,6 +43,10 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
         justify-content: space-between;
         padding: 0 0.5rem;
       }
+
+      bim-label {
+        pointer-events: none;
+      }
     `,
   ];
 
@@ -286,7 +290,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     window.removeEventListener("mouseup", this.onWindowMouseUp);
   }
 
-  render() {
+  protected render() {
     let inputLabel: string;
     let inputImg: string | undefined;
     let inputIcon: string | undefined;
@@ -304,6 +308,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
 
     return html`
       <bim-input
+        title=${this.label ?? ""}
         .label=${this.label}
         .icon=${this.icon}
         .vertical=${this.vertical}
@@ -314,7 +319,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
           @click=${() => (this.visible = !this.visible)}
         >
           <bim-label
-            .label=${inputLabel}
+            label=${inputLabel}
             .img=${inputImg}
             .icon=${inputIcon}
             style="overflow: hidden;"

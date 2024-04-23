@@ -1,5 +1,6 @@
 import { css, html } from "lit";
 import { UIComponent } from "../../core/UIComponent";
+import "iconify-icon";
 
 export class Icon extends UIComponent {
   static styles = css`

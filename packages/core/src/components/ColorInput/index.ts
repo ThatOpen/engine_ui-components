@@ -145,7 +145,7 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
    * colorInput.color = '#ff0000';
    */
   @property({ type: String, reflect: true })
-  color!: string;
+  color: string;
 
   private _colorInput = createRef<HTMLInputElement>();
   private _textInput = createRef<HTMLInputElement>();
@@ -198,11 +198,7 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
   constructor() {
     super();
     this.vertical = false;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    if (!this.color) this.color = "#bcf124";
+    this.color = "#bcf124";
   }
 
   /**
@@ -215,7 +211,7 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
     value.click();
   }
 
-  render() {
+  protected render() {
     const onOpacityInput = (e: Event) => {
       const input = e.target as NumberInput;
       this.opacity = input.value;
@@ -234,7 +230,8 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
               ${ref(this._colorInput)}
               @input="${this.onColorInput}"
               type="color"
-              .value="${this.color}"
+              aria-label=${this.label || this.name || "Color Input"}
+              value="${this.color}"
             />
             <div
               @click=${this.focus}
@@ -244,16 +241,20 @@ export class ColorInput extends UIComponent implements HasValue, HasName {
             <input
               ${ref(this._textInput)}
               @input="${this.onTextInput}"
-              .value="${this.color}"
+              value="${this.color}"
               type="text"
+              aria-label=${this.label || this.name || "Text Color Input"}
             />
           </div>
         </bim-input>
-        ${this.opacity
+        ${this.opacity !== undefined
           ? html`<bim-number-input
               @input=${onOpacityInput}
-              .sufix=${"%"}
-              .value=${this.opacity}
+              slider
+              sufix="%"
+              min="0"
+              value=${this.opacity}
+              max="100"
             ></bim-number-input>`
           : null}
       </div>

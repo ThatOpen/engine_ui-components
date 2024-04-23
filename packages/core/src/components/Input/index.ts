@@ -1,4 +1,5 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { HasValue, HasName } from "../../core/types";
 
@@ -51,19 +52,17 @@ export class Input extends UIComponent implements HasValue, HasName {
     }
   `;
 
-  static properties = {
-    name: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    labelInside: { type: Boolean, attribute: "label-inside", reflect: true },
-    icon: { type: String, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-  };
+  @property({ type: String, reflect: true })
+  name?: string;
 
-  declare name?: string;
-  declare label?: string;
-  declare labelInside: boolean;
-  declare icon?: string;
-  declare vertical: boolean;
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
 
   onValueChange = new Event("change");
 
@@ -100,11 +99,10 @@ export class Input extends UIComponent implements HasValue, HasName {
 
   constructor() {
     super();
-    this.labelInside = false;
     this.vertical = false;
   }
 
-  render() {
+  protected render() {
     return html`
       <div class="parent">
         ${this.label || this.icon

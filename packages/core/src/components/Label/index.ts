@@ -146,9 +146,9 @@ export class Label extends UIComponent {
     this.vertical = false;
   }
 
-  render() {
+  protected render() {
     return html`
-      <div class="parent" .title=${(this.label = "")}>
+      <div class="parent" .title=${this.label ?? ""}>
         ${this.img
           ? html`<img .src=${this.img} .alt=${this.label || ""} />`
           : null}

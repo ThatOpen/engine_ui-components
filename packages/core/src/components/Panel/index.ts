@@ -1,9 +1,11 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
 import { Button } from "../Button";
 import { HasName, HasValue } from "../../core/types";
 
+// HTML tag: bim-panel
 export class Panel extends UIComponent implements HasName, HasValue {
   static styles = [
     styles.scrollbar,
@@ -47,15 +49,60 @@ export class Panel extends UIComponent implements HasName, HasValue {
   ];
 
   static properties = {
-    icon: { type: String, reflect: true },
-    name: { type: String, reflect: true },
-    label: { type: String, reflect: true },
     active: { type: Boolean, reflect: true },
   };
 
-  declare label?: string;
-  declare name?: string;
-  declare icon?: string;
+  /**
+   * Represents the icon to be displayed on the and panel and panel's activation button. This icon is a visual representation
+   * that can be used to give users a hint about the panel's purpose or content. When the `icon` property changes,
+   * the icon on the activation button is updated accordingly. This property is reflected to an attribute, meaning
+   * any changes to the property will also update the corresponding attribute on the HTML element, and vice versa.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-panel icon="settings"></bim-panel>
+   * @example
+   * const panel = document.createElement('bim-panel');
+   * panel.icon = 'settings';
+   * document.body.appendChild(panel);
+   */
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  /**
+   * The name of the panel. This property serves as an identifier and can also be displayed on the panel's
+   * activation button if the `label` property is not set. Changing the `name` property will update the label
+   * of the activation button to reflect the new name if no label is explicitly provided. This property is
+   * reflected to an attribute, allowing for synchronization between the property and the HTML attribute.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-panel name="user-settings"></bim-panel>
+   * @example
+   * const panel = document.createElement('bim-panel');
+   * panel.name = 'user-settings';
+   * document.body.appendChild(panel);
+   */
+  @property({ type: String, reflect: true })
+  name?: string;
+
+  /**
+   * The label of the panel, which is displayed on the panel's activation button. This property is intended
+   * for a more descriptive text than what `name` might provide. If the `label` property is set, it takes
+   * precedence over the `name` property for the button's display. When the `label` changes, the activation
+   * button's label is updated to reflect this change. This property is also reflected to an attribute, ensuring
+   * consistency between the property value and the HTML attribute.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-panel label="User Settings"></bim-panel>
+   * @example
+   * const panel = document.createElement('bim-panel');
+   * panel.label = 'User Settings';
+   * document.body.appendChild(panel);
+   */
+  @property({ type: String, reflect: true })
+  label?: string;
 
   onValueChange = new Event("change");
 
