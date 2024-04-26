@@ -1,4 +1,5 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../../core/UIComponent";
 import { Table } from "../index";
 import { TableGroup, TableGroupData } from "./TableGroup";
@@ -15,19 +16,29 @@ export class TableChildren extends UIComponent {
     }
   `;
 
-  static properties = {
-    groups: { type: Array, attribute: false },
-  };
+  @property({ type: Array, attribute: false })
+  groups?: TableGroupData[];
 
-  declare groups?: TableGroupData[];
+  private _groups: TableGroup[] = [];
+
   table = this.closest<Table>("bim-table");
 
-  render() {
+  get value() {
+    const value: { data: Record<string, any> }[] = [];
+    for (const group of this._groups) {
+      value.push(group.value);
+    }
+    return value;
+  }
+
+  protected render() {
+    this._groups = [];
     return html`
       ${this.groups?.map((group) => {
         const tableGroup = document.createElement(
           "bim-table-group",
         ) as TableGroup;
+        this._groups.push(tableGroup);
         tableGroup.group = group;
         tableGroup.table = this.table;
         return tableGroup;

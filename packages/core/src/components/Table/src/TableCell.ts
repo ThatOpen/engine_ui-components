@@ -1,6 +1,7 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../../core/UIComponent";
-import { Table } from "../index";
+import { getElementValue } from "../../../core/utils";
 
 export class TableCell extends UIComponent {
   static styles = css`
@@ -22,15 +23,24 @@ export class TableCell extends UIComponent {
     }
   `;
 
-  static properties = {
-    column: { type: String, reflect: true },
-  };
+  @property({ type: String, reflect: true })
+  column?: string;
 
-  declare column?: string;
+  get value(): any | any[] {
+    const childrenCount = this.children.length;
+    if (childrenCount === 1) {
+      const child = this.children[0];
+      return "value" in child ? child.value : child.textContent;
+    }
+    const values = [];
+    for (const child of this.children) {
+      const value = "value" in child ? child.value : child.textContent;
+      values.push(value);
+    }
+    return values;
+  }
 
-  table = this.closest<Table>("bim-table");
-
-  render() {
+  protected render() {
     return html`
       <style>
         :host {

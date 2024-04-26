@@ -19,6 +19,7 @@ export class Table extends UIComponent {
         --bim-button--bgc: transparent;
         position: relative;
         overflow: auto;
+        display: block;
       }
 
       .parent {
@@ -119,6 +120,21 @@ export class Table extends UIComponent {
     return data;
   }
 
+  get value() {
+    return new Promise<
+      { data: Record<string, any>; children?: Record<string, any>[] }[]
+    >((resolve) => {
+      setTimeout(() => {
+        const { value: children } = this._children;
+        if (!children) {
+          resolve([]);
+          return;
+        }
+        resolve(children.value);
+      });
+    });
+  }
+
   constructor() {
     super();
     this.columns = [];
@@ -150,6 +166,16 @@ export class Table extends UIComponent {
       }
     }
     return computed;
+  }
+
+  async downloadData(fileName = "BIM Table Data") {
+    const value = await this.value;
+    const file = new File([JSON.stringify(value)], `${fileName}.json`);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(file);
+    a.download = file.name;
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   getRowIndentation(
@@ -226,7 +252,7 @@ export class Table extends UIComponent {
     this.requestUpdate();
   }
 
-  render() {
+  protected render() {
     const headerRowTemplate = html`
       <bim-table-row ${ref(this._headerRow)}></bim-table-row>
     `;

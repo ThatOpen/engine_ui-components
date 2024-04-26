@@ -1,5 +1,6 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../../core/UIComponent";
 import { Table } from "../index";
 import { TableRow, TableRowData } from "./TableRow";
@@ -10,6 +11,8 @@ export interface TableGroupData {
   children?: TableGroupData[];
   id?: string;
   childrenHidden?: boolean;
+  onRowCreated?: (row: TableRow) => void;
+  onChildrenCreated?: (children: TableChildren) => void;
 }
 
 export class TableGroup extends UIComponent {
@@ -56,7 +59,6 @@ export class TableGroup extends UIComponent {
   `;
 
   static properties = {
-    group: { type: Object, attribute: false },
     childrenHidden: {
       type: Boolean,
       attribute: "children-hidden",
@@ -64,19 +66,56 @@ export class TableGroup extends UIComponent {
     },
   };
 
+  @property({ type: Object, attribute: false })
+  group: TableGroupData;
+
   private _row = createRef<TableRow>();
   private _children = createRef<TableChildren>();
   private _branch = createRef<HTMLDivElement>();
+  private readonly _onChildrenExpanded = new Event("children-expanded");
+  private readonly _onChildrenCollapsed = new Event("children-collapsed");
 
-  declare group: TableGroupData;
   declare childrenHidden: boolean;
   table = this.closest<Table>("bim-table");
+
+  get value() {
+    const value: {
+      data: Record<string, any>;
+      children?: Record<string, any>[];
+    } = { data: {} };
+    const { value: row } = this._row;
+    if (row) value.data = row.value;
+    const { value: children } = this._children;
+    if (children) value.children = children.value;
+    return value;
+  }
 
   constructor() {
     super();
     this.group = { data: {} };
     this.childrenHidden = false;
   }
+
+  private onRowCreated = (el?: Element) => {
+    if (!(el && this.group.onRowCreated)) return;
+    const row = el as TableRow;
+    this.group.onRowCreated(row);
+  };
+
+  private onChildrenCreated = (el?: Element) => {
+    if (!(el && this.group.onChildrenCreated)) return;
+    const row = el as TableChildren;
+    this.group.onChildrenCreated(row);
+  };
+
+  private onCaretClick = () => {
+    this.childrenHidden = !this.childrenHidden;
+    if (this.childrenHidden) {
+      this.dispatchEvent(this._onChildrenCollapsed);
+    } else {
+      this.dispatchEvent(this._onChildrenExpanded);
+    }
+  };
 
   firstUpdated() {
     const { value: row } = this._row;
@@ -92,12 +131,13 @@ export class TableGroup extends UIComponent {
     }
   }
 
-  render() {
+  protected render() {
     const indentation = this.table?.getGroupIndentation(this.group) ?? 0;
 
     const childrenTemplate = html`
       <bim-table-children
         ${ref(this._children)}
+        ${ref(this.onChildrenCreated)}
         .hidden=${this.childrenHidden}
       ></bim-table-children>
     `;
@@ -152,10 +192,7 @@ export class TableGroup extends UIComponent {
           left: ${0.125 + indentation}rem;
         }
       </style>
-      <div
-        class="caret"
-        @click=${() => (this.childrenHidden = !this.childrenHidden)}
-      >
+      <div class="caret" @click=${this.onCaretClick}>
         ${this.childrenHidden ? childrenHiddenCaret : childrenVisibleCaret}
       </div>
     `;
@@ -164,7 +201,7 @@ export class TableGroup extends UIComponent {
       ${this.group.children && !this.childrenHidden
         ? verticalBranchTemplate
         : null}
-      <bim-table-row ${ref(this._row)}>
+      <bim-table-row ${ref(this._row)} ${ref(this.onRowCreated)}>
         ${this.group.children ? caretTemplate : null}
         ${indentation === 0 || (this.group.children && !this.childrenHidden)
           ? null
