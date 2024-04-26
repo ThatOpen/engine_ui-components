@@ -9,12 +9,8 @@ const table = document.body.querySelector<BUI.Table>("bim-table")!;
 table.rows = [
   {
     onRowCreated(row) {
-      row.addEventListener("mouseover", () => {
-        row.style.backgroundColor = "var(--bim-ui_bg-contrast-20)";
-      });
-
-      row.addEventListener("mouseleave", () => {
-        row.style.backgroundColor = "transparent";
+      row.addEventListener("click", async () => {
+        console.log(await row.value);
       });
     },
     data: {
@@ -79,7 +75,10 @@ table.rows = [
             `;
           },
           get Career() {
-            return `${this.Name} is studying`;
+            if ("Name" in this) {
+              return `${this.Name} is studying`;
+            }
+            return "Is studying";
           },
           Comments: document.createElement("bim-text-input"),
         },
@@ -142,7 +141,28 @@ table.rows = [
 ];
 
 // Optionally, use the columns property to control the columns order and width.
-table.columns = [{ name: "Name", width: "10rem" }, "Career", "Age"];
+table.columns = [{ name: "Name", width: "10rem" }];
+
+// You can add a new row programatically
+const newRowBtn = document.getElementById("new-row") as BUI.Button;
+newRowBtn.addEventListener("click", () => {
+  const rowElement = document.createElement("bim-table-group");
+  rowElement.group = {
+    data: {
+      Name: "Bart",
+      Age: 2,
+    },
+    children: [
+      {
+        data: {
+          Name: "Homer",
+          Age: 80,
+        },
+      },
+    ],
+  };
+  table.rows = [...table.rows, rowElement.group];
+});
 
 // You can get a resolved object with the current values of the table
 const printBtn = document.getElementById("print-data") as BUI.Button;

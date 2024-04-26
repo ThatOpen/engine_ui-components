@@ -1,9 +1,8 @@
 import { css, html } from "lit";
-import { createRef, ref } from "lit/directives/ref.js";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
-import { TableChildren } from "./src/TableChildren";
-import { TableRow, TableRowData } from "./src/TableRow";
+import { TableRowData } from "./src/TableRow";
 import { TableGroupData } from "./src/TableGroup";
 
 export interface ColumnData {
@@ -44,41 +43,29 @@ export class Table extends UIComponent {
     `,
   ];
 
-  static properties = {
-    _value: { type: Object, state: true },
-    columns: { type: Array, attribute: false },
-    rows: { type: Object, attribute: false },
-    branches: { type: Boolean, reflect: true },
-    striped: { type: Boolean, reflect: true },
-    headersHidden: {
-      type: Boolean,
-      attribute: "headers-hidden",
-      reflect: true,
-    },
-    firstColCenter: {
-      type: Boolean,
-      attribute: "first-col-center",
-      reflect: true,
-    },
-    minColWidth: { type: String, attribute: "min-col-width", reflect: true },
-  };
-
-  declare minColWidth: string;
-  declare headersHidden: boolean;
-  declare striped: boolean;
-  declare firstColCenter: boolean;
-  private declare _value: TableGroupData[];
-
-  private _children = createRef<TableChildren>();
-  private _headerRow = createRef<TableRow>();
+  private _children = document.createElement("bim-table-children");
   private _columnsChange = new Event("columns-change");
+
+  // @state()
+  // private _value: TableGroupData[] = [];
+
+  @property({
+    type: Boolean,
+    attribute: "headers-hidden",
+    reflect: true,
+  })
+  headersHidden: boolean;
+
+  @property({ type: String, attribute: "min-col-width", reflect: true })
+  minColWidth: string;
 
   private _rows: TableGroupData[] = [];
 
+  @property({ type: Array, attribute: false })
   set rows(data: TableGroupData[]) {
     this._rows = data;
-    this._value = data;
-    this._columns = [];
+    // this._value = data;
+    // this._columns = [];
     const computed = this.computeMissingColumns(data);
     if (computed) this.columns = this._columns;
   }
@@ -89,6 +76,7 @@ export class Table extends UIComponent {
 
   private _columns: ColumnData[] = [];
 
+  @property({ type: Array, attribute: false })
   set columns(value: (string | ColumnData)[]) {
     const columns: ColumnData[] = [];
     for (const header of value) {
@@ -124,24 +112,16 @@ export class Table extends UIComponent {
     return new Promise<
       { data: Record<string, any>; children?: Record<string, any>[] }[]
     >((resolve) => {
-      setTimeout(() => {
-        const { value: children } = this._children;
-        if (!children) {
-          resolve([]);
-          return;
-        }
-        resolve(children.value);
+      setTimeout(async () => {
+        resolve(await this._children.value);
       });
     });
   }
 
   constructor() {
     super();
-    this.columns = [];
     this.minColWidth = "4rem";
     this.headersHidden = false;
-    this.striped = true;
-    this.firstColCenter = false;
   }
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
@@ -219,7 +199,7 @@ export class Table extends UIComponent {
   /**
    *
    * @param indentationLevel
-   * @param color Any valid CSS color, even CSS variables.
+   * @param color Any valid CSS color value.
    */
   setIndentationColor(indentationLevel: number, color: string) {
     const event = new CustomEvent<{ indentationLevel: number; color: string }>(
@@ -229,52 +209,28 @@ export class Table extends UIComponent {
     this.dispatchEvent(event);
   }
 
-  updated() {
-    const { value: headerRow } = this._headerRow;
-    if (headerRow) {
-      headerRow.isHeader = true;
-      headerRow.data = this._headerRowData;
-      headerRow.table = this;
-      headerRow.style.gridArea = "Header";
-    }
-
-    const { value: children } = this._children;
-    if (children) {
-      children.groups = this._value;
-      children.table = this;
-      children.style.gridArea = "Body";
-      children.style.backgroundColor = "transparent";
-    }
-  }
-
-  filter() {
-    this._value = [this._rows[0]];
-    this.requestUpdate();
-  }
+  // filter() {
+  //   this._value = [this._rows[0]];
+  //   this.requestUpdate();
+  // }
 
   protected render() {
-    const headerRowTemplate = html`
-      <bim-table-row ${ref(this._headerRow)}></bim-table-row>
-    `;
+    const header = document.createElement("bim-table-row");
+    header.isHeader = true;
+    header.data = this._headerRowData;
+    header.table = this;
+    header.style.gridArea = "Header";
+
+    const children = document.createElement("bim-table-children");
+    this._children = children;
+    children.groups = this.rows;
+    children.table = this;
+    children.style.gridArea = "Body";
+    children.style.backgroundColor = "transparent";
 
     return html`
       <div class="parent">
-        <div class="controls" style="display: none;">
-          <!-- <bim-text-input></bim-text-input> -->
-          <div style="display: flex; gap: 0.375rem; width: 15rem;">
-            <bim-button icon="solar:filter-bold" label="Filter"></bim-button>
-            <bim-button
-              icon="solar:sort-vertical-bold"
-              label="Sort"
-            ></bim-button>
-            <bim-button
-              icon="material-symbols:ad-group-outline-rounded"
-              label="Group"
-            ></bim-button>
-          </div>
-        </div>
-        ${!this.headersHidden ? headerRowTemplate : null}
-        <bim-table-children ${ref(this._children)}></bim-table-children>
+        ${!this.headersHidden ? header : null} ${children}
       </div>
     `;
   }

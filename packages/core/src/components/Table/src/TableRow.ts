@@ -74,12 +74,16 @@ export class TableRow extends UIComponent {
   }
 
   get value() {
-    const value: Record<string, any> = {};
-    for (const cell of this._cells) {
-      if (!cell.column) continue;
-      value[cell.column] = cell.value;
-    }
-    return value;
+    return new Promise<Record<string, any>>((resolve) => {
+      setTimeout(() => {
+        const value: Record<string, any> = {};
+        for (const cell of this._cells) {
+          if (!cell.column) continue;
+          value[cell.column] = cell.value;
+        }
+        resolve(value);
+      });
+    });
   }
 
   constructor() {

@@ -26,7 +26,7 @@ export class TableCell extends UIComponent {
   @property({ type: String, reflect: true })
   column?: string;
 
-  get value(): any | any[] {
+  get value(): any {
     const childrenCount = this.children.length;
     if (childrenCount === 1) {
       const child = this.children[0];

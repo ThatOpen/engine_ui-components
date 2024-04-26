@@ -24,11 +24,15 @@ export class TableChildren extends UIComponent {
   table = this.closest<Table>("bim-table");
 
   get value() {
-    const value: { data: Record<string, any> }[] = [];
-    for (const group of this._groups) {
-      value.push(group.value);
-    }
-    return value;
+    return new Promise<{ data: Record<string, any> }[]>((resolve) => {
+      setTimeout(async () => {
+        const value: { data: Record<string, any> }[] = [];
+        for (const group of this._groups) {
+          value.push(await group.value);
+        }
+        resolve(value);
+      });
+    });
   }
 
   protected render() {
