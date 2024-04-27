@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel</title>
+  <style>
+    html {
+      font-family: "Plus Jakarta Sans";
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+    }
+
+    #app {
+      width: 28rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #activation-buttons {
+      display: flex;
+      gap: 0.375rem;
+    }
+
+    .section {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    p {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="activation-buttons"></div>
+    <bim-panel name="panelA" label="Panel A" icon="fluent:puzzle-cube-piece-20-filled" active>
+      <div class="section">
+        <div style="display: flex; gap: 0.375rem">
+          <bim-number-input vertical name="x" label="Length" pref="X" sufix="m"></bim-number-input>
+          <bim-number-input vertical name="y" label="Height" pref="Y" sufix="m"></bim-number-input>
+          <bim-number-input vertical name="z" label="Width" pref="Z" sufix="m"></bim-number-input>
+        </div>
+        <bim-button id="log-vector" label="Log Vector!"></bim-button>
+      </div>
+    </bim-panel>
+    <bim-panel name="panelB" label="Panel B" icon="solar:archive-up-minimlistic-bold">
+      <div class="section">
+        <div style="display: flex; flex-direction: column; gap: 0.375rem">
+          <bim-color-input name="selectionColor" label="Selection Color" color="#ffffff"></bim-color-input>
+          <bim-color-input name="hoverColor" label="Hover Color" color="#ffff00"></bim-color-input>
+        </div>
+      </div>
+    </bim-panel>
+  </div>
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>

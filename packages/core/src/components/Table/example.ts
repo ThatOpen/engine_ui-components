@@ -10,7 +10,7 @@ table.rows = [
   {
     onRowCreated(row) {
       row.addEventListener("click", async () => {
-        console.log(await row.value);
+        // console.log(await row.value);
       });
     },
     data: {
@@ -146,8 +146,7 @@ table.columns = [{ name: "Name", width: "10rem" }];
 // You can add a new row programatically
 const newRowBtn = document.getElementById("new-row") as BUI.Button;
 newRowBtn.addEventListener("click", () => {
-  const rowElement = document.createElement("bim-table-group");
-  rowElement.group = {
+  const row = {
     data: {
       Name: "Bart",
       Age: 2,
@@ -161,7 +160,7 @@ newRowBtn.addEventListener("click", () => {
       },
     ],
   };
-  table.rows = [...table.rows, rowElement.group];
+  table.rows = [...table.rows, row];
 });
 
 // You can get a resolved object with the current values of the table

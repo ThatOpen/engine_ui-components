@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: "Plus Jakarta Sans";
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    bim-grid[:not(layout)] {
+      background-color: transparent;
+    }
+
+    bim-button {
+      flex: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <bim-button label="Change Layout" icon="mingcute:layout-fill"></bim-button>
+  <bim-grid>
+    <!-- <div style="grid-area: header; background-color: red;"></div>
+    <div style="grid-area: sidebar; background-color: green;"></div> -->
+  </bim-grid>
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>

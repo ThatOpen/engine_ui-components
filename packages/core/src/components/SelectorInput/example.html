@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Input</title>
+  <style>
+    html {
+      font-family: "Plus Jakarta Sans";
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+    }
+  </style>
+</head>
+
+<body>
+  <bim-selector-input label="Camera Projection">
+    <bim-option icon="solar:settings-bold" label="Orthographic" value="0"></bim-option>
+    <bim-option label="Perspective" value="1"></bim-option>
+    <bim-option label="Custom"></bim-option>
+  </bim-selector-input>
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>
