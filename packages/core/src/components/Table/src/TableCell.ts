@@ -1,7 +1,6 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { UIComponent } from "../../../core/UIComponent";
-import { getElementValue } from "../../../core/utils";
 
 export class TableCell extends UIComponent {
   static styles = css`

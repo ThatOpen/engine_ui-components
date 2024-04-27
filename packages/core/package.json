@@ -33,6 +33,9 @@
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "prepublishOnly": "npm run build"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@floating-ui/dom": "1.6.3",
     "iconify-icon": "2.0.0",

@@ -6,7 +6,6 @@ import {
   inline,
   detectOverflow,
   MiddlewareState,
-  autoPlacement,
 } from "@floating-ui/dom";
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";

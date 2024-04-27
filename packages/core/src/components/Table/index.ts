@@ -248,6 +248,7 @@ export class Table extends UIComponent {
     this.dispatchEvent(event);
   }
 
+  // @ts-ignore
   private async filterRowsByValue(
     value: string,
     // eslint-disable-next-line default-param-last
