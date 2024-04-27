@@ -8,7 +8,6 @@ import { HasName, HasValue } from "../../core/types";
 export class NumberInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
-      flex: 1;
       --bim-input--bgc: var(
         --bim-number-input--bgc,
         var(--bim-ui_bg-contrast-20)
@@ -17,6 +16,8 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       --bim-input--olc: var(--bim-number-input--olc, transparent);
       --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
       --bim-input--p: 0 0.375rem;
+      flex: 1;
+      display: block;
     }
 
     :host(:focus) {
@@ -404,6 +405,7 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   connectedCallback() {
     super.connectedCallback();
     if (this.min && this.min > this.value) this._value = this.min;
+    if (this.max && this.max < this.value) this._value = this.max;
   }
 
   /**

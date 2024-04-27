@@ -7,6 +7,7 @@ export class Input extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
       flex: 1;
+      display: block;
     }
 
     .parent {
@@ -27,7 +28,7 @@ export class Input extends UIComponent implements HasValue, HasName {
     }
 
     .input {
-      /* overflow: hidden; */
+      overflow: hidden;
       box-sizing: border-box;
       display: flex;
       align-items: center;

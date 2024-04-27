@@ -1,6 +1,6 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
-import { Grid } from "../Grid";
 
 export class Viewport extends UIComponent {
   static styles = css`
@@ -9,6 +9,7 @@ export class Viewport extends UIComponent {
       display: block;
       min-width: 0;
       min-height: 0;
+      overflow: hidden;
     }
 
     .parent {
@@ -17,27 +18,25 @@ export class Viewport extends UIComponent {
     }
   `;
 
-  static properties = {};
+  @property({ type: String, reflect: true })
+  name?: string;
 
-  private _onViewportResize = new Event("resize");
-
-  grid = new Grid();
+  private _onResize = new Event("resize");
 
   constructor() {
     super();
     const observer = new ResizeObserver(() =>
-      this.dispatchEvent(this._onViewportResize),
+      this.dispatchEvent(this._onResize),
     );
     observer.observe(this);
-    this.append(this.grid);
   }
 
   firstUpdated() {
-    this.style.gridArea = "viewport";
-    this.grid.floating = true;
+    if (this.style.gridArea === "" && this.name)
+      this.style.gridArea = this.name;
   }
 
-  render() {
+  protected render() {
     return html`
       <div class="parent">
         <slot></slot>

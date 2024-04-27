@@ -1,6 +1,7 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
+import { convertString } from "../../core/utils";
 
 // HTML tag: bim-label
 export class Label extends UIComponent {
@@ -138,6 +139,11 @@ export class Label extends UIComponent {
    */
   @property({ type: Boolean, reflect: true })
   vertical: boolean;
+
+  get value() {
+    if (!this.label) return this.label;
+    return convertString(this.label);
+  }
 
   constructor() {
     super();

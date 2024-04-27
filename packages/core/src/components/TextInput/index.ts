@@ -7,6 +7,7 @@ export class TextInput extends UIComponent implements HasName, HasValue {
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);
       flex: 1;
+      display: block;
     }
 
     input {
@@ -14,6 +15,7 @@ export class TextInput extends UIComponent implements HasName, HasValue {
       outline: none;
       border: none;
       width: 100%;
+      height: 100%;
       padding: 0 var(--bim-ui_size-3xs);
       border-radius: var(--bim-text-input--bdrs, var(--bim-ui_size-4xs));
       color: var(--bim-text-input--c, var(--bim-ui_bg-contrast-100));
@@ -69,6 +71,7 @@ export class TextInput extends UIComponent implements HasName, HasValue {
         .vertical=${this.vertical}
       >
         <input
+          aria-label=${this.label || this.name || "Checkbox Input"}
           type="text"
           .value=${this.value}
           .placeholder=${this.placeholder}

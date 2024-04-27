@@ -6,7 +6,11 @@ import { HasValue } from "../../core/types";
 // HTML tag: bim-checkbox
 export class Checkbox extends UIComponent implements HasValue {
   static styles = css`
-    .host {
+    :host {
+      display: block;
+    }
+
+    .parent {
       display: flex;
       justify-content: space-between;
       height: 1.75rem;
@@ -83,7 +87,7 @@ export class Checkbox extends UIComponent implements HasValue {
   checked: boolean;
 
   /**
-   * A getter that returns the current checked state of the checkbox. This is useful for retrieving the checkbox's value in form submissions or JavaScript interactions.
+   * A getter that returns the current checked state of the checkbox. This is useful for retrieving the checkbox's value in form submissions or JavaScript interactions as it provides a consistent `value` property as many other components.
    * @type {boolean}
    * @default false
    * @example <script>console.log(document.querySelector('bim-checkbox').value);</script>
@@ -111,7 +115,7 @@ export class Checkbox extends UIComponent implements HasValue {
 
   protected render() {
     return html`
-      <div class="host">
+      <div class="parent">
         ${this.label
           ? html`<bim-label
               label="${this.label}"

@@ -1,7 +1,7 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { UIComponent } from "../../../core/UIComponent";
-import { Table } from "../index";
+import { Table, TableGroupValue } from "../index";
 import { TableGroup, TableGroupData } from "./TableGroup";
 
 export class TableChildren extends UIComponent {
@@ -24,9 +24,9 @@ export class TableChildren extends UIComponent {
   table = this.closest<Table>("bim-table");
 
   get value() {
-    return new Promise<{ data: Record<string, any> }[]>((resolve) => {
+    return new Promise<TableGroupValue[]>((resolve) => {
       setTimeout(async () => {
-        const value: { data: Record<string, any> }[] = [];
+        const value: TableGroupValue[] = [];
         for (const group of this._groups) {
           value.push(await group.value);
         }

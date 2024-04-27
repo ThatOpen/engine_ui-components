@@ -1,9 +1,16 @@
 import { css, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
 import { TableRowData } from "./src/TableRow";
 import { TableGroupData } from "./src/TableGroup";
+import { UIManager } from "../../core/UIManager";
+
+export interface TableGroupValue {
+  data: Record<string, any>;
+  children?: TableGroupValue[];
+  id: string;
+}
 
 export interface ColumnData {
   name: string;
@@ -46,8 +53,8 @@ export class Table extends UIComponent {
   private _children = document.createElement("bim-table-children");
   private _columnsChange = new Event("columns-change");
 
-  // @state()
-  // private _value: TableGroupData[] = [];
+  @state()
+  private _filteredRows: TableGroupData[] = [];
 
   @property({
     type: Boolean,
@@ -63,15 +70,16 @@ export class Table extends UIComponent {
 
   @property({ type: Array, attribute: false })
   set rows(data: TableGroupData[]) {
+    for (const group of data) this.assignGroupDeclarationID(group);
     this._rows = data;
-    // this._value = data;
+    this._filteredRows = data;
     // this._columns = [];
     const computed = this.computeMissingColumns(data);
     if (computed) this.columns = this._columns;
   }
 
   get rows() {
-    return this._rows;
+    return this._filteredRows;
   }
 
   private _columns: ColumnData[] = [];
@@ -109,9 +117,7 @@ export class Table extends UIComponent {
   }
 
   get value() {
-    return new Promise<
-      { data: Record<string, any>; children?: Record<string, any>[] }[]
-    >((resolve) => {
+    return new Promise<TableGroupValue[]>((resolve) => {
       setTimeout(async () => {
         resolve(await this._children.value);
       });
@@ -122,6 +128,36 @@ export class Table extends UIComponent {
     super();
     this.minColWidth = "4rem";
     this.headersHidden = false;
+  }
+
+  private assignGroupDeclarationID(groupData: TableGroupData) {
+    if (!groupData.id) groupData.id = UIManager.newRandomId();
+    if (groupData.children) {
+      groupData.children.forEach((child) =>
+        this.assignGroupDeclarationID(child),
+      );
+    }
+  }
+
+  private getGroupDeclarationById(
+    id: string,
+    root: TableGroupData[] = this._rows,
+  ): TableGroupData | undefined {
+    for (const groupData of root) {
+      if (groupData.id === id) {
+        return groupData;
+      }
+      if (groupData.children) {
+        const foundInChildren = this.getGroupDeclarationById(
+          id,
+          groupData.children,
+        );
+        if (foundInChildren) {
+          return foundInChildren;
+        }
+      }
+    }
+    return undefined;
   }
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
@@ -150,7 +186,10 @@ export class Table extends UIComponent {
 
   async downloadData(fileName = "BIM Table Data") {
     const value = await this.value;
-    const file = new File([JSON.stringify(value)], `${fileName}.json`);
+    const file = new File(
+      [JSON.stringify(value, undefined, 2)],
+      `${fileName}.json`,
+    );
     const a = document.createElement("a");
     a.href = URL.createObjectURL(file);
     a.download = file.name;
@@ -209,9 +248,65 @@ export class Table extends UIComponent {
     this.dispatchEvent(event);
   }
 
-  // filter() {
-  //   this._value = [this._rows[0]];
-  //   this.requestUpdate();
+  private async filterRowsByValue(
+    value: string,
+    // eslint-disable-next-line default-param-last
+    preserveStructure = false,
+    rowValues?: TableGroupValue[],
+  ): Promise<TableGroupData[]> {
+    const results: TableGroupData[] = [];
+    const data = rowValues ?? (await this.value);
+    for (const row of data) {
+      const valueFoundInData = Object.values(row.data).some((val) => {
+        if (Array.isArray(val)) return val.includes(value);
+        return String(val) === value;
+      });
+
+      const rowDeclaration = this.getGroupDeclarationById(row.id);
+      if (!rowDeclaration) return results;
+
+      if (valueFoundInData) {
+        if (preserveStructure) {
+          const rowToAdd: TableGroupData = { data: rowDeclaration.data };
+          if (row.children) {
+            const childResults = await this.filterRowsByValue(
+              value,
+              true,
+              row.children,
+            );
+            if (childResults.length) rowToAdd.children = childResults;
+          }
+          results.push(rowToAdd);
+        } else {
+          results.push({ data: rowDeclaration.data });
+          if (row.children) {
+            const childResults = await this.filterRowsByValue(
+              value,
+              false,
+              row.children,
+            );
+            results.push(...childResults);
+          }
+        }
+      } else if (row.children) {
+        const childResults = await this.filterRowsByValue(
+          value,
+          preserveStructure,
+          row.children,
+        );
+        if (preserveStructure && childResults.length) {
+          results.push({ data: rowDeclaration.data, children: childResults });
+        } else {
+          results.push(...childResults);
+        }
+      }
+    }
+    return results;
+  }
+
+  // async filterByValue(value: string, preserveStructure = false) {
+  //   const result = await this.filterRowsByValue(value, preserveStructure);
+  //   this._filteredRows = result; // For some reason, after I set this line its like result went automatically blank.
   // }
 
   protected render() {
@@ -223,7 +318,7 @@ export class Table extends UIComponent {
 
     const children = document.createElement("bim-table-children");
     this._children = children;
-    children.groups = this.rows;
+    children.groups = this._filteredRows;
     children.table = this;
     children.style.gridArea = "Body";
     children.style.backgroundColor = "transparent";

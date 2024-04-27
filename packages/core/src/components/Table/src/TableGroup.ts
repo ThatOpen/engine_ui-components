@@ -1,7 +1,7 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { UIComponent } from "../../../core/UIComponent";
-import { Table } from "../index";
+import { Table, TableGroupValue } from "../index";
 import { TableRow, TableRowData } from "./TableRow";
 import { TableChildren } from "./TableChildren";
 
@@ -69,7 +69,7 @@ export class TableGroup extends UIComponent {
   group: TableGroupData;
 
   private _row = document.createElement("bim-table-row");
-  private _children = document.createElement("bim-table-children");
+  private _children?: TableChildren;
 
   private readonly _onChildrenExpanded = new Event("children-expanded");
   private readonly _onChildrenCollapsed = new Event("children-collapsed");
@@ -78,17 +78,11 @@ export class TableGroup extends UIComponent {
   table = this.closest<Table>("bim-table");
 
   get value() {
-    return new Promise<{
-      data: Record<string, any>;
-      children?: Record<string, any>[];
-    }>((resolve) => {
+    return new Promise<TableGroupValue>((resolve) => {
       setTimeout(async () => {
-        const value: {
-          data: Record<string, any>;
-          children?: Record<string, any>[];
-        } = { data: {} };
+        const value: TableGroupValue = { data: {}, id: this.group.id! };
         value.data = await this._row.value;
-        value.children = await this._children.value;
+        if (this._children) value.children = await this._children.value;
         resolve(value);
       });
     });
@@ -188,18 +182,21 @@ export class TableGroup extends UIComponent {
     if (indentation !== 0 && (!this.group.children || this.childrenHidden))
       row.append(horizontalBranch);
 
-    const children = document.createElement("bim-table-children");
-    if (this.group.onChildrenCreated) this.group.onChildrenCreated(children);
-    this._children = children;
-    children.hidden = this.childrenHidden;
-    children.groups = this.group.children;
-    children.table = this.table;
+    let children: TableChildren | undefined;
+    if (this.group.children) {
+      children = document.createElement("bim-table-children");
+      if (this.group.onChildrenCreated) this.group.onChildrenCreated(children);
+      this._children = children;
+      children.hidden = this.childrenHidden;
+      children.groups = this.group.children;
+      children.table = this.table;
+    }
 
     return html`
       ${this.group.children && !this.childrenHidden
         ? verticalBranchTemplate
         : null}
-      ${row} ${this.group.children ? children : null}
+      ${row} ${children}
     `;
   }
 }

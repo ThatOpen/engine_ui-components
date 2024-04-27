@@ -1,8 +1,10 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 
+// HTML tag: bim-selector-input
 export class SelectorInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
@@ -10,6 +12,7 @@ export class SelectorInput extends UIComponent implements HasValue, HasName {
       --bim-input--g: 0;
       --bim-option--jc: center;
       flex: 1;
+      display: block;
     }
 
     ::slotted(bim-option) {
@@ -18,59 +21,58 @@ export class SelectorInput extends UIComponent implements HasValue, HasName {
 
     ::slotted(bim-option[checked]) {
       --bim-label--c: white;
-      font-weight: normal;
       background-color: var(--bim-ui_color-main);
     }
 
-    ::slotted(bim-option:first-child) {
+    /* ::slotted(bim-option:first-child) {
       border-radius: var(--bim-ui_size-4xs) 0 0 var(--bim-ui_size-4xs);
-    }
+    } */
 
-    ::slotted(bim-option:last-child) {
+    /* ::slotted(bim-option:last-child) {
       border-radius: 0 var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0;
-    }
+    } */
   `;
 
   static properties = {
-    name: { type: String, reflect: true },
-    icon: { type: String, reflect: true },
-    label: { type: String, reflect: true },
     value: { attribute: false },
-    vertical: { type: Boolean, reflect: true },
   };
 
-  declare name?: string;
-  declare icon?: string;
-  declare label?: string;
-  declare vertical: boolean;
+  @property({ type: String, reflect: true })
+  name?: string;
 
-  private _value: any;
-  onValueChange = new Event("change");
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  readonly onValueChange = new Event("change");
 
   private get _options() {
-    const options = [];
-    for (const child of this.children) {
-      if (child instanceof Option) options.push(child);
-    }
-    return options;
+    const options = this.querySelectorAll("bim-option");
+    return [...options];
   }
 
+  private _value: any;
+
   set value(val: any) {
-    let valueSet = false;
-    for (const option of this._options) {
-      const value = option.value || option.label;
-      if (value === val) {
-        option.checked = true;
-        this._value = value;
-        valueSet = true;
-      } else {
+    const matchingOption = this._options.find((option) => option.value === val);
+    if (matchingOption) {
+      for (const option of this._options) {
+        if (option === matchingOption) continue;
         option.checked = false;
       }
-    }
-    if (!valueSet)
+      matchingOption.checked = true;
+      this._value = matchingOption.value;
+      this.dispatchEvent(this.onValueChange);
+    } else {
       console.warn(
-        `${val} is not in the options list for this bim-selector-input.`,
+        `bim-selector: "${val}" doesn't correspond with any of the values in the options for this input, value remained as "${this.value}".`,
       );
+    }
   }
 
   get value() {
@@ -95,12 +97,10 @@ export class SelectorInput extends UIComponent implements HasValue, HasName {
 
   private onOptionClick = (e: MouseEvent) => {
     const element = e.target as Option;
-    const option = element.value || element.label;
-    this.value = option;
-    this.dispatchEvent(this.onValueChange);
+    this.value = element.value;
   };
 
-  render() {
+  protected render() {
     return html`
       <bim-input
         .vertical=${this.vertical}

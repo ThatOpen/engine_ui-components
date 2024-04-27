@@ -4,6 +4,7 @@ import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
 import { Button } from "../Button";
 import { HasName, HasValue } from "../../core/types";
+import { getElementValue } from "../../core/utils";
 
 // HTML tag: bim-panel
 export class Panel extends UIComponent implements HasName, HasValue {
@@ -104,10 +105,21 @@ export class Panel extends UIComponent implements HasName, HasValue {
   @property({ type: String, reflect: true })
   label?: string;
 
-  onValueChange = new Event("change");
+  readonly onValueChange = new Event("change");
 
   private _active = false;
 
+  /**
+   * The `active` property is a boolean that controls the visibility and activation state of the panel. When set to `true`, the panel becomes visible and is considered active. This property also manages the activation state of the panel's activation button, ensuring that the button reflects the panel's current state. Additionally, setting this property to `true` on one panel will automatically set it to `false` on all other sibling panels that are instances of `Panel`, enforcing a single active panel at any time. This behavior facilitates the use of multiple panels within the same container. The property is reflected to an attribute, meaning changes to the property will also update the corresponding attribute on the HTML element, and vice versa, allowing for declarative usage in HTML as well as programmatic control in JavaScript.
+   *
+   * @type {Boolean}
+   * @default false
+   * @example <bim-panel active></bim-panel>
+   * @example
+   * const panel = document.createElement('bim-panel');
+   * panel.active = true;
+   * document.body.appendChild(panel);
+   */
   set active(value: boolean) {
     this._active = value;
     this.activationButton.active = value;
@@ -125,17 +137,32 @@ export class Panel extends UIComponent implements HasName, HasValue {
     return this._active;
   }
 
+  /**
+   * The `value` getter computes and returns the current state of the panel's form elements as an object. This property is dynamic and reflects the current input values within the panel. When accessed, it traverses the panel's child elements, collecting values from those that have a `name` or `label` attribute, and constructs an object where each key corresponds to the `name` or `label` of the element, and the value is the element's value. This property is particularly useful for forms or interactive panels where the user's input needs to be retrieved programmatically. The value returned is a snapshot of the panel's state at the time of access, and it does not maintain a live link to the input elements.
+   *
+   * @type {Record<string, any>}
+   * @default {}
+   * @example <bim-panel></bim-panel> <!-- Access via JavaScript to get value -->
+   * @example
+   * const panel = document.createElement('bim-panel');
+   * document.body.appendChild(panel);
+   * console.log(panel.value); // Logs the current value object of the panel
+   */
   get value() {
-    const value: Record<string, any> = {};
-    for (const _child of this.children) {
-      const child = _child as any;
-      if ("value" in child) {
-        value[child.name || child.label] = child.value;
-      }
-    }
+    const value = getElementValue(this);
     return value;
   }
 
+  /**
+   * The `value` setter allows programmatically updating the values of the panel's form elements. When a data object is passed to this property, it attempts to match the object's keys with the `name` or `label` attributes of the panel's child elements. If a match is found, the corresponding element's value is updated to the value associated with the key in the data object. This property is useful for initializing the panel with specific data or updating its state based on external inputs. Note that this operation does not affect elements without a matching `name` or `label`, and it only updates the values of elements that are direct children of the panel.
+   *
+   * @type {Record<string, any>}
+   * @example <bim-panel></bim-panel> <!-- Set value via JavaScript -->
+   * @example
+   * const panel = document.createElement('bim-panel');
+   * document.body.appendChild(panel);
+   * panel.value = { 'input-name': 'John Doe', 'checkbox-name': true };
+   */
   set value(data: Record<string, any>) {
     const children = [...this.children];
     for (const key in data) {
@@ -149,7 +176,7 @@ export class Panel extends UIComponent implements HasName, HasValue {
     }
   }
 
-  activationButton: Button = document.createElement("bim-button");
+  readonly activationButton: Button = document.createElement("bim-button");
 
   constructor() {
     super();
@@ -161,30 +188,32 @@ export class Panel extends UIComponent implements HasName, HasValue {
     this.activationButton.remove();
   }
 
+  /**
+   * Collapses all `bim-panel-section` elements within the panel.
+   * This method iterates over each `bim-panel-section` found within the panel's DOM and sets their `collapsed` property to `true`,
+   * effectively hiding their content from view. This can be used to programmatically minimize the space taken up by sections
+   * within the panel, making the panel more compact or to hide details that are not immediately necessary.
+   */
   collapseSections() {
     const sections = this.querySelectorAll("bim-panel-section");
     for (const section of sections) section.collapsed = true;
   }
 
+  /**
+   * Expands all `bim-panel-section` elements within the panel.
+   * This method iterates over each `bim-panel-section` found within the panel's DOM and sets their `collapsed` property to `false`,
+   * effectively showing their content. This can be used to programmatically reveal the content of sections within the panel,
+   * making the panel more informative or to display details that are necessary for the user.
+   */
   expandSections() {
     const sections = this.querySelectorAll("bim-panel-section");
     for (const section of sections) section.collapsed = false;
   }
 
-  render() {
+  protected render() {
     this.activationButton.icon = this.icon;
     this.activationButton.label = this.label || this.name;
-    if (!this.label && this.name) {
-      this.activationButton.tooltipTitle = this.label || this.name;
-    }
-    // if (!this.label) {
-    //   if (this.name) {
-    //     this.activationButton.tooltipTitle = this.label || this.name;
-    //   }
-    // }
-    // this.label ||
-    //   (this.name &&
-    //     (this.activationButton.tooltipTitle = this.label || this.name));
+    this.activationButton.tooltipTitle = this.label || this.name;
     return html`
       <div class="parent">
         ${this.label || this.name || this.icon
