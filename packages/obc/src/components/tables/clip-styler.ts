@@ -1,5 +1,5 @@
 import * as OBC from "openbim-components";
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 
 interface ClipStylerUIState {
   styler: OBC.FragmentClipStyler;

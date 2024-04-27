@@ -1,7 +1,7 @@
 import * as WEBIFC from "web-ifc";
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 
-interface Node {
+export interface Node {
   type: string;
   expressID: number;
   children: Node[];

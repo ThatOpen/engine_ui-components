@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { css, html } from "lit";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import { UIComponent } from "@thatopen/ui-components";
+import { UIComponent } from "@thatopen/ui";
 import { Infinite2dGrid } from "./src/Infinite2DGrid";
 
 export class Scene2D extends UIComponent {

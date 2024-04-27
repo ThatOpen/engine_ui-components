@@ -3,13 +3,18 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["airbnb-base", "prettier", "plugin:lit/recommended"],
+  extends: [
+    "airbnb-base",
+    "prettier",
+    "plugin:wc/recommended",
+    "plugin:lit/recommended",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "prettier"],
+  plugins: ["@typescript-eslint", "prettier", "lit", "wc"],
   ignorePatterns: ["**/dist/*", "**/node_modules/*", "**/*.json", "**/*.js"],
   rules: {
     "prettier/prettier": [

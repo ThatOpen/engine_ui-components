@@ -21,6 +21,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
         --bim-input--olc: var(--bim-dropdown--olc, transparent);
         --bim-input--bdrs: var(--bim-dropdown--bdrs, var(--bim-ui_size-4xs));
         flex: 1;
+        display: block;
       }
 
       :host([visible]) {
@@ -33,6 +34,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
       .input {
         --bim-label--fz: var(--bim-drodown--fz, var(--bim-ui_size-xs));
         --bim-label--c: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
+        height: 100%;
         display: flex;
         flex: 1;
         overflow: hidden;
@@ -42,6 +44,10 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
         align-items: center;
         justify-content: space-between;
         padding: 0 0.5rem;
+      }
+
+      bim-label {
+        pointer-events: none;
       }
     `,
   ];
@@ -175,7 +181,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     for (const option of value) {
       const existingOption = this.findOption(option);
       if (existingOption) {
-        _value.push(existingOption.value || existingOption.label);
+        _value.push(existingOption.value);
         if (!this.multiple && Object.keys(value).length > 1) {
           console.warn(
             `bim-dropdown wasn't set as multiple, but provided an array of values. Only first was taken.`,
@@ -221,7 +227,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
 
   private onOptionClick = (e: MouseEvent) => {
     const element = e.target as Option;
-    const option = element.value || element.label;
+    const option = element.value;
     const selected = this._value.includes(option);
     if (!this.multiple && !this.required && !selected) {
       this.value = [option];
@@ -260,7 +266,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
   private updateOptionsState() {
     for (const element of this._options) {
       if (!(element instanceof Option)) continue;
-      if (this._value.includes(element.value || element.label)) {
+      if (this._value.includes(element.value)) {
         element.checked = true;
       } else {
         element.checked = false;
@@ -286,7 +292,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
     window.removeEventListener("mouseup", this.onWindowMouseUp);
   }
 
-  render() {
+  protected render() {
     let inputLabel: string;
     let inputImg: string | undefined;
     let inputIcon: string | undefined;
@@ -304,6 +310,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
 
     return html`
       <bim-input
+        title=${this.label ?? ""}
         .label=${this.label}
         .icon=${this.icon}
         .vertical=${this.vertical}
@@ -314,7 +321,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
           @click=${() => (this.visible = !this.visible)}
         >
           <bim-label
-            .label=${inputLabel}
+            label=${inputLabel}
             .img=${inputImg}
             .icon=${inputIcon}
             style="overflow: hidden;"

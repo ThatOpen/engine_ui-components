@@ -1,8 +1,10 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 import { styles } from "../../core/UIManager/src/styles";
 import { Panel } from "../Panel";
 
+// HTML tag: bim-panels-container
 export class PanelsContainer extends UIComponent {
   static styles = [
     styles.scrollbar,
@@ -30,11 +32,11 @@ export class PanelsContainer extends UIComponent {
   ];
 
   static properties = {
-    horizontal: { type: Boolean, reflect: true },
     gridArea: { attribute: false },
   };
 
-  declare horizontal: boolean;
+  @property({ type: Boolean, reflect: true })
+  horizontal: boolean;
 
   constructor() {
     super();
@@ -56,7 +58,7 @@ export class PanelsContainer extends UIComponent {
     }
   }
 
-  render() {
+  protected render() {
     return html` <slot @slotchange=${this.onSlotChange}></slot> `;
   }
 }

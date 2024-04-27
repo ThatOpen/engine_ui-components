@@ -1,4 +1,5 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
 
 export class Grid extends UIComponent {
@@ -9,6 +10,10 @@ export class Grid extends UIComponent {
       width: 100%;
       overflow: hidden;
       box-sizing: border-box;
+    }
+
+    :host(:not([layout])) {
+      display: none;
     }
 
     :host([floating]) {
@@ -37,17 +42,61 @@ export class Grid extends UIComponent {
     }
   `;
 
-  static properties = {
-    floating: { type: Boolean, reflect: true },
-  };
+  /**
+   * Indicates whether the grid should be displayed in a floating state. When set to true, the grid and its children may have different styling to indicate a floating state, such as being absolutely positioned and having pointer-events set to none. This property is reflected to an attribute, allowing it to be set directly in HTML.
+   *
+   * @type {Boolean}
+   * @default false
+   * @example <bim-grid floating></bim-grid>
+   * @example
+   * const grid = document.createElement('bim-grid');
+   * grid.floating = true;
+   * document.body.appendChild(grid);
+   */
+  @property({ type: Boolean, reflect: true })
+  floating: boolean;
+
+  private _layout?: string;
+
+  /**
+   * Represents the layout configuration of the grid. The layout is defined by a string identifier which corresponds to a predefined grid template in the `layouts` object of the Grid component. Setting this property updates the grid's template and triggers a reconfiguration of the grid's containers based on the new layout. If the specified layout is not defined, a warning is logged, and the layout remains unchanged. This property is reflected to an attribute, allowing it to be set directly in HTML. Changing the layout will dispatch a "layout-change" event, which can be used to react to layout changes.
+   *
+   * @type {String}
+   * @default undefined
+   * @example <bim-grid layout="default"></bim-grid>
+   * @example
+   * const grid = document.createElement('bim-grid');
+   * grid.layout = 'default';
+   * document.body.appendChild(grid);
+   */
+  @property({ type: String, reflect: true })
+  get layout() {
+    return this._layout;
+  }
+
+  set layout(value: string | undefined) {
+    if (value) {
+      const template = this.layouts[value];
+      if (!template) {
+        console.warn(
+          `bim-grid: "${value}" layout is not defined, "${this.layout}" layout remained.`,
+        );
+        return;
+      }
+      this.style.gridTemplate = template;
+      this.updateContainers();
+    } else {
+      this.style.gridTemplate = "";
+      this.cleanup();
+    }
+    this._layout = value;
+    this.dispatchEvent(this._onLayoutChange);
+  }
 
   static containerTags: { [name: string]: string } = {
     panels: "bim-panels-container",
     toolbars: "bim-toolbars-container",
   };
-
-  declare floating: boolean;
-  declare template: string;
 
   private _containers: { [type: string]: HTMLElement[] } = {};
   private _onLayoutChange = new Event("layout-change");
@@ -122,7 +171,7 @@ export class Grid extends UIComponent {
     this.cleanup();
   }
 
-  cleanup() {
+  private cleanup() {
     const { layoutAreas } = this;
     for (const child of this.childrenElements) {
       const { gridArea } = child.style;
@@ -134,7 +183,7 @@ export class Grid extends UIComponent {
     }
   }
 
-  createContainer(type: string, id: string) {
+  private createContainer(type: string, id: string) {
     const area = `c-${type}-${id}`;
     if (!(type in this._containers)) this._containers[type] = [];
     const containers = this._containers[type];
@@ -149,18 +198,7 @@ export class Grid extends UIComponent {
     return container;
   }
 
-  setLayout(name: string) {
-    const layout = this.layouts[name];
-    if (!layout) {
-      console.warn(`bim-grid: ${name} layout is not defined.`);
-      return;
-    }
-    this.style.gridTemplate = layout;
-    this.updateContainers();
-    this.dispatchEvent(this._onLayoutChange);
-  }
-
-  isVerticalArea(area: string) {
+  private isVerticalArea(area: string) {
     const { rows } = this;
     const row = rows.find((row) => row.includes(area));
     if (!row)
@@ -174,7 +212,16 @@ export class Grid extends UIComponent {
     return abovePanel || belowPanel;
   }
 
-  getContainer(type: string, id: string, force = true) {
+  /**
+   * Retrieves a container element based on the specified type and id. If the container does not exist and the `force` parameter is set to `true`, a new container will be created. This method is useful for managing dynamic grid layouts where containers might be added or removed based on application state.
+   *
+   * @param type - The type of the container to retrieve. This corresponds to a predefined category or classification of containers within the grid.
+   * @param id - The unique identifier for the container within its type category. This is used to distinguish between multiple containers of the same type.
+   * @param force - Determines whether a new container should be forcibly created if it does not already exist. If `true`, a new container will be created when no existing container matches the specified type and id.
+   * @returns The container element that matches the specified type and id. If `force` is `true` and no matching container exists, a new container is created, added to the grid, and returned.
+   * @throws Throws an error if `force` is `false` and either the container type is not defined in the grid or no container with the specified id exists within the specified type.
+   */
+  getContainer(type: string, id: string, force = false) {
     const gridArea = `c-${type}-${id}`;
     const containers = this._containers[type];
     if (force) {
@@ -197,7 +244,7 @@ export class Grid extends UIComponent {
     return container;
   }
 
-  render() {
+  protected render() {
     return html` <slot @slotchange=${this.onSlotChange}></slot> `;
   }
 }

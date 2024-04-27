@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import * as OBC from "openbim-components";
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 
 export const ifcEntities = () => {
   const dropdown = document.createElement(

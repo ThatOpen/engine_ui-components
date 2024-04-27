@@ -8,7 +8,6 @@ import { HasName, HasValue } from "../../core/types";
 export class NumberInput extends UIComponent implements HasValue, HasName {
   static styles = css`
     :host {
-      flex: 1;
       --bim-input--bgc: var(
         --bim-number-input--bgc,
         var(--bim-ui_bg-contrast-20)
@@ -17,6 +16,8 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       --bim-input--olc: var(--bim-number-input--olc, transparent);
       --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
       --bim-input--p: 0 0.375rem;
+      flex: 1;
+      display: block;
     }
 
     :host(:focus) {
@@ -88,6 +89,10 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
 
     bim-input {
       display: flex;
+    }
+
+    bim-label {
+      pointer-events: none;
     }
   `;
 
@@ -171,6 +176,8 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   @property({ type: Number, reflect: true })
   min?: number;
 
+  private _value = 0;
+
   /**
    * The `value` property represents the current value of the number input component.
    * It is a crucial property that holds the actual number input by the user or set programmatically.
@@ -186,7 +193,13 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
    * document.body.appendChild(numberInput);
    */
   @property({ type: Number, reflect: true })
-  value: number;
+  get value() {
+    return this._value;
+  }
+
+  set value(data: number) {
+    this.setValue(data.toString());
+  }
 
   /**
    * The `step` property determines the amount by which the value should increase or decrease
@@ -286,11 +299,10 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
   slider: boolean;
 
   private _input = createRef<HTMLInputElement>();
-  readonly onValueChange = new Event("input");
+  readonly onValueChange = new Event("change");
 
   constructor() {
     super();
-    this.value = 0;
     this.vertical = false;
     this.slider = false;
     if (this.min && this.max && (this.min > this.max || this.max < this.min)) {
@@ -300,7 +312,7 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     }
   }
 
-  private onInput(e: Event) {
+  private onChange(e: Event) {
     e.stopPropagation();
     const { value: input } = this._input;
     if (!input) return;
@@ -313,12 +325,12 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     let value = _value;
     value = value.replace(/[^0-9.-]/g, ""); // Only allow numbers, dots, and minus
     value = value.replace(/(\..*)\./g, "$1"); // Only allow one dot
-    if (input) input.value = value;
+    // if (input) input.value = value;
     if (value.endsWith(".")) return;
     if (value.lastIndexOf("-") > 0) {
       value = value[0] + value.substring(1).replace(/-/g, "");
     }
-    if (input) input.value = value;
+    // if (input) input.value = value;
     if (value === "-" || value === "-0") return;
 
     let numericValue = Number(value);
@@ -330,9 +342,12 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     numericValue =
       this.max !== undefined ? Math.min(numericValue, this.max) : numericValue;
 
-    this.value = numericValue;
-    if (input) input.value = this.value.toString();
-    this.dispatchEvent(this.onValueChange);
+    if (this.value !== numericValue) {
+      this._value = numericValue;
+      if (input) input.value = this.value.toString();
+      this.requestUpdate();
+      this.dispatchEvent(this.onValueChange);
+    }
   }
 
   private onBlur() {
@@ -345,7 +360,9 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
     document.body.style.cursor = "w-resize";
     const { clientX: startPosition } = e;
     const initialValue = this.value;
+    let mouseMove = false;
     const onMouseMove = (e: MouseEvent) => {
+      mouseMove = true;
       const { clientX: endPosition } = e;
       const step = this.step ?? 1;
       const stepDecimals = step.toString().split(".")[1]?.length || 0;
@@ -355,11 +372,40 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       const value = initialValue + calc * step;
       this.setValue(value.toFixed(stepDecimals));
     };
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", () => {
+    const onBlur = () => {
+      this.slider = true;
+      this.removeEventListener("blur", onBlur);
+    };
+    const onMouseUp = () => {
       document.removeEventListener("mousemove", onMouseMove);
       document.body.style.cursor = "default";
-    });
+      if (mouseMove) {
+        mouseMove = false;
+      } else {
+        this.addEventListener("blur", onBlur);
+        this.slider = false;
+        requestAnimationFrame(() => this.focus());
+      }
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }
+
+  private onFocus(e: Event) {
+    e.stopPropagation();
+    const onKeyPress = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      this.blur();
+      window.removeEventListener("keydown", onKeyPress);
+    };
+    window.addEventListener("keydown", onKeyPress);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.min && this.min > this.value) this._value = this.min;
+    if (this.max && this.max < this.value) this._value = this.max;
   }
 
   /**
@@ -389,10 +435,12 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       <input
         ${ref(this._input)}
         type="text"
+        aria-label=${this.label || this.name || "Number Input"}
         size="1"
-        @input=${this.onInput}
-        @change=${this.onInput}
+        @input=${(e: Event) => e.stopPropagation()}
+        @change=${this.onChange}
         @blur=${this.onBlur}
+        @focus=${this.onFocus}
         .value=${this.value.toString()}
       />
       ${this.sufix
@@ -435,8 +483,11 @@ export class NumberInput extends UIComponent implements HasValue, HasName {
       </div>
     `;
 
+    const title = `${this.label || this.name || this.pref ? `${this.label || this.name || this.pref}: ` : ""}${this.value}${this.sufix ?? ""}`;
+
     return html`
       <bim-input
+        title=${title}
         .label=${this.label}
         .icon=${this.icon}
         .vertical=${this.vertical}

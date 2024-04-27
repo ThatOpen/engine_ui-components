@@ -1,8 +1,8 @@
 import { TemplateResult } from "lit";
 import * as THREE from "three";
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 
-interface MaterialUIState {
+export interface MaterialUIState {
   material: THREE.Material;
 }
 

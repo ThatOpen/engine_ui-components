@@ -10,6 +10,7 @@ import { ContextMenu } from "../ContextMenu";
 export class Button extends UIComponent {
   static styles = css`
     :host {
+      display: block;
       flex: 1;
       pointer-events: none;
     }
@@ -204,7 +205,7 @@ export class Button extends UIComponent {
    *          button.tooltipTime = 1000;
    */
   @property({ type: Number, attribute: "tooltip-time", reflect: true })
-  tooltipTime: number;
+  tooltipTime?: number;
 
   /**
    * A boolean attribute which, if present, indicates that the tooltip should be visible.
@@ -268,7 +269,6 @@ export class Button extends UIComponent {
     this.disabled = false;
     this.vertical = false;
     this.tooltipVisible = false;
-    this.tooltipTime = 700;
     this.mouseLeave = true;
     this.addEventListener("click", (e) => e.stopPropagation());
   }
@@ -292,11 +292,12 @@ export class Button extends UIComponent {
   private onMouseEnter() {
     if (!(this.tooltipTitle || this.tooltipText)) return;
     this.mouseLeave = false;
+    const tooltipTime = this.tooltipTime ?? 700;
     this.timeoutID = setTimeout(() => {
       if (this.mouseLeave) return;
       this.computeTooltipPosition();
       this.tooltipVisible = true;
-    }, this.tooltipTime) as unknown as number;
+    }, tooltipTime) as unknown as number;
   }
 
   private onChildrenClick(e: MouseEvent) {
@@ -338,7 +339,7 @@ export class Button extends UIComponent {
     window.removeEventListener("mouseup", this.onWindowMouseUp);
   }
 
-  render() {
+  protected render() {
     const tooltipTemplate = html`
       <div ${ref(this._tooltip)} class="tooltip">
         ${this.tooltipTitle

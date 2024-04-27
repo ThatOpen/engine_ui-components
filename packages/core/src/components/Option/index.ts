@@ -1,15 +1,18 @@
+/* eslint-disable no-restricted-globals */
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { UIComponent } from "../../core/UIComponent";
+import { convertString } from "../../core/utils";
 
 // HTML tag: bim-option
 export class Option extends UIComponent {
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100);
+      display: block;
       box-sizing: border-box;
       flex: 1;
-      padding: 0rem 0.75rem;
+      padding: 0rem 0.5rem;
       border-radius: var(--bim-ui_size-4xs);
     }
 
@@ -24,7 +27,6 @@ export class Option extends UIComponent {
 
     :host([checked]) {
       --bim-label--c: color-mix(in lab, var(--bim-ui_color-main), white 30%);
-      font-weight: 600;
     }
 
     :host([checked]) svg {
@@ -33,7 +35,6 @@ export class Option extends UIComponent {
 
     .parent {
       box-sizing: border-box;
-      padding: 0.375rem 0;
       display: flex;
       justify-content: var(--bim-option--jc, space-between);
       column-gap: 0.5rem;
@@ -154,6 +155,52 @@ export class Option extends UIComponent {
   @property({ type: Boolean, attribute: "no-mark", reflect: true })
   noMark: boolean;
 
+  private _value: any;
+
+  /**
+   * Represents the dynamic value of the component which can be of different types based on the attribute's value.
+   * This property is designed to accept various types of inputs: boolean values (true/false as strings), numbers, or any other value as a string.
+   * The conversion logic in the `converter` method ensures that the attribute value is correctly interpreted and stored in the appropriate data type.
+   * If you need to use complex data types for the value as arrays or objects, you must do it using the corresponding property in JavaScript
+   * as handling those types of data types using HTML attributes is not recommended.
+   * The `value` property does not reflect, meaning if you change the value using JavaScript, you won't find the same data in the attributes.
+   * However, if you have set the value in the property and then you change the attribute, the `value` will be set at the data from the attribute.
+   * By default, if no value is set, `value` will return the `label` value in case there is one defined.
+   *
+   * @type {any}
+   * @example <bim-option value="10"></bim-option>
+   * @example
+   * const option = document.createElement('bim-option');
+   * // option.setAttribute('value', 'true');
+   * // option.setAttribute('value', '10');
+   * // option.setAttribute('value', 'some string');
+   * document.body.appendChild(option);
+   * @example
+   * const option = document.createElement('bim-option');
+   * option.label = "At origin"
+   * option.value = {x: 0, y: 0, z: 0} // As this is an object, it must be set in the property and not in the attribute.
+   * document.body.appendChild(option);
+   */
+  @property({
+    converter: {
+      fromAttribute(value) {
+        if (value) return convertString(value);
+        return value;
+      },
+    },
+  })
+  get value() {
+    if (this._value !== undefined) {
+      return this._value;
+    }
+    if (!this.label) return this.label;
+    return convertString(this.label);
+  }
+
+  set value(val) {
+    this._value = val;
+  }
+
   /**
    * Sets the orientation of the label and icon/image within the component. When true, they are arranged vertically.
    * This property influences the internal layout of the component, specifically affecting how the `bim-label` is displayed.
@@ -169,8 +216,6 @@ export class Option extends UIComponent {
   @property({ type: Boolean, reflect: true })
   vertical: boolean;
 
-  value: any;
-
   constructor() {
     super();
     this.checked = false;
@@ -179,23 +224,25 @@ export class Option extends UIComponent {
     this.vertical = false;
   }
 
-  render() {
+  protected render() {
     return html`
       <div class="parent" .title=${this.label ?? ""}>
-        <div style="display: flex; column-gap: 0.375rem">
-          ${this.checkbox && !this.noMark
-            ? html`<bim-checkbox
-                style="pointer-events: none"
-                .checked=${this.checked}
-              ></bim-checkbox>`
-            : null}
-          <bim-label
-            .vertical=${this.vertical}
-            .label=${this.label}
-            .icon=${this.icon}
-            .img=${this.img}
-          ></bim-label>
-        </div>
+        ${this.img || this.icon || this.label
+          ? html` <div style="display: flex; column-gap: 0.375rem">
+              ${this.checkbox && !this.noMark
+                ? html`<bim-checkbox
+                    style="pointer-events: none"
+                    .checked=${this.checked}
+                  ></bim-checkbox>`
+                : null}
+              <bim-label
+                .vertical=${this.vertical}
+                .label=${this.label}
+                .icon=${this.icon}
+                .img=${this.img}
+              ></bim-label>
+            </div>`
+          : null}
         ${!this.checkbox && !this.noMark && this.checked
           ? html`<svg
               xmlns="http://www.w3.org/2000/svg"
@@ -208,6 +255,7 @@ export class Option extends UIComponent {
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>`
           : null}
+        <slot></slot>
       </div>
     `;
   }

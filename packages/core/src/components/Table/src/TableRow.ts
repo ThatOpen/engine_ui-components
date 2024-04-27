@@ -1,15 +1,20 @@
-import { css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
+import { property } from "lit/decorators.js";
+import { ref } from "lit/directives/ref.js";
 import { UIComponent } from "../../../core/UIComponent";
 import { Table, ColumnData } from "../index";
 import { TableCell } from "./TableCell";
 
-interface TableComponentCell {
-  template: string;
-  onCreated?: (component: HTMLElement) => void;
-}
+// type Row = Record<string, string | number | boolean | (() => TemplateResult)>;
+// export type TableRowData = Row | (() => Row);
 
 export interface TableRowData {
-  [key: string]: string | TableComponentCell;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | HTMLElement
+    | ((rowData: TableRowData) => TemplateResult);
 }
 
 export class TableRow extends UIComponent {
@@ -23,15 +28,14 @@ export class TableRow extends UIComponent {
     }
   `;
 
-  static properties = {
-    columns: { type: Object, attribute: false },
-    data: { type: Object, attribute: false },
-    isHeader: { type: Boolean, attribute: "is-header", reflect: true },
-  };
+  @property({ type: Array, attribute: false })
+  columns: ColumnData[];
 
-  declare isHeader: boolean;
-  declare columns: ColumnData[];
-  declare data: TableRowData;
+  @property({ type: Object, attribute: false })
+  data: TableRowData;
+
+  @property({ type: Boolean, attribute: "is-header", reflect: true })
+  isHeader: boolean;
 
   private get _columnNames() {
     const names = this.columns.map((column) => column.name);
@@ -44,6 +48,7 @@ export class TableRow extends UIComponent {
   }
 
   private _table = this.closest<Table>("bim-table");
+  private _cells: TableCell[] = [];
 
   set table(value: Table | null) {
     if (this._table) {
@@ -68,6 +73,19 @@ export class TableRow extends UIComponent {
     return this._table;
   }
 
+  get value() {
+    return new Promise<Record<string, any>>((resolve) => {
+      setTimeout(() => {
+        const value: Record<string, any> = {};
+        for (const cell of this._cells) {
+          if (!cell.column) continue;
+          value[cell.column] = cell.value;
+        }
+        resolve(value);
+      });
+    });
+  }
+
   constructor() {
     super();
     this.columns = [];
@@ -90,33 +108,35 @@ export class TableRow extends UIComponent {
     this.columns = this.table.columns;
   };
 
-  render() {
+  protected render() {
     const indentation = this.table?.getRowIndentation(this.data) ?? 0;
-    const cells: TableCell[] = [];
+    const cells: TemplateResult[] = [];
     for (const column in this.data) {
       const value = this.data[column];
       let content;
-      if (typeof value === "string") {
-        content = document.createElement("bim-label");
-        content.label = value;
+      if (typeof value === "function") {
+        content = value(this.data);
+      } else if (value instanceof HTMLElement) {
+        content = value;
       } else {
-        const { template, onCreated } = value;
-        // TODO: Change this to a LitTemplate
-        const temp = document.createElement("div");
-        temp.innerHTML = template;
-        content = temp.firstElementChild as HTMLElement;
-        temp.remove();
-        if (onCreated) onCreated(content);
+        content = html`<bim-label label="${value}"></bim-label>`;
       }
-      const cell = document.createElement("bim-table-cell");
       const isFirstCell = this._columnNames.indexOf(column) === 0;
-      if (isFirstCell && !this.isHeader) {
-        cell.style.justifyContent = "normal";
-        cell.style.marginLeft = `${indentation + 0.125}rem`;
-      }
-      cell.column = column;
-      cell.append(content);
-      cell.table = this.table;
+      const style = `
+        ${isFirstCell && !this.isHeader ? "justify-content: normal" : ""};
+        ${isFirstCell && !this.isHeader ? `margin-left: ${indentation + 0.125}rem` : ""}
+      `;
+      this._cells = [];
+      const getValue = (el: Element | undefined) => {
+        if (!el) return;
+        const cell = el as TableCell;
+        this._cells.push(cell);
+      };
+      const cell = html`
+        <bim-table-cell ${ref(getValue)} style="${style}" .column=${column}
+          >${content}</bim-table-cell
+        >
+      `;
       cells.push(cell);
     }
 

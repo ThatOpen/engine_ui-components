@@ -1,8 +1,8 @@
-import * as BUI from "@thatopen/ui-components";
+import * as BUI from "@thatopen/ui";
 import * as THREE from "three";
 import { panelSections } from "../panel-sections";
 
-interface MaterialsListUIState {
+export interface MaterialsListUIState {
   materials: THREE.Material[];
 }
 
