@@ -1,9 +1,9 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { ToolbarGroup } from "../ToolbarGroup";
 import { HasName } from "../../core/types";
 
-export class ToolbarSection extends UIComponent implements HasName {
+export class ToolbarSection extends Component implements HasName {
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);

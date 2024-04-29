@@ -36,7 +36,7 @@ const template = (state: LoadIfcUIState) => {
 };
 
 export const loadIfc = (state: LoadIfcUIState) => {
-  const [loadIfcBtn] = BUI.UIComponent.create<BUI.Button, LoadIfcUIState>(
+  const [loadIfcBtn] = BUI.Component.create<BUI.Button, LoadIfcUIState>(
     template,
     state,
   );

@@ -1,7 +1,7 @@
 import { TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import { UIComponent } from "../../../core/UIComponent";
+import { Component } from "../../../core/Component";
 import { Table, ColumnData } from "../index";
 import { TableCell } from "./TableCell";
 
@@ -17,7 +17,7 @@ export interface TableRowData {
     | ((rowData: TableRowData) => TemplateResult);
 }
 
-export class TableRow extends UIComponent {
+export class TableRow extends Component {
   static styles = css`
     :host {
       position: relative;

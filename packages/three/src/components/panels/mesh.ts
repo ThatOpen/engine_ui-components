@@ -37,12 +37,9 @@ export const meshTemplate = (state: MeshUIState) => {
 };
 
 export const mesh = (mesh: THREE.Mesh) => {
-  const [element] = BUI.UIComponent.create<BUI.Panel, MeshUIState>(
-    meshTemplate,
-    {
-      mesh,
-    },
-  );
+  const [element] = BUI.Component.create<BUI.Panel, MeshUIState>(meshTemplate, {
+    mesh,
+  });
 
   return element;
 };

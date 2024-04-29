@@ -9,7 +9,7 @@ export type StatefullComponent<S extends Record<string, any>> = (
 
 type UpdateFunction<S extends Record<string, any>> = (state?: Partial<S>) => S;
 
-export class UIComponent extends LitElement {
+export class Component extends LitElement {
   private _lazyLoadObserver: IntersectionObserver | null = null;
   private _visibleElements: HTMLElement[] = [];
 

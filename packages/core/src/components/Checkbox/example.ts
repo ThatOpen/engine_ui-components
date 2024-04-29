@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const checkbox = document.body.querySelector<BUI.Checkbox>("bim-checkbox")!;
 checkbox.addEventListener("change", () => {

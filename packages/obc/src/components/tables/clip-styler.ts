@@ -18,8 +18,8 @@ export const clipStylerTemplate = (state: ClipStylerUIState) => {
         {
           data: {
             Name: "Categories",
-            Value: {
-              template: `
+            Value: () =>
+              BUI.html`
                 <bim-dropdown multiple required>
                   <bim-option label="IfcWallStandardCase"></bim-option>
                   <bim-option label="IfcSlab"></bim-option>
@@ -27,31 +27,25 @@ export const clipStylerTemplate = (state: ClipStylerUIState) => {
                   <bim-option label="IfcDoor"></bim-option>
                 </bim-dropdown>
               `,
-            },
           },
         },
         {
           data: {
             Name: "Fill Color",
-            Value: {
-              template: `<bim-color-input></bim-color-input>`,
-            },
+            Value: () => BUI.html`<bim-color-input></bim-color-input>`,
           },
         },
         {
           data: {
             Name: "Fill Color",
-            Value: {
-              template: `<bim-color-input></bim-color-input>`,
-            },
+            Value: () => BUI.html`<bim-color-input></bim-color-input>`,
           },
         },
         {
           data: {
             Name: "Line Thickness",
-            Value: {
-              template: `<bim-number-input min="0" value="0.5" max="1" step="0.001" sensitivity="10" slider></bim-number-input>`,
-            },
+            Value: () =>
+              BUI.html`<bim-number-input min="0" value="0.5" max="1" step="0.001" sensitivity="10" slider></bim-number-input>`,
           },
         },
       ],

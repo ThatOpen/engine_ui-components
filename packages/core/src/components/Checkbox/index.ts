@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { HasValue } from "../../core/types";
 
 // HTML tag: bim-checkbox
-export class Checkbox extends UIComponent implements HasValue {
+export class Checkbox extends Component implements HasValue {
   static styles = css`
     :host {
       display: block;

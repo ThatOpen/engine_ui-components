@@ -116,7 +116,7 @@ export const materialTemplate = (state: MaterialUIState) => {
 };
 
 export const material = (material: THREE.Material) => {
-  const component = BUI.UIComponent.create<HTMLDivElement, MaterialUIState>(
+  const component = BUI.Component.create<HTMLDivElement, MaterialUIState>(
     materialTemplate,
     { material },
   );

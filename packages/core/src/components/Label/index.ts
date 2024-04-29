@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { convertString } from "../../core/utils";
 
 // HTML tag: bim-label
-export class Label extends UIComponent {
+export class Label extends Component {
   static styles = css`
     :host {
       --bim-icon--c: var(--bim-label--c);

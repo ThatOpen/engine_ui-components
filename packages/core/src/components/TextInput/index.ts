@@ -1,8 +1,8 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { HasName, HasValue } from "../../core/types";
 
-export class TextInput extends UIComponent implements HasName, HasValue {
+export class TextInput extends Component implements HasName, HasValue {
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);

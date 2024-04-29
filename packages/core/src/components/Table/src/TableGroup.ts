@@ -1,6 +1,6 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../../core/UIComponent";
+import { Component } from "../../../core/Component";
 import { Table, TableGroupValue } from "../index";
 import { TableRow, TableRowData } from "./TableRow";
 import { TableChildren } from "./TableChildren";
@@ -14,7 +14,7 @@ export interface TableGroupData {
   onChildrenCreated?: (children: TableChildren) => void;
 }
 
-export class TableGroup extends UIComponent {
+export class TableGroup extends Component {
   static styles = css`
     :host {
       position: relative;

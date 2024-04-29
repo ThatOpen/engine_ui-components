@@ -1,11 +1,11 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 
 // HTML tag: bim-selector-input
-export class SelectorInput extends UIComponent implements HasValue, HasName {
+export class SelectorInput extends Component implements HasValue, HasName {
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);

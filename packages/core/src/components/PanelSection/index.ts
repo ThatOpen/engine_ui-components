@@ -1,7 +1,7 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 import { HasName, HasValue } from "../../core/types";
 // import { getElementValue } from "../../core/utils";
 const getElementValue = (child: HTMLElement, recursive = true) => {
@@ -28,7 +28,7 @@ const getElementValue = (child: HTMLElement, recursive = true) => {
   return value;
 };
 // HTML tag: bim-panel-section
-export class PanelSection extends UIComponent implements HasName, HasValue {
+export class PanelSection extends Component implements HasName, HasValue {
   static styles = [
     styles.scrollbar,
     css`

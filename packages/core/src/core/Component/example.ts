@@ -1,6 +1,6 @@
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 /* MD
   ## Leveling up your app with custom components! 🔌
@@ -19,7 +19,7 @@ BUI.UIManager.registerComponents();
   To start learning how to create custom components, let's create a custom component that uses the panel section:
 */
 
-const statelessPanelSection = BUI.UIComponent.create<BUI.PanelSection>(() => {
+const statelessPanelSection = BUI.Component.create<BUI.PanelSection>(() => {
   return BUI.html`
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
@@ -58,7 +58,7 @@ interface PanelSectionUIState {
 }
 
 const [statefullPanelSection, updateStatefullPanelSection] =
-  BUI.UIComponent.create<BUI.PanelSection, PanelSectionUIState>(
+  BUI.Component.create<BUI.PanelSection, PanelSectionUIState>(
     (state: PanelSectionUIState) => {
       const { label, counter } = state;
       const msg = `This panel section has been updated ${counter} ${counter === 1 ? "time" : "times"}`;
@@ -88,7 +88,7 @@ const [statefullPanelSection, updateStatefullPanelSection] =
   Now, in order to see the two components in action, let's create a third component to integrate (nest) the two previous:
 */
 
-const panel = BUI.UIComponent.create<BUI.Panel>(() => {
+const panel = BUI.Component.create<BUI.Panel>(() => {
   let counter = 0;
   const onUpdateBtnClick = () => {
     counter++;

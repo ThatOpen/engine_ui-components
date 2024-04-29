@@ -18,16 +18,16 @@ export const componentsConfiguration = (state: {
 
   for (const component of coreComponents) {
     if ("tableGroupData" in component) {
-      const configTableGroup = component.tableGroupData as BUI.TableGroupData;
-      table.rows = [...table.rows, configTableGroup];
+      // const configTableGroup = component.tableGroupData as BUI.TableGroupData;
+      // table.rows = [...table.rows, configTableGroup];
     }
   }
 
   for (const name in tools.list) {
     const tool = tools.list[name];
     if (!("tableGroupData" in tool)) continue;
-    const configTableGroup = tool.tableGroupData as BUI.TableGroupData;
-    table.rows = [...table.rows, configTableGroup];
+    // const configTableGroup = tool.tableGroupData as BUI.TableGroupData;
+    // table.rows = [...table.rows, configTableGroup];
   }
 
   table.headersHidden = true;

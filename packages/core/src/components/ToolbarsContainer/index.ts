@@ -1,10 +1,10 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { Toolbar } from "../Toolbar";
 import { Button } from "../Button";
-import { styles } from "../../core/UIManager/src/styles";
+import { styles } from "../../core/Manager/src/styles";
 
-export class ToolbarsContainer extends UIComponent {
+export class ToolbarsContainer extends Component {
   static styles = [
     styles.scrollbar,
     css`

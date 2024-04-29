@@ -1,7 +1,7 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 
-export class ToolbarGroup extends UIComponent {
+export class ToolbarGroup extends Component {
   static styles = css`
     .parent {
       display: grid;

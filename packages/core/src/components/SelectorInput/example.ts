@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const selectorInput =
   document.body.querySelector<BUI.SelectorInput>("bim-selector-input")!;

@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../../core/UIComponent";
+import { Component } from "../../../core/Component";
 import { Table, TableGroupValue } from "../index";
 import { TableGroup, TableGroupData } from "./TableGroup";
 
-export class TableChildren extends UIComponent {
+export class TableChildren extends Component {
   static styles = css`
     :host {
       position: relative;

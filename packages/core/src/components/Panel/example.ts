@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const activationButtons = document.getElementById("activation-buttons")!;
 

@@ -1,8 +1,8 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 
-export class Grid extends UIComponent {
+export class Grid extends Component {
   static styles = css`
     :host {
       display: grid;

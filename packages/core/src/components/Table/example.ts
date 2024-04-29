@@ -2,7 +2,7 @@
 import { ref } from "lit/directives/ref.js";
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const table = document.body.querySelector<BUI.Table>("bim-table")!;
 
@@ -93,7 +93,7 @@ table.rows = [
 
           const defaultAge = Object.keys(ageCareersMap)[0];
 
-          const [career, updateCareer] = BUI.UIComponent.create(
+          const [career, updateCareer] = BUI.Component.create(
             (state: { career: string }) => {
               return BUI.html`<bim-label label=${state.career}></bim-label>`;
             },
@@ -103,7 +103,7 @@ table.rows = [
           );
 
           let dropdownSet = false;
-          const age = BUI.UIComponent.create(() => {
+          const age = BUI.Component.create(() => {
             const onChange = (e: Event) => {
               const dropdown = e.target as BUI.Dropdown;
               const value = dropdown.value[0] as string;

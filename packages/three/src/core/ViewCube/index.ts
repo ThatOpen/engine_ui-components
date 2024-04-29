@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
-import { UIComponent } from "@thatopen/ui";
+import { Component } from "@thatopen/ui";
 
-export class ViewCube extends UIComponent {
+export class ViewCube extends Component {
   static styles = css`
     :host {
       position: absolute;

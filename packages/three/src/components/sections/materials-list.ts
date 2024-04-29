@@ -63,10 +63,10 @@ export const materialsListTemplate = (state: MaterialsListUIState) => {
 };
 
 export const materialsList = (materials: THREE.Material[]) => {
-  const component = BUI.UIComponent.create<
-    HTMLDivElement,
-    MaterialsListUIState
-  >(materialsListTemplate, { materials });
+  const component = BUI.Component.create<HTMLDivElement, MaterialsListUIState>(
+    materialsListTemplate,
+    { materials },
+  );
 
   return component;
 };

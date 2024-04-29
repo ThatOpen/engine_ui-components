@@ -1,8 +1,8 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import "iconify-icon";
 
-export class Icon extends UIComponent {
+export class Icon extends Component {
   static styles = css`
     :host {
       height: var(--bim-icon--fz, var(--bim-ui_size-sm));

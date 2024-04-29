@@ -17,7 +17,7 @@ export const fragmentGroupsListTemplate = (state: FragmentGroupsUIState) => {
 };
 
 export const fragmentGroupsList = (manager: OBC.FragmentManager) => {
-  const [element, updateElement] = BUI.UIComponent.create<
+  const [element, updateElement] = BUI.Component.create<
     BUI.Table,
     FragmentGroupsUIState
   >(fragmentGroupsListTemplate, { manager });

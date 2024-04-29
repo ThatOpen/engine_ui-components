@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const btn = document.body.querySelector<BUI.Button>("bim-button")!;
 btn.addEventListener("click", () => {

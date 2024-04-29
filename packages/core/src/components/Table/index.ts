@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 import { TableRowData } from "./src/TableRow";
 import { TableGroupData } from "./src/TableGroup";
-import { UIManager } from "../../core/UIManager";
+import { Manager } from "../../core/Manager";
 
 export interface TableGroupValue {
   data: Record<string, any>;
@@ -17,7 +17,7 @@ export interface ColumnData {
   width: string;
 }
 
-export class Table extends UIComponent {
+export class Table extends Component {
   static styles = [
     styles.scrollbar,
     css`
@@ -131,7 +131,7 @@ export class Table extends UIComponent {
   }
 
   private assignGroupDeclarationID(groupData: TableGroupData) {
-    if (!groupData.id) groupData.id = UIManager.newRandomId();
+    if (!groupData.id) groupData.id = Manager.newRandomId();
     if (groupData.children) {
       groupData.children.forEach((child) =>
         this.assignGroupDeclarationID(child),

@@ -9,10 +9,10 @@ import {
 } from "@floating-ui/dom";
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 
-export class ContextMenu extends UIComponent {
+export class ContextMenu extends Component {
   static styles = [
     styles.scrollbar,
     css`
