@@ -1,5 +1,5 @@
-import { spatialStructure } from "./spatial-structure";
+import * as spatialStructure from "./SpatialStructure";
 
 export const tables = {
-  spatialStructure,
+  ...spatialStructure,
 };
