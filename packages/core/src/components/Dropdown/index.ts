@@ -195,6 +195,7 @@ export class Dropdown extends Component implements HasValue, HasName {
       }
     }
     this._value = _value;
+    this.dispatchEvent(this.onValueChange);
     this.updateOptionsState();
   }
 
@@ -245,7 +246,7 @@ export class Dropdown extends Component implements HasValue, HasName {
       const rest = this._value.filter((v) => v !== option);
       if (rest.length !== 0) this.value = rest;
     }
-    this.dispatchEvent(this.onValueChange);
+    // this.dispatchEvent(this.onValueChange);
   };
 
   private onSlotChange(e: any) {

@@ -30,7 +30,12 @@ export class Table extends Component {
 
       .parent {
         display: grid;
-        grid-template-areas: "Header" "Body";
+        grid-template:
+          "Header" auto
+          "Body" 1fr
+          "Footer" auto;
+        overflow: auto;
+        height: 100%;
       }
 
       .parent > bim-table-row[is-header] {
@@ -316,6 +321,9 @@ export class Table extends Component {
     header.data = this._headerRowData;
     header.table = this;
     header.style.gridArea = "Header";
+    header.style.position = "sticky";
+    header.style.top = "0";
+    header.style.zIndex = "5";
 
     const children = document.createElement("bim-table-children");
     this._children = children;
@@ -326,7 +334,8 @@ export class Table extends Component {
 
     return html`
       <div class="parent">
-        ${!this.headersHidden ? header : null} ${children}
+        ${!this.headersHidden ? header : null}
+        <div style="overflow-x: hidden; grid-area: Body">${children}</div>
       </div>
     `;
   }

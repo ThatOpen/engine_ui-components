@@ -91,7 +91,7 @@ export class TableGroup extends Component {
   constructor() {
     super();
     this.group = { data: {} };
-    this.childrenHidden = false;
+    this.childrenHidden = true;
   }
 
   private onCaretClick = () => {
@@ -193,10 +193,12 @@ export class TableGroup extends Component {
     }
 
     return html`
-      ${this.group.children && !this.childrenHidden
-        ? verticalBranchTemplate
-        : null}
-      ${row} ${children}
+      <div class="parent">
+        ${this.group.children && !this.childrenHidden
+          ? verticalBranchTemplate
+          : null}
+        ${row} ${children}
+      </div>
     `;
   }
 }
