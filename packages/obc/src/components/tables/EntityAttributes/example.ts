@@ -1,0 +1,196 @@
+import * as WEBIFC from "web-ifc";
+import * as BUI from "@thatopen/ui";
+import * as OBC from "@thatopen/components";
+import * as CUI from "../..";
+
+BUI.Manager.registerComponents();
+
+const grid = document.getElementById("grid") as BUI.Grid;
+grid.layouts = {
+  main: `
+  "c-panels-left viewer" 2fr
+  "c-panels-table c-panels-table" 1fr
+  /auto 1fr
+  `,
+};
+
+grid.layout = "main";
+
+const panel = document.querySelector<BUI.PanelSection>(
+  "bim-panel[name='entityAttributes']",
+)!;
+
+const leftPanelContainer = grid.getContainer("panels", "left");
+leftPanelContainer.append(panel);
+
+const viewport = document.getElementById("viewer-container") as BUI.Viewport;
+
+const components = new OBC.Components();
+
+const worlds = components.get(OBC.Worlds);
+
+const world = worlds.create();
+const sceneComponent = new OBC.SimpleScene(components);
+sceneComponent.setup();
+world.scene = sceneComponent;
+world.renderer = new OBC.SimpleRenderer(components, viewport);
+world.camera = new OBC.SimpleCamera(components);
+
+viewport.addEventListener("resize", () => {
+  const { renderer } = world;
+  if (renderer) renderer.resize(undefined);
+});
+
+components.init();
+
+const grids = components.get(OBC.Grids);
+grids.create(world);
+
+const ifcLoader = components.get(OBC.FragmentIfcLoader);
+await ifcLoader.setup();
+const file = await fetch("/resources/small.ifc");
+const buffer = await file.arrayBuffer();
+const typedArray = new Uint8Array(buffer);
+const model = await ifcLoader.load(typedArray);
+
+world.scene.three.add(model);
+
+const indexer = components.get(OBC.IfcPropertiesIndexer);
+await indexer.process(model);
+
+const baseStyle: Record<string, string> = {
+  padding: "0.25rem",
+  borderRadius: "0.25rem",
+};
+
+const attributesStyles: Record<
+  string,
+  (value: string | boolean | number) => BUI.TemplateResult
+> = {
+  Entity: (entity) => {
+    let style = {};
+    if (entity === OBC.IfcCategoryMap[WEBIFC.IFCPROPERTYSET]) {
+      style = {
+        ...baseStyle,
+        backgroundColor: "purple",
+        color: "white",
+      };
+    }
+    if (String(entity).includes("IFCWALL")) {
+      style = {
+        ...baseStyle,
+        backgroundColor: "green",
+        color: "white",
+      };
+    }
+    return BUI.html`<bim-label label=${entity} style=${BUI.styleMap(style)}></bim-label>`;
+  },
+  PredefinedType: (type) => {
+    const colors = ["#1c8d83", "#3c1c8d", "#386c19", "#837c24"];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    const backgroundColor = colors[randomIndex];
+    const style = { ...baseStyle, backgroundColor, color: "white" };
+    return BUI.html`<bim-label label=${type} style=${BUI.styleMap(style)}></bim-label>`;
+  },
+  NominalValue: (value) => {
+    let style = {};
+    if (typeof value === "boolean" && value === false) {
+      style = { ...baseStyle, backgroundColor: "#b13535", color: "white" };
+    }
+    if (typeof value === "boolean" && value === true) {
+      style = { ...baseStyle, backgroundColor: "#18882c", color: "white" };
+    }
+    return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
+  },
+};
+
+const [table, updateTable] = CUI.tables.entityAttributes({
+  components,
+  model,
+  expressIDs: [],
+  attributeElements: attributesStyles,
+});
+
+const tablePanel = grid.getContainer("panels", "table");
+tablePanel.append(table);
+
+const dropdown = BUI.Component.create(() => {
+  const dropdown = document.createElement("bim-dropdown");
+  dropdown.label = "ExpressIDs";
+  dropdown.multiple = true;
+  const props = model.getLocalProperties();
+  if (props) {
+    for (const expressID in props) {
+      const { type } = props[expressID];
+      if (type !== WEBIFC.IFCWALLSTANDARDCASE) continue;
+      const option = document.createElement("bim-option");
+      const entityTypeName = OBC.IfcCategoryMap[type];
+      option.label = `${expressID}: ${entityTypeName}`;
+      option.value = expressID;
+      dropdown.append(option);
+    }
+  }
+
+  dropdown.addEventListener("change", () => {
+    updateTable({ expressIDs: dropdown.value });
+  });
+
+  return BUI.html`<div>${dropdown}</div>`;
+});
+
+const attributesDropdown = document.getElementById(
+  "attributes",
+) as BUI.Dropdown;
+
+const panelSection = document.querySelector<BUI.PanelSection>(
+  "bim-panel-section[name='tableAttributes']",
+)!;
+
+panelSection.insertBefore(dropdown, attributesDropdown);
+
+const attributes = [
+  "Name",
+  "ContainedInStructure",
+  "ForLayerSet",
+  "LayerThickness",
+  "HasProperties",
+  "HasAssociations",
+  "HasAssignments",
+  "HasPropertySets",
+  "PredefinedType",
+  "Quantities",
+  "ReferencedSource",
+  "Identification",
+  "Prefix",
+];
+
+for (const attribute of attributes) {
+  const option = document.createElement("bim-option");
+  option.label = attribute;
+  attributesDropdown.append(option);
+}
+
+attributesDropdown.addEventListener("change", () => {
+  updateTable({
+    attributesToInclude: () => {
+      const attributes: any[] = [
+        ...attributesDropdown.value,
+        (name: string) => name.includes("Value"),
+        (name: string) => name.startsWith("Material"),
+        (name: string) => name.startsWith("Relating"),
+        (name: string) => {
+          const ignore = ["IsGroupedBy", "IsDecomposedBy"];
+          return name.startsWith("Is") && !ignore.includes(name);
+        },
+      ];
+      return attributes;
+    },
+  });
+});
+
+attributesDropdown.value = attributes;
+
+const exportBtn = document.getElementById("export-json") as BUI.Button;
+exportBtn.addEventListener("click", async () => {
+  table.downloadData("entities-attributes");
+});

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entity Attributes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: Plus Jakarta Sans;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      height: 100vh;
+      width: 100vw;
+    }
+
+    bim-table {
+      grid-area: table;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <bim-grid id="grid">
+    <bim-viewport id="viewer-container" style="grid-area: viewer;"></bim-viewport>
+    <bim-panel name="entityAttributes" label="Entity Attributes" active>
+      <bim-panel-section name="tableAttributes" label="Table Settings">
+        <bim-dropdown multiple id="attributes" label="Attributes"></bim-dropdown>
+        <bim-button id="export-json" label="Export to JSON"></bim-button>
+      </bim-panel-section>
+    </bim-panel>
+  </bim-grid>
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>
