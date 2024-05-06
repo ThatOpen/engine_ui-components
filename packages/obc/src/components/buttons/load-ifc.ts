@@ -1,12 +1,14 @@
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
+import * as THREE from "three";
 
 export interface LoadIfcUIState {
   loader: OBC.FragmentIfcLoader;
+  scene: THREE.Scene;
 }
 
 const template = (state: LoadIfcUIState) => {
-  const { loader } = state;
+  const { loader, scene } = state;
   const onBtnClick = () => {
     const fileOpener = document.createElement("input");
     fileOpener.type = "file";
@@ -18,7 +20,6 @@ const template = (state: LoadIfcUIState) => {
       const data = new Uint8Array(buffer);
       const model = await loader.load(data);
       model.name = file.name;
-      const scene = loader.components.scene.get();
       scene.add(model);
       fileOpener.remove();
     };
@@ -36,10 +37,10 @@ const template = (state: LoadIfcUIState) => {
 };
 
 export const loadIfc = (state: LoadIfcUIState) => {
-  const [loadIfcBtn] = BUI.UIComponent.create<BUI.Button, LoadIfcUIState>(
+  const [element] = BUI.Component.create<BUI.Button, LoadIfcUIState>(
     template,
     state,
   );
 
-  return loadIfcBtn;
+  return element;
 };

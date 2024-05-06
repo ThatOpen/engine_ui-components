@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { convertString } from "../../core/utils";
 
 // HTML tag: bim-option
-export class Option extends UIComponent {
+export class Option extends Component {
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100);

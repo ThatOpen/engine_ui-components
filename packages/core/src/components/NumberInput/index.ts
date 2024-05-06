@@ -1,11 +1,11 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { HasName, HasValue } from "../../core/types";
 
 // HTML tag: bim-number-input
-export class NumberInput extends UIComponent implements HasValue, HasName {
+export class NumberInput extends Component implements HasValue, HasName {
   static styles = css`
     :host {
       --bim-input--bgc: var(

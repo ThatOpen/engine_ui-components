@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
 export const ifcEntities = () => {

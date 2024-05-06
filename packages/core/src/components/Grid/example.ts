@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const grid = document.body.querySelector<BUI.Grid>("bim-grid")!;
 grid.layouts = {
@@ -47,7 +47,7 @@ btn.addEventListener("click", () => {
 
 const panelsContainer = grid.getContainer("panels", "left", true);
 
-const panel = BUI.UIComponent.create(() => {
+const panel = BUI.Component.create(() => {
   const onBtnClick = () => {
     alert("asdasd");
   };

@@ -1,10 +1,10 @@
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 import { TableRowData } from "./src/TableRow";
 import { TableGroupData } from "./src/TableGroup";
-import { UIManager } from "../../core/UIManager";
+import { Manager } from "../../core/Manager";
 
 export interface TableGroupValue {
   data: Record<string, any>;
@@ -17,7 +17,7 @@ export interface ColumnData {
   width: string;
 }
 
-export class Table extends UIComponent {
+export class Table extends Component {
   static styles = [
     styles.scrollbar,
     css`
@@ -26,11 +26,17 @@ export class Table extends UIComponent {
         position: relative;
         overflow: auto;
         display: block;
+        pointer-events: auto;
       }
 
       .parent {
         display: grid;
-        grid-template-areas: "Header" "Body";
+        grid-template:
+          "Header" auto
+          "Body" 1fr
+          "Footer" auto;
+        overflow: auto;
+        height: 100%;
       }
 
       .parent > bim-table-row[is-header] {
@@ -131,7 +137,7 @@ export class Table extends UIComponent {
   }
 
   private assignGroupDeclarationID(groupData: TableGroupData) {
-    if (!groupData.id) groupData.id = UIManager.newRandomId();
+    if (!groupData.id) groupData.id = Manager.newRandomId();
     if (groupData.children) {
       groupData.children.forEach((child) =>
         this.assignGroupDeclarationID(child),
@@ -248,6 +254,7 @@ export class Table extends UIComponent {
     this.dispatchEvent(event);
   }
 
+  // @ts-ignore
   private async filterRowsByValue(
     value: string,
     // eslint-disable-next-line default-param-last
@@ -315,6 +322,9 @@ export class Table extends UIComponent {
     header.data = this._headerRowData;
     header.table = this;
     header.style.gridArea = "Header";
+    header.style.position = "sticky";
+    header.style.top = "0";
+    header.style.zIndex = "5";
 
     const children = document.createElement("bim-table-children");
     this._children = children;
@@ -325,7 +335,8 @@ export class Table extends UIComponent {
 
     return html`
       <div class="parent">
-        ${!this.headersHidden ? header : null} ${children}
+        ${!this.headersHidden ? header : null}
+        <div style="overflow-x: hidden; grid-area: Body">${children}</div>
       </div>
     `;
   }

@@ -1,11 +1,11 @@
 import { css, html } from "lit";
-import { UIComponent } from "../../core/UIComponent";
+import { Component } from "../../core/Component";
 import { ToolbarSection } from "../ToolbarSection";
 import { Button } from "../Button";
-import { UIManager } from "../../core/UIManager";
+import { Manager } from "../../core/Manager";
 import { HasName } from "../../core/types";
 
-export class Toolbar extends UIComponent implements HasName {
+export class Toolbar extends Component implements HasName {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
@@ -54,7 +54,7 @@ export class Toolbar extends UIComponent implements HasName {
   declare icon?: string;
   declare labelsHidden: boolean;
 
-  private _managerID = UIManager.newRandomId();
+  private _managerID = Manager.newRandomId();
 
   private _active = false;
 
@@ -105,7 +105,7 @@ export class Toolbar extends UIComponent implements HasName {
   }
 
   private setActivationButton() {
-    this.activationButton.draggable = UIManager.config.draggableToolbars;
+    this.activationButton.draggable = Manager.config.draggableToolbars;
     this.activationButton.addEventListener(
       "click",
       () => (this.active = !this.active),
@@ -137,7 +137,7 @@ export class Toolbar extends UIComponent implements HasName {
     for (const child of children) {
       if (child instanceof ToolbarSection) {
         child.labelHidden =
-          this.vertical && !UIManager.config.sectionLabelOnVerticalToolbar;
+          this.vertical && !Manager.config.sectionLabelOnVerticalToolbar;
         child.vertical = this.vertical;
       }
     }

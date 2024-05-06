@@ -1,14 +1,14 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 import { Option } from "../Option";
 import { ContextMenu } from "../ContextMenu";
 import { HasName, HasValue } from "../../core/types";
 
 // HTML tag: bim-dropdown
-export class Dropdown extends UIComponent implements HasValue, HasName {
+export class Dropdown extends Component implements HasValue, HasName {
   static styles = [
     styles.scrollbar,
     css`
@@ -195,6 +195,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
       }
     }
     this._value = _value;
+    this.dispatchEvent(this.onValueChange);
     this.updateOptionsState();
   }
 
@@ -245,7 +246,7 @@ export class Dropdown extends UIComponent implements HasValue, HasName {
       const rest = this._value.filter((v) => v !== option);
       if (rest.length !== 0) this.value = rest;
     }
-    this.dispatchEvent(this.onValueChange);
+    // this.dispatchEvent(this.onValueChange);
   };
 
   private onSlotChange(e: any) {

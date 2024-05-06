@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.UIManager.registerComponents();
+BUI.Manager.registerComponents();
 
 const colorInput =
   document.body.querySelector<BUI.ColorInput>("bim-color-input")!;

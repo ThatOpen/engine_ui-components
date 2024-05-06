@@ -1,11 +1,11 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 import { Panel } from "../Panel";
 
 // HTML tag: bim-panels-container
-export class PanelsContainer extends UIComponent {
+export class PanelsContainer extends Component {
   static styles = [
     styles.scrollbar,
     css`

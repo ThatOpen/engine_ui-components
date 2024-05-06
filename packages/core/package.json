@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui",
   "description": "Collection of web components (UI components) meant to be used, but not limited to, BIM applications.",
-  "version": "1.0.0-beta.0",
+  "version": "2.0.0-alpha.1",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
@@ -31,7 +31,11 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc --p ./tsconfig-build.json && vite build",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "publish-alpha": "npm publish --tag alpha"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@floating-ui/dom": "1.6.3",

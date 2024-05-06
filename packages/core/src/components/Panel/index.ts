@@ -1,13 +1,13 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../core/UIComponent";
-import { styles } from "../../core/UIManager/src/styles";
+import { Component } from "../../core/Component";
+import { styles } from "../../core/Manager/src/styles";
 import { Button } from "../Button";
 import { HasName, HasValue } from "../../core/types";
 import { getElementValue } from "../../core/utils";
 
 // HTML tag: bim-panel
-export class Panel extends UIComponent implements HasName, HasValue {
+export class Panel extends Component implements HasName, HasValue {
   static styles = [
     styles.scrollbar,
     css`

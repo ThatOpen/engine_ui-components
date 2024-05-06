@@ -1,9 +1,8 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { UIComponent } from "../../../core/UIComponent";
-import { getElementValue } from "../../../core/utils";
+import { Component } from "../../../core/Component";
 
-export class TableCell extends UIComponent {
+export class TableCell extends Component {
   static styles = css`
     :host {
       padding: 0.25rem 1rem;

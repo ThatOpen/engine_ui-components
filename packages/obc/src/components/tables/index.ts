@@ -1,7 +1,9 @@
-import { fragmentGroupsList } from "./fragment-groups";
-import { componentsConfiguration } from "./viewer-tools";
+import * as fragmentGroupsList from "./FragmentGroups";
+import * as entityAttributes from "./EntityAttributes";
+import * as classifierTree from "./classifier-tree";
 
 export const tables = {
-  fragmentGroupsList,
-  componentsConfiguration,
+  ...fragmentGroupsList,
+  ...entityAttributes,
+  ...classifierTree,
 };
