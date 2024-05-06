@@ -6,7 +6,7 @@ interface ClassifierTree {
   children?: ClassifierTree[];
 }
 
-interface ClassifierTreeUIState {
+export interface ClassifierTreeUIState {
   classifier: OBC.FragmentClassifier;
   groups: string[];
   name: string;
@@ -73,10 +73,10 @@ export const classifierTreeTemplate = (state: ClassifierTreeUIState) => {
 };
 
 export const classifierTree = (state: ClassifierTreeUIState) => {
-  const [element, updateElement] = BUI.Component.create<
-    BUI.Table,
-    ClassifierTreeUIState
-  >(classifierTreeTemplate, state);
+  const element = BUI.Component.create<BUI.Table, ClassifierTreeUIState>(
+    classifierTreeTemplate,
+    state,
+  );
 
   return element;
 };

@@ -8,8 +8,8 @@ BUI.Manager.registerComponents();
 const grid = document.getElementById("grid") as BUI.Grid;
 grid.layouts = {
   main: `
-  "c-panels-left viewer" 2fr
-  "c-panels-table c-panels-table" 1fr
+  "c-panels-left viewer" 1fr
+  "c-panels-table c-panels-table" minmax(auto, 450px)
   /auto 1fr
   `,
 };
@@ -33,12 +33,16 @@ const world = worlds.create();
 const sceneComponent = new OBC.SimpleScene(components);
 sceneComponent.setup();
 world.scene = sceneComponent;
-world.renderer = new OBC.SimpleRenderer(components, viewport);
-world.camera = new OBC.SimpleCamera(components);
+
+const rendererComponent = new OBC.SimpleRenderer(components, viewport);
+world.renderer = rendererComponent;
+
+const cameraComponent = new OBC.SimpleCamera(components);
+world.camera = cameraComponent;
 
 viewport.addEventListener("resize", () => {
-  const { renderer } = world;
-  if (renderer) renderer.resize(undefined);
+  rendererComponent.resize();
+  cameraComponent.updateAspect();
 });
 
 components.init();
@@ -46,22 +50,55 @@ components.init();
 const grids = components.get(OBC.Grids);
 grids.create(world);
 
+/* MD 
+  ## Displaying data the right way 🔥🔥
+  ---
+  What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!
+
+  ### Loading a model and computing it's relations
+  First things first... let's load a model 👇
+  */
+
 const ifcLoader = components.get(OBC.FragmentIfcLoader);
 await ifcLoader.setup();
 const file = await fetch("/resources/small.ifc");
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
-
 world.scene.three.add(model);
 
-const indexer = components.get(OBC.IfcPropertiesIndexer);
+/* MD
+  :::tip
+
+  You don't need to load the model into the scene to display its properties.
+
+  :::
+
+  Now, in order to get the most out of the entities table, you need to calculate the relations index of your model. To do it, you will need to use the [IfcRelationsIndexer]() component from `@thatopen/components` to speed up the process.
+  */
+
+const indexer = components.get(OBC.IfcRelationsIndexer);
 await indexer.process(model);
+
+/* MD
+  ### Preconfiguring the table
+  The entities table has some optional configurations. One of them is the ability to modify the styles of the cell value based on the attribute value (e.g., colorizing entities with a specific string in its name, or numeric values based on a codition ). For it, let's first create a simple base style that all our cell overwrites will share:
+  */
 
 const baseStyle: Record<string, string> = {
   padding: "0.25rem",
   borderRadius: "0.25rem",
 };
+
+/* MD
+  Then, let's create an object where the keys are the attribute values you want to overwrite its styles, and the values are functions that returns an `html` template result.
+
+  :::tip
+
+  If you want to learn more about the `html` template tag and how to use it, just take a look at the [tutorial on how to make a custom component]().
+
+  :::
+  */
 
 const attributesStyles: Record<
   string,
@@ -103,6 +140,12 @@ const attributesStyles: Record<
     return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
   },
 };
+
+/* MD 
+  Keep in mind the step above is optional! Not needed for the table to work.<br><br>
+
+  Now its time to create the table using the predefine functional component that ships with the library 🙂
+  */
 
 const [table, updateTable] = CUI.tables.entityAttributes({
   components,
@@ -162,6 +205,7 @@ const attributes = [
   "ReferencedSource",
   "Identification",
   "Prefix",
+  "LongName",
 ];
 
 for (const attribute of attributes) {
@@ -191,6 +235,23 @@ attributesDropdown.addEventListener("change", () => {
 attributesDropdown.value = attributes;
 
 const exportBtn = document.getElementById("export-json") as BUI.Button;
-exportBtn.addEventListener("click", async () => {
+exportBtn.addEventListener("click", () => {
   table.downloadData("entities-attributes");
+});
+
+const makeEditable = document.getElementById("make-editable") as BUI.Checkbox;
+makeEditable.addEventListener("change", () => {
+  updateTable({ editable: makeEditable.checked });
+});
+
+const propsManager = components.get(OBC.IfcPropertiesManager);
+const exportIfc = document.getElementById("export-ifc") as BUI.Button;
+exportIfc.addEventListener("click", async () => {
+  const modifiedIFC = await propsManager.saveToIfc(model, typedArray);
+  const file = new File([modifiedIFC], "small-modified.ifc");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(file);
+  a.download = file.name;
+  a.click();
+  URL.revokeObjectURL(a.href);
 });

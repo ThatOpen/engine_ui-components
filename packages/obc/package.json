@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui-obc",
   "description": "Collection of web components (UI components) implementations to use with @thatopen/components.",
-  "version": "2.0.0",
+  "version": "2.0.0-alpha.0",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
@@ -34,16 +34,19 @@
     "prepublishOnly": "npm run build",
     "publish-alpha": "npm publish --tag alpha"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
-    "@thatopen/components": "2.0.0-alpha.4",
+    "@thatopen/components": "2.0.0-alpha.7",
     "@types/three": "0.160.0",
     "lit": "3.1.2",
     "three": "0.160.1",
     "web-ifc": "0.0.53"
   },
   "peerDependencies": {
-    "@thatopen/components": "2.0.0",
-    "@thatopen/ui": "2.0.0",
+    "@thatopen/components": "2.0.0-alpha.7",
+    "@thatopen/ui": "2.0.0-alpha.1",
     "three": "0.160.1"
   }
 }

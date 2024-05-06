@@ -91,7 +91,7 @@ export class TableGroup extends Component {
   constructor() {
     super();
     this.group = { data: {} };
-    this.childrenHidden = true;
+    this.childrenHidden = false;
   }
 
   private onCaretClick = () => {

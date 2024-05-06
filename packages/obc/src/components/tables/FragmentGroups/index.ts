@@ -2,7 +2,7 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
-interface FragmentGroupsUIState {
+export interface FragmentGroupsUIState {
   manager: OBC.FragmentManager;
 }
 

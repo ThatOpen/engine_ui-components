@@ -26,6 +26,7 @@ export class Table extends Component {
         position: relative;
         overflow: auto;
         display: block;
+        pointer-events: auto;
       }
 
       .parent {

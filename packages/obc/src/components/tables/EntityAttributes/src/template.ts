@@ -2,18 +2,22 @@ import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 
 type Attributes = string | ((name: string) => boolean);
+type AttributeElements = Record<
+  string,
+  (value: string | boolean | number) => BUI.TemplateResult
+>;
+
+type AttributesToInclude =
+  | Attributes[]
+  | ((defaultAttributes: Attributes[]) => Attributes[]);
 
 export interface EntityAttributesUIState {
   components: OBC.Components;
   model: any;
   expressIDs: number[];
-  attributeElements?: Record<
-    string,
-    (value: string | boolean | number) => BUI.TemplateResult
-  >;
-  attributesToInclude?:
-    | Attributes[]
-    | ((defaultAttributes: Attributes[]) => Attributes[]);
+  editable?: boolean;
+  attributeElements?: AttributeElements;
+  attributesToInclude?: AttributesToInclude;
 }
 
 const defaultAttributes: Attributes[] = [
@@ -43,16 +47,12 @@ async function processEntityAttributes(
   model: any,
   expressID: number,
   attributesToInclude = defaultAttributes,
-  attributeElements: Record<
-    string,
-    (value: string | boolean | number) => BUI.TemplateResult
-  > = {},
+  attributeElements: AttributeElements = {},
   editable = false,
 ): Promise<BUI.TableGroupData> {
-  const indexer = components.get(OBC.IfcPropertiesIndexer);
+  const indexer = components.get(OBC.IfcRelationsIndexer);
   const attributes = await model.getProperties(expressID);
   const modelRelations = indexer.relationMaps[model.uuid];
-  const entityRelations = modelRelations.get(attributes.expressID);
 
   const entityRow: BUI.TableGroupData = {
     data: {},
@@ -79,6 +79,7 @@ async function processEntityAttributes(
         attributeValue.value,
         attributesToInclude,
         attributeElements,
+        editable,
       );
       entityRow.children.push(row);
     } else if (
@@ -87,10 +88,12 @@ async function processEntityAttributes(
     ) {
       const { value, type } = attributeValue;
       if (editable) {
+        const propertiesManager = components.get(OBC.IfcPropertiesManager);
         if (type === 1 || type === 2 || type === 3) {
-          const onInput = (e: Event) => {
+          const onInput = async (e: Event) => {
             const input = e.target as BUI.NumberInput;
             attributeValue.value = input.value;
+            await propertiesManager.setData(model, attributes);
           };
           entityRow.data[name] = () => {
             return BUI.html`<bim-text-input @input=${onInput} value=${value}></bim-text-input>`;
@@ -118,6 +121,7 @@ async function processEntityAttributes(
           item.value,
           attributesToInclude,
           attributeElements,
+          editable,
         );
         entityRow.children.push(row);
       }
@@ -134,7 +138,8 @@ async function processEntityAttributes(
     }
   }
 
-  if (entityRelations) {
+  if (modelRelations && modelRelations.get(attributes.expressID)) {
+    const entityRelations = modelRelations.get(attributes.expressID)!;
     for (const name of attributesToInclude) {
       const targetAttributes: number[] = [];
 
@@ -161,6 +166,7 @@ async function processEntityAttributes(
             relation,
             attributesToInclude,
             attributeElements,
+            editable,
           );
           if (!entityRow.children) entityRow.children = [];
           entityRow.children.push(row);
@@ -179,6 +185,7 @@ export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
     expressIDs,
     attributesToInclude,
     attributeElements: attributesStyles,
+    editable,
   } = state;
 
   let attributes: Attributes[] | undefined;
@@ -199,6 +206,7 @@ export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
         expressID,
         attributes,
         attributesStyles,
+        editable,
       );
       groups.push(group);
     }
