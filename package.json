@@ -9,7 +9,7 @@
     "build-core": "npm run build -w @thatopen/ui",
     "build-obc": "npm run build -w @thatopen/ui-obc",
     "build-webifc": "npm run build -w @thatopen/ui-webifc",
-    "build-libraries": "npm run build-core && npm run build-obc && npm run build-three && npm run build-webifc",
+    "build-libraries": "npm run build-core && npm run build-obc && npm run build-webifc",
     "build-examples": "vite build --config ./vite.config-examples.ts",
     "build-all": "npm run build-examples && npm run build-libraries"
   },
