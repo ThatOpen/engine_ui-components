@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entity Attributes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: Plus Jakarta Sans;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      height: 100vh;
+      width: 100vw;
+      padding: 1rem;
+      display: grid;
+      grid-template: "panel table" / auto 1fr;
+      gap: 1rem;
+    }
+
+    bim-table,
+    bim-panel {
+      border-radius: 0.5rem;
+      border: 1px solid var(--bim-ui_bg-contrast-20);
+    }
+
+    bim-table {
+      grid-area: table;
+    }
+
+    bim-panel {
+      height: min-content;
+      grid-area: panel
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/entityAttributes.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-DOYVmgE3.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-BeeS5qEQ.js">
+</head>
+
+<body>
+  <bim-panel active label="Entity Attributes">
+    <bim-panel-section name="tableAttributes" label="Table Settings">
+      <bim-checkbox id="only-elements" label="Only Elements" checked></bim-checkbox>
+      <bim-dropdown multiple id="attributes" label="Attributes"></bim-dropdown>
+      <bim-button id="export-json" label="Export to JSON"></bim-button>
+    </bim-panel-section>
+  </bim-panel>
+</body>
+
+</html>

@@ -1,9 +1,9 @@
-import * as fragmentGroupsList from "./FragmentGroups";
+import * as modelsList from "./ModelsList";
 import * as entityAttributes from "./EntityAttributes";
-import * as classifierTree from "./classifier-tree";
+import * as classificationsTree from "./ClassificationsTree";
 
 export const tables = {
-  ...fragmentGroupsList,
+  ...modelsList,
   ...entityAttributes,
-  ...classifierTree,
+  ...classificationsTree,
 };

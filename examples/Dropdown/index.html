@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown</title>
+  <style>
+    html {
+      font-family: "Plus Jakarta Sans";
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+    }
+
+    bim-dropdown {
+      width: 28rem;
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/dropdown.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-N3h3khDV.js">
+</head>
+
+<body>
+  <div>
+    <bim-dropdown label="IFC Entity" multiple>
+      <bim-option label="IfcWindow"></bim-option>
+      <bim-option label="IfcWall"></bim-option>
+      <bim-option label="IfcSlab"></bim-option>
+    </bim-dropdown>
+  </div>
+</body>
+
+</html>

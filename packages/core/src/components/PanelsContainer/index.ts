@@ -14,6 +14,7 @@ export class PanelsContainer extends Component {
         flex-direction: column;
         pointer-events: none;
         gap: 0.5rem;
+        overflow: auto;
       }
 
       :host(:not([floating])) {
