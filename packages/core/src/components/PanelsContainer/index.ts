@@ -26,36 +26,43 @@ export class PanelsContainer extends Component {
       }
 
       :host([horizontal]) ::slotted(bim-panel) {
-        max-width: 100%;
+        /* max-width: 100%; */
         flex-grow: 1;
       }
     `,
   ];
 
-  static properties = {
-    gridArea: { attribute: false },
-  };
-
   @property({ type: Boolean, reflect: true })
   horizontal: boolean;
+
+  @property({ type: Boolean, reflect: true })
+  floating: boolean;
 
   constructor() {
     super();
     this.horizontal = false;
+    this.floating = false;
   }
+
+  private onPanelHiddenChange = (e: Event) => {
+    const element = e.target;
+    if (!(element instanceof Panel && !element.hidden)) return;
+    for (const child of this.children) {
+      if (!(child instanceof Panel) || child === element) continue;
+      child.hidden = true;
+    }
+  };
 
   private onSlotChange(e: any) {
     const children = e.target.assignedElements() as HTMLElement[];
-    const lastChild = children[children.length - 1];
+    const anyVisiblePanel = children.find(
+      (child) => child instanceof Panel && !child.hidden,
+    );
     for (const child of children) {
       if (!(child instanceof Panel)) continue;
-      if (
-        lastChild instanceof Panel &&
-        lastChild.active &&
-        child !== lastChild
-      ) {
-        child.active = false;
-      }
+      if (anyVisiblePanel !== child) child.hidden = true;
+      child.removeEventListener("hiddenchange", this.onPanelHiddenChange);
+      child.addEventListener("hiddenchange", this.onPanelHiddenChange);
     }
   }
 

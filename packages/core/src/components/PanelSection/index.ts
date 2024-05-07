@@ -3,41 +3,17 @@ import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
 import { HasName, HasValue } from "../../core/types";
-// import { getElementValue } from "../../core/utils";
-const getElementValue = (child: HTMLElement, recursive = true) => {
-  let value: Record<string, any> = {};
-  for (const _child of child.children) {
-    const child = _child as any;
-    const key = child.getAttribute("name") || child.getAttribute("label");
-    if (key) {
-      if ("value" in child) {
-        const childValue = child.value;
-        const isObject =
-          typeof childValue === "object" && !Array.isArray(childValue);
-        if (isObject && Object.keys(childValue).length === 0) continue;
-        value[key] = child.value;
-      } else if (recursive) {
-        const childValue = getElementValue(child);
-        if (Object.keys(childValue).length === 0) continue;
-        value[key] = childValue;
-      }
-    } else if (recursive) {
-      value = { ...value, ...getElementValue(child) };
-    }
-  }
-  return value;
-};
+import { getElementValue } from "../../core/utils";
+
 // HTML tag: bim-panel-section
 export class PanelSection extends Component implements HasName, HasValue {
   static styles = [
     styles.scrollbar,
     css`
       :host {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
+        display: block;
+        /* height: 100%; */
         pointer-events: auto;
-        border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
       :host(:not([fixed])) .header:hover {
@@ -57,8 +33,8 @@ export class PanelSection extends Component implements HasName, HasValue {
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
         z-index: 3;
         flex-shrink: 0;
-        position: sticky;
-        top: 0;
+        /* position: sticky;
+        top: 0; */
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -66,7 +42,7 @@ export class PanelSection extends Component implements HasName, HasValue {
         user-select: none;
         height: 1.5rem;
         padding: 0.75rem 1rem;
-        background-color: var(--bim-panel-section--bgc, var(--bim-ui_bg-base));
+        /* background-color: var(--bim-panel-section--bgc, var(--bim-ui_bg-base)); */
         color: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80));
       }
 
@@ -250,9 +226,11 @@ export class PanelSection extends Component implements HasName, HasValue {
     `;
 
     return html`
-      ${header ? headerTemplate : null}
-      <div class="components">
-        <slot></slot>
+      <div class="parent">
+        ${header ? headerTemplate : null}
+        <div class="components">
+          <slot></slot>
+        </div>
       </div>
     `;
   }

@@ -94,7 +94,7 @@ const panel = BUI.Component.create(() => {
   const [loadIfcBtn] = CUI.buttons.loadIfc({ components });
 
   return BUI.html`
-   <bim-panel active label="Classifications Tree">
+   <bim-panel label="Classifications Tree">
     <bim-panel-section label="Importing">
       ${loadIfcBtn}
     </bim-panel-section>

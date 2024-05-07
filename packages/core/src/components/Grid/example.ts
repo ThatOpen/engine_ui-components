@@ -52,7 +52,7 @@ const panel = BUI.Component.create(() => {
     alert("asdasd");
   };
   return BUI.html`
-    <bim-panel label="My Panel!" active>
+    <bim-panel label="My Panel!">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
         <bim-selector-input label="Click me!">
