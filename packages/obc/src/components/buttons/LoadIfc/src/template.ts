@@ -1,14 +1,14 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
-import * as THREE from "three";
 
 export interface LoadIfcUIState {
-  loader: OBC.FragmentIfcLoader;
-  scene: THREE.Scene;
+  components: OBC.Components;
 }
 
-const template = (state: LoadIfcUIState) => {
-  const { loader, scene } = state;
+export const loadIfcTemplate = (state: LoadIfcUIState) => {
+  const { components } = state;
+  const ifcLoader = components.get(OBC.FragmentIfcLoader);
+
   const onBtnClick = () => {
     const fileOpener = document.createElement("input");
     fileOpener.type = "file";
@@ -16,12 +16,11 @@ const template = (state: LoadIfcUIState) => {
     fileOpener.onchange = async () => {
       if (fileOpener.files === null || fileOpener.files.length === 0) return;
       const file = fileOpener.files[0];
+      fileOpener.remove();
       const buffer = await file.arrayBuffer();
       const data = new Uint8Array(buffer);
-      const model = await loader.load(data);
-      model.name = file.name;
-      scene.add(model);
-      fileOpener.remove();
+      const model = await ifcLoader.load(data);
+      model.name = file.name.replace(".ifc", "");
     };
     fileOpener.click();
   };
@@ -29,18 +28,9 @@ const template = (state: LoadIfcUIState) => {
   return BUI.html`
     <bim-button
       data-ui-id="import-ifc"
-      label="IFC"
+      label="Load IFC"
       icon="mage:box-3d-fill"
       @click=${onBtnClick}
     ></bim-button>
   `;
-};
-
-export const loadIfc = (state: LoadIfcUIState) => {
-  const [element] = BUI.Component.create<BUI.Button, LoadIfcUIState>(
-    template,
-    state,
-  );
-
-  return element;
 };

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Input</title>
+  <style>
+    html {
+      font-family: "Plus Jakarta Sans";
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/selectorInput.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-N3h3khDV.js">
+</head>
+
+<body>
+  <bim-selector-input label="Camera Projection">
+    <bim-option icon="solar:settings-bold" label="Orthographic" value="0"></bim-option>
+    <bim-option label="Perspective" value="1"></bim-option>
+    <bim-option label="Custom"></bim-option>
+  </bim-selector-input>
+  <bim-tabs tab="controls">
+    <bim-tab name="controls" label="Controls"></bim-tab>
+    <bim-tab name="" label=""></bim-tab>
+    <bim-tab name="" label=""></bim-tab>
+  </bim-tabs>
+</body>
+
+</html>

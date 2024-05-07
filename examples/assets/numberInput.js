@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as o}from"./index-N3h3khDV.js";o.registerComponents();const e=document.body.querySelector("bim-number-input");e.addEventListener("change",()=>{const n=e.value;console.log("Value is:",n)});
