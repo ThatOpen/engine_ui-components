@@ -1,9 +1,9 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{E as c,d as l,q as d,$ as m,W as p,F as b,I as f,a as g,t as w,b as u}from"./index-s2aJkd03.js";import{A as v,a as C,b as I}from"./index-DOYVmgE3.js";v.registerComponents();const a=document.querySelector("bim-grid");a.layouts={main:`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{E as c,d as l,q as m,$ as d,W as p,F as b,I as f,c as g,t as w}from"./index-BJN8AjRC.js";import{b as u,E as C,m as v}from"./index-RJxXwJnz.js";import{b as I}from"./index-B0R8Bj5n.js";u.registerComponents();const o=document.querySelector("bim-grid");o.layouts={main:`
     "c-panels-left viewer"
     "c-panels-left viewer"
     / 23rem 1fr
-  `};a.layout="main";const e=new c,s=document.querySelector("bim-viewport[name='viewer']"),L=e.get(l),n=L.create(),o=new d(e);o.setup();n.scene=o;const r=new m(e,s);n.renderer=r;const i=new p(e);n.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const q=e.get(b);q.create(n);e.init();const y=e.get(f);await y.setup();const A=e.get(g);A.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[F]=w.modelsList({components:e}),$=C.create(()=>{const[t]=u.loadIfc({components:e});return I`
-   <bim-panel active label="IFC Models">
+  `};o.layout="main";const e=new c,s=document.querySelector("bim-viewport[name='viewer']"),L=e.get(l),n=L.create(),a=new m(e);a.setup();n.scene=a;const r=new d(e,s);n.renderer=r;const i=new p(e);n.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const E=e.get(b);E.create(n);e.init();const q=e.get(f);await q.setup();const y=e.get(g);y.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[F]=w.modelsList({components:e}),$=C.create(()=>{const[t]=I.loadIfc({components:e});return v`
+   <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
       ${t}
     </bim-panel-section>
@@ -11,4 +11,4 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{E as c,d as l,q as d,$ as m,
       ${F}
     </bim-panel-section>
    </bim-panel> 
-  `}),E=a.getContainer("panels","left");E.append($);
+  `}),M=o.getContainer("panels","left");M.append($);

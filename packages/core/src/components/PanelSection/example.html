@@ -4,23 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spatial Structure</title>
+  <title>Panel Section</title>
   <style>
+    body {
+      margin: 0;
+    }
+
     html {
       font-family: sans-serif;
     }
 
-    body {
+    bim-panel-section {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
       background-color: var(--bim-ui_bg-base);
-    }
-
-    bim-table {
+      width: 20rem;
       border-radius: 0.375rem;
     }
   </style>
 </head>
 
 <body>
+  <bim-panel-section label="Your Panel Section" icon="solar:settings-bold">
+    <bim-color-input label="Color"></bim-color-input>
+  </bim-panel-section>
   <script type="module" src="./example.ts"></script>
 </body>
 

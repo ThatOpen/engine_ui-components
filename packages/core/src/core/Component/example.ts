@@ -103,7 +103,7 @@ const panel = BUI.Component.create<BUI.Panel>(() => {
   };
 
   return BUI.html`
-    <bim-panel label="My Panel" active>
+    <bim-panel label="My Panel">
       <bim-panel-section label="Update Functions">
         <bim-button @click=${onUpdateBtnClick} label="Update Statefull Section"></bim-button>
       </bim-panel-section>

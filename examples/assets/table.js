@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as b,x as n,C as u,n as p}from"./index-N3h3khDV.js";b.registerComponents();const t=document.body.querySelector("bim-table");t.rows=[{onRowCreated(e){e.addEventListener("click",async()=>{})},data:{Name:"Jhon",Age:"28",Career:"Civil Engineer",Comments:document.createElement("bim-text-input")},children:[{data:{Name:"James",Age:"20",Career:"Unemployed",Comments:document.createElement("bim-text-input")}},{data:{Name:"Lisa",Age:()=>n`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as b,x as n,C as u,n as p}from"./index-D05NiQ0D.js";b.registerComponents();const t=document.body.querySelector("bim-table");t.rows=[{onRowCreated(e){e.addEventListener("click",async()=>{})},data:{Name:"Jhon",Age:"28",Career:"Civil Engineer",Comments:document.createElement("bim-text-input")},children:[{data:{Name:"James",Age:"20",Career:"Unemployed",Comments:document.createElement("bim-text-input")}},{data:{Name:"Lisa",Age:()=>n`
               <bim-number-input slider min="23" value="27" max="45"></bim-number-input>
             `,Career:()=>n`
               <bim-dropdown required>

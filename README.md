@@ -108,7 +108,7 @@ Finally, in your HTML file you can start to use the components!
     </bim-toolbar>
   </bim-toolbars-container>
   <bim-panels-container id="my-panel" style="grid-area: sidebar">
-    <bim-panel label="Panel A" active>
+    <bim-panel label="Panel A">
       <bim-panel-section label="Build">
         <bim-text-input label="Tool Name" value="BCFManager"></bim-text-input>
         <bim-input label="Position" vertical>

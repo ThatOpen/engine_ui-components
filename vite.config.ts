@@ -28,7 +28,7 @@ const writeIndexHTML = () => {
       }
   
       html {
-        font-family: Plus Jakarta Sans;
+        font-family: sans-serif;
       }
   
       body {

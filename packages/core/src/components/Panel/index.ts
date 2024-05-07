@@ -12,25 +12,26 @@ export class Panel extends Component implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
+        display: flex;
+        border-radius: var(--bim-ui_size-base);
+        background-color: var(--bim-ui_bg-base);
         min-width: 20rem;
         overflow: auto;
       }
 
-      :host([active]) {
-        display: flex;
-      }
-
-      :host(:not([active])) {
+      :host([hidden]) {
         display: none;
       }
+
+      /* :host(:not([hidden])) {
+        display: none;
+      } */
 
       .parent {
         display: flex;
         flex: 1;
         flex-direction: column;
         pointer-events: auto;
-        border-radius: var(--bim-panel--bdrs, var(--bim-ui_size-base));
-        background-color: var(--bim-panel--bgc, var(--bim-ui_bg-base));
       }
 
       .parent bim-label {
@@ -39,6 +40,7 @@ export class Panel extends Component implements HasName, HasValue {
         font-weight: 600;
         padding: 1rem;
         flex-shrink: 0;
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
       .sections {
@@ -46,12 +48,12 @@ export class Panel extends Component implements HasName, HasValue {
         flex-direction: column;
         overflow: auto;
       }
+
+      ::slotted(bim-panel-section:not(:last-child)) {
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      }
     `,
   ];
-
-  static properties = {
-    active: { type: Boolean, reflect: true },
-  };
 
   /**
    * Represents the icon to be displayed on the and panel and panel's activation button. This icon is a visual representation
@@ -107,34 +109,20 @@ export class Panel extends Component implements HasName, HasValue {
 
   readonly onValueChange = new Event("change");
 
-  private _active = false;
+  static properties = {
+    hidden: { type: Boolean, reflect: true },
+  };
 
-  /**
-   * The `active` property is a boolean that controls the visibility and activation state of the panel. When set to `true`, the panel becomes visible and is considered active. This property also manages the activation state of the panel's activation button, ensuring that the button reflects the panel's current state. Additionally, setting this property to `true` on one panel will automatically set it to `false` on all other sibling panels that are instances of `Panel`, enforcing a single active panel at any time. This behavior facilitates the use of multiple panels within the same container. The property is reflected to an attribute, meaning changes to the property will also update the corresponding attribute on the HTML element, and vice versa, allowing for declarative usage in HTML as well as programmatic control in JavaScript.
-   *
-   * @type {Boolean}
-   * @default false
-   * @example <bim-panel active></bim-panel>
-   * @example
-   * const panel = document.createElement('bim-panel');
-   * panel.active = true;
-   * document.body.appendChild(panel);
-   */
-  set active(value: boolean) {
-    this._active = value;
-    this.activationButton.active = value;
-    if (value) {
-      const parentChildren = this.parentElement?.children ?? [];
-      for (const child of parentChildren) {
-        if (child instanceof Panel && child !== this) {
-          child.active = false;
-        }
-      }
-    }
+  private _hidden = false;
+
+  set hidden(value: boolean) {
+    this._hidden = value;
+    this.activationButton.active = !value;
+    this.dispatchEvent(new Event("hiddenchange"));
   }
 
-  get active() {
-    return this._active;
+  get hidden() {
+    return this._hidden;
   }
 
   /**
@@ -180,7 +168,8 @@ export class Panel extends Component implements HasName, HasValue {
 
   constructor() {
     super();
-    this.activationButton.onclick = () => (this.active = !this.active);
+    this.activationButton.active = !this.hidden;
+    this.activationButton.onclick = () => (this.hidden = !this.hidden);
   }
 
   disconnectedCallback() {
@@ -214,6 +203,7 @@ export class Panel extends Component implements HasName, HasValue {
     this.activationButton.icon = this.icon;
     this.activationButton.label = this.label || this.name;
     this.activationButton.tooltipTitle = this.label || this.name;
+
     return html`
       <div class="parent">
         ${this.label || this.name || this.icon

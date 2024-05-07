@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Section</title>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    html {
+      font-family: sans-serif;
+    }
+
+    bim-panel-section {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background-color: var(--bim-ui_bg-base);
+      width: 20rem;
+      border-radius: 0.375rem;
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/panelSection.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-D05NiQ0D.js">
+</head>
+
+<body>
+  <bim-panel-section label="Your Panel Section" icon="solar:settings-bold">
+    <bim-color-input label="Color"></bim-color-input>
+  </bim-panel-section>
+</body>
+
+</html>

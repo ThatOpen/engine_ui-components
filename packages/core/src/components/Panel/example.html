@@ -7,11 +7,7 @@
   <title>Panel</title>
   <style>
     html {
-      font-family: "Plus Jakarta Sans";
-    }
-
-    body {
-      background-color: var(--bim-ui_bg-base);
+      font-family: "sans-serif";
     }
 
     #app {
@@ -24,6 +20,7 @@
     #activation-buttons {
       display: flex;
       gap: 0.375rem;
+      width: fit-content;
     }
 
     .section {
@@ -33,16 +30,18 @@
       gap: 0.5rem;
     }
 
-    p {
-      color: white;
+    bim-panels-container {
+      background-color: transparent;
     }
   </style>
 </head>
 
 <body>
-  <div id="app">
+  <!-- bim-panels-container forces to only have one bim-panel visible at the same time -->
+  <bim-panels-container id="app">
     <div id="activation-buttons"></div>
-    <bim-panel name="panelA" label="Panel A" icon="fluent:puzzle-cube-piece-20-filled" active>
+    <bim-panel name="panelA" label="Panel A" icon="fluent:puzzle-cube-piece-20-filled">
+      <!-- bim-panel usually have bim-panel-section as children, but it can be any other form of section you want -->
       <div class="section">
         <div style="display: flex; gap: 0.375rem">
           <bim-number-input vertical name="x" label="Length" pref="X" sufix="m"></bim-number-input>
@@ -60,7 +59,12 @@
         </div>
       </div>
     </bim-panel>
-  </div>
+    <bim-panel name="panelC" label="Panel C" icon="solar:settings-bold">
+      <div class="section">
+        <bim-label label="This is another panel"></bim-label>
+      </div>
+    </bim-panel>
+  </bim-panels-container>
   <script type="module" src="./example.ts"></script>
 </body>
 
