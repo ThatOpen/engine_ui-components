@@ -8,8 +8,7 @@ interface ClassificationTree {
 
 export interface ClassificationTreeUIState {
   components: OBC.Components;
-  groups: string[];
-  name: string;
+  classifications: { [name: string]: string[] };
 }
 
 function extractGroupSystem(filter: { [key: string]: string[] }): string {
@@ -35,11 +34,10 @@ function convertToTableRows(treeNodes: ClassificationTree[]) {
 export const classificationTreeTemplate = (
   state: ClassificationTreeUIState,
 ) => {
-  const { components, groups, name } = state;
+  const { components, classifications } = state;
   const classifier = components.get(OBC.FragmentClassifier);
 
   const onTableCreated = (el?: Element) => {
-    console.log("Here", groups);
     if (!el) return;
     const table = el as BUI.Table;
     const regenerate = (groupSystemNames: string[], baseFilter = {}) => {
@@ -61,24 +59,28 @@ export const classificationTreeTemplate = (
       return groups;
     };
 
-    const tree = regenerate(groups);
-    const rows = convertToTableRows(tree);
+    const rows: BUI.TableGroupData[] = [];
 
-    table.rows = [
-      {
+    for (const classification in classifications) {
+      const groups = classifications[classification];
+      const tree = regenerate(groups);
+      const treeRows = convertToTableRows(tree);
+      rows.push({
         data: {
-          "Group System": name,
+          "Group System": classification,
         },
-        children: rows,
-      },
-    ];
+        children: treeRows,
+      });
+    }
+
+    table.rows = rows;
   };
 
   return BUI.html`
   <div>
     ${
-      groups.length === 0
-        ? BUI.html`<bim-label label="No groups for classification"></bim-label>`
+      Object.keys(classifications).length === 0
+        ? BUI.html`<bim-label label="No classifications to show"></bim-label>`
         : BUI.html`<bim-table ${BUI.ref(onTableCreated)} headers-hidden></bim-table>`
     }
   </div>
