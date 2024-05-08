@@ -61,8 +61,7 @@ fragmentsManager.onFragmentsLoaded.add((model) => {
 const [classificationsTree, updateClassificationsTree] =
   CUI.tables.classificationTree({
     components,
-    groups: [],
-    name: "",
+    classifications: {},
   });
 
 /* MD 
@@ -79,11 +78,14 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
   );
 
   classifier.byEntity(model);
+  await classifier.byPredefinedType(model);
 
-  updateClassificationsTree({
-    groups: ["spatialStructures", "entities"],
-    name: "Model Spatial Structure",
-  });
+  const classifications = {
+    "Spatial Structure": ["spatialStructures", "entities"],
+    Entities: ["entities", "predefinedTypes"],
+  };
+
+  updateClassificationsTree({ classifications });
 });
 
 /* MD

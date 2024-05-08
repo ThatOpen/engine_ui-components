@@ -1,7 +1,9 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { HasName, HasValue } from "../../core/types";
 
+// HTML Tag: bim-text-input
 export class TextInput extends Component implements HasName, HasValue {
   static styles = css`
     :host {
@@ -30,21 +32,50 @@ export class TextInput extends Component implements HasName, HasValue {
     }
   `;
 
-  static properties = {
-    icon: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    name: { type: String, reflect: true },
-    placeholder: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-  };
+  @property({ type: String, reflect: true })
+  icon?: string;
 
-  declare icon?: string;
-  declare label?: string;
-  declare name?: string;
-  declare placeholder: string;
-  declare value: string;
-  declare vertical: boolean;
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  @property({ type: String, reflect: true })
+  name?: string;
+
+  @property({ type: String, reflect: true })
+  placeholder: string;
+
+  @property({ type: String, reflect: true })
+  value: string;
+
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  private _inputTypes = [
+    "date",
+    "datetime-local",
+    "email",
+    "month",
+    "password",
+    "search",
+    "tel",
+    "text",
+    "time",
+    "url",
+    "week",
+  ];
+
+  private _type = "text";
+
+  @property({ type: String, reflect: true })
+  set type(value: string) {
+    if (this._inputTypes.includes(value)) {
+      this._type = value;
+    }
+  }
+
+  get type() {
+    return this._type;
+  }
 
   onValueChange = new Event("input");
 
@@ -62,7 +93,7 @@ export class TextInput extends Component implements HasName, HasValue {
     this.dispatchEvent(this.onValueChange);
   }
 
-  render() {
+  protected render() {
     return html`
       <bim-input
         .name=${this.name}
@@ -72,10 +103,9 @@ export class TextInput extends Component implements HasName, HasValue {
       >
         <input
           aria-label=${this.label || this.name || "Checkbox Input"}
-          type="text"
+          .type=${this.type}
           .value=${this.value}
           .placeholder=${this.placeholder}
-          @change=${this.onInputChange}
           @input=${this.onInputChange}
         />
       </bim-input>

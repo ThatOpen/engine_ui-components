@@ -60,8 +60,8 @@ export class PanelsContainer extends Component {
     );
     for (const child of children) {
       if (!(child instanceof Panel)) continue;
-      if (anyVisiblePanel !== child) child.hidden = true;
       child.removeEventListener("hiddenchange", this.onPanelHiddenChange);
+      if (anyVisiblePanel !== child) child.hidden = true;
       child.addEventListener("hiddenchange", this.onPanelHiddenChange);
     }
   }

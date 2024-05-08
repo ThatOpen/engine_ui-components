@@ -9,6 +9,7 @@ export class ToolbarsContainer extends Component {
     styles.scrollbar,
     css`
       :host {
+        display: block;
         justify-self: var(--bim-toolbars-container--js);
         align-self: var(--bim-toolbars-container--as);
       }
