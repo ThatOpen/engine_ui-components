@@ -37,9 +37,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@thatopen/ui": "2.0.0-alpha.4"
+  },
   "devDependencies": {
     "lit": "3.1.2",
-    "@thatopen/ui": "2.0.0-alpha.3",
     "web-ifc": "0.0.51"
   },
   "peerDependencies": {
