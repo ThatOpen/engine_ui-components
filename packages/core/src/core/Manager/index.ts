@@ -63,6 +63,8 @@ export class Manager {
     Manager.defineCustomElement("bim-panel-section", components.PanelSection);
     Manager.defineCustomElement("bim-selector-input", components.SelectorInput);
     Manager.defineCustomElement("bim-table", components.Table);
+    Manager.defineCustomElement("bim-tabs", components.Tabs);
+    Manager.defineCustomElement("bim-tab", components.Tab);
     Manager.defineCustomElement("bim-table-cell", components.TableCell);
     Manager.defineCustomElement("bim-table-children", components.TableChildren);
     Manager.defineCustomElement("bim-table-group", components.TableGroup);
