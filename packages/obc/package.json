@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@thatopen/components": "2.0.0-alpha.7",
+    "@thatopen/fragments": "2.0.0-alpha.1",
     "@types/three": "0.160.0",
     "lit": "3.1.2",
     "three": "0.160.1",

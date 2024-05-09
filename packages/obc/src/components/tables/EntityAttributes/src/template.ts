@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as FRAGS from "@thatopen/fragments";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 
@@ -13,7 +15,7 @@ type AttributesToInclude =
 
 export interface EntityAttributesUIState {
   components: OBC.Components;
-  model: any;
+  model: FRAGS.FragmentsGroup;
   expressIDs: number[];
   editable?: boolean;
   attributeElements?: AttributeElements;
@@ -44,7 +46,7 @@ const defaultAttributes: Attributes[] = [
 
 async function processEntityAttributes(
   components: OBC.Components,
-  model: any,
+  model: FRAGS.FragmentsGroup,
   expressID: number,
   attributesToInclude = defaultAttributes,
   attributeElements: AttributeElements = {},
@@ -52,6 +54,17 @@ async function processEntityAttributes(
 ): Promise<BUI.TableGroupData> {
   const indexer = components.get(OBC.IfcRelationsIndexer);
   const attributes = await model.getProperties(expressID);
+  if (!attributes)
+    return {
+      data: { Entity: `${expressID} properties not found...` },
+      onRowCreated(row) {
+        row.addEventListener("cellcreated", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const { cell } = event.detail;
+          cell.style.gridColumn = "1 / -1";
+        });
+      },
+    };
   const modelRelations = indexer.relationMaps[model.uuid];
 
   const entityRow: BUI.TableGroupData = {

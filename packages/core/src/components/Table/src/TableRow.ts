@@ -121,22 +121,33 @@ export class TableRow extends Component {
       } else {
         content = html`<bim-label label="${value}"></bim-label>`;
       }
+
       const isFirstCell = this._columnNames.indexOf(column) === 0;
       const style = `
         ${isFirstCell && !this.isHeader ? "justify-content: normal" : ""};
         ${isFirstCell && !this.isHeader ? `margin-left: ${indentation + 0.125}rem` : ""}
       `;
+
       this._cells = [];
-      const getValue = (el: Element | undefined) => {
+      const onCellCreated = (el?: Element) => {
         if (!el) return;
         const cell = el as TableCell;
         this._cells.push(cell);
+        setTimeout(() => {
+          this.dispatchEvent(
+            new CustomEvent<{ cell: TableCell }>("cellcreated", {
+              detail: { cell },
+            }),
+          );
+        });
       };
+
       const cell = html`
-        <bim-table-cell ${ref(getValue)} style="${style}" .column=${column}
+        <bim-table-cell ${ref(onCellCreated)} style="${style}" .column=${column}
           >${content}</bim-table-cell
         >
       `;
+
       cells.push(cell);
     }
 
