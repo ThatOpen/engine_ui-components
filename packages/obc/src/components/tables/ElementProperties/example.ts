@@ -74,18 +74,13 @@ await indexer.process(model);
 
 const [propertiesTable] = CUI.tables.elementProperties({
   components,
-  model,
-  expressID: 141,
+  fragmentIdMap: model.getFragmentMap([183, 141]),
 });
 
 const propertiesPanel = BUI.Component.create(() => {
   return BUI.html`
   <bim-panel label="Properties">
     <bim-panel-section label="Element Data">
-      <bim-selector-input>
-        <bim-option label="Instance" checked></bim-option>
-        <bim-option label="Type"></bim-option>
-      </bim-selector-input> 
       ${propertiesTable}
     </bim-panel-section>
   </bim-panel>
