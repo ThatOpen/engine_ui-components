@@ -8,6 +8,10 @@ import { TableCell } from "./TableCell";
 // type Row = Record<string, string | number | boolean | (() => TemplateResult)>;
 // export type TableRowData = Row | (() => Row);
 
+export interface CellCreatedEventDetail {
+  cell: TableCell;
+}
+
 export interface TableRowData {
   [key: string]:
     | string
@@ -54,14 +58,14 @@ export class TableRow extends Component {
     if (this._table) {
       this.columns = [];
       this._table.removeEventListener(
-        "columns-change",
+        "columnschange",
         this.onTableColumnsChange,
       );
     }
     this._table = value;
     if (this._table) {
       this.columns = this._table.columns;
-      this._table.addEventListener("columns-change", this.onTableColumnsChange);
+      this._table.addEventListener("columnschange", this.onTableColumnsChange);
       this._table.addEventListener(
         "indentation",
         this.onTableIndentationColorChange,
@@ -135,7 +139,7 @@ export class TableRow extends Component {
         this._cells.push(cell);
         setTimeout(() => {
           this.dispatchEvent(
-            new CustomEvent<{ cell: TableCell }>("cellcreated", {
+            new CustomEvent<CellCreatedEventDetail>("cellcreated", {
               detail: { cell },
             }),
           );

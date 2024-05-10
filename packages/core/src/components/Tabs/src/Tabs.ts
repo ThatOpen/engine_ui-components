@@ -6,6 +6,10 @@ import { Tab } from "./Tab";
 // HTML Tag: bim-tabs
 export class Tabs extends Component {
   static styles = css`
+    * {
+      box-sizing: border-box;
+    }
+
     :host {
       display: block;
       background-color: var(--bim-ui_bg-base);
@@ -18,7 +22,7 @@ export class Tabs extends Component {
     }
 
     :host([bottom]) .parent {
-      grid-template: "content" "switchers";
+      grid-template: "content" 1fr "switchers" auto;
     }
 
     .switchers {
@@ -44,6 +48,10 @@ export class Tabs extends Component {
 
     .switchers bim-label {
       pointer-events: none;
+    }
+
+    .content {
+      grid-area: content;
     }
 
     :host(:not([bottom])) .content {

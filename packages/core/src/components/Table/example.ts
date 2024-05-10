@@ -135,6 +135,16 @@ table.rows = [
             Comments: document.createElement("bim-text-input"),
           };
         })(),
+        children: [
+          {
+            data: {
+              Name: "Christina",
+              Age: 11,
+              Career: "N/A",
+              Comments: document.createElement("bim-text-input"),
+            },
+          },
+        ],
       },
     ],
   },

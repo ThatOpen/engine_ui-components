@@ -193,12 +193,12 @@ export class NumberInput extends Component implements HasValue, HasName {
    * document.body.appendChild(numberInput);
    */
   @property({ type: Number, reflect: true })
-  get value() {
-    return this._value;
-  }
-
   set value(data: number) {
     this.setValue(data.toString());
+  }
+
+  get value() {
+    return this._value;
   }
 
   /**

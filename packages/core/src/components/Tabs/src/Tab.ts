@@ -42,10 +42,6 @@ export class Tab extends Component {
   }
 
   protected render() {
-    return html`
-      <div class="parent">
-        <slot @slotchange=${this.onSlotChange}></slot>
-      </div>
-    `;
+    return html` <slot @slotchange=${this.onSlotChange}></slot> `;
   }
 }

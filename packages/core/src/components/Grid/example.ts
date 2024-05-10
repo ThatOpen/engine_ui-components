@@ -19,7 +19,7 @@ grid.layouts = {
   `,
 };
 
-grid.addEventListener("layout-change", () => {
+grid.addEventListener("layoutchange", () => {
   if (grid.layout) {
     alert(`Your have changed to "${grid.layout}" layout!`);
   } else {

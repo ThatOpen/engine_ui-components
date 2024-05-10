@@ -252,7 +252,6 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
           },
           onRowCreated(row) {
             row.addEventListener("cellcreated", (event) => {
-              if (!(event instanceof CustomEvent)) return;
               const { cell } = event.detail;
               cell.style.gridColumn = "1 / -1";
             });

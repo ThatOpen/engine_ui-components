@@ -18,6 +18,9 @@ export class TableGroup extends Component {
   static styles = css`
     :host {
       position: relative;
+    }
+
+    .parent {
       display: grid;
       grid-template-areas: "Data" "Children";
     }
@@ -55,26 +58,21 @@ export class TableGroup extends Component {
     .caret svg {
       fill: var(--bim-ui_bg-contrast-60);
     }
+
+    :host([children-hidden]) bim-table-children {
+      display: none;
+    }
   `;
 
-  static properties = {
-    childrenHidden: {
-      type: Boolean,
-      attribute: "children-hidden",
-      reflect: true,
-    },
-  };
-
   @property({ type: Object, attribute: false })
-  group: TableGroupData;
+  group: TableGroupData = { data: {} };
 
   private _row = document.createElement("bim-table-row");
   private _children?: TableChildren;
 
-  private readonly _onChildrenExpanded = new Event("children-expanded");
-  private readonly _onChildrenCollapsed = new Event("children-collapsed");
+  @property({ type: Boolean, attribute: "children-hidden", reflect: true })
+  childrenHidden = false;
 
-  declare childrenHidden: boolean;
   table = this.closest<Table>("bim-table");
 
   get value() {
@@ -88,20 +86,12 @@ export class TableGroup extends Component {
     });
   }
 
-  constructor() {
-    super();
-    this.group = { data: {} };
-    this.childrenHidden = false;
+  toggleChildren(force?: boolean, recursive = false) {
+    if (!this._children) return;
+    this.childrenHidden =
+      typeof force === "undefined" ? !this.childrenHidden : !force;
+    if (recursive) this._children.toggleGroups(force, recursive);
   }
-
-  private onCaretClick = () => {
-    this.childrenHidden = !this.childrenHidden;
-    if (this.childrenHidden) {
-      this.dispatchEvent(this._onChildrenCollapsed);
-    } else {
-      this.dispatchEvent(this._onChildrenExpanded);
-    }
-  };
 
   protected render() {
     const indentation = this.table?.getGroupIndentation(this.group) ?? 0;
@@ -162,7 +152,7 @@ export class TableGroup extends Component {
     childrenVisibleCaret.append(childrenVisibleCaretPath);
 
     const caret = document.createElement("div");
-    caret.addEventListener("click", this.onCaretClick);
+    caret.addEventListener("click", () => this.toggleChildren());
     caret.classList.add("caret");
     caret.style.left = `${0.125 + indentation}rem`;
     if (this.childrenHidden) {
@@ -187,7 +177,6 @@ export class TableGroup extends Component {
       children = document.createElement("bim-table-children");
       if (this.group.onChildrenCreated) this.group.onChildrenCreated(children);
       this._children = children;
-      children.hidden = this.childrenHidden;
       children.groups = this.group.children;
       children.table = this.table;
     }

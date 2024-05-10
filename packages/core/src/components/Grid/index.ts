@@ -2,6 +2,7 @@ import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 
+// HTML tag: bim-grid
 export class Grid extends Component {
   static styles = css`
     :host {
@@ -59,7 +60,7 @@ export class Grid extends Component {
   private _layout?: string;
 
   /**
-   * Represents the layout configuration of the grid. The layout is defined by a string identifier which corresponds to a predefined grid template in the `layouts` object of the Grid component. Setting this property updates the grid's template and triggers a reconfiguration of the grid's containers based on the new layout. If the specified layout is not defined, a warning is logged, and the layout remains unchanged. This property is reflected to an attribute, allowing it to be set directly in HTML. Changing the layout will dispatch a "layout-change" event, which can be used to react to layout changes.
+   * Represents the layout configuration of the grid. The layout is defined by a string identifier which corresponds to a predefined grid template in the `layouts` object of the Grid component. Setting this property updates the grid's template and triggers a reconfiguration of the grid's containers based on the new layout. If the specified layout is not defined, a warning is logged, and the layout remains unchanged. This property is reflected to an attribute, allowing it to be set directly in HTML. Changing the layout will dispatch a "layoutchange" event, which can be used to react to layout changes.
    *
    * @type {String}
    * @default undefined
@@ -99,7 +100,7 @@ export class Grid extends Component {
   };
 
   private _containers: { [type: string]: HTMLElement[] } = {};
-  private _onLayoutChange = new Event("layout-change");
+  private _onLayoutChange = new Event("layoutchange");
 
   layouts: { [name: string]: string } = {};
   childrenElements: Set<HTMLElement> = new Set();

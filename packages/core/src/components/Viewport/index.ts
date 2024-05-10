@@ -2,19 +2,19 @@ import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 
+// HTML tag: bim-viewport
 export class Viewport extends Component {
   static styles = css`
     :host {
-      position: relative;
-      display: block;
+      display: grid;
       min-width: 0;
       min-height: 0;
-      overflow: hidden;
+      height: 100%;
     }
 
     .parent {
+      overflow: hidden;
       position: relative;
-      height: 100%;
     }
   `;
 
@@ -25,9 +25,11 @@ export class Viewport extends Component {
 
   constructor() {
     super();
-    const observer = new ResizeObserver(() =>
-      this.dispatchEvent(this._onResize),
-    );
+    const observer = new ResizeObserver(() => {
+      setTimeout(() => {
+        this.dispatchEvent(this._onResize);
+      });
+    });
     observer.observe(this);
   }
 
