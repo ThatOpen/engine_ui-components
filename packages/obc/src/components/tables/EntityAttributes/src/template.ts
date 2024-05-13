@@ -158,16 +158,19 @@ async function processEntityAttributes(
       const targetAttributes: number[] = [];
 
       if (typeof name === "string") {
-        const index = indexer.inverseAttributes.indexOf(
+        // @ts-ignore
+        const index = indexer._inverseAttributes.indexOf(
           name as InverseAttribute,
         );
         if (index !== -1) targetAttributes.push(index);
       } else {
-        const matchingAttributes = indexer.inverseAttributes.filter((attr) =>
+        // @ts-ignore
+        const matchingAttributes = indexer._inverseAttributes.filter((attr) =>
           name(attr),
         );
         for (const name of matchingAttributes) {
-          const index = indexer.inverseAttributes.indexOf(name);
+          // @ts-ignore
+          const index = indexer._inverseAttributes.indexOf(name);
           targetAttributes.push(index);
         }
       }
