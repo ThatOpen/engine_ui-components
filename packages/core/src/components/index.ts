@@ -18,7 +18,7 @@ import { Tabs, Tab } from "./Tabs";
 import { TableCell } from "./Table/src/TableCell";
 import { TableChildren } from "./Table/src/TableChildren";
 import { TableGroup } from "./Table/src/TableGroup";
-import { TableRow } from "./Table/src/TableRow";
+import { TableRow, CellCreatedEventDetail } from "./Table/src/TableRow";
 import { TextInput } from "./TextInput";
 import { Toolbar } from "./Toolbar";
 import { ToolbarGroup } from "./ToolbarGroup";
@@ -56,6 +56,21 @@ declare global {
     "bim-toolbars-container": ToolbarsContainer;
     "bim-toolbar-section": ToolbarSection;
     "bim-viewport": Viewport;
+  }
+
+  interface GlobalEventHandlersEventMap {
+    childrenhidden: Event;
+    layoutchange: Event;
+    hiddenchange: Event;
+    columnschange: Event;
+    cellcreated: CustomEvent<CellCreatedEventDetail>;
+    indentation: CustomEvent;
+    rightclick: Event;
+    leftclick: Event;
+    topclick: Event;
+    bottomclick: Event;
+    frontclick: Event;
+    backclick: Event;
   }
 }
 

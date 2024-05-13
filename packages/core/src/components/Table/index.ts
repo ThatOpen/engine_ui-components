@@ -57,7 +57,7 @@ export class Table extends Component {
   ];
 
   private _children = document.createElement("bim-table-children");
-  private _columnsChange = new Event("columns-change");
+  private _columnsChange = new Event("columnschange");
 
   @state()
   private _filteredRows: TableGroupData[] = [];
@@ -254,15 +254,31 @@ export class Table extends Component {
     this.dispatchEvent(event);
   }
 
+  // private _searchString = "";
+  // set searchString(value: string) {
+  //   if (this._searchString === "") {
+  //     this.value.then((snapshot) => {
+  //       this._valueSnapshot = snapshot;
+  //       this._searchString = value;
+  //       this.filterByValue(value, true);
+  //     });
+  //   } else {
+  //     this._searchString = value;
+  //     this.filterByValue(value, true);
+  //   }
+  // }
+
+  private _valueSnapshot: TableGroupValue[] = [];
+
   // @ts-ignore
-  private async filterRowsByValue(
+  private filterRowsByValue(
     value: string,
     // eslint-disable-next-line default-param-last
     preserveStructure = false,
     rowValues?: TableGroupValue[],
-  ): Promise<TableGroupData[]> {
+  ): TableGroupData[] {
     const results: TableGroupData[] = [];
-    const data = rowValues ?? (await this.value);
+    const data = rowValues ?? this._valueSnapshot;
     for (const row of data) {
       const valueFoundInData = Object.values(row.data).some((val) => {
         if (Array.isArray(val)) return val.includes(value);
@@ -274,9 +290,12 @@ export class Table extends Component {
 
       if (valueFoundInData) {
         if (preserveStructure) {
-          const rowToAdd: TableGroupData = { data: rowDeclaration.data };
+          const rowToAdd: TableGroupData = {
+            data: rowDeclaration.data,
+            id: rowDeclaration.id,
+          };
           if (row.children) {
-            const childResults = await this.filterRowsByValue(
+            const childResults = this.filterRowsByValue(
               value,
               true,
               row.children,
@@ -285,9 +304,9 @@ export class Table extends Component {
           }
           results.push(rowToAdd);
         } else {
-          results.push({ data: rowDeclaration.data });
+          results.push({ data: rowDeclaration.data, id: rowDeclaration.id });
           if (row.children) {
-            const childResults = await this.filterRowsByValue(
+            const childResults = this.filterRowsByValue(
               value,
               false,
               row.children,
@@ -296,13 +315,17 @@ export class Table extends Component {
           }
         }
       } else if (row.children) {
-        const childResults = await this.filterRowsByValue(
+        const childResults = this.filterRowsByValue(
           value,
           preserveStructure,
           row.children,
         );
         if (preserveStructure && childResults.length) {
-          results.push({ data: rowDeclaration.data, children: childResults });
+          results.push({
+            data: rowDeclaration.data,
+            id: rowDeclaration.id,
+            children: childResults,
+          });
         } else {
           results.push(...childResults);
         }
@@ -311,9 +334,10 @@ export class Table extends Component {
     return results;
   }
 
-  // async filterByValue(value: string, preserveStructure = false) {
-  //   const result = await this.filterRowsByValue(value, preserveStructure);
-  //   this._filteredRows = result; // For some reason, after I set this line its like result went automatically blank.
+  // filterByValue(value: string, preserveStructure = false) {
+  //   const result = this.filterRowsByValue(value, preserveStructure);
+  //   console.log(result);
+  //   this._filteredRows = result;
   // }
 
   protected render() {

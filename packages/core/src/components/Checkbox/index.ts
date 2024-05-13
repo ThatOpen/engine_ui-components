@@ -19,6 +19,11 @@ export class Checkbox extends Component implements HasValue {
       align-items: center;
     }
 
+    :host([inverted]) .parent {
+      flex-direction: row-reverse;
+      justify-content: start;
+    }
+
     input {
       height: 1rem;
       width: 1rem;
@@ -75,7 +80,6 @@ export class Checkbox extends Component implements HasValue {
 
   /**
    * Indicates whether the checkbox is checked or not. This property reflects the checked state of the internal <input> element and can be used to set or get the checkbox's state. Changing this property dynamically updates the checkbox's visual state and its checked attribute.
-   * @type {boolean}
    * @default false
    * @example <bim-checkbox checked></bim-checkbox>
    * @example
@@ -84,7 +88,20 @@ export class Checkbox extends Component implements HasValue {
    * document.body.appendChild(checkbox);
    */
   @property({ type: Boolean, reflect: true })
-  checked: boolean;
+  checked = false;
+
+  /**
+   * Indicates whether the checkbox is displayed with an inverted disposition.
+   * @default false
+   * @example
+   * <bim-checkbox inverted></bim-checkbox>
+   * @example
+   * const checkbox = document.createElement('bim-checkbox');
+   * checkbox.inverted = true;
+   * document.body.appendChild(checkbox);
+   */
+  @property({ type: Boolean, reflect: true })
+  inverted = false;
 
   /**
    * A getter that returns the current checked state of the checkbox. This is useful for retrieving the checkbox's value in form submissions or JavaScript interactions as it provides a consistent `value` property as many other components.
@@ -101,11 +118,6 @@ export class Checkbox extends Component implements HasValue {
   }
 
   readonly onValueChange = new Event("change");
-
-  constructor() {
-    super();
-    this.checked = false;
-  }
 
   private onChange(e: Event) {
     e.stopPropagation();

@@ -107,12 +107,12 @@ export class ViewCube extends Component {
 
   private _matrix = new THREE.Matrix4();
   private _cube = createRef<HTMLDivElement>();
-  private _onRightClick = new Event("right-click");
-  private _onLeftClick = new Event("left-click");
-  private _onTopClick = new Event("top-click");
-  private _onBottomClick = new Event("bottom-click");
-  private _onFrontClick = new Event("front-click");
-  private _onBackClick = new Event("back-click");
+  private _onRightClick = new Event("rightclick");
+  private _onLeftClick = new Event("leftclick");
+  private _onTopClick = new Event("topclick");
+  private _onBottomClick = new Event("bottomclick");
+  private _onFrontClick = new Event("frontclick");
+  private _onBackClick = new Event("backclick");
 
   private _epsilon = (value: number) => {
     return Math.abs(value) < 1e-10 ? 0 : value;

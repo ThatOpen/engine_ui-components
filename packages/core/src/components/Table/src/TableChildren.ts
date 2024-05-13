@@ -35,6 +35,14 @@ export class TableChildren extends Component {
     });
   }
 
+  toggleGroups(force?: boolean, recursive = false) {
+    for (const group of this._groups) {
+      group.childrenHidden =
+        typeof force === "undefined" ? !group.childrenHidden : !force;
+      if (recursive) group.toggleChildren(force, recursive);
+    }
+  }
+
   protected render() {
     this._groups = [];
     return html`

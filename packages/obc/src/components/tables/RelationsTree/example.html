@@ -4,20 +4,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkbox</title>
+  <title>Relations Tree</title>
   <style>
+    * {
+      margin: 0;
+    }
+
     html {
       font-family: sans-serif;
     }
 
     body {
-      background-color: var(--bim-ui_bg-base);
+      height: 100vh;
     }
   </style>
 </head>
 
 <body>
-  <bim-checkbox label="Convert to BIM Tiles" checked></bim-checkbox>
+  <bim-grid>
+    <bim-viewport name="viewer"></bim-viewport>
+  </bim-grid>
   <script type="module" src="./example.ts"></script>
 </body>
 
