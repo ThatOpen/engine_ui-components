@@ -2,6 +2,7 @@
 import * as FRAGS from "@thatopen/fragments";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
+import { InverseAttribute } from "@thatopen/components/dist/ifc/IfcRelationsIndexer/src/types";
 
 type Attributes = string | ((name: string) => boolean);
 type AttributeElements = Record<
@@ -157,8 +158,10 @@ async function processEntityAttributes(
       const targetAttributes: number[] = [];
 
       if (typeof name === "string") {
-        const index = indexer.inverseAttributes.indexOf(name);
-        targetAttributes.push(index);
+        const index = indexer.inverseAttributes.indexOf(
+          name as InverseAttribute,
+        );
+        if (index !== -1) targetAttributes.push(index);
       } else {
         const matchingAttributes = indexer.inverseAttributes.filter((attr) =>
           name(attr),

@@ -41,7 +41,7 @@ export const classificationTreeTemplate = (
     if (!el) return;
     const table = el as BUI.Table;
     const regenerate = (groupSystemNames: string[], baseFilter = {}) => {
-      const systems = classifier.get();
+      const systems = classifier.list;
       const currentSystemName = groupSystemNames[0]; // storeys
       const systemGroups = systems[currentSystemName];
       const groups: ClassificationTree[] = [];
