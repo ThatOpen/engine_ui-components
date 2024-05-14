@@ -47,20 +47,17 @@ components.init();
 const ifcLoader = components.get(OBC.FragmentIfcLoader);
 await ifcLoader.setup();
 
+const indexer = components.get(OBC.IfcRelationsIndexer);
+
 const fragmentsManager = components.get(OBC.FragmentManager);
-fragmentsManager.onFragmentsLoaded.add((model) => {
+fragmentsManager.onFragmentsLoaded.add(async (model) => {
+  if (model.hasProperties) await indexer.process(model);
   if (world.scene) world.scene.three.add(model);
 });
 
 const [relationsTree] = CUI.tables.relationsTree({
   components,
   models: [],
-});
-
-const indexer = components.get(OBC.IfcRelationsIndexer);
-
-fragmentsManager.onFragmentsLoaded.add(async (model) => {
-  await indexer.process(model);
 });
 
 const panel = BUI.Component.create(() => {

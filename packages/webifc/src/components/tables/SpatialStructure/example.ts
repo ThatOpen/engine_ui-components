@@ -14,7 +14,7 @@ const modelBuffer = await (
 
 const modelID = ifcApi.OpenModel(new Uint8Array(modelBuffer));
 
-const table = WUI.tables.spatialStructure({
+const [table] = WUI.tables.spatialStructure({
   api: ifcApi,
   modelID,
 });

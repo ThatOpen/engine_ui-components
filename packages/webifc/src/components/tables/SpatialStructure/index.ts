@@ -5,7 +5,7 @@ import {
 } from "./src/template";
 
 export const spatialStructure = (state: SpatialStructureUIState) => {
-  const [element] = BUI.Component.create<BUI.Table, SpatialStructureUIState>(
+  const element = BUI.Component.create<BUI.Table, SpatialStructureUIState>(
     spatialStructureTemplate,
     state,
   );
