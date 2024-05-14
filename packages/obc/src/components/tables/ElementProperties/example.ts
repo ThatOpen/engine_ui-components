@@ -74,7 +74,7 @@ await indexer.process(model);
 
 const [propertiesTable] = CUI.tables.elementProperties({
   components,
-  fragmentIdMap: model.getFragmentMap([183, 141]),
+  data: [{ model, expressIDs: [183, 141] }],
 });
 
 const propertiesPanel = BUI.Component.create(() => {

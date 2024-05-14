@@ -8,7 +8,7 @@ import * as WEBIFC from "web-ifc";
 
 export interface ElementPropertiesUIState {
   components: OBC.Components;
-  fragmentIdMap: FRAGS.FragmentIdMap;
+  data: { model: FRAGS.FragmentsGroup; expressIDs: Iterable<number> }[];
 }
 
 const attrsToIgnore = ["OwnerHistory", "ObjectPlacement", "CompositionType"];
@@ -225,9 +225,8 @@ const getClassificationsRow = async (
 };
 
 export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
-  const { components, fragmentIdMap } = state;
+  const { components, data } = state;
 
-  const fragmentsManager = components.get(OBC.FragmentManager);
   const indexer = components.get(OBC.IfcRelationsIndexer);
 
   const onCreated = async (element?: Element) => {
@@ -235,13 +234,10 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
 
     const rows: BUI.TableGroupData[] = [];
 
-    for (const fragmentID in fragmentIdMap) {
-      const fragment = fragmentsManager.list.get(fragmentID);
-      if (!(fragment && fragment.group)) continue;
-      const model = fragment.group;
+    for (const value in data) {
+      const { model, expressIDs } = data[value];
       const modelRelations = indexer.relationMaps[model.uuid];
       if (!modelRelations) return;
-      const expressIDs = fragmentIdMap[fragmentID];
       for (const expressID of expressIDs) {
         const elementAttrs = await model.getProperties(expressID);
         if (!elementAttrs) continue;
