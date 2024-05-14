@@ -3,22 +3,20 @@ import { property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
 import { Component } from "../../../core/Component";
 import { Table, ColumnData } from "../index";
+import { TableRowData } from "./types";
 import { TableCell } from "./TableCell";
-
-// type Row = Record<string, string | number | boolean | (() => TemplateResult)>;
-// export type TableRowData = Row | (() => Row);
 
 export interface CellCreatedEventDetail {
   cell: TableCell;
 }
 
-export interface TableRowData {
+export interface TableRowDeclaration {
   [key: string]:
     | string
     | number
     | boolean
     | HTMLElement
-    | ((rowData: TableRowData) => TemplateResult);
+    | ((rowData: TableRowDeclaration) => TemplateResult);
 }
 
 export class TableRow extends Component {
@@ -36,7 +34,7 @@ export class TableRow extends Component {
   columns: ColumnData[];
 
   @property({ type: Object, attribute: false })
-  data: TableRowData;
+  data: TableRowData = {};
 
   @property({ type: Boolean, attribute: "is-header", reflect: true })
   isHeader: boolean;
@@ -78,22 +76,17 @@ export class TableRow extends Component {
   }
 
   get value() {
-    return new Promise<Record<string, any>>((resolve) => {
-      setTimeout(() => {
-        const value: Record<string, any> = {};
-        for (const cell of this._cells) {
-          if (!cell.column) continue;
-          value[cell.column] = cell.value;
-        }
-        resolve(value);
-      });
-    });
+    const value: Record<string, any> = {};
+    for (const cell of this._cells) {
+      if (!cell.column) continue;
+      value[cell.column] = cell.value;
+    }
+    return value;
   }
 
   constructor() {
     super();
     this.columns = [];
-    this.data = {};
     this.isHeader = false;
   }
 
@@ -114,12 +107,13 @@ export class TableRow extends Component {
 
   protected render() {
     const indentation = this.table?.getRowIndentation(this.data) ?? 0;
+    const declaration = this.table?.applyRowDeclaration(this.data) ?? {};
     const cells: TemplateResult[] = [];
-    for (const column in this.data) {
-      const value = this.data[column];
+    for (const column in declaration) {
+      const value = declaration[column];
       let content;
       if (typeof value === "function") {
-        content = value(this.data);
+        content = value(declaration);
       } else if (value instanceof HTMLElement) {
         content = value;
       } else {

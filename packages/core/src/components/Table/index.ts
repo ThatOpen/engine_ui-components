@@ -1,9 +1,13 @@
-import { css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
-import { TableRowData } from "./src/TableRow";
-import { TableGroupData } from "./src/TableGroup";
+import {
+  TableData,
+  TableGroupDeclaration,
+  TableRowData,
+  TableRowDeclaration,
+} from "./src";
 import { Manager } from "../../core/Manager";
 
 export interface TableGroupValue {
@@ -60,7 +64,7 @@ export class Table extends Component {
   private _columnsChange = new Event("columnschange");
 
   @state()
-  private _filteredRows: TableGroupData[] = [];
+  private _filteredRows: TableGroupDeclaration[] = [];
 
   @property({
     type: Boolean,
@@ -72,15 +76,12 @@ export class Table extends Component {
   @property({ type: String, attribute: "min-col-width", reflect: true })
   minColWidth: string;
 
-  private _rows: TableGroupData[] = [];
-
   @property({ type: Array, attribute: false })
-  set rows(data: TableGroupData[]) {
+  set rows(data: TableGroupDeclaration[]) {
     for (const group of data) this.assignGroupDeclarationID(group);
-    this._rows = data;
     this._filteredRows = data;
     // this._columns = [];
-    const computed = this.computeMissingColumns(data);
+    const computed = this.computeMissingColumns(this.data);
     if (computed) this.columns = this._columns;
   }
 
@@ -101,7 +102,7 @@ export class Table extends Component {
       columns.push(column);
     }
     this._columns = columns;
-    this.computeMissingColumns(this.rows);
+    this.computeMissingColumns(this.data);
     this.dispatchEvent(this._columnsChange);
   }
 
@@ -123,12 +124,19 @@ export class Table extends Component {
   }
 
   get value() {
-    return new Promise<TableGroupValue[]>((resolve) => {
-      setTimeout(async () => {
-        resolve(await this._children.value);
-      });
-    });
+    return this._children.data;
   }
+
+  @property({ type: Array, attribute: false })
+  data: TableData[] = [];
+
+  declarations: Record<
+    string,
+    (
+      value: string | number | boolean,
+      data: TableRowData,
+    ) => string | number | boolean | HTMLElement | (() => TemplateResult)
+  > = {};
 
   constructor() {
     super();
@@ -136,7 +144,20 @@ export class Table extends Component {
     this.headersHidden = false;
   }
 
-  private assignGroupDeclarationID(groupData: TableGroupData) {
+  applyRowDeclaration(data: TableRowData) {
+    const declaration: TableRowDeclaration = {};
+    for (const key in data) {
+      const rowDeclaration = this.declarations[key];
+      if (rowDeclaration) {
+        declaration[key] = rowDeclaration(data[key], data);
+      } else {
+        declaration[key] = data[key];
+      }
+    }
+    return declaration;
+  }
+
+  private assignGroupDeclarationID(groupData: TableGroupDeclaration) {
     if (!groupData.id) groupData.id = Manager.newRandomId();
     if (groupData.children) {
       groupData.children.forEach((child) =>
@@ -145,28 +166,7 @@ export class Table extends Component {
     }
   }
 
-  private getGroupDeclarationById(
-    id: string,
-    root: TableGroupData[] = this._rows,
-  ): TableGroupData | undefined {
-    for (const groupData of root) {
-      if (groupData.id === id) {
-        return groupData;
-      }
-      if (groupData.children) {
-        const foundInChildren = this.getGroupDeclarationById(
-          id,
-          groupData.children,
-        );
-        if (foundInChildren) {
-          return foundInChildren;
-        }
-      }
-    }
-    return undefined;
-  }
-
-  private computeMissingColumns(row: TableGroupData[]): boolean {
+  private computeMissingColumns(row: TableData[]): boolean {
     let computed = false;
     for (const data of row) {
       const { children, data: rowData } = data;
@@ -205,7 +205,7 @@ export class Table extends Component {
 
   getRowIndentation(
     target: TableRowData,
-    tableGroups = this.rows,
+    tableGroups = this.data,
     level = 0,
   ): number | null {
     for (const tableGroup of tableGroups) {
@@ -223,8 +223,8 @@ export class Table extends Component {
   }
 
   getGroupIndentation(
-    target: TableGroupData,
-    tableGroups = this.rows,
+    target: TableData,
+    tableGroups = this.data,
     level = 0,
   ): number | null {
     for (const tableGroup of tableGroups) {
@@ -254,76 +254,45 @@ export class Table extends Component {
     this.dispatchEvent(event);
   }
 
-  // private _searchString = "";
-  // set searchString(value: string) {
-  //   if (this._searchString === "") {
-  //     this.value.then((snapshot) => {
-  //       this._valueSnapshot = snapshot;
-  //       this._searchString = value;
-  //       this.filterByValue(value, true);
-  //     });
-  //   } else {
-  //     this._searchString = value;
-  //     this.filterByValue(value, true);
-  //   }
-  // }
-
-  private _valueSnapshot: TableGroupValue[] = [];
-
-  // @ts-ignore
-  private filterRowsByValue(
-    value: string,
-    // eslint-disable-next-line default-param-last
+  filter(
+    searchString: string,
     preserveStructure = false,
-    rowValues?: TableGroupValue[],
-  ): TableGroupData[] {
-    const results: TableGroupData[] = [];
-    const data = rowValues ?? this._valueSnapshot;
+    data = this.data,
+  ): TableData[] {
+    const results: TableData[] = [];
     for (const row of data) {
       const valueFoundInData = Object.values(row.data).some((val) => {
-        if (Array.isArray(val)) return val.includes(value);
-        return String(val) === value;
+        return String(val).toLowerCase().includes(searchString.toLowerCase());
       });
-
-      const rowDeclaration = this.getGroupDeclarationById(row.id);
-      if (!rowDeclaration) return results;
 
       if (valueFoundInData) {
         if (preserveStructure) {
-          const rowToAdd: TableGroupData = {
-            data: rowDeclaration.data,
-            id: rowDeclaration.id,
+          const rowToAdd: TableData = {
+            data: row.data,
+            id: row.id,
           };
           if (row.children) {
-            const childResults = this.filterRowsByValue(
-              value,
-              true,
-              row.children,
-            );
+            const childResults = this.filter(searchString, true, row.children);
             if (childResults.length) rowToAdd.children = childResults;
           }
           results.push(rowToAdd);
         } else {
-          results.push({ data: rowDeclaration.data, id: rowDeclaration.id });
+          results.push({ data: row.data, id: row.id });
           if (row.children) {
-            const childResults = this.filterRowsByValue(
-              value,
-              false,
-              row.children,
-            );
+            const childResults = this.filter(searchString, false, row.children);
             results.push(...childResults);
           }
         }
       } else if (row.children) {
-        const childResults = this.filterRowsByValue(
-          value,
+        const childResults = this.filter(
+          searchString,
           preserveStructure,
           row.children,
         );
         if (preserveStructure && childResults.length) {
           results.push({
-            data: rowDeclaration.data,
-            id: rowDeclaration.id,
+            data: row.data,
+            id: row.id,
             children: childResults,
           });
         } else {
@@ -334,17 +303,11 @@ export class Table extends Component {
     return results;
   }
 
-  // filterByValue(value: string, preserveStructure = false) {
-  //   const result = this.filterRowsByValue(value, preserveStructure);
-  //   console.log(result);
-  //   this._filteredRows = result;
-  // }
-
   protected render() {
     const header = document.createElement("bim-table-row");
+    header.table = this;
     header.isHeader = true;
     header.data = this._headerRowData;
-    header.table = this;
     header.style.gridArea = "Header";
     header.style.position = "sticky";
     header.style.top = "0";
@@ -352,8 +315,8 @@ export class Table extends Component {
 
     const children = document.createElement("bim-table-children");
     this._children = children;
-    children.groups = this._filteredRows;
     children.table = this;
+    children.data = this.data;
     children.style.gridArea = "Body";
     children.style.backgroundColor = "transparent";
 

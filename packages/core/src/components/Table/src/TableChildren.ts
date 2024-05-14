@@ -1,8 +1,9 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Component } from "../../../core/Component";
-import { Table, TableGroupValue } from "../index";
-import { TableGroup, TableGroupData } from "./TableGroup";
+import { Table } from "../index";
+import { TableGroup } from "./TableGroup";
+import { TableData } from "./types";
 
 export class TableChildren extends Component {
   static styles = css`
@@ -16,24 +17,12 @@ export class TableChildren extends Component {
     }
   `;
 
-  @property({ type: Array, attribute: false })
-  groups?: TableGroupData[];
-
   private _groups: TableGroup[] = [];
 
-  table = this.closest<Table>("bim-table");
+  @property({ type: Array, attribute: false })
+  data: TableData[] = [];
 
-  get value() {
-    return new Promise<TableGroupValue[]>((resolve) => {
-      setTimeout(async () => {
-        const value: TableGroupValue[] = [];
-        for (const group of this._groups) {
-          value.push(await group.value);
-        }
-        resolve(value);
-      });
-    });
-  }
+  table = this.closest<Table>("bim-table");
 
   toggleGroups(force?: boolean, recursive = false) {
     for (const group of this._groups) {
@@ -46,13 +35,14 @@ export class TableChildren extends Component {
   protected render() {
     this._groups = [];
     return html`
-      ${this.groups?.map((group) => {
+      ${this.data.map((group) => {
         const tableGroup = document.createElement(
           "bim-table-group",
         ) as TableGroup;
+        this.table?.dispatchEvent(new Event("asd"));
         this._groups.push(tableGroup);
-        tableGroup.group = group;
         tableGroup.table = this.table;
+        tableGroup.data = group;
         return tableGroup;
       })}
     `;

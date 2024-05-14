@@ -23,7 +23,10 @@
       <bim-button id="print-data" label="Print Table Data"></bim-button>
       <bim-button id="download-data" label="Download Table Data"></bim-button>
     </div>
-    <!-- <bim-text-input id="search-box"></bim-text-input> -->
+    <div style="display: flex; gap: 0.75rem;">
+      <bim-text-input id="search-box"></bim-text-input>
+      <bim-checkbox label="Preserve Structure" inverted id="preserve-structure"></bim-checkbox>
+    </div>
     <bim-table style="border-radius: 0.25rem;"></bim-table>
   </div>
   <script type="module" src="./example.ts"></script>
