@@ -100,10 +100,7 @@ const baseStyle: Record<string, string> = {
   :::
   */
 
-const attributesStyles: Record<
-  string,
-  (value: string | boolean | number) => BUI.TemplateResult
-> = {
+const tableDefinition: BUI.TableDefinition = {
   Entity: (entity) => {
     let style = {};
     if (entity === OBC.IfcCategoryMap[WEBIFC.IFCPROPERTYSET]) {
@@ -151,7 +148,7 @@ const [table, updateTable] = CUI.tables.entityAttributes({
   components,
   model,
   expressIDs: [],
-  attributeElements: attributesStyles,
+  tableDefinition,
 });
 
 const tablePanel = grid.getContainer("panels", "table");

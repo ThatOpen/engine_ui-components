@@ -13,12 +13,16 @@ import { Panel } from "./Panel";
 import { PanelsContainer } from "./PanelsContainer";
 import { PanelSection } from "./PanelSection";
 import { SelectorInput } from "./SelectorInput";
-import { Table } from "./Table";
+import {
+  Table,
+  TableRow,
+  TableCell,
+  TableChildren,
+  TableGroup,
+  CellCreatedEventDetail,
+  RowCreatedEventDetail,
+} from "./Table";
 import { Tabs, Tab } from "./Tabs";
-import { TableCell } from "./Table/src/TableCell";
-import { TableChildren } from "./Table/src/TableChildren";
-import { TableGroup } from "./Table/src/TableGroup";
-import { TableRow, CellCreatedEventDetail } from "./Table/src/TableRow";
 import { TextInput } from "./TextInput";
 import { Toolbar } from "./Toolbar";
 import { ToolbarGroup } from "./ToolbarGroup";
@@ -64,6 +68,7 @@ declare global {
     hiddenchange: Event;
     columnschange: Event;
     cellcreated: CustomEvent<CellCreatedEventDetail>;
+    rowcreated: CustomEvent<RowCreatedEventDetail>;
     indentation: CustomEvent;
     rightclick: Event;
     leftclick: Event;

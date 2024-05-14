@@ -1,5 +1,8 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as OBF from "@thatopen/components-front";
+import * as FRAGS from "@thatopen/fragments";
 import * as CUI from "../..";
 
 BUI.Manager.registerComponents();
@@ -43,7 +46,7 @@ const grids = components.get(OBC.Grids);
 grids.create(world);
 
 /* MD 
-  ## Displaying data the right way 🔥🔥
+  ## Displaying data the simplest way 🔥🔥
   ---
   What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!
 
@@ -53,7 +56,7 @@ grids.create(world);
 
 const ifcLoader = components.get(OBC.FragmentIfcLoader);
 await ifcLoader.setup();
-const file = await fetch("/resources/testing.ifc");
+const file = await fetch("/resources/small.ifc");
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
@@ -72,18 +75,63 @@ world.scene.three.add(model);
 const indexer = components.get(OBC.IfcRelationsIndexer);
 await indexer.process(model);
 
-const [propertiesTable] = CUI.tables.elementProperties({
+const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
   components,
-  data: [{ model, expressIDs: [183, 141] }],
+  data: [],
 });
 
+propertiesTable.preserveStructureOnFilter = true;
+
+const fragments = components.get(OBC.FragmentManager);
+const highlighter = components.get(OBF.Highlighter);
+highlighter.setup({ world });
+
+highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+  const data: { model: FRAGS.FragmentsGroup; expressIDs: Iterable<number> }[] =
+    [];
+  for (const fragID in fragmentIdMap) {
+    const fragment = fragments.list.get(fragID);
+    if (!(fragment && fragment.group)) continue;
+    const model = fragment.group;
+    const existingModel = data.find((value) => value.model === model);
+    if (existingModel) {
+      for (const id of fragmentIdMap[fragID]) {
+        (existingModel.expressIDs as Set<number>).add(id);
+      }
+    } else {
+      const info = { model, expressIDs: new Set(fragmentIdMap[fragID]) };
+      data.push(info);
+    }
+  }
+  updatePropertiesTable({ data });
+});
+
+highlighter.events.select.onClear.add(() =>
+  updatePropertiesTable({ data: [] }),
+);
+
 const propertiesPanel = BUI.Component.create(() => {
+  const onTextInput = (e: Event) => {
+    const input = e.target as BUI.TextInput;
+    propertiesTable.queryString = input.value !== "" ? input.value : null;
+  };
+
+  const expandTable = (e: Event) => {
+    const button = e.target as BUI.Button;
+    propertiesTable.expanded = !propertiesTable.expanded;
+    button.label = propertiesTable.expanded ? "Collapse" : "Expand";
+  };
+
   return BUI.html`
-  <bim-panel label="Properties">
-    <bim-panel-section label="Element Data">
-      ${propertiesTable}
-    </bim-panel-section>
-  </bim-panel>
+    <bim-panel label="Properties">
+      <bim-panel-section label="Element Data">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <bim-text-input @input=${onTextInput} label="Search Property"></bim-text-input>
+          <bim-button @click=${expandTable} label=${propertiesTable.expanded ? "Collapse" : "Expand"}></bim-button> 
+        </div> 
+        ${propertiesTable}
+      </bim-panel-section>
+    </bim-panel>
   `;
 });
 

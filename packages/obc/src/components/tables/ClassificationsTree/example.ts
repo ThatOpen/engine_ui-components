@@ -71,18 +71,12 @@ const [classificationsTree, updateClassificationsTree] =
 const classifier = components.get(OBC.FragmentClassifier);
 
 fragmentsManager.onFragmentsLoaded.add(async (model) => {
-  await classifier.byIfcRel(
-    model,
-    WEBIFC.IFCRELCONTAINEDINSPATIALSTRUCTURE,
-    "spatialStructures",
-  );
-
   classifier.byEntity(model);
   await classifier.byPredefinedType(model);
 
   const classifications = {
-    "Spatial Structure": ["spatialStructures", "entities"],
     Entities: ["entities", "predefinedTypes"],
+    "Predefined Types": ["predefinedTypes"],
   };
 
   updateClassificationsTree({ classifications });

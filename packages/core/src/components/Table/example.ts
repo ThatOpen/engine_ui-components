@@ -6,45 +6,95 @@ BUI.Manager.registerComponents();
 
 const table = document.body.querySelector<BUI.Table>("bim-table")!;
 
-table.rows = [
+table.definition = {
+  Age: (value, data) => {
+    const { Name } = data;
+    if (Name === "Lisa") {
+      const onChange = (e: Event) => {
+        const input = e.target as BUI.NumberInput;
+        data.Age = input.value;
+      };
+      return BUI.html`
+        <bim-number-input @change=${onChange} slider min="23" value=${value} max="45"></bim-number-input>
+      `;
+    }
+    if (Name === "Laura") {
+      const onChange = (e: Event) => {
+        const selectorInput = e.target as BUI.SelectorInput;
+        alert(`${data.Name}'s age is ${selectorInput.value}.`);
+        data.Age = selectorInput.value;
+      };
+
+      const onCreated = (e?: Element) => {
+        if (!e) return;
+        const input = e as BUI.SelectorInput;
+        input.value = data.Age;
+      };
+      return BUI.html`
+        <bim-selector-input ${ref(onCreated)} @change=${onChange}>
+          <bim-option label="👶" value="3"></bim-option>
+          <bim-option label="👨" value="32"></bim-option>
+          <bim-option label="👴" value="80"></bim-option>
+        </bim-selector-input>
+      `;
+    }
+    return value;
+  },
+  Career: (value, data) => {
+    const { Name, Career } = data;
+    if (Name === "Lisa") {
+      const onChange = (e: Event) => {
+        const dropdown = e.target as BUI.Dropdown;
+        data.Career = dropdown.value[0];
+      };
+
+      const onCreated = (e?: Element) => {
+        if (!e) return;
+        const dropdown = e as BUI.Dropdown;
+        dropdown.value = [Career];
+      };
+
+      return BUI.html`
+        <bim-dropdown required ${ref(onCreated)} @change=${onChange}>
+          <bim-option label="Civil Engineer"></bim-option>
+          <bim-option label="Architect"></bim-option>
+        </bim-dropdown>
+      `;
+    }
+    if (Name === "Laura") return `${Name} is ${Career}`;
+    return value;
+  },
+  Comments: (value) => {
+    if (typeof value !== "string") return value;
+    const textInput = document.createElement("bim-text-input");
+    textInput.value = value;
+    return textInput;
+  },
+};
+
+table.data = [
   {
-    onRowCreated(row) {
-      row.addEventListener("click", async () => {
-        // console.log(await row.value);
-      });
-    },
     data: {
       Name: "Jhon",
-      Age: "28",
+      Age: 28,
       Career: "Civil Engineer",
-      Comments: document.createElement("bim-text-input"),
+      Comments: "",
     },
     children: [
       {
         data: {
           Name: "James",
-          Age: "20",
+          Age: 20,
           Career: "Unemployed",
-          Comments: document.createElement("bim-text-input"),
+          Comments: "",
         },
       },
       {
         data: {
           Name: "Lisa",
-          Age: () => {
-            return BUI.html`
-              <bim-number-input slider min="23" value="27" max="45"></bim-number-input>
-            `;
-          },
-          Career: () => {
-            return BUI.html`
-              <bim-dropdown required>
-                <bim-option label="Civil Engineer"></bim-option>
-                <bim-option label="Architect"></bim-option>
-              </bim-dropdown>
-            `;
-          },
-          Comments: document.createElement("bim-text-input"),
+          Age: 25,
+          Career: "Architect",
+          Comments: "It's great!",
         },
       },
     ],
@@ -52,97 +102,36 @@ table.rows = [
   {
     data: {
       Name: "George",
-      Age: "32",
+      Age: 32,
       Career: "Architect",
-      Comments: document.createElement("bim-text-input"),
+      Comments: "",
     },
     children: [
       {
         data: {
           Name: "Laura",
-          Age: (data) => {
-            const onChange = (e: Event) => {
-              const selectorInput = e.target as BUI.SelectorInput;
-              alert(`${data.Name}'s age is ${selectorInput.value}.`);
-            };
-
-            return BUI.html`
-              <bim-selector-input @change=${onChange}>
-                <bim-option label="👶" value="3"></bim-option>
-                <bim-option label="👨" value="32"></bim-option>
-                <bim-option label="👴" value="80"></bim-option>
-              </bim-selector-input>
-            `;
-          },
-          get Career() {
-            if ("Name" in this) {
-              return `${this.Name} is studying`;
-            }
-            return "Is studying";
-          },
-          Comments: document.createElement("bim-text-input"),
+          Age: 32,
+          Career: "Studying",
+          Comments: "",
         },
-      },
-      {
-        data: (() => {
-          const ageCareersMap: Record<string, any> = {
-            12: "Too baby",
-            20: "Is doing That Open Master!",
-            35: "BIM Software Developer",
-          };
-
-          const defaultAge = Object.keys(ageCareersMap)[0];
-
-          const [career, updateCareer] = BUI.Component.create(
-            (state: { career: string }) => {
-              return BUI.html`<bim-label label=${state.career}></bim-label>`;
-            },
-            {
-              career: ageCareersMap[defaultAge],
-            },
-          );
-
-          let dropdownSet = false;
-          const age = BUI.Component.create(() => {
-            const onChange = (e: Event) => {
-              const dropdown = e.target as BUI.Dropdown;
-              const value = dropdown.value[0] as string;
-              const career = ageCareersMap[value];
-              updateCareer({ career });
-            };
-
-            const onUpdated = (el: Element | undefined) => {
-              if (!el || dropdownSet) return;
-              const dropdown = el as BUI.Dropdown;
-              for (const age in ageCareersMap) {
-                const option = document.createElement("bim-option");
-                option.label = age;
-                dropdown.append(option);
-              }
-              dropdown.value = [defaultAge];
-              dropdownSet = true;
-            };
-
-            return BUI.html`
-              <bim-dropdown @change=${onChange} ${ref(onUpdated)}></bim-dropdown>
-            `;
-          });
-
-          return {
-            Name: "Elizabeth",
-            Age: age,
-            Career: career,
-            Comments: document.createElement("bim-text-input"),
-          };
-        })(),
         children: [
           {
             data: {
-              Name: "Christina",
-              Age: 11,
-              Career: "N/A",
-              Comments: document.createElement("bim-text-input"),
+              Name: "Elizabeth",
+              Age: 12,
+              Career: "Too baby",
+              Comments: "",
             },
+            children: [
+              {
+                data: {
+                  Name: "Christina",
+                  Age: 11,
+                  Career: "N/A",
+                  Comments: "",
+                },
+              },
+            ],
           },
         ],
       },
@@ -150,13 +139,28 @@ table.rows = [
   },
 ];
 
+const searchBox = document.getElementById("search-box") as BUI.TextInput;
+searchBox.addEventListener("input", () => {
+  table.queryString = searchBox.value !== "" ? searchBox.value : null;
+});
+
+const preserveStructure = document.getElementById(
+  "preserve-structure",
+) as BUI.Checkbox;
+
+table.preserveStructureOnFilter = preserveStructure.checked;
+
+preserveStructure.addEventListener("change", () => {
+  table.preserveStructureOnFilter = preserveStructure.checked;
+});
+
 // Optionally, use the columns property to control the columns order and width.
 table.columns = [{ name: "Name", width: "10rem" }];
 
 // You can add a new row programatically
 const newRowBtn = document.getElementById("new-row") as BUI.Button;
 newRowBtn.addEventListener("click", () => {
-  const row = {
+  const row: BUI.TableGroupData = {
     data: {
       Name: "Bart",
       Age: 2,
@@ -170,13 +174,14 @@ newRowBtn.addEventListener("click", () => {
       },
     ],
   };
-  table.rows = [...table.rows, row];
+
+  table.data = [...table.data, row];
 });
 
-// You can get a resolved object with the current values of the table
+// You can get an object with the current values of the table taking into account any filtering
 const printBtn = document.getElementById("print-data") as BUI.Button;
-printBtn.addEventListener("click", async () => {
-  console.log(await table.value);
+printBtn.addEventListener("click", () => {
+  console.log(table.value);
 });
 
 // You can download a JSON file with the current table data. This will let you recreate the table but with fixed values.

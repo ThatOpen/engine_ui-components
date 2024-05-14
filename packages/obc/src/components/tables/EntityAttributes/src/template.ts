@@ -5,10 +5,6 @@ import * as OBC from "@thatopen/components";
 import { InverseAttribute } from "@thatopen/components/dist/ifc/IfcRelationsIndexer/src/types";
 
 type Attributes = string | ((name: string) => boolean);
-type AttributeElements = Record<
-  string,
-  (value: string | boolean | number) => BUI.TemplateResult
->;
 
 type AttributesToInclude =
   | Attributes[]
@@ -18,8 +14,8 @@ export interface EntityAttributesUIState {
   components: OBC.Components;
   model: FRAGS.FragmentsGroup;
   expressIDs: number[];
+  tableDefinition: BUI.TableDefinition;
   editable?: boolean;
-  attributeElements?: AttributeElements;
   attributesToInclude?: AttributesToInclude;
 }
 
@@ -50,7 +46,6 @@ async function processEntityAttributes(
   model: FRAGS.FragmentsGroup,
   expressID: number,
   attributesToInclude = defaultAttributes,
-  attributeElements: AttributeElements = {},
   editable = false,
 ): Promise<BUI.TableGroupData> {
   const indexer = components.get(OBC.IfcRelationsIndexer);
@@ -58,13 +53,13 @@ async function processEntityAttributes(
   if (!attributes)
     return {
       data: { Entity: `${expressID} properties not found...` },
-      onRowCreated(row) {
-        row.addEventListener("cellcreated", (event) => {
-          if (!(event instanceof CustomEvent)) return;
-          const { cell } = event.detail;
-          cell.style.gridColumn = "1 / -1";
-        });
-      },
+      // onRowCreated(row) {
+      //   row.addEventListener("cellcreated", (event) => {
+      //     if (!(event instanceof CustomEvent)) return;
+      //     const { cell } = event.detail;
+      //     cell.style.gridColumn = "1 / -1";
+      //   });
+      // },
     };
   const modelRelations = indexer.relationMaps[model.uuid];
 
@@ -92,7 +87,6 @@ async function processEntityAttributes(
         model,
         attributeValue.value,
         attributesToInclude,
-        attributeElements,
         editable,
       );
       entityRow.children.push(row);
@@ -102,28 +96,23 @@ async function processEntityAttributes(
     ) {
       const { value, type } = attributeValue;
       if (editable) {
-        const propertiesManager = components.get(OBC.IfcPropertiesManager);
+        // const propertiesManager = components.get(OBC.IfcPropertiesManager);
         if (type === 1 || type === 2 || type === 3) {
-          const onInput = async (e: Event) => {
-            const input = e.target as BUI.NumberInput;
-            attributeValue.value = input.value;
-            await propertiesManager.setData(model, attributes);
-          };
-          entityRow.data[name] = () => {
-            return BUI.html`<bim-text-input @input=${onInput} value=${value}></bim-text-input>`;
-          };
+          // const onInput = async (e: Event) => {
+          //   const input = e.target as BUI.NumberInput;
+          //   attributeValue.value = input.value;
+          //   await propertiesManager.setData(model, attributes);
+          // };
+          // entityRow.data[name] = () => {
+          //   return BUI.html`<bim-text-input @input=${onInput} value=${value}></bim-text-input>`;
+          // };
         } else {
           entityRow.data[name] = value;
         }
       } else {
         const _value =
           typeof value === "number" ? Number(value.toFixed(3)) : value;
-        const componentDefinition = attributeElements[name];
-        if (componentDefinition) {
-          entityRow.data[name] = () => componentDefinition(_value);
-        } else {
-          entityRow.data[name] = _value;
-        }
+        entityRow.data[name] = _value;
       }
     } else if (Array.isArray(attributeValue)) {
       for (const item of attributeValue) {
@@ -134,19 +123,13 @@ async function processEntityAttributes(
           model,
           item.value,
           attributesToInclude,
-          attributeElements,
           editable,
         );
         entityRow.children.push(row);
       }
     } else if (name === "type") {
       const value = OBC.IfcCategoryMap[attributeValue];
-      const componentDefinition = attributeElements.Entity;
-      if (componentDefinition && !value.startsWith("IfcRel")) {
-        entityRow.data.Entity = () => componentDefinition(value);
-      } else {
-        entityRow.data.Entity = value;
-      }
+      entityRow.data.Entity = value;
     } else {
       entityRow.data[name] = attributeValue;
     }
@@ -184,7 +167,6 @@ async function processEntityAttributes(
             model,
             relation,
             attributesToInclude,
-            attributeElements,
             editable,
           );
           if (!entityRow.children) entityRow.children = [];
@@ -203,8 +185,8 @@ export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
     model: modelID,
     expressIDs,
     attributesToInclude,
-    attributeElements: attributesStyles,
     editable,
+    tableDefinition,
   } = state;
 
   let attributes: Attributes[] | undefined;
@@ -224,12 +206,12 @@ export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
         modelID,
         expressID,
         attributes,
-        attributesStyles,
         editable,
       );
       groups.push(group);
     }
-    table.rows = groups;
+    table.definition = tableDefinition;
+    table.data = groups;
     table.columns = [{ name: "Entity", width: "minmax(15rem, 1fr)" }];
   };
 

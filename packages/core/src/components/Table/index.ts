@@ -2,9 +2,12 @@ import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
-import { TableRowData } from "./src/TableRow";
-import { TableGroupData } from "./src/TableGroup";
-import { Manager } from "../../core/Manager";
+import {
+  TableDefinition,
+  TableGroupData,
+  TableRowData,
+  TableRowTemplate,
+} from "./src";
 
 export interface TableGroupValue {
   data: Record<string, any>;
@@ -56,11 +59,10 @@ export class Table extends Component {
     `,
   ];
 
-  private _children = document.createElement("bim-table-children");
   private _columnsChange = new Event("columnschange");
 
   @state()
-  private _filteredRows: TableGroupData[] = [];
+  private _filteredData: TableGroupData[] = [];
 
   @property({
     type: Boolean,
@@ -71,22 +73,6 @@ export class Table extends Component {
 
   @property({ type: String, attribute: "min-col-width", reflect: true })
   minColWidth: string;
-
-  private _rows: TableGroupData[] = [];
-
-  @property({ type: Array, attribute: false })
-  set rows(data: TableGroupData[]) {
-    for (const group of data) this.assignGroupDeclarationID(group);
-    this._rows = data;
-    this._filteredRows = data;
-    // this._columns = [];
-    const computed = this.computeMissingColumns(data);
-    if (computed) this.columns = this._columns;
-  }
-
-  get rows() {
-    return this._filteredRows;
-  }
 
   private _columns: ColumnData[] = [];
 
@@ -101,7 +87,7 @@ export class Table extends Component {
       columns.push(column);
     }
     this._columns = columns;
-    this.computeMissingColumns(this.rows);
+    this.computeMissingColumns(this.data);
     this.dispatchEvent(this._columnsChange);
   }
 
@@ -122,13 +108,42 @@ export class Table extends Component {
     return data;
   }
 
+  private _queryString: string | null = null;
   get value() {
-    return new Promise<TableGroupValue[]>((resolve) => {
-      setTimeout(async () => {
-        resolve(await this._children.value);
-      });
-    });
+    if (this.queryString) return this._filteredData;
+    return this.data;
   }
+
+  @property({ type: String, attribute: "search-string", reflect: true })
+  set queryString(value: string | null) {
+    this._queryString = value;
+    this.expanded = value ? this.preserveStructureOnFilter : false;
+    this._filteredData = value ? this.filter(value) : this.data;
+  }
+
+  get queryString() {
+    return this._queryString;
+  }
+
+  private _data: TableGroupData[] = [];
+
+  @property({ type: Array, attribute: false })
+  set data(value: TableGroupData[]) {
+    this._data = value;
+    // this._columns = [];
+    const computed = this.computeMissingColumns(value);
+    if (computed) this.columns = this._columns;
+  }
+
+  get data() {
+    return this._data;
+  }
+
+  @property({ type: Boolean, reflect: true })
+  expanded = false;
+
+  preserveStructureOnFilter = false;
+  definition: TableDefinition = {};
 
   constructor() {
     super();
@@ -136,34 +151,17 @@ export class Table extends Component {
     this.headersHidden = false;
   }
 
-  private assignGroupDeclarationID(groupData: TableGroupData) {
-    if (!groupData.id) groupData.id = Manager.newRandomId();
-    if (groupData.children) {
-      groupData.children.forEach((child) =>
-        this.assignGroupDeclarationID(child),
-      );
-    }
-  }
-
-  private getGroupDeclarationById(
-    id: string,
-    root: TableGroupData[] = this._rows,
-  ): TableGroupData | undefined {
-    for (const groupData of root) {
-      if (groupData.id === id) {
-        return groupData;
-      }
-      if (groupData.children) {
-        const foundInChildren = this.getGroupDeclarationById(
-          id,
-          groupData.children,
-        );
-        if (foundInChildren) {
-          return foundInChildren;
-        }
+  computeRowDeclaration(data: TableRowData) {
+    const declaration: TableRowTemplate = {};
+    for (const key in data) {
+      const rowDeclaration = this.definition[key];
+      if (rowDeclaration) {
+        declaration[key] = rowDeclaration(data[key], data);
+      } else {
+        declaration[key] = data[key];
       }
     }
-    return undefined;
+    return declaration;
   }
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
@@ -190,8 +188,8 @@ export class Table extends Component {
     return computed;
   }
 
-  async downloadData(fileName = "BIM Table Data") {
-    const value = await this.value;
+  downloadData(fileName = "BIM Table Data") {
+    const value = this.data;
     const file = new File(
       [JSON.stringify(value, undefined, 2)],
       `${fileName}.json`,
@@ -205,7 +203,7 @@ export class Table extends Component {
 
   getRowIndentation(
     target: TableRowData,
-    tableGroups = this.rows,
+    tableGroups = this.value,
     level = 0,
   ): number | null {
     for (const tableGroup of tableGroups) {
@@ -224,7 +222,7 @@ export class Table extends Component {
 
   getGroupIndentation(
     target: TableGroupData,
-    tableGroups = this.rows,
+    tableGroups = this.value,
     level = 0,
   ): number | null {
     for (const tableGroup of tableGroups) {
@@ -254,76 +252,33 @@ export class Table extends Component {
     this.dispatchEvent(event);
   }
 
-  // private _searchString = "";
-  // set searchString(value: string) {
-  //   if (this._searchString === "") {
-  //     this.value.then((snapshot) => {
-  //       this._valueSnapshot = snapshot;
-  //       this._searchString = value;
-  //       this.filterByValue(value, true);
-  //     });
-  //   } else {
-  //     this._searchString = value;
-  //     this.filterByValue(value, true);
-  //   }
-  // }
-
-  private _valueSnapshot: TableGroupValue[] = [];
-
-  // @ts-ignore
-  private filterRowsByValue(
-    value: string,
-    // eslint-disable-next-line default-param-last
-    preserveStructure = false,
-    rowValues?: TableGroupValue[],
-  ): TableGroupData[] {
+  filter(queryString: string, data = this.data): TableGroupData[] {
     const results: TableGroupData[] = [];
-    const data = rowValues ?? this._valueSnapshot;
     for (const row of data) {
       const valueFoundInData = Object.values(row.data).some((val) => {
-        if (Array.isArray(val)) return val.includes(value);
-        return String(val) === value;
+        return String(val).toLowerCase().includes(queryString.toLowerCase());
       });
 
-      const rowDeclaration = this.getGroupDeclarationById(row.id);
-      if (!rowDeclaration) return results;
-
       if (valueFoundInData) {
-        if (preserveStructure) {
-          const rowToAdd: TableGroupData = {
-            data: rowDeclaration.data,
-            id: rowDeclaration.id,
-          };
+        if (this.preserveStructureOnFilter) {
+          const rowToAdd: TableGroupData = { data: row.data };
           if (row.children) {
-            const childResults = this.filterRowsByValue(
-              value,
-              true,
-              row.children,
-            );
+            const childResults = this.filter(queryString, row.children);
             if (childResults.length) rowToAdd.children = childResults;
           }
           results.push(rowToAdd);
         } else {
-          results.push({ data: rowDeclaration.data, id: rowDeclaration.id });
+          results.push({ data: row.data });
           if (row.children) {
-            const childResults = this.filterRowsByValue(
-              value,
-              false,
-              row.children,
-            );
+            const childResults = this.filter(queryString, row.children);
             results.push(...childResults);
           }
         }
       } else if (row.children) {
-        const childResults = this.filterRowsByValue(
-          value,
-          preserveStructure,
-          row.children,
-        );
-        if (preserveStructure && childResults.length) {
+        const childResults = this.filter(queryString, row.children);
+        if (this.preserveStructureOnFilter && childResults.length) {
           results.push({
-            data: rowDeclaration.data,
-            id: rowDeclaration.id,
+            data: row.data,
             children: childResults,
           });
         } else {
@@ -334,26 +289,19 @@ export class Table extends Component {
     return results;
   }
 
-  // filterByValue(value: string, preserveStructure = false) {
-  //   const result = this.filterRowsByValue(value, preserveStructure);
-  //   console.log(result);
-  //   this._filteredRows = result;
-  // }
-
   protected render() {
     const header = document.createElement("bim-table-row");
+    header.table = this;
     header.isHeader = true;
     header.data = this._headerRowData;
-    header.table = this;
     header.style.gridArea = "Header";
     header.style.position = "sticky";
     header.style.top = "0";
     header.style.zIndex = "5";
 
     const children = document.createElement("bim-table-children");
-    this._children = children;
-    children.groups = this._filteredRows;
     children.table = this;
+    children.data = this.value;
     children.style.gridArea = "Body";
     children.style.backgroundColor = "transparent";
 
