@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui-obc",
   "description": "Collection of web components (UI components) implementations to use with @thatopen/components.",
-  "version": "2.0.0-alpha.6",
+  "version": "2.0.0-alpha.7",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
@@ -38,10 +38,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@thatopen/ui": "2.0.0-alpha.6"
+    "@thatopen/ui": "2.0.0-alpha.7"
   },
   "devDependencies": {
-    "@thatopen/components": "2.0.0-alpha.13",
+    "@thatopen/components": "2.0.0-alpha.14",
     "@thatopen/fragments": "2.0.0-alpha.5",
     "@types/three": "0.160.0",
     "lit": "3.1.2",
@@ -49,7 +49,7 @@
     "web-ifc": "0.0.53"
   },
   "peerDependencies": {
-    "@thatopen/components": "2.0.0-alpha.13",
+    "@thatopen/components": "2.0.0-alpha.14",
     "three": "0.160.1"
   }
 }

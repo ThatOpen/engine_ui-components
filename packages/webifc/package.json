@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui-webifc",
   "description": "Collection of web components (UI components) implementations to use with web-ifc.",
-  "version": "2.0.0-alpha.6",
+  "version": "2.0.0-alpha.7",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
@@ -38,7 +38,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@thatopen/ui": "2.0.0-alpha.6"
+    "@thatopen/ui": "2.0.0-alpha.7"
   },
   "devDependencies": {
     "lit": "3.1.2",
