@@ -82,6 +82,12 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
         if (!(modelRelations && projectAttrs)) continue;
         const { expressID } = Object.values(projectAttrs)[0];
         modelRow = {
+          onRowCreated(row) {
+            row.addEventListener("cellcreated", ({ detail }) => {
+              const { cell } = detail;
+              if (cell.column === "Entity") cell.style.gridColumn = "1/-1";
+            });
+          },
           data: {
             Entity: model.name !== "" ? model.name : model.uuid,
           },

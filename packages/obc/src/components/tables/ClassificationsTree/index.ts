@@ -5,18 +5,21 @@ import {
   classificationTreeTemplate,
 } from "./src/template";
 
-export const classificationTree = (state: ClassificationTreeUIState) => {
-  const { components } = state;
-  const manager = components.get(OBC.FragmentManager);
-
+export const classificationTree = (
+  state: ClassificationTreeUIState,
+  autoUpdate = true,
+) => {
   const element = BUI.Component.create<BUI.Table, ClassificationTreeUIState>(
     classificationTreeTemplate,
     state,
   );
 
-  const [, updateElement] = element;
-
-  manager.onFragmentsDisposed.add(() => updateElement());
+  if (autoUpdate) {
+    const { components } = state;
+    const manager = components.get(OBC.FragmentManager);
+    const [, updateElement] = element;
+    manager.onFragmentsDisposed.add(() => updateElement());
+  }
 
   return element;
 };

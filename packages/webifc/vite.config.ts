@@ -3,10 +3,6 @@ import dts from "vite-plugin-dts";
 import { defineConfig } from "vite";
 import * as path from "path";
 import * as packageJson from "./package.json";
-import {
-  clonePackageJSON,
-  generateTSNamespace,
-} from "../../resources/build-functions";
 
 export default defineConfig({
   build: {
@@ -27,11 +23,9 @@ export default defineConfig({
     },
   },
   plugins: [
-    clonePackageJSON(),
     dts({
       include: ["./src"],
       exclude: ["./src/**/example.ts", "./src/**/*.test.ts"],
-      // afterBuild: (files) => generateTSNamespace("WUI", files),
     }),
   ],
 });
