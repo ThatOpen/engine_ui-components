@@ -1,25 +1,10 @@
 import { TemplateResult, css, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
 import { Component } from "../../../core/Component";
 import { Table, ColumnData } from "../index";
+import { TableRowData, CellCreatedEventDetail } from "./types";
 import { TableCell } from "./TableCell";
-
-// type Row = Record<string, string | number | boolean | (() => TemplateResult)>;
-// export type TableRowData = Row | (() => Row);
-
-export interface CellCreatedEventDetail {
-  cell: TableCell;
-}
-
-export interface TableRowData {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | HTMLElement
-    | ((rowData: TableRowData) => TemplateResult);
-}
 
 export class TableRow extends Component {
   static styles = css`
@@ -36,7 +21,7 @@ export class TableRow extends Component {
   columns: ColumnData[];
 
   @property({ type: Object, attribute: false })
-  data: TableRowData;
+  data: TableRowData = {};
 
   @property({ type: Boolean, attribute: "is-header", reflect: true })
   isHeader: boolean;
@@ -52,7 +37,6 @@ export class TableRow extends Component {
   }
 
   private _table = this.closest<Table>("bim-table");
-  private _cells: TableCell[] = [];
 
   set table(value: Table | null) {
     if (this._table) {
@@ -77,23 +61,9 @@ export class TableRow extends Component {
     return this._table;
   }
 
-  get value() {
-    return new Promise<Record<string, any>>((resolve) => {
-      setTimeout(() => {
-        const value: Record<string, any> = {};
-        for (const cell of this._cells) {
-          if (!cell.column) continue;
-          value[cell.column] = cell.value;
-        }
-        resolve(value);
-      });
-    });
-  }
-
   constructor() {
     super();
     this.columns = [];
-    this.data = {};
     this.isHeader = false;
   }
 
@@ -112,18 +82,26 @@ export class TableRow extends Component {
     this.columns = this.table.columns;
   };
 
-  protected render() {
+  @state()
+  private _cells: TemplateResult[] = [];
+
+  compute() {
     const indentation = this.table?.getRowIndentation(this.data) ?? 0;
+    const declaration = !this.isHeader
+      ? this.table?.computeRowDeclaration(this.data) ?? this.data
+      : this.data;
     const cells: TemplateResult[] = [];
-    for (const column in this.data) {
-      const value = this.data[column];
+    for (const column in declaration) {
+      const value = declaration[column];
       let content;
-      if (typeof value === "function") {
-        content = value(this.data);
-      } else if (value instanceof HTMLElement) {
-        content = value;
-      } else {
+      if (
+        typeof value === "string" ||
+        typeof value === "boolean" ||
+        typeof value === "number"
+      ) {
         content = html`<bim-label label="${value}"></bim-label>`;
+      } else {
+        content = value;
       }
 
       const isFirstCell = this._columnNames.indexOf(column) === 0;
@@ -132,13 +110,12 @@ export class TableRow extends Component {
         ${isFirstCell && !this.isHeader ? `margin-left: ${indentation + 0.125}rem` : ""}
       `;
 
-      this._cells = [];
       const onCellCreated = (el?: Element) => {
         if (!el) return;
         const cell = el as TableCell;
-        this._cells.push(cell);
+        cell.rowData = this.data;
         setTimeout(() => {
-          this.dispatchEvent(
+          this.table?.dispatchEvent(
             new CustomEvent<CellCreatedEventDetail>("cellcreated", {
               detail: { cell },
             }),
@@ -154,7 +131,11 @@ export class TableRow extends Component {
 
       cells.push(cell);
     }
+    this._cells = cells;
+  }
 
+  protected render() {
+    this.compute();
     return html`
       <style>
         :host {
@@ -162,7 +143,7 @@ export class TableRow extends Component {
           grid-template-columns: ${this._columnWidths.join(" ")};
         }
       </style>
-      ${cells}
+      ${this._cells}
       <slot></slot>
     `;
   }

@@ -1,18 +1,9 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Component } from "../../../core/Component";
-import { Table, TableGroupValue } from "../index";
-import { TableRow, TableRowData } from "./TableRow";
+import { Table } from "../index";
+import { RowCreatedEventDetail, TableGroupData } from "./types";
 import { TableChildren } from "./TableChildren";
-
-export interface TableGroupData {
-  data: TableRowData;
-  children?: TableGroupData[];
-  id?: string;
-  childrenHidden?: boolean;
-  onRowCreated?: (row: TableRow) => void;
-  onChildrenCreated?: (children: TableChildren) => void;
-}
 
 export class TableGroup extends Component {
   static styles = css`
@@ -58,32 +49,21 @@ export class TableGroup extends Component {
     .caret svg {
       fill: var(--bim-ui_bg-contrast-60);
     }
-
-    :host([children-hidden]) bim-table-children {
-      display: none;
-    }
   `;
 
-  @property({ type: Object, attribute: false })
-  group: TableGroupData = { data: {} };
-
-  private _row = document.createElement("bim-table-row");
   private _children?: TableChildren;
 
+  @property({ type: Object, attribute: false })
+  data: TableGroupData = { data: {} };
+
   @property({ type: Boolean, attribute: "children-hidden", reflect: true })
-  childrenHidden = false;
+  childrenHidden = true;
 
   table = this.closest<Table>("bim-table");
 
-  get value() {
-    return new Promise<TableGroupValue>((resolve) => {
-      setTimeout(async () => {
-        const value: TableGroupValue = { data: {}, id: this.group.id! };
-        value.data = await this._row.value;
-        if (this._children) value.children = await this._children.value;
-        resolve(value);
-      });
-    });
+  connectedCallback() {
+    super.connectedCallback();
+    this.childrenHidden = !this.table?.expanded ?? true;
   }
 
   toggleChildren(force?: boolean, recursive = false) {
@@ -94,7 +74,7 @@ export class TableGroup extends Component {
   }
 
   protected render() {
-    const indentation = this.table?.getGroupIndentation(this.group) ?? 0;
+    const indentation = this.table?.getGroupIndentation(this.data) ?? 0;
 
     const verticalBranchTemplate = html`
       <style>
@@ -162,31 +142,30 @@ export class TableGroup extends Component {
     }
 
     const row = document.createElement("bim-table-row");
-    row.data = this.group.data;
-    if (this.group.onRowCreated) this.group.onRowCreated(row);
-
-    this._row = row;
     row.table = this.table;
+    row.data = this.data.data;
+    this.table?.dispatchEvent(
+      new CustomEvent<RowCreatedEventDetail>("rowcreated", { detail: { row } }),
+    );
 
-    if (this.group.children) row.append(caret);
-    if (indentation !== 0 && (!this.group.children || this.childrenHidden))
+    if (this.data.children) row.append(caret);
+    if (indentation !== 0 && (!this.data.children || this.childrenHidden))
       row.append(horizontalBranch);
 
     let children: TableChildren | undefined;
-    if (this.group.children) {
+    if (this.data.children) {
       children = document.createElement("bim-table-children");
-      if (this.group.onChildrenCreated) this.group.onChildrenCreated(children);
       this._children = children;
-      children.groups = this.group.children;
       children.table = this.table;
+      children.data = this.data.children;
     }
 
     return html`
       <div class="parent">
-        ${this.group.children && !this.childrenHidden
+        ${this.data.children && !this.childrenHidden
           ? verticalBranchTemplate
           : null}
-        ${row} ${children}
+        ${row} ${!this.childrenHidden ? children : null}
       </div>
     `;
   }

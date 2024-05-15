@@ -246,12 +246,12 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
           data: {
             Name: elementAttrs.Name?.value,
           },
-          onRowCreated(row) {
-            row.addEventListener("cellcreated", (event) => {
-              const { cell } = event.detail;
-              cell.style.gridColumn = "1 / -1";
-            });
-          },
+          // onRowCreated(row) {
+          //   row.addEventListener("cellcreated", (event) => {
+          //     const { cell } = event.detail;
+          //     cell.style.gridColumn = "1 / -1";
+          //   });
+          // },
         };
 
         rows.push(elementRow);
@@ -281,7 +281,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
             return false;
           });
           const psetRow = await getPsetRow(model, psetRels);
-          elementRow.children.push(psetRow);
+          if (psetRow.children) elementRow.children.push(psetRow);
 
           const qsetRels = definedByRelations.filter(async (rel) => {
             const relAttrs = await model.getProperties(rel);
@@ -291,7 +291,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
             return false;
           });
           const qsetRow = await getQsetRow(model, qsetRels);
-          elementRow.children.push(qsetRow);
+          if (qsetRow.children) elementRow.children.push(qsetRow);
         }
 
         const associateRelations = indexer.getEntityRelations(
@@ -315,7 +315,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
             return false;
           });
           const materialRow = await getMaterialRow(model, materialRelations);
-          elementRow.children.push(materialRow);
+          if (materialRow.children) elementRow.children.push(materialRow);
 
           const classificationRelations = associateRelations.filter(
             async (rel) => {
@@ -332,7 +332,8 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
             model,
             classificationRelations,
           );
-          elementRow.children.push(classificationRow);
+          if (classificationRow.children)
+            elementRow.children.push(classificationRow);
         }
 
         const contianerRelations = indexer.getEntityRelations(
@@ -344,7 +345,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
         if (contianerRelations) {
           const containerID = contianerRelations[0];
           const attributesRow = await getAttributesRow(model, containerID, {
-            groupName: "Storey",
+            groupName: "SpatialContainer",
           });
           elementRow.children.push(attributesRow);
         }
@@ -353,7 +354,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
 
     const table = element as BUI.Table;
     table.columns = [{ name: "Name", width: "12rem" }];
-    table.rows = rows;
+    table.data = rows;
   };
   return BUI.html`<bim-table ${BUI.ref(onCreated)} headers-hidden></bim-table>`;
 };

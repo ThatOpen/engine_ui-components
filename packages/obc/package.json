@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@thatopen/components": "2.0.0-alpha.14",
+    "@thatopen/components-front": "2.0.0-alpha.14",
     "@thatopen/fragments": "2.0.0-alpha.5",
     "@types/three": "0.160.0",
     "lit": "3.1.2",
@@ -50,6 +51,7 @@
   },
   "peerDependencies": {
     "@thatopen/components": "2.0.0-alpha.14",
+    "@thatopen/components-front": "2.0.0-alpha.14",
     "three": "0.160.1"
   }
 }

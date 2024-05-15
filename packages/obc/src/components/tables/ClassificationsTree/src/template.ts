@@ -73,7 +73,7 @@ export const classificationTreeTemplate = (
       });
     }
 
-    table.rows = rows;
+    table.data = rows;
   };
 
   return BUI.html`

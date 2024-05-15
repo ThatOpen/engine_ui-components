@@ -61,9 +61,9 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     const indexer = components.get(OBC.IfcRelationsIndexer);
     const rows: BUI.TableGroupData[] = [];
     for (const model of models) {
-      let modelRow: BUI.TableGroupData;
+      let modelData: BUI.TableGroupData;
       if (expressID) {
-        modelRow = {
+        modelData = {
           data: {
             Entity: model.name !== "" ? model.name : model.uuid,
           },
@@ -81,13 +81,7 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
         );
         if (!(modelRelations && projectAttrs)) continue;
         const { expressID } = Object.values(projectAttrs)[0];
-        modelRow = {
-          onRowCreated(row) {
-            row.addEventListener("cellcreated", ({ detail }) => {
-              const { cell } = detail;
-              if (cell.column === "Entity") cell.style.gridColumn = "1/-1";
-            });
-          },
+        modelData = {
           data: {
             Entity: model.name !== "" ? model.name : model.uuid,
           },
@@ -99,12 +93,12 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
           ),
         };
       }
-      rows.push(modelRow);
+      rows.push(modelData);
     }
 
     const table = element as BUI.Table;
     table.columns = ["Entity", "Name"];
-    table.rows = rows;
+    table.data = rows;
   };
 
   return BUI.html`<bim-table ${BUI.ref(onCreated)} headers-hidden></bim-table>`;

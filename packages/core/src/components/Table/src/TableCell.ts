@@ -1,6 +1,7 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Component } from "../../../core/Component";
+import { TableRowData } from ".";
 
 export class TableCell extends Component {
   static styles = css`
@@ -25,18 +26,11 @@ export class TableCell extends Component {
   @property({ type: String, reflect: true })
   column?: string;
 
-  get value(): any {
-    const childrenCount = this.children.length;
-    if (childrenCount === 1) {
-      const child = this.children[0];
-      return "value" in child ? child.value : child.textContent;
-    }
-    const values = [];
-    for (const child of this.children) {
-      const value = "value" in child ? child.value : child.textContent;
-      values.push(value);
-    }
-    return values;
+  rowData: TableRowData = {};
+
+  get data() {
+    if (this.column) return this.rowData[this.column];
+    return null;
   }
 
   protected render() {

@@ -8,39 +8,46 @@ export interface ModelsListUIState {
 export const modelsListTemplate = (state: ModelsListUIState) => {
   const { components } = state;
 
-  const fragmentsManager = components.get(OBC.FragmentManager);
+  const fragments = components.get(OBC.FragmentManager);
 
   const table = document.createElement("bim-table");
   table.columns = ["Model"];
   table.headersHidden = true;
 
   const rowGroups: BUI.TableGroupData[] = [];
-  for (const [, model] of fragmentsManager.groups) {
+  for (const [, model] of fragments.groups) {
     if (!model) continue;
     const rowGroup: BUI.TableGroupData = {
       data: {
         Model: model.name || model.uuid,
-        Action: () => {
-          const onDeleteClick = () => fragmentsManager.disposeGroup(model);
-
-          const onHideClick = (e: Event) => {
-            model.visible = !model.visible;
-            const button = e.target as BUI.Button;
-            button.icon = model.visible ? "mdi:eye" : "mdi:eye-off";
-          };
-
-          return BUI.html`
-            <bim-button @click=${onHideClick} icon="mdi:eye"></bim-button>
-            <bim-button @click=${onDeleteClick} icon="mdi:delete"></bim-button>
-          `;
-        },
+        Actions: model.uuid,
       },
     };
     rowGroups.push(rowGroup);
   }
 
-  table.columns = ["Model", { name: "Action", width: "auto" }];
-  table.rows = rowGroups;
+  table.definition = {
+    Actions: (modelID) => {
+      if (typeof modelID !== "string") return modelID;
+      const model = fragments.groups.get(modelID);
+      if (!model) return modelID;
+      const onDeleteClick = () => fragments.disposeGroup(model);
+
+      const onHideClick = (e: Event) => {
+        model.visible = !model.visible;
+        const button = e.target as BUI.Button;
+        button.icon = model.visible ? "mdi:eye" : "mdi:eye-off";
+      };
+
+      return BUI.html`
+        <bim-button @click=${onHideClick} icon="mdi:eye"></bim-button>
+        <bim-button @click=${onDeleteClick} icon="mdi:delete"></bim-button>
+      `;
+    },
+  };
+
+  table.columns = ["Model", { name: "Actions", width: "auto" }];
+  table.data = rowGroups;
 
   return BUI.html`
     <div>
