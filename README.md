@@ -18,28 +18,24 @@ BIM UI Components is the ultimate set of user interface elements you need to cre
 <br></br>
 
 ## How it works? 🤓
-This library is a monorepo where separate but correlated repositories exists in the packages folder. The main repository resides in ui-components.
+This library is a monorepo where separate but correlated repositories exists in the packages folder. The main repository resides in `core`.
 <br></br>
-* **@thatopen/ui-components:** This is the core library. Here, you will find all the core components needed to build your user interfaces, so you can expect a button, panel, toolbar, table, inputs, and some other components.
-<br></br>
-
-Now, from the `@thatopen/ui-components` you can't expect to have functionalities in your components. In other words, if you need a button component to load an IFC file from `openbim-components` you will need to code that by yourself 🙁. However, as the goal of the library is to save you as much time as possible, we've created implementations of the components based on things we know you're probably going to need at some point 💪. Here is were it comes the other repositories in the monorepo.
+* **@thatopen/ui:** This is the core library. Here, you will find all the core components needed to build your user interfaces, so you can expect a button, panel, toolbar, table, inputs, and some other components.
 <br></br>
 
-Think on the following repositories as plug-n-play functional components that uses the core library to build ready to go pieces of UI with the functionalities to work nice and neat:
+Now, from the `@thatopen/ui` you can't expect to have functionalities in your components. In other words, if you need a button component to load an IFC file from `@thatopen/components` you will need to code that by yourself 🙁. However, as the goal of the library is to save you as much time as possible, we've created implementations of the components based on things we know you're probably going to need at some point 💪. Here is were it comes the other repository in the monorepo.
+<br></br>
 
-* **@thatopen/ui-components-obc:** Here you will find pre-made functional components for many things in [openbim-components](https://github.com/thatopen/engine_components) (the entry point of That Open Engine). You can expect to have from a button that loads an IFC file, to a table to configure your app tools or a panel to view all your model classifications. Basically, openbim-components gives you the functionality, while @thatopen/ui-components-obc gives you the UI to interact with those functionalities.
+Think on the following repository as plug-n-play functional components that uses the core library to build ready to go pieces of UI with the functionalities to work nice and neat:
 
-* **@thatopen/ui-components-three:** As all the apps working with openbim-components relies on [ThreeJS](https://threejs.org/), we thought is a good idea to include pre-made components that takes data from ThreeJS and makes it possible to work with it using the UI. For example, here you can expect to have a transform panel that let's you modify the position, scale and rotation of any THREE.Mesh, or a panel to manage your THREE.Mesh materials.
-
-* **@thatopen/ui-components-web-ifc:** You know [web-ifc](https://github.com/ThatOpen/engine_web-ifc) is the core of That Open Engine, at the end is the library that let's create, read, update and save raw IFC files. How could would be to have UI that works with data from web-ifc? Well, that's what you can expect from this repository. Here you will find things like a table to display the spatial structure from a raw IFC file, to a table that displays the attributes of a given entity.
+* **@thatopen/ui-obc:** Here you will find pre-made functional components for many things in [@thatopen/components](https://github.com/thatopen/engine_components) (the entry point of That Open Engine). You can expect to have from a button that loads an IFC file, to a table to configure your app tools or a panel to view all your model classifications. Basically, @thatopen/components gives you the functionality, while @thatopen/ui-obc gives you the UI to interact with those functionalities.
 <br></br>
 
 > [!IMPORTANT]
-> All the implementation libraries need @thatopen/ui-components to be installed along with the respective packages they are giving UIs to. See the respective package.json files in each repository.
+> All the implementation libraries need `@thatopen/ui` to be installed along with the respective packages they are giving UIs to. See the respective package.json files in each repository.
 
 ### Why a monorepo? 🤷‍♀️
-Easy, because we care about your final app bundle size. You see, the repositories that contains implementations of the UIComponents for different libraries, relies on the libraries to be installed in the project because they're required as peerDependencies. So, if we included all the pre-built UIComponents from `@thatopen/ui-components-three` in the core library, you will always need to have ThreeJS installed in your project even tough you're not using it.
+Easy, because we care about your final app bundle size. You see, the repositories that contains implementations of the UIComponents for different libraries, relies on the libraries to be installed in the project because they're required as peerDependencies. So, if we included all the pre-built UIComponents from `@thatopen/ui-obc` in the core library, you will always need to have `@thatopen/components` and `@thatopen/components-front` installed in your project even tough you're not using it.
 <br></br>
 
 ### Does these components works in my favorite framework? 🤔
@@ -65,20 +61,20 @@ You always need to rely on your framework tools in order to render your componen
 <br></br>
 
 > [!IMPORTANT]
-> Despite Web Components is a browser API, we used [Lit](https://lit.dev/) to create the components as it makes the process way much easier.
+> Despite Web Components is a browser API, we used [Lit](https://lit.dev/) to create the components as it makes the process way much easier. Also, we recommend checking your favorite framework documentation to implement web components, some of them needs a pretty basic setup to get up and running.
 
 
 ## Getting Started
 To use the UIComponents, you need to install at least the core library from your terminal like this:
 
 ```
-npm i @thatopen/ui-components
+npm i @thatopen/ui
 ```
 
 Then, you need to tell the library to register the components, so you can use them in any HTML syntax. To do it, in your entry JavaScript file execute the following:
 
 ```ts
-import { UIManager } from "@thatopen/ui-components"
+import { UIManager } from "@thatopen/ui"
 
 UIManager.registerComponents()
 ```
