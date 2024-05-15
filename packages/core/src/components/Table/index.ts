@@ -9,12 +9,6 @@ import {
   TableRowTemplate,
 } from "./src";
 
-export interface TableGroupValue {
-  data: Record<string, any>;
-  children?: TableGroupValue[];
-  id: string;
-}
-
 export interface ColumnData {
   name: string;
   width: string;
