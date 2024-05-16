@@ -1,7 +1,15 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
-import { HasName, HasValue } from "../../core/types";
+import {
+  EntryQuery,
+  HasName,
+  HasValue,
+  Query,
+  QueryCondition,
+  QueryGroup,
+} from "../../core/types";
+import { convertString } from "../../core/utils";
 
 // HTML Tag: bim-text-input
 export class TextInput extends Component implements HasName, HasValue {
@@ -77,13 +85,60 @@ export class TextInput extends Component implements HasName, HasValue {
     return this._type;
   }
 
+  get query() {
+    const queryGroup: Query = [];
+    const entryAndGroupQueries = this.value
+      .split(/&(?![^()]*\))/)
+      .map((value) => value.trim());
+
+    for (const query of entryAndGroupQueries) {
+      const isEntryQuery = !query.startsWith("(") && !query.endsWith(")");
+      const isGroupQuery = query.startsWith("(") && query.endsWith(")");
+      if (isEntryQuery) {
+        const entryQuery = this.processSearch(query);
+        queryGroup.push(entryQuery);
+      }
+      if (isGroupQuery) {
+        const cleanedQuery = query.replace(/^(\()|(\))$/g, "");
+        const searches = cleanedQuery.split("&").map((search) => search.trim());
+        const queries = searches.map((search, index) => {
+          const entryQuery = this.processSearch(search);
+          if (index > 0) entryQuery.operator = "&";
+          return entryQuery;
+        });
+        const group: QueryGroup = {
+          operator: "&",
+          queries,
+        };
+        queryGroup.push(group);
+      }
+    }
+    return queryGroup;
+  }
+
   onValueChange = new Event("input");
+
+  private conditions = ["=", ">", ">=", "<", "<=", "?", "/", "#"];
 
   constructor() {
     super();
     this.value = "";
     this.placeholder = "";
     this.vertical = false;
+  }
+
+  private processSearch(search: string) {
+    const condition = this.conditions.filter(
+      (condition) => search.split(condition).length === 2,
+    )[0] as QueryCondition;
+    const splitQuery = search.split(condition).map((value) => value.trim());
+    const [key, _value] = splitQuery;
+    const value =
+      _value.startsWith("'") && _value.endsWith("'")
+        ? _value.replace(/'/g, "")
+        : convertString(_value);
+    const entryQuery: EntryQuery = { key, condition, value };
+    return entryQuery;
   }
 
   private onInputChange(e: Event) {

@@ -81,6 +81,7 @@ const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
 });
 
 propertiesTable.preserveStructureOnFilter = true;
+propertiesTable.indentationInText = false;
 
 const fragments = components.get(OBC.FragmentManager);
 const highlighter = components.get(OBF.Highlighter);
@@ -122,13 +123,18 @@ const propertiesPanel = BUI.Component.create(() => {
     button.label = propertiesTable.expanded ? "Collapse" : "Expand";
   };
 
+  const copyAsTSV = async () => {
+    await navigator.clipboard.writeText(propertiesTable.tsv);
+  };
+
   return BUI.html`
     <bim-panel label="Properties">
       <bim-panel-section label="Element Data">
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <bim-text-input @input=${onTextInput} label="Search Property"></bim-text-input>
+        <div style="display: flex; gap: 0.5rem;">
           <bim-button @click=${expandTable} label=${propertiesTable.expanded ? "Collapse" : "Expand"}></bim-button> 
+          <bim-button @click=${copyAsTSV} label="Copy as TSV"></bim-button> 
         </div> 
+        <bim-text-input @input=${onTextInput} placeholder="Search Property"></bim-text-input>
         ${propertiesTable}
       </bim-panel-section>
     </bim-panel>

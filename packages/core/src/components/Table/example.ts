@@ -64,10 +64,14 @@ table.definition = {
     if (Name === "Laura") return `${Name} is ${Career}`;
     return value;
   },
-  Comments: (value) => {
+  Comments: (value, data) => {
     if (typeof value !== "string") return value;
     const textInput = document.createElement("bim-text-input");
     textInput.value = value;
+    textInput.addEventListener(
+      "input",
+      () => (data.Comments = textInput.value),
+    );
     return textInput;
   },
 };
@@ -77,22 +81,29 @@ table.data = [
     data: {
       Name: "Jhon",
       Age: 28,
-      Career: "Civil Engineer",
-      Comments: "",
+      Comments: "Nice guy!",
     },
     children: [
       {
         data: {
           Name: "James",
           Age: 20,
-          Career: "Unemployed",
-          Comments: "",
+          Career: "Civil Engineer",
+          Comments: "Good boy.",
         },
       },
       {
         data: {
           Name: "Lisa",
           Age: 25,
+          Career: "Architect",
+          Comments: "It's great!",
+        },
+      },
+      {
+        data: {
+          Name: "Lisa",
+          Age: 29,
           Career: "Architect",
           Comments: "It's great!",
         },
@@ -127,7 +138,6 @@ table.data = [
                 data: {
                   Name: "Christina",
                   Age: 11,
-                  Career: "N/A",
                   Comments: "",
                 },
               },
@@ -155,7 +165,7 @@ preserveStructure.addEventListener("change", () => {
 });
 
 // Optionally, use the columns property to control the columns order and width.
-table.columns = [{ name: "Name", width: "10rem" }];
+table.columns = [{ name: "Name", width: "10rem" }, "Age", "Career"];
 
 // You can add a new row programatically
 const newRowBtn = document.getElementById("new-row") as BUI.Button;
@@ -188,4 +198,17 @@ printBtn.addEventListener("click", () => {
 const downloadBtn = document.getElementById("download-data") as BUI.Button;
 downloadBtn.addEventListener("click", () => {
   table.downloadData();
+});
+
+// You can generate a csv or tsv text of the table data
+const copyCSVBtn = document.getElementById("copy-csv") as BUI.Button;
+copyCSVBtn.addEventListener("click", async () => {
+  await navigator.clipboard.writeText(table.csv);
+  // alert("Table data copied as CSV in clipboard!");
+});
+
+const copyTSVBtn = document.getElementById("copy-tsv") as BUI.Button;
+copyTSVBtn.addEventListener("click", async () => {
+  await navigator.clipboard.writeText(table.tsv);
+  // alert("Table data copied as TSV in clipboard!");
 });
