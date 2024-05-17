@@ -3,7 +3,6 @@ import { styles } from "./src/styles";
 
 export interface ManagerConfig {
   sectionLabelOnVerticalToolbar: boolean;
-  multiPanels: boolean; // Displays a dropdown to select an active panel in a bim-panels-container
   draggableToolbars: boolean;
   draggablePanels: boolean;
 }
@@ -11,7 +10,6 @@ export interface ManagerConfig {
 export class Manager {
   private static _config: Required<ManagerConfig> = {
     sectionLabelOnVerticalToolbar: false,
-    multiPanels: false,
     draggableToolbars: true,
     draggablePanels: true,
   };
@@ -42,7 +40,14 @@ export class Manager {
     if (!customElements.get(tag)) customElements.define(tag, constructor);
   }
 
+  /**
+   * @deprecated Use `Manager.init()` instead.
+   */
   static registerComponents() {
+    Manager.init();
+  }
+
+  static init() {
     Manager.addGlobalStyles();
     Manager.defineCustomElement("bim-button", components.Button);
     Manager.defineCustomElement("bim-checkbox", components.Checkbox);
@@ -56,10 +61,6 @@ export class Manager {
     Manager.defineCustomElement("bim-number-input", components.NumberInput);
     Manager.defineCustomElement("bim-option", components.Option);
     Manager.defineCustomElement("bim-panel", components.Panel);
-    Manager.defineCustomElement(
-      "bim-panels-container",
-      components.PanelsContainer,
-    );
     Manager.defineCustomElement("bim-panel-section", components.PanelSection);
     Manager.defineCustomElement("bim-selector-input", components.SelectorInput);
     Manager.defineCustomElement("bim-table", components.Table);

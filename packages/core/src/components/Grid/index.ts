@@ -95,7 +95,6 @@ export class Grid extends Component {
   }
 
   static containerTags: { [name: string]: string } = {
-    panels: "bim-panels-container",
     toolbars: "bim-toolbars-container",
   };
 

@@ -103,7 +103,7 @@ Finally, in your HTML file you can start to use the components!
       </bim-toolbar-section>
     </bim-toolbar>
   </bim-toolbars-container>
-  <bim-panels-container id="my-panel" style="grid-area: sidebar">
+  <div id="my-panel" style="grid-area: sidebar; background-color: var(--bim-ui_bg-base)">
     <bim-panel label="Panel A">
       <bim-panel-section label="Build">
         <bim-text-input label="Tool Name" value="BCFManager"></bim-text-input>
@@ -119,7 +119,7 @@ Finally, in your HTML file you can start to use the components!
         </bim-dropdown>
       </bim-panel-section>
     </bim-panel>
-  </bim-panels-container>
+  </div>
 </bim-grid>
 ```
 

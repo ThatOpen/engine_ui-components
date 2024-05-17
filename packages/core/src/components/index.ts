@@ -10,7 +10,6 @@ import { Label } from "./Label";
 import { NumberInput } from "./NumberInput";
 import { Option } from "./Option";
 import { Panel } from "./Panel";
-import { PanelsContainer } from "./PanelsContainer";
 import { PanelSection } from "./PanelSection";
 import { SelectorInput } from "./SelectorInput";
 import {
@@ -44,7 +43,6 @@ declare global {
     "bim-number-input": NumberInput;
     "bim-option": Option;
     "bim-panel": Panel;
-    "bim-panels-container": PanelsContainer;
     "bim-panel-section": PanelSection;
     "bim-selector-input": SelectorInput;
     "bim-table": Table;
@@ -91,7 +89,6 @@ export * from "./Label";
 export * from "./NumberInput";
 export * from "./Option";
 export * from "./Panel";
-export * from "./PanelsContainer";
 export * from "./PanelSection";
 export * from "./SelectorInput";
 export * from "./Table";
