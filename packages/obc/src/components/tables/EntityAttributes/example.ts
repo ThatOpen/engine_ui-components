@@ -10,7 +10,7 @@ grid.layouts = {
   main: `
   "c-panels-left viewer" 1fr
   "c-panels-table c-panels-table" minmax(auto, 450px)
-  /auto 1fr
+  /24rem 1fr
   `,
 };
 
@@ -61,7 +61,7 @@ grids.create(world);
 
 const ifcLoader = components.get(OBC.FragmentIfcLoader);
 await ifcLoader.setup();
-const file = await fetch("/resources/small.ifc");
+const file = await fetch("/resources/testing.ifc");
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
@@ -151,6 +151,9 @@ const [table, updateTable] = CUI.tables.entityAttributes({
   tableDefinition,
 });
 
+table.expanded = true;
+table.indentationInText = true;
+
 const tablePanel = grid.getContainer("panels", "table");
 tablePanel.append(table);
 
@@ -162,7 +165,7 @@ const dropdown = BUI.Component.create(() => {
   if (props) {
     for (const expressID in props) {
       const { type } = props[expressID];
-      if (type !== WEBIFC.IFCWALLSTANDARDCASE) continue;
+      if (type !== WEBIFC.IFCWALL) continue;
       const option = document.createElement("bim-option");
       const entityTypeName = OBC.IfcCategoryMap[type];
       option.label = `${expressID}: ${entityTypeName}`;
@@ -251,4 +254,24 @@ exportIfc.addEventListener("click", async () => {
   a.download = file.name;
   a.click();
   URL.revokeObjectURL(a.href);
+});
+
+const copyTSVBtn = document.getElementById("copy-tsv") as BUI.Button;
+copyTSVBtn.addEventListener("click", async () => {
+  await navigator.clipboard.writeText(table.tsv);
+  alert("Table data copied as TSV in clipboard!");
+});
+
+// Searching
+const searchBox = document.getElementById("search-box") as BUI.TextInput;
+searchBox.addEventListener("input", () => {
+  table.queryString = searchBox.value;
+});
+
+const preserveStrcuture = document.getElementById(
+  "preserve-structure",
+) as BUI.Checkbox;
+table.preserveStructureOnFilter = preserveStrcuture.checked;
+preserveStrcuture?.addEventListener("change", () => {
+  table.preserveStructureOnFilter = preserveStrcuture.checked;
 });

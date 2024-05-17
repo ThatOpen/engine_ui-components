@@ -46,21 +46,21 @@ export const meshTransform = (
         <bim-number-input
           name="x"
           pref="X"
-          sufix="m"
+          suffix="m"
           .value=${position.x}
           @input=${(e: Event) => onPositionChange(e, position)}
         ></bim-number-input>
         <bim-number-input
           name="y"
           pref="Y"
-          sufix="m"
+          suffix="m"
           .value=${position.y}
           @input=${(e: Event) => onPositionChange(e, position)}
         ></bim-number-input>
         <bim-number-input
           name="z"
           pref="Z"
-          sufix="m"
+          suffix="m"
           .value=${position.z}
           @input=${(e: Event) => onPositionChange(e, position)}
         ></bim-number-input>
@@ -78,7 +78,7 @@ export const meshTransform = (
           pref="X"
           min="0"
           max="360"
-          sufix="°"
+          suffix="°"
           .value=${THREE.MathUtils.radToDeg(rotation.x)}
           @input=${(e: Event) => onRotationChange(e, rotation)}
         ></bim-number-input>
@@ -88,7 +88,7 @@ export const meshTransform = (
           pref="Y"
           min="0"
           max="360"
-          sufix="°"
+          suffix="°"
           .value=${THREE.MathUtils.radToDeg(rotation.y)}
           @input=${(e: Event) => onRotationChange(e, rotation)}
         ></bim-number-input>
@@ -98,7 +98,7 @@ export const meshTransform = (
           pref="Z"
           min="0"
           max="360"
-          sufix="°"
+          suffix="°"
           .value=${THREE.MathUtils.radToDeg(rotation.z)}
           @input=${(e: Event) => onRotationChange(e, rotation)}
         ></bim-number-input>
@@ -114,7 +114,7 @@ export const meshTransform = (
           slider
           name="x"
           pref="X"
-          sufix="m"
+          suffix="m"
           min="0"
           .value=${scale.x}
           @input=${(e: Event) => onScaleChange(e, scale)}
@@ -123,7 +123,7 @@ export const meshTransform = (
           slider
           name="y"
           pref="Y"
-          sufix="m"
+          suffix="m"
           min="0"
           .value=${scale.y}
           @input=${(e: Event) => onScaleChange(e, scale)}
@@ -132,7 +132,7 @@ export const meshTransform = (
           slider
           name="z"
           pref="Z"
-          sufix="m"
+          suffix="m"
           min="0"
           .value=${scale.z}
           @input=${(e: Event) => onScaleChange(e, scale)}

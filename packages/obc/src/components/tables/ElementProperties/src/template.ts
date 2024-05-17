@@ -245,13 +245,8 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
         const elementRow: BUI.TableGroupData = {
           data: {
             Name: elementAttrs.Name?.value,
+            Value: "",
           },
-          // onRowCreated(row) {
-          //   row.addEventListener("cellcreated", (event) => {
-          //     const { cell } = event.detail;
-          //     cell.style.gridColumn = "1 / -1";
-          //   });
-          // },
         };
 
         rows.push(elementRow);

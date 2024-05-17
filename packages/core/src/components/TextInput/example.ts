@@ -7,5 +7,5 @@ const nameInput = document.querySelector<BUI.TextInput>(
 )!;
 
 nameInput.addEventListener("input", () => {
-  console.log("asd");
+  console.log(nameInput.value);
 });

@@ -17,7 +17,6 @@ export interface TableRowTemplate {
 export interface TableGroupData {
   data: TableRowData;
   children?: TableGroupData[];
-  id?: string;
 }
 
 export interface TableGroupTemplate {

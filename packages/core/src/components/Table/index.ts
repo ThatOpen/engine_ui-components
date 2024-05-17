@@ -8,6 +8,7 @@ import {
   TableRowData,
   TableRowTemplate,
 } from "./src";
+import { evalCondition, getQuery } from "../../core/utils";
 
 export interface ColumnData {
   name: string;
@@ -102,17 +103,48 @@ export class Table extends Component {
     return data;
   }
 
-  private _queryString: string | null = null;
+  private _textDelimiters = {
+    comma: ",",
+    tab: "\t",
+  };
+
   get value() {
     if (this.queryString) return this._filteredData;
     return this.data;
   }
 
+  private _expandedBeforeSearch?: boolean;
+  private _queryString: string | null = null;
+
   @property({ type: String, attribute: "search-string", reflect: true })
-  set queryString(value: string | null) {
+  set queryString(_value: string | null) {
+    const value = _value && _value.trim() !== "" ? _value.trim() : null;
     this._queryString = value;
-    this.expanded = value ? this.preserveStructureOnFilter : false;
-    this._filteredData = value ? this.filter(value) : this.data;
+    if (value) {
+      const query = getQuery(value);
+      if (query) {
+        this.filterFunction = this._queryFilterFunction;
+        this._filteredData = this.filter(value);
+      } else {
+        this.filterFunction = this._stringFilterFunction;
+        this._filteredData = this.filter(value);
+      }
+      if (this.preserveStructureOnFilter) {
+        if (this._expandedBeforeSearch === undefined) {
+          this._expandedBeforeSearch = this.expanded;
+        }
+        this.expanded = true;
+      }
+    } else {
+      if (
+        this.preserveStructureOnFilter &&
+        this._expandedBeforeSearch !== undefined
+      ) {
+        this.expanded = this._expandedBeforeSearch;
+        this._expandedBeforeSearch = undefined;
+      }
+      this._filteredData = this.data;
+    }
   }
 
   get queryString() {
@@ -137,25 +169,13 @@ export class Table extends Component {
   expanded = false;
 
   preserveStructureOnFilter = false;
+  indentationInText = false;
   definition: TableDefinition = {};
 
   constructor() {
     super();
     this.minColWidth = "4rem";
     this.headersHidden = false;
-  }
-
-  computeRowDeclaration(data: TableRowData) {
-    const declaration: TableRowTemplate = {};
-    for (const key in data) {
-      const rowDeclaration = this.definition[key];
-      if (rowDeclaration) {
-        declaration[key] = rowDeclaration(data[key], data);
-      } else {
-        declaration[key] = data[key];
-      }
-    }
-    return declaration;
   }
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
@@ -182,12 +202,83 @@ export class Table extends Component {
     return computed;
   }
 
-  downloadData(fileName = "BIM Table Data") {
-    const value = this.data;
-    const file = new File(
-      [JSON.stringify(value, undefined, 2)],
-      `${fileName}.json`,
-    );
+  private generateText(
+    delimiter: "comma" | "tab" = "comma",
+    data = this.value,
+    indentation = "",
+    isFirstRow = true,
+  ) {
+    const separator = this._textDelimiters[delimiter];
+
+    let text = "";
+    const columns = this.columns.map((column) => column.name);
+    if (isFirstRow) {
+      if (this.indentationInText) text += `Indentation${separator}`;
+      const headerRow = `${columns.join(separator)}\n`;
+      text += headerRow;
+    }
+
+    for (const [index, group] of data.entries()) {
+      const { data, children } = group;
+      const rowIndentation = this.indentationInText
+        ? `${indentation}${index + 1}${separator}`
+        : "";
+      const rowValues = columns.map((column) => data[column] ?? "");
+      const row = `${rowIndentation}${rowValues.join(separator)}\n`;
+      text += row;
+
+      if (children) {
+        text += this.generateText(
+          delimiter,
+          group.children,
+          `${indentation}${index + 1}.`,
+          false,
+        );
+      }
+    }
+
+    return text;
+  }
+
+  get csv() {
+    return this.generateText("comma");
+  }
+
+  get tsv() {
+    return this.generateText("tab");
+  }
+
+  computeRowDeclaration(data: TableRowData) {
+    const declaration: TableRowTemplate = {};
+    for (const key in data) {
+      const rowDeclaration = this.definition[key];
+      if (rowDeclaration) {
+        declaration[key] = rowDeclaration(data[key], data);
+      } else {
+        declaration[key] = data[key];
+      }
+    }
+    return declaration;
+  }
+
+  downloadData(
+    fileName = "BIM Table Data",
+    format: "json" | "tsv" | "csv" = "json",
+  ) {
+    let file: File | null = null;
+    if (format === "json") {
+      file = new File(
+        [JSON.stringify(this.value, undefined, 2)],
+        `${fileName}.json`,
+      );
+    }
+    if (format === "csv") {
+      file = new File([this.csv], `${fileName}.csv`);
+    }
+    if (format === "tsv") {
+      file = new File([this.tsv], `${fileName}.tsv`);
+    }
+    if (!file) return;
     const a = document.createElement("a");
     a.href = URL.createObjectURL(file);
     a.download = file.name;
@@ -246,30 +337,81 @@ export class Table extends Component {
     this.dispatchEvent(event);
   }
 
-  filter(queryString: string, data = this.data): TableGroupData[] {
+  filterFunction?: (queryString: string, data: TableGroupData) => boolean;
+
+  private _stringFilterFunction = (
+    queryString: string,
+    data: TableGroupData,
+  ) => {
+    const valueMatch = Object.values(data.data).some((val) => {
+      return String(val).toLowerCase().includes(queryString.toLowerCase());
+    });
+    return valueMatch;
+  };
+
+  private _queryFilterFunction = (queryString: string, row: TableGroupData) => {
+    let valueFoundInData = false;
+    const query = getQuery(queryString) ?? [];
+    for (const search of query) {
+      if ("queries" in search) {
+        valueFoundInData = false;
+        break;
+      }
+      const { condition, value } = search;
+      let { key } = search;
+      if (key.startsWith("[") && key.endsWith("]")) {
+        const _key = key.replace("[", "").replace("]", "");
+        key = _key;
+        const keys = Object.keys(row.data).filter((key) => key.includes(_key));
+        const tests = keys.map((key) =>
+          evalCondition(row.data[key], condition, value),
+        );
+        valueFoundInData = tests.some((test) => test);
+      } else {
+        valueFoundInData = evalCondition(row.data[key], condition, value);
+      }
+      if (!valueFoundInData) break;
+    }
+    return valueFoundInData;
+  };
+
+  private filter(
+    queryString: string,
+    filterFunction = this.filterFunction ?? this._stringFilterFunction,
+    data = this.data,
+  ): TableGroupData[] {
     const results: TableGroupData[] = [];
     for (const row of data) {
-      const valueFoundInData = Object.values(row.data).some((val) => {
-        return String(val).toLowerCase().includes(queryString.toLowerCase());
-      });
-
-      if (valueFoundInData) {
+      const valueMatch = filterFunction(queryString, row);
+      if (valueMatch) {
         if (this.preserveStructureOnFilter) {
           const rowToAdd: TableGroupData = { data: row.data };
           if (row.children) {
-            const childResults = this.filter(queryString, row.children);
+            const childResults = this.filter(
+              queryString,
+              filterFunction,
+              row.children,
+            );
             if (childResults.length) rowToAdd.children = childResults;
           }
           results.push(rowToAdd);
         } else {
           results.push({ data: row.data });
           if (row.children) {
-            const childResults = this.filter(queryString, row.children);
+            const childResults = this.filter(
+              queryString,
+              filterFunction,
+              row.children,
+            );
             results.push(...childResults);
           }
         }
       } else if (row.children) {
-        const childResults = this.filter(queryString, row.children);
+        const childResults = this.filter(
+          queryString,
+          filterFunction,
+          row.children,
+        );
         if (this.preserveStructureOnFilter && childResults.length) {
           results.push({
             data: row.data,

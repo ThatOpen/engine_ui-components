@@ -108,9 +108,9 @@ Finally, in your HTML file you can start to use the components!
       <bim-panel-section label="Build">
         <bim-text-input label="Tool Name" value="BCFManager"></bim-text-input>
         <bim-input label="Position" vertical>
-          <bim-number-input pref="X" min="1" value="10" max="50" sufix="m" slider></bim-number-input>
-          <bim-number-input pref="X" min="1" value="20" max="50" sufix="m" slider></bim-number-input>
-          <bim-number-input pref="X" min="1" value="30" max="50" sufix="m" slider></bim-number-input>
+          <bim-number-input pref="X" min="1" value="10" max="50" suffix="m" slider></bim-number-input>
+          <bim-number-input pref="X" min="1" value="20" max="50" suffix="m" slider></bim-number-input>
+          <bim-number-input pref="X" min="1" value="30" max="50" suffix="m" slider></bim-number-input>
         </bim-input>
         <bim-dropdown label="IFC Entity">
           <bim-option label="IFCWALL"></bim-option>

@@ -1,6 +1,7 @@
 import { TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
+import { cache } from "lit/directives/cache.js";
 import { Component } from "../../../core/Component";
 import { Table, ColumnData } from "../index";
 import { TableRowData, CellCreatedEventDetail } from "./types";
@@ -83,7 +84,19 @@ export class TableRow extends Component {
   };
 
   @state()
-  private _cells: TemplateResult[] = [];
+  private _intersecting?: boolean;
+
+  private _observer = new IntersectionObserver(
+    (entries) => {
+      this._intersecting = entries[0].isIntersecting;
+    },
+    { rootMargin: "10px" },
+  );
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._observer.observe(this);
+  }
 
   compute() {
     const indentation = this.table?.getRowIndentation(this.data) ?? 0;
@@ -131,11 +144,7 @@ export class TableRow extends Component {
 
       cells.push(cell);
     }
-    this._cells = cells;
-  }
 
-  protected render() {
-    this.compute();
     return html`
       <style>
         :host {
@@ -143,8 +152,12 @@ export class TableRow extends Component {
           grid-template-columns: ${this._columnWidths.join(" ")};
         }
       </style>
-      ${this._cells}
+      ${cells}
       <slot></slot>
     `;
+  }
+
+  protected render() {
+    return html`${cache(this._intersecting ? this.compute() : html``)}`;
   }
 }

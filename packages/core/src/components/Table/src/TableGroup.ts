@@ -53,7 +53,7 @@ export class TableGroup extends Component {
 
   private _children?: TableChildren;
 
-  @property({ type: Object, attribute: false })
+  // @property({ type: Object, attribute: false })
   data: TableGroupData = { data: {} };
 
   @property({ type: Boolean, attribute: "children-hidden", reflect: true })

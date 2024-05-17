@@ -58,7 +58,7 @@ export class NumberInput extends Component implements HasValue, HasName {
       color: var(--bim-number-input--c, var(--bim-ui_bg-contrast-100));
     }
 
-    :host([sufix]:not([pref])) input {
+    :host([suffix]:not([pref])) input {
       text-align: left;
     }
 
@@ -251,20 +251,20 @@ export class NumberInput extends Component implements HasValue, HasName {
   max?: number;
 
   /**
-   * The `sufix` property is used to specify a suffix for the value in the number input component.
+   * The `suffix` property is used to specify a suffix for the value in the number input component.
    * Similar to the `pref` property, but the suffix is displayed after the value. It could be a unit of measure,
    * a percentage symbol, etc. When the property changes, the displayed suffix updates accordingly.
    *
    * @type {String}
    * @default undefined
-   * @example <bim-number-input sufix="%"></bim-number-input>
+   * @example <bim-number-input suffix="%"></bim-number-input>
    * @example
    * const numberInput = document.createElement('bim-number-input');
-   * numberInput.sufix = '%';
+   * numberInput.suffix = '%';
    * document.body.appendChild(numberInput);
    */
   @property({ type: String, reflect: true })
-  sufix?: string;
+  suffix?: string;
 
   /**
    * The `vertical` property indicates whether the slider (if enabled) should be displayed vertically.
@@ -443,11 +443,11 @@ export class NumberInput extends Component implements HasValue, HasName {
         @focus=${this.onFocus}
         .value=${this.value.toString()}
       />
-      ${this.sufix
+      ${this.suffix
         ? html`<bim-label
             style="pointer-events: auto"
             @mousedown=${this.onSliderMouseDown}
-            .label=${this.sufix}
+            .label=${this.suffix}
           ></bim-label>`
         : null}
     `;
@@ -474,16 +474,16 @@ export class NumberInput extends Component implements HasValue, HasName {
           style="z-index: 1;"
           .label=${this.value.toString()}
         ></bim-label>
-        ${this.sufix
+        ${this.suffix
           ? html`<bim-label
               style="z-index: 1;"
-              .label=${this.sufix}
+              .label=${this.suffix}
             ></bim-label>`
           : null}
       </div>
     `;
 
-    const title = `${this.label || this.name || this.pref ? `${this.label || this.name || this.pref}: ` : ""}${this.value}${this.sufix ?? ""}`;
+    const title = `${this.label || this.name || this.pref ? `${this.label || this.name || this.pref}: ` : ""}${this.value}${this.suffix ?? ""}`;
 
     return html`
       <bim-input

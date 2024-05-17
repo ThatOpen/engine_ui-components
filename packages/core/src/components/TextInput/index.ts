@@ -1,7 +1,9 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { Component } from "../../core/Component";
 import { HasName, HasValue } from "../../core/types";
+import { getQuery } from "../../core/utils";
 
 // HTML Tag: bim-text-input
 export class TextInput extends Component implements HasName, HasValue {
@@ -27,29 +29,12 @@ export class TextInput extends Component implements HasName, HasValue {
       --bim-input--olc: var(--bim-ui_color-accent);
     }
 
-    :host([disabled]) {
-      /* --bim-input--bgc: var(--bim-ui_bg-) */
-    }
+    /* :host([disabled]) {
+      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
+    } */
   `;
 
-  @property({ type: String, reflect: true })
-  icon?: string;
-
-  @property({ type: String, reflect: true })
-  label?: string;
-
-  @property({ type: String, reflect: true })
-  name?: string;
-
-  @property({ type: String, reflect: true })
-  placeholder: string;
-
-  @property({ type: String, reflect: true })
-  value: string;
-
-  @property({ type: Boolean, reflect: true })
-  vertical: boolean;
-
+  private _debounceTimeoutID?: number;
   private _inputTypes = [
     "date",
     "datetime-local",
@@ -64,6 +49,27 @@ export class TextInput extends Component implements HasName, HasValue {
     "week",
   ];
 
+  @property({ type: String, reflect: true })
+  icon?: string;
+
+  @property({ type: String, reflect: true })
+  label?: string;
+
+  @property({ type: String, reflect: true })
+  name?: string;
+
+  @property({ type: String, reflect: true })
+  placeholder?: string;
+
+  @property({ type: String, reflect: true })
+  value: string;
+
+  @property({ type: Boolean, reflect: true })
+  vertical: boolean;
+
+  @property({ type: Number, reflect: true })
+  debounce?: number;
+
   private _type = "text";
 
   @property({ type: String, reflect: true })
@@ -77,20 +83,26 @@ export class TextInput extends Component implements HasName, HasValue {
     return this._type;
   }
 
+  get query() {
+    return getQuery(this.value);
+  }
+
   onValueChange = new Event("input");
 
   constructor() {
     super();
     this.value = "";
-    this.placeholder = "";
     this.vertical = false;
   }
 
   private onInputChange(e: Event) {
     e.stopPropagation();
     const input = e.target as HTMLInputElement;
-    this.value = input.value;
-    this.dispatchEvent(this.onValueChange);
+    clearTimeout(this._debounceTimeoutID);
+    this._debounceTimeoutID = setTimeout(() => {
+      this.value = input.value;
+      this.dispatchEvent(this.onValueChange);
+    }, this.debounce) as unknown as number;
   }
 
   protected render() {
@@ -105,7 +117,7 @@ export class TextInput extends Component implements HasName, HasValue {
           aria-label=${this.label || this.name || "Checkbox Input"}
           .type=${this.type}
           .value=${this.value}
-          .placeholder=${this.placeholder}
+          placeholder=${ifDefined(this.placeholder)}
           @input=${this.onInputChange}
         />
       </bim-input>

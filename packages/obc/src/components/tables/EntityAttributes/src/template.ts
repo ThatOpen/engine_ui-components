@@ -65,7 +65,6 @@ async function processEntityAttributes(
 
   const entityRow: BUI.TableGroupData = {
     data: {},
-    id: attributes.GlobalId?.value,
   };
 
   for (const name in attributes) {
