@@ -8,6 +8,7 @@ import {
   TableRowData,
   TableRowTemplate,
 } from "./src";
+import { evalCondition, getQuery } from "../../core/utils";
 
 export interface ColumnData {
   name: string;
@@ -107,29 +108,43 @@ export class Table extends Component {
     tab: "\t",
   };
 
-  private _queryString: string | null = null;
-
   get value() {
     if (this.queryString) return this._filteredData;
     return this.data;
   }
 
   private _expandedBeforeSearch?: boolean;
+  private _queryString: string | null = null;
 
   @property({ type: String, attribute: "search-string", reflect: true })
-  set queryString(value: string | null) {
+  set queryString(_value: string | null) {
+    const value = _value && _value.trim() !== "" ? _value.trim() : null;
     this._queryString = value;
-    if (this.preserveStructureOnFilter) {
-      if (value && this._expandedBeforeSearch === undefined) {
-        this._expandedBeforeSearch = this.expanded;
+    if (value) {
+      const query = getQuery(value);
+      if (query) {
+        this.filterFunction = this._queryFilterFunction;
+        this._filteredData = this.filter(value);
+      } else {
+        this.filterFunction = this._stringFilterFunction;
+        this._filteredData = this.filter(value);
       }
-      if (value) this.expanded = true;
-      if (!value && this._expandedBeforeSearch !== undefined) {
+      if (this.preserveStructureOnFilter) {
+        if (this._expandedBeforeSearch === undefined) {
+          this._expandedBeforeSearch = this.expanded;
+        }
+        this.expanded = true;
+      }
+    } else {
+      if (
+        this.preserveStructureOnFilter &&
+        this._expandedBeforeSearch !== undefined
+      ) {
         this.expanded = this._expandedBeforeSearch;
         this._expandedBeforeSearch = undefined;
       }
+      this._filteredData = this.data;
     }
-    this._filteredData = value ? this.filter(value) : this.data;
   }
 
   get queryString() {
@@ -322,28 +337,59 @@ export class Table extends Component {
     this.dispatchEvent(event);
   }
 
-  validationFunction = (queryString: string, data: TableGroupData) => {
+  filterFunction?: (queryString: string, data: TableGroupData) => boolean;
+
+  private _stringFilterFunction = (
+    queryString: string,
+    data: TableGroupData,
+  ) => {
     const valueMatch = Object.values(data.data).some((val) => {
       return String(val).toLowerCase().includes(queryString.toLowerCase());
     });
     return valueMatch;
   };
 
+  private _queryFilterFunction = (queryString: string, row: TableGroupData) => {
+    let valueFoundInData = false;
+    const query = getQuery(queryString) ?? [];
+    for (const search of query) {
+      if ("queries" in search) {
+        valueFoundInData = false;
+        break;
+      }
+      const { condition, value } = search;
+      let { key } = search;
+      if (key.startsWith("[") && key.endsWith("]")) {
+        const _key = key.replace("[", "").replace("]", "");
+        key = _key;
+        const keys = Object.keys(row.data).filter((key) => key.includes(_key));
+        const tests = keys.map((key) =>
+          evalCondition(row.data[key], condition, value),
+        );
+        valueFoundInData = tests.some((test) => test);
+      } else {
+        valueFoundInData = evalCondition(row.data[key], condition, value);
+      }
+      if (!valueFoundInData) break;
+    }
+    return valueFoundInData;
+  };
+
   private filter(
     queryString: string,
-    validationFunction = this.validationFunction,
+    filterFunction = this.filterFunction ?? this._stringFilterFunction,
     data = this.data,
   ): TableGroupData[] {
     const results: TableGroupData[] = [];
     for (const row of data) {
-      const valueMatch = validationFunction(queryString, row);
+      const valueMatch = filterFunction(queryString, row);
       if (valueMatch) {
         if (this.preserveStructureOnFilter) {
           const rowToAdd: TableGroupData = { data: row.data };
           if (row.children) {
             const childResults = this.filter(
               queryString,
-              validationFunction,
+              filterFunction,
               row.children,
             );
             if (childResults.length) rowToAdd.children = childResults;
@@ -354,7 +400,7 @@ export class Table extends Component {
           if (row.children) {
             const childResults = this.filter(
               queryString,
-              validationFunction,
+              filterFunction,
               row.children,
             );
             results.push(...childResults);
@@ -363,7 +409,7 @@ export class Table extends Component {
       } else if (row.children) {
         const childResults = this.filter(
           queryString,
-          validationFunction,
+          filterFunction,
           row.children,
         );
         if (this.preserveStructureOnFilter && childResults.length) {

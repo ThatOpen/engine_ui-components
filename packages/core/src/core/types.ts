@@ -59,6 +59,7 @@ export type ConditionFunctions = {
 // Rules:
 // 1. Enclose the value in '' is optional. The engine tries to guess the best it can the data type. If you really need to say for example 25 is a string and not a number, then you can enclose it in quotations: '25'.
 // 2. You cannot negate greater, greater than, less, and less than.
+// 3. In cases where you want to evaluate a condition for some keys with a common string in the name (for example: Name, LongName, etc), you can enclose the key in square brackets: [Name]?Wall
 
 // Examples:
 // $[Name=Lisa & Age=25]

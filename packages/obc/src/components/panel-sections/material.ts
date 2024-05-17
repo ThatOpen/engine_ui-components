@@ -45,7 +45,7 @@ const metalnessTemplate = (material: THREE.Material) => {
       slider
       name="metalness"
       label="Metalness"
-      sufix="%"
+      suffix="%"
       min="0"
       value=${metalness * 100}
       max="100"
@@ -69,7 +69,7 @@ const roughnessTemplate = (material: THREE.Material) => {
     slider
     name="roughness"
     label="Roughness"
-    sufix="%"
+    suffix="%"
     min="0"
     value=${roughness * 100}
     max="100"

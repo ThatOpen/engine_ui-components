@@ -153,7 +153,6 @@ const [table, updateTable] = CUI.tables.entityAttributes({
 
 table.expanded = true;
 table.indentationInText = true;
-table.preserveStructureOnFilter = true;
 
 const tablePanel = grid.getContainer("panels", "table");
 tablePanel.append(table);
@@ -265,47 +264,14 @@ copyTSVBtn.addEventListener("click", async () => {
 
 // Searching
 const searchBox = document.getElementById("search-box") as BUI.TextInput;
-function evalCondition(
-  left: string | boolean | number,
-  condition: BUI.QueryCondition,
-  right: string | boolean | number,
-) {
-  let result = false;
-  switch (condition) {
-    case "=":
-      result = left === right;
-      break;
-
-    case "?":
-      result = String(left).includes(String(right));
-      break;
-
-    default:
-      break;
-  }
-  return result;
-}
-
-table.validationFunction = (_query: string, data: BUI.TableGroupData) => {
-  let valueFoundInData = true;
-  try {
-    const query = searchBox.query;
-    for (const search of query) {
-      if (!valueFoundInData) continue;
-      if ("queries" in search) {
-        valueFoundInData = false;
-        continue;
-      }
-      const { key, condition, value } = search;
-      valueFoundInData = evalCondition(data.data[key], condition, value);
-    }
-    return valueFoundInData;
-  } catch (error) {
-    valueFoundInData = false;
-    return false;
-  }
-};
-
 searchBox.addEventListener("input", () => {
-  table.queryString = searchBox.value !== "" ? searchBox.value : null;
+  table.queryString = searchBox.value;
+});
+
+const preserveStrcuture = document.getElementById(
+  "preserve-structure",
+) as BUI.Checkbox;
+table.preserveStructureOnFilter = preserveStrcuture.checked;
+preserveStrcuture?.addEventListener("change", () => {
+  table.preserveStructureOnFilter = preserveStrcuture.checked;
 });

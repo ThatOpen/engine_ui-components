@@ -39,7 +39,10 @@
         <bim-button id="copy-tsv" label="Copy as TSV"></bim-button>
         <bim-button id="export-json" label="Export to JSON"></bim-button>
         <bim-button id="export-ifc" label="Export IFC"></bim-button>
-        <bim-text-input id="search-box" placeholder="Search"></bim-text-input>
+        <div style="display: flex; gap: 0.5rem">
+          <bim-text-input id="search-box" type="search" placeholder="Search" debounce="250"></bim-text-input>
+          <bim-checkbox id="preserve-structure" label="Preserve Structure" inverted checked></bim-checkbox>
+        </div>
       </bim-panel-section>
     </bim-panel>
   </bim-grid>

@@ -253,7 +253,7 @@ export class ColorInput extends Component implements HasValue, HasName {
               ? html`<bim-number-input
                   @input=${onOpacityInput}
                   slider
-                  sufix="%"
+                  suffix="%"
                   min="0"
                   value=${this.opacity}
                   max="100"
