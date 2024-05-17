@@ -31,9 +31,18 @@ const globalStyles = css`
     --bim-ui_bg-contrast-80: hsl(210 10% 80%);
     --bim-ui_bg-contrast-100: hsl(210 10% 95%);
 
+    /* Main/accent app color that contrasts with bg-base */
+    --bim-ui_bg-main-contrast: #6528d7;
+    --bim-ui_bg-accent-contrast: #6528d7;
+
     /* Colors */
     --bim-ui_color-main: #6528d7;
     --bim-ui_color-accent: #bcf124;
+
+    --bim-ui_main-base: #6528d7;
+    --bim-ui_main-contrast: hsl(210 10% 95%);
+    --bim-ui_accent-base: #bcf124;
+    --bim-ui_accent-contrast: hsl(210 10% 5%);
 
     /* Sizes */
     --bim-ui_size-4xs: 0.375rem;

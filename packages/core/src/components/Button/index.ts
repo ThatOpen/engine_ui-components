@@ -57,8 +57,8 @@ export class Button extends Component {
 
     :host(:hover) .button,
     :host(:hover) .children {
-      --bim-label--c: white;
-      --bim-icon--c: white;
+      --bim-label--c: var(--bim-ui_main-contrast);
+      --bim-icon--c: var(--bim-ui_main-contrast);
       fill: white;
       background-color: var(--bim-ui_color-main);
     }
@@ -68,7 +68,8 @@ export class Button extends Component {
     }
 
     :host([active]) .button {
-      --bim-label--c: white;
+      --bim-label--c: var(--bim-ui_main-contrast);
+      --bim-icon--c: var(--bim-ui_main-contrast);
       background-color: var(--bim-ui_color-main);
     }
 
@@ -138,7 +139,6 @@ export class Button extends Component {
 
   /**
    * A boolean attribute which, if present, indicates that the label should be hidden.
-   * @type {boolean}
    * @default false
    * @example <bim-button label="Click me" label-hidden></bim-button>
    * @example const button = document.createElement('bim-button');
@@ -146,11 +146,10 @@ export class Button extends Component {
    *          button.labelHidden = true;
    */
   @property({ type: Boolean, attribute: "label-hidden", reflect: true })
-  labelHidden: boolean;
+  labelHidden = false;
 
   /**
    * A boolean attribute which, if present, indicates that the button is active.
-   * @type {boolean}
    * @default false
    * @example <bim-button label="Click me" active></bim-button>
    * @example const button = document.createElement('bim-button');
@@ -158,11 +157,10 @@ export class Button extends Component {
    *          button.active = true;
    */
   @property({ type: Boolean, reflect: true })
-  active: boolean;
+  active = false;
 
   /**
    * A boolean attribute which, if present, indicates that the button is disabled.
-   * @type {boolean}
    * @default false
    * @example <bim-button label="Click me" disabled></bim-button>
    * @example const button = document.createElement('bim-button');
@@ -170,7 +168,7 @@ export class Button extends Component {
    *          button.disabled = true;
    */
   @property({ type: Boolean, reflect: true, attribute: "disabled" })
-  disabled: boolean;
+  disabled = false;
 
   /**
    * The icon to be displayed on the button.
@@ -185,7 +183,6 @@ export class Button extends Component {
 
   /**
    * A boolean attribute which, if present, indicates that the button should be displayed vertically.
-   * @type {boolean}
    * @default false
    * @example <bim-button label="Click me" vertical></bim-button>
    * @example const button = document.createElement('bim-button');
@@ -193,7 +190,7 @@ export class Button extends Component {
    *          button.vertical = true;
    */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   /**
    * The time (in milliseconds) to wait before showing the tooltip when hovering over the button.
@@ -209,7 +206,6 @@ export class Button extends Component {
 
   /**
    * A boolean attribute which, if present, indicates that the tooltip should be visible.
-   * @type {boolean}
    * @default false
    * @example <bim-button label="Click me" tooltip-visible></bim-button>
    * @example const button = document.createElement('bim-button');
@@ -217,7 +213,7 @@ export class Button extends Component {
    *          button.tooltipVisible = true;
    */
   @property({ type: Boolean, attribute: "tooltip-visible", reflect: true })
-  tooltipVisible: boolean;
+  tooltipVisible = false;
 
   /**
    * The title of the tooltip to be displayed when hovering over the button.
@@ -264,11 +260,6 @@ export class Button extends Component {
 
   constructor() {
     super();
-    this.labelHidden = false;
-    this.active = false;
-    this.disabled = false;
-    this.vertical = false;
-    this.tooltipVisible = false;
     this.mouseLeave = true;
     this.addEventListener("click", (e) => e.stopPropagation());
   }

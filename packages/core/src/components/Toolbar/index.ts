@@ -3,14 +3,13 @@ import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { ToolbarSection } from "../ToolbarSection";
 import { Manager } from "../../core/Manager";
-import { HasName } from "../../core/types";
 
 export class Toolbar extends Component {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
       background-color: var(--bim-ui_bg-base);
-      border-radius: var(--bim-ui_size-base);
+      border-radius: var(--bim-ui_size-2xs);
       display: block;
     }
 
@@ -30,6 +29,7 @@ export class Toolbar extends Component {
     :host([vertical]) {
       width: min-content;
       border-radius: var(--bim-ui_size-2xs);
+      border: 1px solid var(--bim-ui_bg-contrast-20);
     }
 
     ::slotted(bim-toolbar-section:not(:last-child)) {

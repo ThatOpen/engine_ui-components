@@ -25,7 +25,6 @@ import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
 import { Toolbar } from "./Toolbar";
 import { ToolbarGroup } from "./ToolbarGroup";
-import { ToolbarsContainer } from "./ToolbarsContainer";
 import { ToolbarSection } from "./ToolbarSection";
 import { Viewport } from "./Viewport";
 
@@ -55,7 +54,6 @@ declare global {
     "bim-text-input": TextInput;
     "bim-toolbar": Toolbar;
     "bim-toolbar-group": ToolbarGroup;
-    "bim-toolbars-container": ToolbarsContainer;
     "bim-toolbar-section": ToolbarSection;
     "bim-viewport": Viewport;
   }
@@ -96,6 +94,5 @@ export * from "./Tabs";
 export * from "./TextInput";
 export * from "./Toolbar";
 export * from "./ToolbarGroup";
-export * from "./ToolbarsContainer";
 export * from "./ToolbarSection";
 export * from "./Viewport";

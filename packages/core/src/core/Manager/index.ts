@@ -77,10 +77,6 @@ export class Manager {
       "bim-toolbar-section",
       components.ToolbarSection,
     );
-    Manager.defineCustomElement(
-      "bim-toolbars-container",
-      components.ToolbarsContainer,
-    );
     Manager.defineCustomElement("bim-viewport", components.Viewport);
   }
 
