@@ -20,7 +20,7 @@ export class Option extends Component {
       cursor: pointer;
       background-color: color-mix(
         in lab,
-        var(--bim-selector-input--bgc, var(--bim-ui_bg-contrast-20)),
+        var(--bim-selector--bgc, var(--bim-ui_bg-contrast-20)),
         var(--bim-ui_color-main) 10%
       );
     }

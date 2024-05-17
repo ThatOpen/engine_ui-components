@@ -76,7 +76,7 @@ Then, you need to tell the library to register the components, so you can use th
 ```ts
 import { UIManager } from "@thatopen/ui"
 
-UIManager.registerComponents()
+UIManager.init()
 ```
 
 Finally, in your HTML file you can start to use the components! 

@@ -11,7 +11,7 @@ import { NumberInput } from "./NumberInput";
 import { Option } from "./Option";
 import { Panel } from "./Panel";
 import { PanelSection } from "./PanelSection";
-import { SelectorInput } from "./SelectorInput";
+import { Selector } from "./Selector";
 import {
   Table,
   TableRow,
@@ -23,9 +23,7 @@ import {
 } from "./Table";
 import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
-import { Toolbar } from "./Toolbar";
-import { ToolbarGroup } from "./ToolbarGroup";
-import { ToolbarSection } from "./ToolbarSection";
+import { Toolbar, ToolbarGroup, ToolbarSection } from "./Toolbar";
 import { Viewport } from "./Viewport";
 
 declare global {
@@ -43,7 +41,7 @@ declare global {
     "bim-option": Option;
     "bim-panel": Panel;
     "bim-panel-section": PanelSection;
-    "bim-selector-input": SelectorInput;
+    "bim-selector": Selector;
     "bim-table": Table;
     "bim-tabs": Tabs;
     "bim-tab": Tab;
@@ -88,11 +86,11 @@ export * from "./NumberInput";
 export * from "./Option";
 export * from "./Panel";
 export * from "./PanelSection";
-export * from "./SelectorInput";
+export * from "./Selector";
 export * from "./Table";
 export * from "./Tabs";
 export * from "./TextInput";
-export * from "./Toolbar";
-export * from "./ToolbarGroup";
-export * from "./ToolbarSection";
+export * from "./Toolbar/src/Toolbar";
+export * from "./Toolbar/src/Group";
+export * from "./Toolbar/src/Section";
 export * from "./Viewport";

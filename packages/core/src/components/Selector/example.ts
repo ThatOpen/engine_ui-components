@@ -1,10 +1,10 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const selectorInput =
-  document.body.querySelector<BUI.SelectorInput>("bim-selector-input")!;
+  document.body.querySelector<BUI.Selector>("bim-selector")!;
 
 const customOption = selectorInput.querySelector<BUI.Option>(
   "bim-option[label='Custom']",

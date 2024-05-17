@@ -1,7 +1,7 @@
 import { css, html } from "lit";
-import { Component } from "../../core/Component";
-import { ToolbarGroup } from "../ToolbarGroup";
-import { HasName } from "../../core/types";
+import { Component } from "../../../core/Component";
+import { ToolbarGroup } from "./Group";
+import { HasName } from "../../../core/types";
 
 export class ToolbarSection extends Component implements HasName {
   static styles = css`

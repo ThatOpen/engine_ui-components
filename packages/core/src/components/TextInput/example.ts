@@ -1,6 +1,6 @@
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const nameInput = document.querySelector<BUI.TextInput>(
   "bim-text-input[name='name']",

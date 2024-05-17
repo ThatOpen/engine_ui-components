@@ -3,7 +3,7 @@ import * as BUI from "@thatopen/ui";
 import * as WEBIFC from "web-ifc";
 import * as CUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const grid = document.querySelector("bim-grid")!;
 grid.layouts = {

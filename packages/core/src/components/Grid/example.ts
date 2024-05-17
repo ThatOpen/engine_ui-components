@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const grid = document.body.querySelector<BUI.Grid>("bim-grid")!;
 grid.layouts = {
@@ -55,10 +55,10 @@ const panel = BUI.Component.create(() => {
     <bim-panel label="My Panel!">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
-        <bim-selector-input label="Click me!">
+        <bim-selector label="Click me!">
           <bim-option label="Option A"></bim-option>
           <bim-option label="Option B"></bim-option>
-        </bim-selector-input>
+        </bim-selector>
       </bim-panel-section>
     </bim-panel>
   `;

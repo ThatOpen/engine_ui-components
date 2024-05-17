@@ -2,7 +2,7 @@
 import { ref } from "lit/directives/ref.js";
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const table = document.body.querySelector<BUI.Table>("bim-table")!;
 
@@ -20,22 +20,22 @@ table.definition = {
     }
     if (Name === "Laura") {
       const onChange = (e: Event) => {
-        const selectorInput = e.target as BUI.SelectorInput;
+        const selectorInput = e.target as BUI.Selector;
         alert(`${data.Name}'s age is ${selectorInput.value}.`);
         data.Age = selectorInput.value;
       };
 
       const onCreated = (e?: Element) => {
         if (!e) return;
-        const input = e as BUI.SelectorInput;
+        const input = e as BUI.Selector;
         input.value = data.Age;
       };
       return BUI.html`
-        <bim-selector-input ${ref(onCreated)} @change=${onChange}>
+        <bim-selector ${ref(onCreated)} @change=${onChange}>
           <bim-option label="👶" value="3"></bim-option>
           <bim-option label="👨" value="32"></bim-option>
           <bim-option label="👴" value="80"></bim-option>
-        </bim-selector-input>
+        </bim-selector>
       `;
     }
     return value;
