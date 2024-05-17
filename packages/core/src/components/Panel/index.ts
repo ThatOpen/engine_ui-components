@@ -23,10 +23,6 @@ export class Panel extends Component implements HasName, HasValue {
         display: none;
       }
 
-      /* :host(:not([hidden])) {
-        display: none;
-      } */
-
       .parent {
         display: flex;
         flex: 1;

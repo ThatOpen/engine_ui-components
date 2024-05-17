@@ -1,33 +1,35 @@
 import { css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { ToolbarSection } from "../ToolbarSection";
-import { Button } from "../Button";
 import { Manager } from "../../core/Manager";
 import { HasName } from "../../core/types";
 
-export class Toolbar extends Component implements HasName {
+export class Toolbar extends Component {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
       background-color: var(--bim-ui_bg-base);
-      border-radius: var(--bim-ui_size-4xs);
-    }
-
-    :host([active]) {
+      border-radius: var(--bim-ui_size-base);
       display: block;
     }
 
-    :host(:not([active])) {
+    :host([hidden]) {
       display: none;
     }
 
     .parent {
       display: flex;
-      align-items: center;
+      width: min-content;
     }
 
     :host([vertical]) .parent {
       flex-direction: column;
+    }
+
+    :host([vertical]) {
+      width: min-content;
+      border-radius: var(--bim-ui_size-2xs);
     }
 
     ::slotted(bim-toolbar-section:not(:last-child)) {
@@ -41,42 +43,15 @@ export class Toolbar extends Component implements HasName {
     }
   `;
 
-  static properties = {
-    label: { type: String, reflect: true },
-    icon: { type: String, reflect: true },
-    labelsHidden: { type: Boolean, attribute: "labels-hidden", reflect: true },
-    vertical: { type: Boolean, reflect: true },
-    gridArea: { type: String, attribute: false },
-    active: { type: Boolean, reflect: true },
-  };
+  @property({ type: String, reflect: true })
+  icon?: string;
 
-  declare label: string;
-  declare icon?: string;
-  declare labelsHidden: boolean;
-
-  private _managerID = Manager.newRandomId();
-
-  private _active = false;
-
-  set active(value: boolean) {
-    this._active = value;
-    this.activationButton.active = value;
-    if (value) {
-      const parentChildren = this.parentElement?.children ?? [];
-      for (const child of parentChildren) {
-        if (child instanceof Toolbar && child !== this) {
-          child.active = false;
-        }
-      }
-    }
-  }
-
-  get active() {
-    return this._active;
-  }
+  @property({ type: Boolean, attribute: "labels-hidden", reflect: true })
+  labelsHidden = false;
 
   private _vertical = false;
 
+  @property({ type: Boolean, reflect: true })
   set vertical(value: boolean) {
     this._vertical = value;
     this.updateSections();
@@ -86,51 +61,46 @@ export class Toolbar extends Component implements HasName {
     return this._vertical;
   }
 
-  private _gridArea: string = "";
+  private _managerID = Manager.newRandomId();
 
-  get gridArea() {
-    return this._gridArea;
+  private _hidden = false;
+
+  set hidden(value: boolean) {
+    this._hidden = value;
+    this.dispatchEvent(new Event("hiddenchange"));
   }
 
-  set gridArea(value: string) {
-    this._gridArea = value;
-    this.style.gridArea = `toolbar-${value}`;
+  get hidden() {
+    return this._hidden;
   }
 
-  activationButton: Button = document.createElement("bim-button");
-
-  constructor() {
-    super();
-    this.setActivationButton();
-  }
-
-  private setActivationButton() {
-    this.activationButton.draggable = Manager.config.draggableToolbars;
-    this.activationButton.addEventListener(
-      "click",
-      () => (this.active = !this.active),
-    );
-    this.activationButton.setAttribute("data-ui-manager-id", this._managerID);
-    this.activationButton.addEventListener("dragstart", (e) => {
-      const id = this.getAttribute("data-ui-manager-id");
-      if (e.dataTransfer && id) {
-        e.dataTransfer.setData("id", id);
-        e.dataTransfer.effectAllowed = "move";
-      }
-      const containers = document.querySelectorAll("bim-toolbars-container");
-      for (const container of containers) {
-        if (container === this.parentElement) continue;
-        container.dropping = true;
-      }
-    });
-    this.activationButton.addEventListener("dragend", (e) => {
-      if (e.dataTransfer) e.dataTransfer.clearData();
-      const containers = document.querySelectorAll("bim-toolbars-container");
-      for (const container of containers) {
-        container.dropping = false;
-      }
-    });
-  }
+  // private setActivationButton() {
+  //   this.activationButton.draggable = Manager.config.draggableToolbars;
+  //   this.activationButton.addEventListener(
+  //     "click",
+  //     () => (this.hidden = !this.hidden),
+  //   );
+  //   this.activationButton.setAttribute("data-ui-manager-id", this._managerID);
+  //   this.activationButton.addEventListener("dragstart", (e) => {
+  //     const id = this.getAttribute("data-ui-manager-id");
+  //     if (e.dataTransfer && id) {
+  //       e.dataTransfer.setData("id", id);
+  //       e.dataTransfer.effectAllowed = "move";
+  //     }
+  //     const containers = document.querySelectorAll("bim-toolbars-container");
+  //     for (const container of containers) {
+  //       if (container === this.parentElement) continue;
+  //       container.dropping = true;
+  //     }
+  //   });
+  //   this.activationButton.addEventListener("dragend", (e) => {
+  //     if (e.dataTransfer) e.dataTransfer.clearData();
+  //     const containers = document.querySelectorAll("bim-toolbars-container");
+  //     for (const container of containers) {
+  //       container.dropping = false;
+  //     }
+  //   });
+  // }
 
   private updateSections() {
     const children = this.children;
@@ -147,15 +117,7 @@ export class Toolbar extends Component implements HasName {
     this.setAttribute("data-ui-manager-id", this._managerID);
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.activationButton.remove();
-  }
-
   render() {
-    this.activationButton.label = this.label;
-    this.activationButton.active = this.active;
-    this.activationButton.icon = this.icon;
     return html`
       <div class="parent">
         <slot @slotchange=${this.updateSections}></slot>
