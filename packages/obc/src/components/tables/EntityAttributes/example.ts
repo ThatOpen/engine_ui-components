@@ -3,7 +3,7 @@ import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 import * as CUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const grid = document.getElementById("grid") as BUI.Grid;
 grid.layouts = {

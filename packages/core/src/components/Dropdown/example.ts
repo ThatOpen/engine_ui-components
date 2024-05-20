@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const dropdown = document.body.querySelector<BUI.Dropdown>("bim-dropdown")!;
 dropdown.addEventListener("change", () => {

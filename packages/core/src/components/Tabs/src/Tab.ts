@@ -15,11 +15,16 @@ export class Tab extends Component {
     }
   `;
 
+  private _defaultName = "__unnamed__";
+
   @property({ type: String, reflect: true })
-  name?: string;
+  name = this._defaultName;
 
   @property({ type: String, reflect: true })
   label?: string;
+
+  @property({ type: String, reflect: true })
+  icon?: string;
 
   private _hidden = false;
 
@@ -31,6 +36,16 @@ export class Tab extends Component {
 
   get hidden() {
     return this._hidden;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    const { parentElement } = this;
+    if (!parentElement) return;
+    if (this.name === this._defaultName) {
+      const index = [...parentElement.children].indexOf(this);
+      this.name = `${this._defaultName}${index}`;
+    }
   }
 
   private onSlotChange(e: any) {

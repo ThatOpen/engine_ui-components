@@ -2,7 +2,7 @@ import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const grid = document.querySelector("bim-grid")!;
 grid.layouts = {

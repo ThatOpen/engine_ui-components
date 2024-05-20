@@ -5,7 +5,7 @@ import * as OBF from "@thatopen/components-front";
 import * as FRAGS from "@thatopen/fragments";
 import * as CUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 const grid = document.getElementById("grid") as BUI.Grid;
 grid.layouts = {

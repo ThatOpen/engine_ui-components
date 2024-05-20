@@ -4,8 +4,8 @@ import { Component } from "../../core/Component";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 
-// HTML tag: bim-selector-input
-export class SelectorInput extends Component implements HasValue, HasName {
+// HTML tag: bim-selector
+export class Selector extends Component implements HasValue, HasName {
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);

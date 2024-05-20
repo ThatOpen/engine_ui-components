@@ -1,6 +1,6 @@
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();
 
 /* MD
   ## Leveling up your app with custom components! 🔌
@@ -30,7 +30,7 @@ const statelessPanelSection = BUI.Component.create<BUI.PanelSection>(() => {
 /* MD
   :::warning
 
-  Remember to first call `UIManager.registerComponents()` before anything else!
+  Remember to first call `UIManager.init()` before anything else!
 
   :::
 

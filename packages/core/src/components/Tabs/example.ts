@@ -1,3 +1,3 @@
 import * as BUI from "../..";
 
-BUI.Manager.registerComponents();
+BUI.Manager.init();

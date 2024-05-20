@@ -1,5 +1,5 @@
 import { css, html } from "lit";
-import { Component } from "../../core/Component";
+import { Component } from "../../../core/Component";
 
 export class ToolbarGroup extends Component {
   static styles = css`

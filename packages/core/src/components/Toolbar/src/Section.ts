@@ -1,15 +1,15 @@
 import { css, html } from "lit";
-import { Component } from "../../core/Component";
-import { ToolbarGroup } from "../ToolbarGroup";
-import { HasName } from "../../core/types";
+import { Component } from "../../../core/Component";
+import { ToolbarGroup } from "./Group";
+import { HasName } from "../../../core/types";
 
 export class ToolbarSection extends Component implements HasName {
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);
       --bim-label--c: var(--bim-ui_bg-contrast-60);
-      width: 100%;
-      height: 100%;
+      display: block;
+      flex: 1;
     }
 
     :host(:not([vertical])) ::slotted(bim-button[vertical]) {
@@ -23,8 +23,6 @@ export class ToolbarSection extends Component implements HasName {
       gap: 0.5rem;
       align-items: center;
       padding: 0.5rem;
-      height: 100%;
-      justify-content: space-between;
     }
 
     :host([vertical]) .parent {
@@ -83,10 +81,6 @@ export class ToolbarSection extends Component implements HasName {
       if (child instanceof ToolbarGroup) child.vertical = this.vertical;
       child.toggleAttribute("label-hidden", this.vertical);
     }
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
   }
 
   render() {

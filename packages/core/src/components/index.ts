@@ -9,10 +9,8 @@ import { Input } from "./Input";
 import { Label } from "./Label";
 import { NumberInput } from "./NumberInput";
 import { Option } from "./Option";
-import { Panel } from "./Panel";
-import { PanelsContainer } from "./PanelsContainer";
-import { PanelSection } from "./PanelSection";
-import { SelectorInput } from "./SelectorInput";
+import { Panel, PanelSection } from "./Panel";
+import { Selector } from "./Selector";
 import {
   Table,
   TableRow,
@@ -24,10 +22,7 @@ import {
 } from "./Table";
 import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
-import { Toolbar } from "./Toolbar";
-import { ToolbarGroup } from "./ToolbarGroup";
-import { ToolbarsContainer } from "./ToolbarsContainer";
-import { ToolbarSection } from "./ToolbarSection";
+import { Toolbar, ToolbarGroup, ToolbarSection } from "./Toolbar";
 import { Viewport } from "./Viewport";
 
 declare global {
@@ -44,9 +39,8 @@ declare global {
     "bim-number-input": NumberInput;
     "bim-option": Option;
     "bim-panel": Panel;
-    "bim-panels-container": PanelsContainer;
     "bim-panel-section": PanelSection;
-    "bim-selector-input": SelectorInput;
+    "bim-selector": Selector;
     "bim-table": Table;
     "bim-tabs": Tabs;
     "bim-tab": Tab;
@@ -57,7 +51,6 @@ declare global {
     "bim-text-input": TextInput;
     "bim-toolbar": Toolbar;
     "bim-toolbar-group": ToolbarGroup;
-    "bim-toolbars-container": ToolbarsContainer;
     "bim-toolbar-section": ToolbarSection;
     "bim-viewport": Viewport;
   }
@@ -90,15 +83,13 @@ export * from "./Input";
 export * from "./Label";
 export * from "./NumberInput";
 export * from "./Option";
-export * from "./Panel";
-export * from "./PanelsContainer";
-export * from "./PanelSection";
-export * from "./SelectorInput";
+export * from "./Panel/src/Panel";
+export * from "./Panel/src/Section";
+export * from "./Selector";
 export * from "./Table";
 export * from "./Tabs";
 export * from "./TextInput";
-export * from "./Toolbar";
-export * from "./ToolbarGroup";
-export * from "./ToolbarsContainer";
-export * from "./ToolbarSection";
+export * from "./Toolbar/src/Toolbar";
+export * from "./Toolbar/src/Group";
+export * from "./Toolbar/src/Section";
 export * from "./Viewport";
