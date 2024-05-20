@@ -1,29 +1,10 @@
+/* eslint-disable no-alert */
 import * as WEBIFC from "web-ifc";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 import * as CUI from "../..";
 
 BUI.Manager.init();
-
-const grid = document.getElementById("grid") as BUI.Grid;
-grid.layouts = {
-  main: `
-  "c-panels-left viewer" 1fr
-  "c-panels-table c-panels-table" minmax(auto, 450px)
-  /24rem 1fr
-  `,
-};
-
-grid.layout = "main";
-
-const panel = document.querySelector<BUI.PanelSection>(
-  "bim-panel[name='entityAttributes']",
-)!;
-
-const leftPanelContainer = grid.getContainer("panels", "left");
-leftPanelContainer.append(panel);
-
-const viewport = document.getElementById("viewer-container") as BUI.Viewport;
 
 const components = new OBC.Components();
 
@@ -34,11 +15,13 @@ const sceneComponent = new OBC.SimpleScene(components);
 sceneComponent.setup();
 world.scene = sceneComponent;
 
+const viewport = document.createElement("bim-viewport");
 const rendererComponent = new OBC.SimpleRenderer(components, viewport);
 world.renderer = rendererComponent;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
+cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
 
 viewport.addEventListener("resize", () => {
   rendererComponent.resize();
@@ -51,7 +34,7 @@ const grids = components.get(OBC.Grids);
 grids.create(world);
 
 /* MD 
-  ## Displaying data the right way 🔥🔥
+  ## Displaying data the advanced way 🔥🔥
   ---
   What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!
 
@@ -59,7 +42,7 @@ grids.create(world);
   First things first... let's load a model 👇
   */
 
-const ifcLoader = components.get(OBC.FragmentIfcLoader);
+const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 const file = await fetch("/resources/testing.ifc");
 const buffer = await file.arrayBuffer();
@@ -82,7 +65,7 @@ await indexer.process(model);
 
 /* MD
   ### Preconfiguring the table
-  The entities table has some optional configurations. One of them is the ability to modify the styles of the cell value based on the attribute value (e.g., colorizing entities with a specific string in its name, or numeric values based on a codition ). For it, let's first create a simple base style that all our cell overwrites will share:
+  The attributes table has some optional configurations. One of them is the ability to modify the styles of the cell value based on the attribute value (e.g., colorizing entities with a specific string in its name, or numeric values based on a codition ). For it, let's first create a simple base style that all our cell overwrites will share:
   */
 
 const baseStyle: Record<string, string> = {
@@ -144,52 +127,48 @@ const tableDefinition: BUI.TableDefinition = {
   Now its time to create the table using the predefine functional component that ships with the library 🙂
   */
 
-const [table, updateTable] = CUI.tables.entityAttributes({
+const [attributesTable, updateAttributesTable] = CUI.tables.entityAttributes({
   components,
   model,
   expressIDs: [],
   tableDefinition,
 });
 
-table.expanded = true;
-table.indentationInText = true;
+attributesTable.expanded = true;
+attributesTable.indentationInText = true;
+attributesTable.preserveStructureOnFilter = true;
 
-const tablePanel = grid.getContainer("panels", "table");
-tablePanel.append(table);
+// const dropdown = BUI.Component.create(() => {
+//   const dropdown = document.createElement("bim-dropdown");
+//   dropdown.label = "ExpressIDs";
+//   dropdown.multiple = true;
+//   const props = model.getLocalProperties();
+//   if (props) {
+//     for (const expressID in props) {
+//       const { type } = props[expressID];
+//       if (type !== WEBIFC.IFCWALL) continue;
+//       const option = document.createElement("bim-option");
+//       const entityTypeName = OBC.IfcCategoryMap[type];
+//       option.label = `${expressID}: ${entityTypeName}`;
+//       option.value = expressID;
+//       dropdown.append(option);
+//     }
+//   }
 
-const dropdown = BUI.Component.create(() => {
-  const dropdown = document.createElement("bim-dropdown");
-  dropdown.label = "ExpressIDs";
-  dropdown.multiple = true;
-  const props = model.getLocalProperties();
-  if (props) {
-    for (const expressID in props) {
-      const { type } = props[expressID];
-      if (type !== WEBIFC.IFCWALL) continue;
-      const option = document.createElement("bim-option");
-      const entityTypeName = OBC.IfcCategoryMap[type];
-      option.label = `${expressID}: ${entityTypeName}`;
-      option.value = expressID;
-      dropdown.append(option);
-    }
-  }
+//   dropdown.addEventListener("change", () => {
+//     updateAttributesTable({ expressIDs: dropdown.value });
+//   });
 
-  dropdown.addEventListener("change", () => {
-    updateTable({ expressIDs: dropdown.value });
-  });
+//   return BUI.html`<div>${dropdown}</div>`;
+// });
 
-  return BUI.html`<div>${dropdown}</div>`;
-});
+/** MD
+ Now, to make things even more interesting, let's add a dropdown that let's the user decide which attributes they want to see.
+ */
 
 const attributesDropdown = document.getElementById(
   "attributes",
 ) as BUI.Dropdown;
-
-const panelSection = document.querySelector<BUI.PanelSection>(
-  "bim-panel-section[name='tableAttributes']",
-)!;
-
-panelSection.insertBefore(dropdown, attributesDropdown);
 
 const attributes = [
   "Name",
@@ -215,7 +194,7 @@ for (const attribute of attributes) {
 }
 
 attributesDropdown.addEventListener("change", () => {
-  updateTable({
+  updateAttributesTable({
     attributesToInclude: () => {
       const attributes: any[] = [
         ...attributesDropdown.value,
@@ -236,12 +215,7 @@ attributesDropdown.value = attributes;
 
 const exportBtn = document.getElementById("export-json") as BUI.Button;
 exportBtn.addEventListener("click", () => {
-  table.downloadData("entities-attributes");
-});
-
-const makeEditable = document.getElementById("make-editable") as BUI.Checkbox;
-makeEditable.addEventListener("change", () => {
-  updateTable({ editable: makeEditable.checked });
+  attributesTable.downloadData("entities-attributes");
 });
 
 const propsManager = components.get(OBC.IfcPropertiesManager);
@@ -256,22 +230,50 @@ exportIfc.addEventListener("click", async () => {
   URL.revokeObjectURL(a.href);
 });
 
-const copyTSVBtn = document.getElementById("copy-tsv") as BUI.Button;
-copyTSVBtn.addEventListener("click", async () => {
-  await navigator.clipboard.writeText(table.tsv);
-  alert("Table data copied as TSV in clipboard!");
+const entityAttributes = BUI.Component.create(() => {
+  const onCopyTSV = async () => {
+    await navigator.clipboard.writeText(attributesTable.tsv);
+    alert(
+      "Table data copied as TSV in clipboard! Try to paste it in a spreadsheet app.",
+    );
+  };
+
+  const onSearchInput = (e: Event) => {
+    const input = e.target as BUI.TextInput;
+    attributesTable.queryString = input.value;
+  };
+
+  const onPreserveStructureChange = (e: Event) => {
+    const checkbox = e.target as BUI.Checkbox;
+    attributesTable.preserveStructureOnFilter = checkbox.checked;
+  };
+
+  return BUI.html`
+    <bim-panel name="entityAttributes" label="Entity Attributes">
+      <bim-panel-section name="tableAttributes" label="Table Settings">
+        <bim-dropdown multiple id="attributes" label="Attributes"></bim-dropdown>
+        <bim-button @click=${onCopyTSV} label="Copy as TSV"></bim-button>
+        <bim-button label="Export to JSON"></bim-button>
+        <bim-button label="Export IFC"></bim-button>
+        <div style="display: flex; gap: 0.5rem">
+          <bim-text-input @input=${onSearchInput} type="search" placeholder="Search" debounce="250"></bim-text-input>
+          <bim-checkbox @change=${onPreserveStructureChange} label="Preserve Structure" inverted checked></bim-checkbox>
+        </div>
+      </bim-panel-section>
+    </bim-panel>
+  `;
 });
 
-// Searching
-const searchBox = document.getElementById("search-box") as BUI.TextInput;
-searchBox.addEventListener("input", () => {
-  table.queryString = searchBox.value;
-});
+const grid = document.createElement("bim-grid");
+grid.layouts = {
+  main: {
+    template: `
+      "entityAttributes viewport" 1fr
+      "entityAttributes attributesTable" minmax(auto, 450px)
+      /24rem 1fr
+    `,
+    elements: { entityAttributes, viewport, attributesTable },
+  },
+};
 
-const preserveStrcuture = document.getElementById(
-  "preserve-structure",
-) as BUI.Checkbox;
-table.preserveStructureOnFilter = preserveStrcuture.checked;
-preserveStrcuture?.addEventListener("change", () => {
-  table.preserveStructureOnFilter = preserveStrcuture.checked;
-});
+grid.layout = "main";

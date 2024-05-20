@@ -1,11 +1,10 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Component } from "../../../core/Component";
 import { Tab } from "./Tab";
 import { styles } from "../../../core/Manager/src/styles";
 
 // HTML Tag: bim-tabs
-export class Tabs extends Component {
+export class Tabs extends LitElement {
   static styles = [
     styles.scrollbar,
     css`

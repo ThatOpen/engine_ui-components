@@ -10,7 +10,7 @@ export const modelsList = (state: ModelsListUIState, autoUpdate = true) => {
 
   if (autoUpdate) {
     const { components } = state;
-    const manager = components.get(OBC.FragmentManager);
+    const manager = components.get(OBC.FragmentsManager);
     const [, updateElement] = element;
     manager.onFragmentsLoaded.add(() => setTimeout(() => updateElement()));
     manager.onFragmentsDisposed.add(() => updateElement());

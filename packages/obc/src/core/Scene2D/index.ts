@@ -1,11 +1,12 @@
 import * as THREE from "three";
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import { Component } from "@thatopen/ui";
-import { Infinite2dGrid } from "./src/Infinite2DGrid";
+import { property } from "lit/decorators.js";
+import { Infinite2DGrid } from "./src/Infinite2DGrid";
 
-export class Scene2D extends Component {
+// HTML tag: bim-scene-2d
+export class Scene2D extends LitElement {
   static styles = css`
     :host {
       position: relative;
@@ -15,12 +16,6 @@ export class Scene2D extends Component {
       background-color: var(--bim-ui_bg-base);
     }
   `;
-
-  static properties = {
-    gridScaleX: { type: Number, attribute: "grid-scale-x", reflect: true },
-    gridScaleY: { type: Number, attribute: "grid-scale-y", reflect: true },
-    gridColor: { type: String, attribute: "grid-color", reflect: true },
-  };
 
   private readonly _frustumSize = 50;
 
@@ -35,12 +30,14 @@ export class Scene2D extends Component {
     return aspect;
   }
 
-  private _gridColor = "#000000";
+  private _gridColor?: string;
 
-  set gridColor(value: string) {
+  @property({ type: String, attribute: "grid-color", reflect: true })
+  set gridColor(value: string | undefined) {
+    this._gridColor = value;
+    if (!value) return;
     const hex = Number(value.replace("#", "0x"));
     if (Number.isNaN(hex)) return;
-    this._gridColor = value;
     this.grid.material.color.setHex(hex);
   }
 
@@ -48,22 +45,24 @@ export class Scene2D extends Component {
     return this._gridColor;
   }
 
-  private _gridScaleX = 1;
+  private _gridScaleX?: number;
 
-  set gridScaleX(value: number) {
+  @property({ type: Number, attribute: "grid-scale-x", reflect: true })
+  set gridScaleX(value: number | undefined) {
     this._gridScaleX = value;
-    this.grid.scaleX = value;
+    if (value) this.grid.scaleX = value;
   }
 
   get gridScaleX() {
     return this._gridScaleX;
   }
 
-  private _gridScaleY = 1;
+  private _gridScaleY?: number;
 
-  set gridScaleY(value: number) {
+  @property({ type: Number, attribute: "grid-scale-y", reflect: true })
+  set gridScaleY(value: number | undefined) {
     this._gridScaleY = value;
-    this.grid.scaleY = value;
+    if (value) this.grid.scaleY = value;
   }
 
   get gridScaleY() {
@@ -75,25 +74,7 @@ export class Scene2D extends Component {
   readonly renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   readonly renderer2D = new CSS2DRenderer();
   readonly controls = new OrbitControls(this.camera, this.renderer.domElement);
-  readonly grid = new Infinite2dGrid(this.camera, this);
-
-  constructor() {
-    super();
-    this.setupScene();
-    this.setupRenderers();
-    this.setupCamera();
-    this.setupGrid();
-    const resizeObserver = new ResizeObserver(this.resize);
-    resizeObserver.observe(this);
-  }
-
-  private setupGrid() {
-    this.gridColor = "#2e3338";
-    this.gridScaleX = 1;
-    this.gridScaleY = 1;
-    const gridObject = this.grid.get();
-    this.scene.add(gridObject);
-  }
+  readonly grid = new Infinite2DGrid(this.camera, this);
 
   private setupCamera() {
     this.camera.position.z = 10;
@@ -135,8 +116,7 @@ export class Scene2D extends Component {
     this.grid.regenerate();
   };
 
-  firstUpdated() {
-    setTimeout(() => this.grid.regenerate());
+  private init() {
     const renderScene = () => {
       this.renderer.render(this.scene, this.camera);
       this.renderer2D.render(this.scene, this.camera);
@@ -145,7 +125,18 @@ export class Scene2D extends Component {
     renderScene();
   }
 
-  render() {
+  firstUpdated() {
+    this.setupScene();
+    this.setupRenderers();
+    this.setupCamera();
+    const gridObject = this.grid.get();
+    this.scene.add(gridObject);
+    const resizeObserver = new ResizeObserver(this.resize);
+    resizeObserver.observe(this);
+    this.init();
+  }
+
+  protected render() {
     return html`<slot></slot>`;
   }
 }

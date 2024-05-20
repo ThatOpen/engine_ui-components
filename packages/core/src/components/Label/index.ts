@@ -1,10 +1,9 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../core/Component";
 import { convertString } from "../../core/utils";
 
 // HTML tag: bim-label
-export class Label extends Component {
+export class Label extends LitElement {
   static styles = css`
     :host {
       --bim-icon--c: var(--bim-label--c);

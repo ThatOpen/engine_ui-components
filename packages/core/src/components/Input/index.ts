@@ -1,9 +1,8 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../core/Component";
 import { HasValue, HasName } from "../../core/types";
 
-export class Input extends Component implements HasValue, HasName {
+export class Input extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {
       flex: 1;

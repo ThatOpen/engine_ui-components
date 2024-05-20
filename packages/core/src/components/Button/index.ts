@@ -1,13 +1,12 @@
 import { computePosition, flip, shift, offset, inline } from "@floating-ui/dom";
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-import { Component } from "../../core/Component";
 import "iconify-icon";
 import { ContextMenu } from "../ContextMenu";
 
 // HTML tag: bim-button
-export class Button extends Component {
+export class Button extends LitElement {
   static styles = css`
     :host {
       display: block;

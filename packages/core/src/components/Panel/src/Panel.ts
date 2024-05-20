@@ -1,13 +1,12 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../../core/Component";
 import { styles } from "../../../core/Manager/src/styles";
 import { Button } from "../../Button";
 import { HasName, HasValue } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
 
 // HTML tag: bim-panel
-export class Panel extends Component implements HasName, HasValue {
+export class Panel extends LitElement implements HasName, HasValue {
   static styles = [
     styles.scrollbar,
     css`
@@ -162,8 +161,8 @@ export class Panel extends Component implements HasName, HasValue {
 
   readonly activationButton: Button = document.createElement("bim-button");
 
-  constructor() {
-    super();
+  connectedCallback() {
+    super.connectedCallback();
     this.activationButton.active = !this.hidden;
     this.activationButton.onclick = () => (this.hidden = !this.hidden);
   }

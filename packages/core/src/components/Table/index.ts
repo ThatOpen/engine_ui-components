@@ -1,6 +1,5 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
 import {
   TableDefinition,
@@ -15,7 +14,7 @@ export interface ColumnData {
   width: string;
 }
 
-export class Table extends Component {
+export class Table extends LitElement {
   static styles = [
     styles.scrollbar,
     css`

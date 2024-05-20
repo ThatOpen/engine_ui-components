@@ -1,11 +1,10 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../../core/Component";
 import { Table } from "../index";
 import { TableGroup } from "./TableGroup";
 import { TableGroupData } from "./types";
 
-export class TableChildren extends Component {
+export class TableChildren extends LitElement {
   static styles = css`
     :host {
       position: relative;

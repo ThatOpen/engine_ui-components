@@ -1,13 +1,12 @@
-import { TemplateResult, css, html } from "lit";
+import { LitElement, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
 import { cache } from "lit/directives/cache.js";
-import { Component } from "../../../core/Component";
 import { Table, ColumnData } from "../index";
 import { TableRowData, CellCreatedEventDetail } from "./types";
 import { TableCell } from "./TableCell";
 
-export class TableRow extends Component {
+export class TableRow extends LitElement {
   static styles = css`
     :host {
       position: relative;

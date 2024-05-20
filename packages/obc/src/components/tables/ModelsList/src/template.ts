@@ -8,7 +8,7 @@ export interface ModelsListUIState {
 export const modelsListTemplate = (state: ModelsListUIState) => {
   const { components } = state;
 
-  const fragments = components.get(OBC.FragmentManager);
+  const fragments = components.get(OBC.FragmentsManager);
 
   const table = document.createElement("bim-table");
   table.columns = ["Model"];

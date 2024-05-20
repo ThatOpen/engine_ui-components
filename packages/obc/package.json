@@ -38,20 +38,21 @@
     "access": "public"
   },
   "dependencies": {
-    "@thatopen/ui": "2.0.0-alpha.10"
+    "@thatopen/ui": "2.0.0-alpha.10",
+    "lit": "3.1.2"
   },
   "devDependencies": {
-    "@thatopen/components": "2.0.0-alpha.14",
-    "@thatopen/components-front": "2.0.0-alpha.14",
+    "@thatopen/components": "2.0.0-alpha.15",
+    "@thatopen/components-front": "2.0.0-alpha.15",
     "@thatopen/fragments": "2.0.0-alpha.5",
     "@types/three": "0.160.0",
-    "lit": "3.1.2",
     "three": "0.160.1",
     "web-ifc": "0.0.53"
   },
   "peerDependencies": {
-    "@thatopen/components": "2.0.0-alpha.14",
-    "@thatopen/components-front": "2.0.0-alpha.14",
-    "three": "0.160.1"
+    "@thatopen/components": "2.0.0-alpha.15",
+    "@thatopen/components-front": "2.0.0-alpha.15",
+    "three": "0.160.1",
+    "web-ifc": "0.0.53"
   }
 }

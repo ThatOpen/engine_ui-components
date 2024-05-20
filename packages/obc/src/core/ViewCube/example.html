@@ -1,34 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" class="bim-ui-dark">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Element Properties</title>
+  <title>View Cube</title>
   <style>
     * {
       margin: 0;
-      padding: 0;
       box-sizing: border-box;
     }
 
-    html {
-      font-family: sans-serif;
-    }
-
     body {
-      background-color: var(--bim-ui_bg-base);
       height: 100vh;
-      width: 100vw;
-    }
-
-    bim-panel {
-      border-radius: 0;
     }
   </style>
 </head>
 
 <body>
+  <bim-grid id="app" layout="main"></bim-grid>
   <script type="module" src="./example.ts"></script>
 </body>
 

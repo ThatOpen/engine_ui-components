@@ -7,12 +7,11 @@ import {
   detectOverflow,
   MiddlewareState,
 } from "@floating-ui/dom";
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
 
-export class ContextMenu extends Component {
+export class ContextMenu extends LitElement {
   static styles = [
     styles.scrollbar,
     css`

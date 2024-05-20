@@ -1,11 +1,10 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../../core/Component";
 import { Table } from "../index";
 import { RowCreatedEventDetail, TableGroupData } from "./types";
 import { TableChildren } from "./TableChildren";
 
-export class TableGroup extends Component {
+export class TableGroup extends LitElement {
   static styles = css`
     :host {
       position: relative;
@@ -63,7 +62,11 @@ export class TableGroup extends Component {
 
   connectedCallback() {
     super.connectedCallback();
-    this.childrenHidden = !this.table?.expanded ?? true;
+    if (this.table && this.table.expanded) {
+      this.childrenHidden = false;
+    } else {
+      this.childrenHidden = true;
+    }
   }
 
   toggleChildren(force?: boolean, recursive = false) {

@@ -3,15 +3,15 @@ import { styles } from "./src/styles";
 
 export interface ManagerConfig {
   sectionLabelOnVerticalToolbar: boolean;
-  draggableToolbars: boolean;
-  draggablePanels: boolean;
+  // draggableToolbars: boolean;
+  // draggablePanels: boolean;
 }
 
 export class Manager {
   private static _config: Required<ManagerConfig> = {
     sectionLabelOnVerticalToolbar: false,
-    draggableToolbars: true,
-    draggablePanels: true,
+    // draggableToolbars: true,
+    // draggablePanels: true,
   };
 
   static set config(value: Partial<ManagerConfig>) {

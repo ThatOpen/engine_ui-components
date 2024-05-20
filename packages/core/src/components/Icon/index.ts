@@ -1,8 +1,7 @@
-import { css, html } from "lit";
-import { Component } from "../../core/Component";
+import { LitElement, css, html } from "lit";
 import "iconify-icon";
 
-export class Icon extends Component {
+export class Icon extends LitElement {
   static styles = css`
     :host {
       height: var(--bim-icon--fz, var(--bim-ui_size-sm));

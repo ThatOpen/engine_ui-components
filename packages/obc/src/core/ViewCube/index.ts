@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { css, html } from "lit";
-import { createRef, ref } from "lit/directives/ref.js";
-import * as BUI from "@thatopen/ui";
+import { LitElement, css, html } from "lit";
+import { property, state } from "lit/decorators.js";
 
-export class ViewCube extends BUI.Component {
+// HTML Tag: bim-view-cube
+export class ViewCube extends LitElement {
   static styles = css`
     :host {
       position: absolute;
@@ -19,7 +19,6 @@ export class ViewCube extends BUI.Component {
     .cube {
       position: relative;
       transform-style: preserve-3d;
-      transform: translateZ(-300px);
     }
 
     .face {
@@ -87,26 +86,35 @@ export class ViewCube extends BUI.Component {
     }
   `;
 
-  static properties = {
-    size: { type: Number, reflect: true },
-    rightText: { type: String, reflect: true },
-    leftText: { type: String, attribute: "left-text", reflect: true },
-    topText: { type: String, attribute: "top-text", reflect: true },
-    bottomText: { type: String, attribute: "bottom-text", reflect: true },
-    frontText: { type: String, attribute: "front-text", reflect: true },
-    backText: { type: String, attribute: "back-text", reflect: true },
+  private _defaults = {
+    size: 60,
   };
 
-  declare size: number;
-  declare rightText: string;
-  declare leftText: string;
-  declare topText: string;
-  declare bottomText: string;
-  declare frontText: string;
-  declare backText: string;
+  @property({ type: Number, reflect: true })
+  size?: number;
+
+  @property({ type: String, attribute: "right-text", reflect: true })
+  rightText?: string;
+
+  @property({ type: String, attribute: "left-text", reflect: true })
+  leftText?: string;
+
+  @property({ type: String, attribute: "top-text", reflect: true })
+  topText?: string;
+
+  @property({ type: String, attribute: "bottom-text", reflect: true })
+  bottomText?: string;
+
+  @property({ type: String, attribute: "front-text", reflect: true })
+  frontText?: string;
+
+  @property({ type: String, attribute: "back-text", reflect: true })
+  backText?: string;
+
+  @state()
+  private _cssMatrix3D = "";
 
   private _matrix = new THREE.Matrix4();
-  private _cube = createRef<HTMLDivElement>();
   private _onRightClick = new Event("rightclick");
   private _onLeftClick = new Event("leftclick");
   private _onTopClick = new Event("topclick");
@@ -114,80 +122,81 @@ export class ViewCube extends BUI.Component {
   private _onFrontClick = new Event("frontclick");
   private _onBackClick = new Event("backclick");
 
+  private _camera: THREE.Camera | null = null;
+  set camera(value: THREE.Camera | null) {
+    this._camera = value;
+    this.updateOrientation();
+  }
+
+  get camera() {
+    return this._camera;
+  }
+
   private _epsilon = (value: number) => {
     return Math.abs(value) < 1e-10 ? 0 : value;
   };
 
-  constructor() {
-    super();
-    this.size = 60;
-  }
-
-  private getCameraCSSMatrix(matrix: number[]) {
-    return `matrix3d(
-        ${this._epsilon(matrix[0])},
-        ${this._epsilon(-matrix[1])},
-        ${this._epsilon(matrix[2])},
-        ${this._epsilon(matrix[3])},
-        ${this._epsilon(matrix[4])},
-        ${this._epsilon(-matrix[5])},
-        ${this._epsilon(matrix[6])},
-        ${this._epsilon(matrix[7])},
-        ${this._epsilon(matrix[8])},
-        ${this._epsilon(-matrix[9])},
-        ${this._epsilon(matrix[10])},
-        ${this._epsilon(matrix[11])},
-        ${this._epsilon(matrix[12])},
-        ${this._epsilon(-matrix[13])},
-        ${this._epsilon(matrix[14])},
-        ${this._epsilon(matrix[15])})
+  updateOrientation() {
+    if (!this.camera) return;
+    this._matrix.extractRotation(this.camera.matrixWorldInverse);
+    const { elements } = this._matrix;
+    this._cssMatrix3D = `matrix3d(
+      ${this._epsilon(elements[0])},
+      ${this._epsilon(-elements[1])},
+      ${this._epsilon(elements[2])},
+      ${this._epsilon(elements[3])},
+      ${this._epsilon(elements[4])},
+      ${this._epsilon(-elements[5])},
+      ${this._epsilon(elements[6])},
+      ${this._epsilon(elements[7])},
+      ${this._epsilon(elements[8])},
+      ${this._epsilon(-elements[9])},
+      ${this._epsilon(elements[10])},
+      ${this._epsilon(elements[11])},
+      ${this._epsilon(elements[12])},
+      ${this._epsilon(-elements[13])},
+      ${this._epsilon(elements[14])},
+      ${this._epsilon(elements[15])})
     `;
   }
 
-  updateOrientation(matrix: number[]) {
-    if (matrix.length !== 16) return;
-    const { value: cube } = this._cube;
-    if (!cube) return;
-    this._matrix.extractRotation(new THREE.Matrix4().fromArray(matrix));
-    const cssMatrix3D = this.getCameraCSSMatrix(this._matrix.elements);
-    cube.style.transform = `translateZ(-300px) ${cssMatrix3D}`;
-  }
-
-  render() {
+  protected render() {
+    const size = this.size ?? this._defaults.size;
     return html`
       <style>
         .face,
         .cube {
-          width: ${this.size}px;
-          height: ${this.size}px;
+          width: ${size}px;
+          height: ${size}px;
+          transform: translateZ(-300px) ${this._cssMatrix3D};
         }
 
         .face-right {
-          translate: ${this.size / 2}px 0 0;
+          translate: ${size / 2}px 0 0;
         }
 
         .face-left {
-          translate: ${-this.size / 2}px 0 0;
+          translate: ${-size / 2}px 0 0;
         }
 
         .face-top {
-          translate: 0 ${this.size / 2}px 0;
+          translate: 0 ${size / 2}px 0;
         }
 
         .face-bottom {
-          translate: 0 ${-this.size / 2}px 0;
+          translate: 0 ${-size / 2}px 0;
         }
 
         .face-front {
-          translate: 0 0 ${this.size / 2}px;
+          translate: 0 0 ${size / 2}px;
         }
 
         .face-back {
-          translate: 0 0 ${-this.size / 2}px;
+          translate: 0 0 ${-size / 2}px;
         }
       </style>
       <div class="parent">
-        <div ${ref(this._cube)} class="cube">
+        <div class="cube">
           <div
             class="face x-direction face-right"
             @click=${() => this.dispatchEvent(this._onRightClick)}
@@ -229,5 +238,3 @@ export class ViewCube extends BUI.Component {
     `;
   }
 }
-
-customElements.define("bim-view-cube", ViewCube);

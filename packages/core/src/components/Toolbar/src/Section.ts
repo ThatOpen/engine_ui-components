@@ -1,9 +1,8 @@
-import { css, html } from "lit";
-import { Component } from "../../../core/Component";
+import { LitElement, css, html } from "lit";
 import { ToolbarGroup } from "./Group";
 import { HasName } from "../../../core/types";
 
-export class ToolbarSection extends Component implements HasName {
+export class ToolbarSection extends LitElement implements HasName {
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);

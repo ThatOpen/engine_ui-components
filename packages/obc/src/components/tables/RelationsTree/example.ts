@@ -4,22 +4,7 @@ import * as CUI from "../..";
 
 BUI.Manager.init();
 
-const grid = document.querySelector("bim-grid")!;
-grid.layouts = {
-  main: `
-    "c-panels-left viewer"
-    "c-panels-left viewer"
-    / 30rem 1fr
-  `,
-};
-
-grid.layout = "main";
-
 const components = new OBC.Components();
-
-const viewerContainer = document.querySelector(
-  "bim-viewport[name='viewer']",
-) as BUI.Viewport;
 
 const worlds = components.get(OBC.Worlds);
 const world = worlds.create();
@@ -28,13 +13,14 @@ const sceneComponent = new OBC.SimpleScene(components);
 sceneComponent.setup();
 world.scene = sceneComponent;
 
-const rendererComponent = new OBC.SimpleRenderer(components, viewerContainer);
+const viewport = document.createElement("bim-viewport");
+const rendererComponent = new OBC.SimpleRenderer(components, viewport);
 world.renderer = rendererComponent;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
 
-viewerContainer.addEventListener("resize", () => {
+viewport.addEventListener("resize", () => {
   rendererComponent.resize();
   cameraComponent.updateAspect();
 });
@@ -44,12 +30,12 @@ viewerGrids.create(world);
 
 components.init();
 
-const ifcLoader = components.get(OBC.FragmentIfcLoader);
+const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
 const indexer = components.get(OBC.IfcRelationsIndexer);
 
-const fragmentsManager = components.get(OBC.FragmentManager);
+const fragmentsManager = components.get(OBC.FragmentsManager);
 fragmentsManager.onFragmentsLoaded.add(async (model) => {
   if (model.hasProperties) await indexer.process(model);
   if (world.scene) world.scene.three.add(model);
@@ -59,6 +45,8 @@ const [relationsTree] = CUI.tables.relationsTree({
   components,
   models: [],
 });
+
+relationsTree.expanded = true;
 
 const panel = BUI.Component.create(() => {
   const [loadIfcBtn] = CUI.buttons.loadIfc({ components });
@@ -75,5 +63,15 @@ const panel = BUI.Component.create(() => {
   `;
 });
 
-const leftPanelsContainer = grid.getContainer("panels", "left");
-leftPanelsContainer.append(panel);
+const grid = document.getElementById("app") as BUI.Grid;
+grid.layouts = {
+  main: {
+    template: `
+      "panel viewport"
+      / 30rem 1fr
+    `,
+    elements: { panel, viewport },
+  },
+};
+
+grid.layout = "main";
