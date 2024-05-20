@@ -1,9 +1,9 @@
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../core/Component";
-import { styles } from "../../core/Manager/src/styles";
-import { HasName, HasValue } from "../../core/types";
-import { getElementValue } from "../../core/utils";
+import { Component } from "../../../core/Component";
+import { styles } from "../../../core/Manager/src/styles";
+import { HasName, HasValue } from "../../../core/types";
+import { getElementValue } from "../../../core/utils";
 
 // HTML tag: bim-panel-section
 export class PanelSection extends Component implements HasName, HasValue {

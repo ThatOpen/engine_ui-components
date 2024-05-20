@@ -9,8 +9,7 @@ import { Input } from "./Input";
 import { Label } from "./Label";
 import { NumberInput } from "./NumberInput";
 import { Option } from "./Option";
-import { Panel } from "./Panel";
-import { PanelSection } from "./PanelSection";
+import { Panel, PanelSection } from "./Panel";
 import { Selector } from "./Selector";
 import {
   Table,
@@ -84,8 +83,8 @@ export * from "./Input";
 export * from "./Label";
 export * from "./NumberInput";
 export * from "./Option";
-export * from "./Panel";
-export * from "./PanelSection";
+export * from "./Panel/src/Panel";
+export * from "./Panel/src/Section";
 export * from "./Selector";
 export * from "./Table";
 export * from "./Tabs";
