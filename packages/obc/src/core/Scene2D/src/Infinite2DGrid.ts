@@ -5,7 +5,7 @@ import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
  * An infinite lightweight 2D grid that can be used for any
  * kind of 2d viewports.
  */
-export class Infinite2dGrid {
+export class Infinite2DGrid {
   private _group = new THREE.Group();
   private _frustum = new THREE.Frustum();
   private _frustumMat = new THREE.Matrix4();
@@ -14,7 +14,7 @@ export class Infinite2dGrid {
   private _regenerateDelay = 200;
   private _regenerateCounter = 0;
 
-  readonly material = new THREE.LineBasicMaterial();
+  readonly material = new THREE.LineBasicMaterial({ color: "#2e3338" });
 
   grids: {
     main: THREE.LineSegments;
@@ -139,10 +139,39 @@ export class Infinite2dGrid {
 
     const mPoints = [];
 
+    const realWidthPerCharacter = 9 * unit3dPixelRel; // 9 pixels per char
+
+    const p = 10000;
+
+    // Avoid horizontal text overlap by computing the real width of a text
+    // and computing which lines should have a label starting from zero
+    const minLabel = Math.round(Math.abs(mTrueLeft / this.scaleX) * p) / p;
+    const maxDist = (mainGridCountHor - 1) * mDistanceHor;
+    const maxLabel =
+      Math.round(Math.abs((mTrueLeft + maxDist) / this.scaleX) * p) / p;
+    const biggestLabelLength = Math.max(minLabel, maxLabel).toString().length;
+    const biggestLabelSize = biggestLabelLength * realWidthPerCharacter;
+    const cellsOccupiedByALabel = Math.ceil(biggestLabelSize / mDistanceHor);
+    let offsetToZero = cellsOccupiedByALabel * mDistanceHor;
+
     for (let i = 0; i < mainGridCountHor; i++) {
-      const offset = mTrueLeft + i * mDistanceHor;
+      let offset = mTrueLeft + i * mDistanceHor;
       mPoints.push(offset, top, 0, offset, bottom, 0);
-      const sign = this.newNumber(offset / this.scaleX);
+
+      const value = offset / this.scaleX;
+
+      offset = Math.round(offset * p) / p;
+      offsetToZero = Math.round(offsetToZero * p) / p;
+      const result = offset % offsetToZero;
+
+      // TODO: Removing horizontal labels for clarity doesn't work for small distances
+      const isSmall = mDistanceHor < 1 || mDistanceVert < 1;
+
+      if (!isSmall && Math.abs(result) > 0.01) {
+        continue;
+      }
+
+      const sign = this.newNumber(value);
       const textOffsetPixels = 12;
       const textOffset = textOffsetPixels * unit3dPixelRel;
       sign.position.set(offset, bottom + textOffset, 0);
@@ -169,34 +198,16 @@ export class Infinite2dGrid {
       sPoints.push(left, offset, 0, right, offset, 0);
     }
 
-    const mIndices: number[] = [];
-    const sIndices: number[] = [];
-    this.fillIndices(mPoints, mIndices);
-    this.fillIndices(sPoints, sIndices);
-
     const mBuffer = new THREE.BufferAttribute(new Float32Array(mPoints), 3);
     const sBuffer = new THREE.BufferAttribute(new Float32Array(sPoints), 3);
     const { main, secondary } = this.grids;
     main.geometry.setAttribute("position", mBuffer);
-    main.geometry.setIndex(mIndices);
     secondary.geometry.setAttribute("position", sBuffer);
-    secondary.geometry.setIndex(sIndices);
-  }
-
-  private fillIndices(points: any[], indices: any[]) {
-    for (let i = 0; i < points.length / 2 - 1; i += 2) {
-      indices.push(i, i + 1);
-    }
   }
 
   private newNumber(offset: number) {
-    const text = document.createElement("div");
-    text.style.color = "var(--bim-ui_bg-contrast-100)";
-    text.style.fontSize = "12px";
-    text.textContent = `${offset}`;
-    if (text.textContent.length > 6) {
-      text.textContent = text.textContent.slice(0, 6);
-    }
+    const text = document.createElement("bim-label");
+    text.label = String(Math.round(offset * 100) / 100);
     const sign = new CSS2DObject(text);
     this.numbers.add(sign);
     return sign;

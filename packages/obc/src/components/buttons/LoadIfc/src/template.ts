@@ -7,7 +7,7 @@ export interface LoadIfcUIState {
 
 export const loadIfcTemplate = (state: LoadIfcUIState) => {
   const { components } = state;
-  const ifcLoader = components.get(OBC.FragmentIfcLoader);
+  const ifcLoader = components.get(OBC.IfcLoader);
 
   const onBtnClick = () => {
     const fileOpener = document.createElement("input");

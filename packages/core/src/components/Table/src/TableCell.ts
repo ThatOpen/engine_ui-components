@@ -1,9 +1,8 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../../core/Component";
 import { TableRowData } from ".";
 
-export class TableCell extends Component {
+export class TableCell extends LitElement {
   static styles = css`
     :host {
       padding: 0.25rem 1rem;

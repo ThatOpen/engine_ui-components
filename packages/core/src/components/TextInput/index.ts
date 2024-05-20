@@ -1,12 +1,11 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { Component } from "../../core/Component";
 import { HasName, HasValue } from "../../core/types";
 import { getQuery } from "../../core/utils";
 
 // HTML Tag: bim-text-input
-export class TextInput extends Component implements HasName, HasValue {
+export class TextInput extends LitElement implements HasName, HasValue {
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);

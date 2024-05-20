@@ -1,10 +1,9 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../../core/Component";
 import { ToolbarSection } from "./Section";
 import { Manager } from "../../../core/Manager";
 
-export class Toolbar extends Component {
+export class Toolbar extends LitElement {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;

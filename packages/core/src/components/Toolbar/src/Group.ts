@@ -1,7 +1,6 @@
-import { css, html } from "lit";
-import { Component } from "../../../core/Component";
+import { LitElement, css, html } from "lit";
 
-export class ToolbarGroup extends Component {
+export class ToolbarGroup extends LitElement {
   static styles = css`
     .parent {
       display: grid;

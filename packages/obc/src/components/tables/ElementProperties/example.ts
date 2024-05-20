@@ -1,24 +1,12 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as OBF from "@thatopen/components-front";
 import * as FRAGS from "@thatopen/fragments";
 import * as CUI from "../..";
 
 BUI.Manager.init();
 
-const grid = document.getElementById("grid") as BUI.Grid;
-grid.layouts = {
-  main: `
-  "c-panels-properties viewer" 1fr
-  "c-panels-properties viewer" 1fr
-  /25rem 1fr
-  `,
-};
-
-grid.layout = "main";
-
-const viewport = document.getElementById("viewer-container") as BUI.Viewport;
+const viewport = document.createElement("bim-viewport");
 
 const components = new OBC.Components();
 
@@ -34,6 +22,7 @@ world.renderer = rendererComponent;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
+cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
 
 viewport.addEventListener("resize", () => {
   rendererComponent.resize();
@@ -54,7 +43,7 @@ grids.create(world);
   First things first... let's load a model 👇
   */
 
-const ifcLoader = components.get(OBC.FragmentIfcLoader);
+const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 const file = await fetch("/resources/small.ifc");
 const buffer = await file.arrayBuffer();
@@ -65,15 +54,22 @@ world.scene.three.add(model);
 /* MD
   :::tip
 
-  You don't need to load the model into the scene to display its properties.
+  You don't need to add the model into the scene to display its properties. However, as we are going to display the properties for each selected element, then having the model into the scene is obvious, right?
 
   :::
 
-  Now, in order to get the most out of the entities table, you need to calculate the relations index of your model. To do it, you will need to use the [IfcRelationsIndexer]() component from `@thatopen/components` to speed up the process.
+  Now, in order to get the most out of the properties table, you need to calculate the relations index of your model. To do it, you will need to use the IfcRelationsIndexer component from `@thatopen/components` to speed up the process.
   */
 
 const indexer = components.get(OBC.IfcRelationsIndexer);
 await indexer.process(model);
+
+/* MD
+  Once the relations are processed, the `Element Properties` component has everything it needs in order to display the properties in a cool way 😎.
+
+  ### Creating the properties table
+  Let's create an instance of the functional component, like this:
+  */
 
 const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
   components,
@@ -83,7 +79,17 @@ const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
 propertiesTable.preserveStructureOnFilter = true;
 propertiesTable.indentationInText = false;
 
-const fragments = components.get(OBC.FragmentManager);
+/* MD
+  :::tip
+
+  The `elementProperties` functional component is a simplified version that shows any model entity data. However, if you like a more complete properties table, use the `entityAttributes` component.
+
+  :::
+
+  Cool! properties table created. Then after, let's tell the properties table to update each time the user makes a selection over the model. For it, we will use the highlighter from `@thatopen/components-front`:
+  */
+
+const fragments = components.get(OBC.FragmentsManager);
 const highlighter = components.get(OBF.Highlighter);
 highlighter.setup({ world });
 
@@ -110,6 +116,11 @@ highlighter.events.select.onHighlight.add((fragmentIdMap) => {
 highlighter.events.select.onClear.add(() =>
   updatePropertiesTable({ data: [] }),
 );
+
+/* MD
+  ### Creating a panel to append the table
+  Allright! Let's now create a BIM Panel to control some aspects of the properties table and to trigger some functionalities like expanding the rows children and copying the values to TSV, so you can paste your element values inside a spreadsheet application 😉
+  */
 
 const propertiesPanel = BUI.Component.create(() => {
   const onTextInput = (e: Event) => {
@@ -141,5 +152,24 @@ const propertiesPanel = BUI.Component.create(() => {
   `;
 });
 
-const propertiesContainer = grid.getContainer("panels", "properties");
-propertiesContainer.append(propertiesPanel);
+/* MD
+  Finally, let's create a BIM Grid element and provide both the panel and the viewport to display everything.
+  */
+
+const grid = document.createElement("bim-grid");
+grid.layouts = {
+  main: {
+    template: `
+    "propertiesPanel viewport"
+    /25rem 1fr
+    `,
+    elements: { propertiesPanel, viewport },
+  },
+};
+
+grid.layout = "main";
+document.body.append(grid);
+
+/* MD
+  Congratulations! You have now created a fully working properties table for your app in less than 5 minutes of work. Keep going with more tutorials! 💪
+  */

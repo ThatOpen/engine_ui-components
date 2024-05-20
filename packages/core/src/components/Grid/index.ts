@@ -1,6 +1,5 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../core/Component";
 
 interface Layouts {
   [name: string]: {
@@ -10,7 +9,7 @@ interface Layouts {
 }
 
 // HTML tag: bim-grid
-export class Grid extends Component {
+export class Grid extends LitElement {
   static styles = css`
     :host {
       display: grid;

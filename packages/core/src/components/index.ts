@@ -63,12 +63,6 @@ declare global {
     cellcreated: CustomEvent<CellCreatedEventDetail>;
     rowcreated: CustomEvent<RowCreatedEventDetail>;
     indentation: CustomEvent;
-    rightclick: Event;
-    leftclick: Event;
-    topclick: Event;
-    bottomclick: Event;
-    frontclick: Event;
-    backclick: Event;
   }
 }
 

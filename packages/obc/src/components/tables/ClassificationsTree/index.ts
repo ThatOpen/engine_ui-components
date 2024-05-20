@@ -16,7 +16,7 @@ export const classificationTree = (
 
   if (autoUpdate) {
     const { components } = state;
-    const manager = components.get(OBC.FragmentManager);
+    const manager = components.get(OBC.FragmentsManager);
     const [, updateElement] = element;
     manager.onFragmentsDisposed.add(() => updateElement());
   }

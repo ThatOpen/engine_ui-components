@@ -14,7 +14,7 @@ export const relationsTree = (
   if (autoUpdate) {
     const [, updateElement] = element;
     const { components } = state;
-    const manager = components.get(OBC.FragmentManager);
+    const manager = components.get(OBC.FragmentsManager);
     const indexer = components.get(OBC.IfcRelationsIndexer);
     const updateTree = () => updateElement({ models: manager.groups.values() });
     indexer.onRelationsIndexed.add(updateTree);

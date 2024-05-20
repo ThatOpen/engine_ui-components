@@ -1,9 +1,8 @@
-import { css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component } from "../../core/Component";
 
 // HTML tag: bim-viewport
-export class Viewport extends Component {
+export class Viewport extends LitElement {
   static styles = css`
     :host {
       display: grid;
