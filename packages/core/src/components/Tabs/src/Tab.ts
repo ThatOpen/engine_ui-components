@@ -16,17 +16,38 @@ export class Tab extends LitElement {
 
   private _defaultName = "__unnamed__";
 
+  /**
+   * The name of the tab. If not provided, a default name will be assigned based on its position in the parent element.
+   */
   @property({ type: String, reflect: true })
   name = this._defaultName;
 
+  /**
+   * The label of the tab. This property is optional and can be used to display a custom label instead of the tab's name.
+   */
   @property({ type: String, reflect: true })
   label?: string;
 
+  /**
+   * The icon of the tab. This property is optional and can be used to display an icon next to the tab's label or name.
+   */
   @property({ type: String, reflect: true })
   icon?: string;
 
   private _hidden = false;
 
+  /**
+   * Sets the hidden state of the tab.
+   *
+   * @param value - The new hidden state. If `true`, the tab will be hidden. If `false`, the tab will be visible.
+   * @fires hiddenchange - Dispatched when the hidden state changes.
+   *
+   * @example
+   * ```typescript
+   * const tab = document.querySelector('bim-tab');
+   * tab.hidden = true; // hides the tab
+   * ```
+   */
   @property({ type: Boolean, reflect: true })
   set hidden(value: boolean) {
     this._hidden = value;
@@ -47,15 +68,7 @@ export class Tab extends LitElement {
     }
   }
 
-  private onSlotChange(e: any) {
-    const children = e.target.assignedElements() as HTMLElement[];
-    // @ts-ignore
-    for (const child of children) {
-      //
-    }
-  }
-
   protected render() {
-    return html` <slot @slotchange=${this.onSlotChange}></slot> `;
+    return html` <slot></slot> `;
   }
 }

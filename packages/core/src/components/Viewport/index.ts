@@ -32,11 +32,6 @@ export class Viewport extends LitElement {
     observer.observe(this);
   }
 
-  firstUpdated() {
-    if (this.style.gridArea === "" && this.name)
-      this.style.gridArea = this.name;
-  }
-
   protected render() {
     return html`
       <div class="parent">

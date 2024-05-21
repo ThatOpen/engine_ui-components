@@ -1,6 +1,6 @@
 import { css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
 import { Option } from "../Option";
@@ -52,11 +52,6 @@ export class Dropdown extends Component implements HasValue, HasName {
     `,
   ];
 
-  static properties = {
-    visible: { type: Boolean, reflect: true },
-    value: { attribute: false },
-  };
-
   /**
    * The name of the dropdown.
    * @type {string}
@@ -98,7 +93,6 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   /**
    * Indicates whether multiple options can be selected in the dropdown.
-   * @type {boolean}
    * @default false
    * @example
    * <bim-dropdown multiple></bim-dropdown>
@@ -107,11 +101,10 @@ export class Dropdown extends Component implements HasValue, HasName {
    * dropdown.multiple = true;
    */
   @property({ type: Boolean, reflect: true })
-  multiple: boolean;
+  multiple = false;
 
   /**
    * Indicates whether a selection is required in the dropdown.
-   * @type {boolean}
    * @default false
    * @example
    * <bim-dropdown required></bim-dropdown>
@@ -120,11 +113,10 @@ export class Dropdown extends Component implements HasValue, HasName {
    * dropdown.required = true;
    */
   @property({ type: Boolean, reflect: true })
-  required: boolean;
+  required = false;
 
   /**
    * Indicates whether the dropdown should be displayed vertically.
-   * @type {boolean}
    * @default false
    * @example
    * <bim-dropdown vertical></bim-dropdown>
@@ -133,7 +125,7 @@ export class Dropdown extends Component implements HasValue, HasName {
    * dropdown.vertical = true;
    */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   private _inputContainer = createRef<HTMLDivElement>();
   private _listElement = createRef<ContextMenu>();
@@ -151,19 +143,21 @@ export class Dropdown extends Component implements HasValue, HasName {
    * dropdown.visible = true;
    */
 
-  get visible() {
-    return this._visible;
-  }
-
+  @property({ type: Boolean, reflect: true })
   set visible(value: boolean) {
     this._visible = value;
     if (!value) this.resetVisibleElements();
   }
 
-  private _value: any[] = [];
+  get visible() {
+    return this._visible;
+  }
+
+  @state()
+  private _value: Option[] = [];
 
   /**
-   * The selected values in the dropdown. This is an instance property, not an HTMLElement attribute.
+   * The selected values in the dropdown.
    * @type {any[]}
    * @example
    * const dropdown = document.createElement('bim-dropdown');
@@ -172,20 +166,23 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   set value(value: any[]) {
     if (this.required && Object.keys(value).length === 0) return;
-    const _value: any[] = [];
+    const _value: Option[] = [];
     for (const option of value) {
       const existingOption = this.findOption(option);
       if (!existingOption) continue;
-      _value.push(existingOption.value);
+      _value.push(existingOption);
       if (!this.multiple && Object.keys(value).length > 1) break;
     }
     this._value = _value;
     this.updateOptionsState();
-    if (this._canEmitEvents) this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(this.onValueChange);
   }
 
   get value() {
-    return this._value;
+    const options = this._value.filter(
+      (option) => option instanceof Option && option.checked,
+    );
+    return options.map((option) => option.value);
   }
 
   private get _options() {
@@ -196,44 +193,49 @@ export class Dropdown extends Component implements HasValue, HasName {
     return options;
   }
 
-  private _canEmitEvents = false;
-
+  /**
+   * Event that is fired when the value of the dropdown changes.
+   * This event is fired when the user selects or deselects an option.
+   *
+   * @event change
+   * @example
+   * dropdown.addEventListener('change', (event) => {
+   *   console.log('Dropdown value changed:', event.target.value);
+   * });
+   */
   onValueChange = new Event("change");
 
   constructor() {
     super();
     this.useObserver = true;
-    this.multiple = false;
-    this.required = false;
-    this.visible = false;
-    this.vertical = false;
   }
 
   private onWindowMouseUp = (e: MouseEvent) => {
+    if (!this.visible) return;
     if (!this.contains(e.target as Node)) this.visible = false;
   };
 
   private onOptionClick = (e: MouseEvent) => {
-    const element = e.target as Option;
-    const option = element.value;
+    const option = e.target as Option;
     const selected = this._value.includes(option);
     if (!this.multiple && !this.required && !selected) {
-      this.value = [option];
+      this._value = [option];
     } else if (!this.multiple && !this.required && selected) {
-      this.value = [];
+      this._value = [];
     } else if (!this.multiple && this.required && !selected) {
-      this.value = [option];
+      this._value = [option];
     } else if (this.multiple && !this.required && !selected) {
-      this.value = [...this._value, option];
+      this._value = [...this._value, option];
     } else if (this.multiple && !this.required && selected) {
-      this.value = this._value.filter((v) => v !== option);
+      this._value = this._value.filter((v) => v !== option);
     } else if (this.multiple && this.required && !selected) {
-      this.value = [...this._value, option];
+      this._value = [...this._value, option];
     } else if (this.multiple && this.required && selected) {
       const rest = this._value.filter((v) => v !== option);
-      if (rest.length !== 0) this.value = rest;
+      if (rest.length !== 0) this._value = rest;
     }
-    // this.dispatchEvent(this.onValueChange);
+    this.updateOptionsState();
+    this.dispatchEvent(this.onValueChange);
   };
 
   private onSlotChange(e: any) {
@@ -241,9 +243,7 @@ export class Dropdown extends Component implements HasValue, HasName {
     this.observe(children);
     for (const child of children) {
       if (!(child instanceof Option)) {
-        console.warn(
-          "Only bim-option is allowed inside bim-dropdown. Child has been removed.",
-        );
+        child.remove();
         continue;
       }
       child.removeEventListener("click", this.onOptionClick);
@@ -254,7 +254,7 @@ export class Dropdown extends Component implements HasValue, HasName {
   private updateOptionsState() {
     for (const element of this._options) {
       if (!(element instanceof Option)) continue;
-      if (this._value.includes(element.value)) {
+      if (this._value.includes(element)) {
         element.checked = true;
       } else {
         element.checked = false;
@@ -276,14 +276,9 @@ export class Dropdown extends Component implements HasValue, HasName {
   }
 
   firstUpdated() {
-    setTimeout(() => {
-      const options = [...this.children].filter(
-        (child) => child instanceof Option && child.checked,
-      ) as Option[];
-      const values = options.map((option) => option.label);
-      this.value = values;
-      this._canEmitEvents = true;
-    });
+    for (const child of this.children) {
+      if (child instanceof Option && child.checked) this._value.push(child);
+    }
   }
 
   disconnectedCallback() {
@@ -299,7 +294,7 @@ export class Dropdown extends Component implements HasValue, HasName {
     if (this._value.length === 0) {
       inputLabel = "Select an option...";
     } else if (this._value.length === 1) {
-      const option = this.findOption(this._value[0]);
+      const option = this._value[0];
       inputLabel = option?.label || option?.value;
       inputImg = option?.img;
       inputIcon = option?.icon;

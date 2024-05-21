@@ -67,6 +67,12 @@ export class Grid extends LitElement {
   @property({ type: String, reflect: true })
   layout?: string;
 
+  /**
+   * Represents a collection of predefined grid layouts for the Grid component.
+   * Each layout is defined by a unique name, a grid template string, and a map of area names to HTMLElement instances.
+   * The grid template string defines the structure of the grid, and the area names correspond to the grid-area property of the HTMLElement instances.
+   * The HTMLElement instances are used to populate the grid with content.
+   */
   layouts: Layouts = {};
 
   // private isVerticalArea(area: string) {

@@ -45,11 +45,23 @@ export class Toolbar extends LitElement {
   @property({ type: String, reflect: true })
   icon?: string;
 
+  /**
+   * Property indicating whether labels are hidden in the toolbar.
+   * When `labelsHidden` is `true`, labels in the toolbar sections will be hidden.
+   * When `labelsHidden` is `false`, labels in the toolbar sections will be visible.
+   *
+   * @defaultValue false
+   */
   @property({ type: Boolean, attribute: "labels-hidden", reflect: true })
   labelsHidden = false;
 
   private _vertical = false;
 
+  /**
+   * Sets the vertical property of the toolbar.
+   * When vertical is true, the toolbar will be displayed in a vertical layout.
+   * When vertical is false, the toolbar will be displayed in a horizontal layout.
+   */
   @property({ type: Boolean, reflect: true })
   set vertical(value: boolean) {
     this._vertical = value;
@@ -60,7 +72,7 @@ export class Toolbar extends LitElement {
     return this._vertical;
   }
 
-  private _managerID = Manager.newRandomId();
+  // private _managerID = Manager.newRandomId();
 
   private _hidden = false;
 
@@ -112,11 +124,11 @@ export class Toolbar extends LitElement {
     }
   }
 
-  firstUpdated() {
-    this.setAttribute("data-ui-manager-id", this._managerID);
-  }
+  // firstUpdated() {
+  //   this.setAttribute("data-ui-manager-id", this._managerID);
+  // }
 
-  render() {
+  protected render() {
     return html`
       <div class="parent">
         <slot @slotchange=${this.updateSections}></slot>

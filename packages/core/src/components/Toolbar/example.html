@@ -13,34 +13,27 @@
     html {
       font-family: sans-serif;
     }
+
+    bim-toolbar {
+      border-radius: 0;
+    }
   </style>
 </head>
 
 <body>
-  <bim-toolbars-container>
-    <bim-toolbar active label="Architecture">
-      <bim-toolbar-section label="Walls">
-        <bim-button vertical label="Click me!" icon="solar:settings-bold" active></bim-button>
-        <bim-toolbar-group>
-          <bim-button icon="solar:settings-bold"></bim-button>
-          <bim-button icon="solar:settings-bold"></bim-button>
-          <bim-button icon="solar:settings-bold"></bim-button>
-          <bim-button icon="solar:settings-bold"></bim-button>
-        </bim-toolbar-group>
-      </bim-toolbar-section>
-    </bim-toolbar>
-    <bim-toolbar label="Structure">
-      <bim-toolbar-section label="Walls">
-        <bim-button vertical label="Click me!" icon="solar:settings-bold" active></bim-button>
-        <bim-toolbar-group>
-          <bim-button icon="solar:settings-bold"></bim-button>
-          <bim-button icon="solar:settings-bold"></bim-button>
-          <bim-button icon="solar:settings-bold"></bim-button>
-          <bim-button icon="solar:settings-bold"></bim-button>
-        </bim-toolbar-group>
-      </bim-toolbar-section>
-    </bim-toolbar>
-  </bim-toolbars-container>
+  <bim-toolbar>
+    <bim-toolbar-section label="Walls">
+      <bim-button vertical label="Click me!" icon="solar:settings-bold" active></bim-button>
+      <bim-toolbar-group>
+        <bim-button icon="solar:settings-bold"></bim-button>
+        <bim-button icon="solar:settings-bold"></bim-button>
+        <bim-button icon="solar:settings-bold"></bim-button>
+        <bim-button icon="solar:settings-bold"></bim-button>
+        <bim-button icon="solar:settings-bold"></bim-button>
+        <bim-button icon="solar:settings-bold"></bim-button>
+      </bim-toolbar-group>
+    </bim-toolbar-section>
+  </bim-toolbar>
   <script type="module" src="./example.ts"></script>
 </body>
 

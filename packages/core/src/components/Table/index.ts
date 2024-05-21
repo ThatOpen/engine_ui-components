@@ -14,6 +14,32 @@ export interface ColumnData {
   width: string;
 }
 
+/**
+ * A custom web component representing a table with hierarchical data.
+ * This component allows users to filter and export the table data.
+ * It also provides options for customizing the appearance and behavior of the table.
+ * @example
+ * ```ts
+ * const table = document.createElement("bim-table")
+ * table.data = [
+ *  {
+ *    data: {
+ *      ColumnA: "ValueA",
+ *      ColumnB: "ValueB",
+ *    },
+ *    children: [
+ *      {
+ *        data: {
+ *          ColumnA: "ValueC",
+ *          ColumnB: "ValueD",
+ *        }
+ *       }
+ *    ]
+ *  }
+ * ]
+ * document.body.append(table)
+ * ```
+ */
 export class Table extends LitElement {
   static styles = [
     styles.scrollbar,
@@ -58,18 +84,54 @@ export class Table extends LitElement {
   @state()
   private _filteredData: TableGroupData[] = [];
 
+  /**
+   * A boolean property that determines whether the table headers are hidden.
+   *
+   * @remarks
+   * This property can be used to hide the table headers when needed.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```typescript
+   * table.headersHidden = true;
+   * ```
+   * @example
+   * ```html
+   * <bim-table headers-hidden></bim-table>
+   * ```
+   */
   @property({
     type: Boolean,
     attribute: "headers-hidden",
     reflect: true,
   })
-  headersHidden: boolean;
+  headersHidden = false;
 
   @property({ type: String, attribute: "min-col-width", reflect: true })
-  minColWidth: string;
+  minColWidth = "4rem";
 
   private _columns: ColumnData[] = [];
 
+  /**
+   * Sets the columns for the table.
+   * This property allows you to define the columns order for the table.
+   * If this is not set, it will be computed from the `table.data` object.
+   * The columns can be provided as an array of strings or objects of type `ColumnData`.
+   * If the columns are provided as strings, they will be converted to `ColumnData` objects with a default width.
+   *
+   * @param value - An array of strings or objects of type `ColumnData`.
+   *
+   * @example
+   * ```typescript
+   * const columns: (string | ColumnData)[] = [
+   *   "Column 1",
+   *   "Column 2",
+   *   { name: "Column 3", width: "200px" },
+   * ];
+   * table.columns = columns;
+   * ```
+   */
   @property({ type: Array, attribute: false })
   set columns(value: (string | ColumnData)[]) {
     const columns: ColumnData[] = [];
@@ -107,6 +169,16 @@ export class Table extends LitElement {
     tab: "\t",
   };
 
+  /**
+   * Getter for the `value` property.
+   * Returns the filtered data if a search string is provided, otherwise returns the original data.
+   *
+   * @example
+   * ```typescript
+   * const tableValue = table.value;
+   * console.log(tableValue); // Output: The filtered or original data.
+   * ```
+   */
   get value() {
     if (this.queryString) return this._filteredData;
     return this.data;
@@ -115,6 +187,26 @@ export class Table extends LitElement {
   private _expandedBeforeSearch?: boolean;
   private _queryString: string | null = null;
 
+  /**
+   * Sets the search string for filtering the table data.
+   * This property allows you to filter the table data based on a search string.
+   * If a search string is provided, the table will only display rows that match the search criteria.
+   * The search criteria can be a simple string or a complex query.
+   * If a simple string is provided, the table will filter rows based on the string's presence in any column.
+   * If a complex query is provided, the table will filter rows based on the query's conditions and values.
+   *
+   * @param _value - The search string or `null` to clear the search.
+   *
+   * @example
+   * ```typescript
+   * table.queryString = "example";
+   * ```
+   *
+   * @example
+   * ```typescript
+   * table.queryString = "column1="Jhon Doe" & column2=20";
+   * ```
+   */
   @property({ type: String, attribute: "search-string", reflect: true })
   set queryString(_value: string | null) {
     const value = _value && _value.trim() !== "" ? _value.trim() : null;
@@ -152,6 +244,23 @@ export class Table extends LitElement {
 
   private _data: TableGroupData[] = [];
 
+  /**
+   * Sets the data for the table.
+   * This property allows you to define the data that will be displayed in the table.
+   * The data is expected to be an array of `TableGroupData` objects.
+   * If the columns are not explicitly set, they will be computed from the `data` object.
+   *
+   * @param value - An array of `TableGroupData` objects representing the table data.
+   *
+   * @example
+   * ```typescript
+   * const data: TableGroupData[] = [
+   *   { data: { "Column 1": "Value 1", "Column 2": "Value 2" } },
+   *   { data: { "Column 1": "Value 3", "Column 2": "Value 4" } },
+   * ];
+   * table.data = data;
+   * ```
+   */
   @property({ type: Array, attribute: false })
   set data(value: TableGroupData[]) {
     this._data = value;
@@ -164,18 +273,58 @@ export class Table extends LitElement {
     return this._data;
   }
 
+  /**
+   * A boolean property that determines whether the table is expanded or not.
+   * When `true`, the table will be expanded to show all rows.
+   * When `false`, the table will be collapsed to show only the top-level rows.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```typescript
+   * table.expanded = true;
+   * ```
+   * @example
+   * ```html
+   * <bim-table expanded></bim-table>
+   * ```
+   */
   @property({ type: Boolean, reflect: true })
   expanded = false;
 
+  /**
+   * A boolean property that determines whether the table preserves its structure when filtering.
+   * When `true`, the table will preserve its structure, showing only the filtered rows and their parents.
+   * When `false`, the table will not preserve its structure, showing only the filtered rows.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```typescript
+   * table.preserveStructureOnFilter = true;
+   * ```
+   */
   preserveStructureOnFilter = false;
-  indentationInText = false;
-  definition: TableDefinition = {};
 
-  constructor() {
-    super();
-    this.minColWidth = "4rem";
-    this.headersHidden = false;
-  }
+  /**
+   * A boolean property that determines whether the table indentation should be included in the exported text.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```typescript
+   * table.indentationInText = true;
+   * ```
+   */
+  indentationInText = false;
+
+  /**
+   * A property representing the definition for transforming table data.
+   * The keys of the object are the column names, and the values are functions that define the transformation logic.
+   *
+   * @defaultValue An empty object.
+   */
+  definition: TableDefinition = {};
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
     let computed = false;
@@ -239,10 +388,32 @@ export class Table extends LitElement {
     return text;
   }
 
+  /**
+   * A getter function that generates a CSV (Comma Separated Values) representation of the table data.
+   *
+   * @returns A string containing the CSV representation of the table data.
+   *
+   * @example
+   * ```typescript
+   * const csvData = table.csv;
+   * console.log(csvData); // Output: "Column 1,Column 2\nValue 1,Value 2\nValue 3,Value 4"
+   * ```
+   */
   get csv() {
     return this.generateText("comma");
   }
 
+  /**
+   * A getter function that generates a Tab Separated Values (TSV) representation of the table data.
+   *
+   * @returns A string containing the TSV representation of the table data.
+   *
+   * @example
+   * ```typescript
+   * const tsvData = table.tsv;
+   * console.log(tsvData); // Output: "Column 1\tColumn 2\nValue 1\tValue 2\nValue 3\tValue 4"
+   * ```
+   */
   get tsv() {
     return this.generateText("tab");
   }
@@ -260,6 +431,19 @@ export class Table extends LitElement {
     return declaration;
   }
 
+  /**
+   * The `downloadData` method is used to download the table data in different formats.
+   *
+   * @param fileName - The name of the downloaded file. Default is "BIM Table Data".
+   * @param format - The format of the downloaded file. Can be "json", "tsv", or "csv". Default is "json".
+   *
+   * @returns - This method does not return any value.
+   *
+   * @example
+   * ```typescript
+   * table.downloadData("MyTableData", "tsv");
+   * ```
+   */
   downloadData(
     fileName = "BIM Table Data",
     format: "json" | "tsv" | "csv" = "json",
@@ -323,11 +507,6 @@ export class Table extends LitElement {
     return null;
   }
 
-  /**
-   *
-   * @param indentationLevel
-   * @param color Any valid CSS color value.
-   */
   setIndentationColor(indentationLevel: number, color: string) {
     const event = new CustomEvent<{ indentationLevel: number; color: string }>(
       "indentation",
@@ -336,6 +515,17 @@ export class Table extends LitElement {
     this.dispatchEvent(event);
   }
 
+  /**
+   * A function type representing the filter function for the table.
+   * This function is used to determine whether a given row of data should be included in the filtered results.
+   *
+   * @param queryString - The search string or query used to filter the data.
+   * @param data - The data row to be filtered.
+   *
+   * @returns A boolean value indicating whether the data row should be included in the filtered results.
+   * If the function returns `true`, the data row will be included in the filtered results.
+   * If the function returns `false`, the data row will be excluded from the filtered results.
+   */
   filterFunction?: (queryString: string, data: TableGroupData) => boolean;
 
   private _stringFilterFunction = (

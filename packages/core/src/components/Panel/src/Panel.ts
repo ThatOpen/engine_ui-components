@@ -104,12 +104,15 @@ export class Panel extends LitElement implements HasName, HasValue {
 
   readonly onValueChange = new Event("change");
 
-  static properties = {
-    hidden: { type: Boolean, reflect: true },
-  };
-
   private _hidden = false;
 
+  /**
+   * Sets the hidden state of the panel.
+   *
+   * @param value - The new hidden state. If `true`, the panel will be hidden. If `false`, the panel will be shown.
+   * @fires hiddenchange - Fired when the hidden state changes.
+   */
+  @property({ type: Boolean, reflect: true })
   set hidden(value: boolean) {
     this._hidden = value;
     this.activationButton.active = !value;

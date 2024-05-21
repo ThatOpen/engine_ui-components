@@ -119,15 +119,49 @@ export class Tabs extends LitElement {
 
   private _tab?: string;
 
+  /**
+   * Indicates whether the tabs are positioned at the bottom of the container.
+   *
+   * @default false
+   */
   @property({ type: Boolean, reflect: true })
   bottom = false;
 
+  /**
+   * Indicates whether the tab switchers are hidden or not.
+   *
+   * @default false
+   */
   @property({ type: Boolean, attribute: "switchers-hidden", reflect: true })
   switchersHidden = false;
 
   @property({ type: Boolean, reflect: true })
   floating = false;
 
+  /**
+   * Sets the active tab based on the provided name.
+   *
+   * @param value - The name of the tab to be set as active. If `undefined`, no tab will be selected.
+   *
+   * @remarks
+   * This method iterates through all child elements, finds the matching tab by name,
+   * and sets its `hidden` property to `false`. It also updates the corresponding tab switcher's
+   * `data-active` attribute to reflect the active state.
+   *
+   * If the provided `value` does not match any tab name, no tab will be selected.
+   *
+   * If the `tab` property is already set to the provided `value`, this method will deselect all tabs
+   * by setting the `tab` property to `undefined`.
+   *
+   * @example
+   * ```typescript
+   * // Set the active tab to "tab1"
+   * tabs.tab = "tab1";
+   *
+   * // Deselect all tabs
+   * tabs.tab = undefined;
+   * ```
+   */
   @property({ type: String, reflect: true })
   set tab(value: string | undefined) {
     this._tab = value;

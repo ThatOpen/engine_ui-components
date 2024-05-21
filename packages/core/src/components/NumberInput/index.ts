@@ -270,7 +270,6 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * This can affect the layout and behavior of the slider component within the number input.
    * When the property changes, the orientation of the slider adjusts accordingly.
    *
-   * @type {Boolean}
    * @default false
    * @example <bim-number-input vertical></bim-number-input>
    * @example
@@ -279,14 +278,13 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * document.body.appendChild(numberInput);
    */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   /**
    * The `slider` property enables a slider interface for the number input component, allowing users
    * to adjust the value by dragging the slider. When enabled, it changes the component's UI to include
    * a slider. When the property changes, the component toggles between a regular input field and a slider view.
    *
-   * @type {Boolean}
    * @default false
    * @example <bim-number-input slider></bim-number-input>
    * @example
@@ -295,21 +293,10 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * document.body.appendChild(numberInput);
    */
   @property({ type: Boolean, reflect: true })
-  slider: boolean;
+  slider = false;
 
   private _input = createRef<HTMLInputElement>();
   readonly onValueChange = new Event("change");
-
-  constructor() {
-    super();
-    this.vertical = false;
-    this.slider = false;
-    if (this.min && this.max && (this.min > this.max || this.max < this.min)) {
-      throw new Error(
-        "bim-number-input min value can't be greater than max and max can't be lower than min.",
-      );
-    }
-  }
 
   private onChange(e: Event) {
     e.stopPropagation();

@@ -84,7 +84,6 @@ export class Label extends LitElement {
   /**
    * Controls the visibility of the label text. When `true`, the label text is not rendered to the user.
    * Changing this property to `true` hides the label text if it was previously visible. Setting it to `false` will show the label text if it is defined.
-   * @type {Boolean}
    * @default false
    * @example <bim-label label-hidden></bim-label>
    * @example
@@ -93,7 +92,7 @@ export class Label extends LitElement {
    * document.body.appendChild(labelComponent);
    */
   @property({ type: Boolean, attribute: "label-hidden", reflect: true })
-  labelHidden: boolean;
+  labelHidden = false;
 
   /**
    * Specifies the icon to be used in the component. This property is intended for displaying an icon alongside the label or image.
@@ -114,7 +113,6 @@ export class Label extends LitElement {
    * Controls the visibility of the icon. When `true`, the icon is not rendered to the user.
    * Changing this property to `true` hides the icon if it was previously visible. Setting it to `false` will show the icon if it is defined.
    * Note: This does not affect the visibility of the label or image, only the icon.
-   * @type {Boolean}
    * @default false
    * @example <bim-label icon-hidden></bim-label>
    * @example
@@ -123,12 +121,11 @@ export class Label extends LitElement {
    * document.body.appendChild(labelComponent);
    */
   @property({ type: Boolean, attribute: "icon-hidden", reflect: true })
-  iconHidden: boolean;
+  iconHidden = false;
 
   /**
    * Determines the orientation of the component. When `true`, the component's contents (label, image, and icon) are stacked vertically.
    * Changing this property affects the layout of the component, switching between a horizontal and vertical arrangement of its contents.
-   * @type {Boolean}
    * @default false
    * @example <bim-label vertical></bim-label>
    * @example
@@ -137,18 +134,11 @@ export class Label extends LitElement {
    * document.body.appendChild(labelComponent);
    */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   get value() {
     if (!this.label) return this.label;
     return convertString(this.label);
-  }
-
-  constructor() {
-    super();
-    this.iconHidden = false;
-    this.labelHidden = false;
-    this.vertical = false;
   }
 
   protected render() {
