@@ -47,6 +47,16 @@ export class Manager {
     Manager.init();
   }
 
+  /**
+   * Initializes the BIM UI library by defining custom elements.
+   * It ensures that all necessary styles and custom elements are registered for use in BIM UI components.
+   *
+   * @example
+   * ```typescript
+   * import { Manager } from "@thatopen/ui";
+   * Manager.init();
+   * ```
+   */
   static init() {
     Manager.addGlobalStyles();
     Manager.defineCustomElement("bim-button", components.Button);

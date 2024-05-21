@@ -1,5 +1,5 @@
 import { LitElement, css, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 
@@ -22,19 +22,7 @@ export class Selector extends LitElement implements HasValue, HasName {
       --bim-label--c: white;
       background-color: var(--bim-ui_color-main);
     }
-
-    /* ::slotted(bim-option:first-child) {
-      border-radius: var(--bim-ui_size-4xs) 0 0 var(--bim-ui_size-4xs);
-    } */
-
-    /* ::slotted(bim-option:last-child) {
-      border-radius: 0 var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0;
-    } */
   `;
-
-  static properties = {
-    value: { attribute: false },
-  };
 
   @property({ type: String, reflect: true })
   name?: string;
@@ -46,41 +34,38 @@ export class Selector extends LitElement implements HasValue, HasName {
   label?: string;
 
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   readonly onValueChange = new Event("change");
+  private _canEmitEvents = false;
 
   private get _options() {
     const options = this.querySelectorAll("bim-option");
     return [...options];
   }
 
-  private _value: any;
+  @state()
+  private _value = document.createElement("bim-option");
 
-  set value(val: any) {
-    const matchingOption = this._options.find((option) => option.value === val);
-    if (matchingOption) {
-      for (const option of this._options) {
-        if (option === matchingOption) continue;
-        option.checked = false;
-      }
-      matchingOption.checked = true;
-      this._value = matchingOption.value;
-      this.dispatchEvent(this.onValueChange);
-    } else {
-      console.warn(
-        `bim-selector: "${val}" doesn't correspond with any of the values in the options for this input, value remained as "${this.value}".`,
-      );
+  /**
+   * Sets the value of the selector.
+   * It finds the matching option based on the provided value and sets it as the selected option.
+   * If no matching option is found, it does nothing.
+   *
+   * @param value - The value to set for the selector.
+   */
+  set value(value: any) {
+    const matchingOption = this.findOption(value);
+    if (!matchingOption) return;
+    for (const option of this._options) {
+      option.checked = option === matchingOption;
     }
+    this._value = matchingOption;
+    if (this._canEmitEvents) this.dispatchEvent(this.onValueChange);
   }
 
   get value() {
-    return this._value;
-  }
-
-  constructor() {
-    super();
-    this.vertical = false;
+    return this._value.value;
   }
 
   private onSlotChange(e: any) {
@@ -95,9 +80,28 @@ export class Selector extends LitElement implements HasValue, HasName {
   }
 
   private onOptionClick = (e: MouseEvent) => {
-    const element = e.target as Option;
-    this.value = element.value;
+    this._value = e.target as Option;
+    this.dispatchEvent(this.onValueChange);
+    for (const child of this.children) {
+      if (!(child instanceof Option)) continue;
+      child.checked = child === e.target;
+    }
   };
+
+  private findOption(value: any) {
+    const element = this._options.find((option) => {
+      if (!(option instanceof Option)) return false;
+      return option.label === value || option.value === value;
+    }) as Option;
+    return element;
+  }
+
+  protected firstUpdated() {
+    const option = [...this.children].find(
+      (child) => child instanceof Option && child.checked,
+    ) as Option;
+    if (option) this._value = option;
+  }
 
   protected render() {
     return html`

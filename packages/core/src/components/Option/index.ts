@@ -113,7 +113,6 @@ export class Option extends LitElement {
    * Indicates whether the option is checked. This boolean property can be used to mark the option as selected or not.
    * When toggled, it visually updates the component to reflect the checked state.
    *
-   * @type {Boolean}
    * @default false
    * @example <bim-option checked></bim-option>
    * @example
@@ -122,13 +121,12 @@ export class Option extends LitElement {
    * document.body.appendChild(option);
    */
   @property({ type: Boolean, reflect: true })
-  checked: boolean;
+  checked = false;
 
   /**
    * Determines whether a checkbox is displayed alongside the label. When true, a checkbox is shown.
    * This property affects the internal layout and display of the component, specifically adding a `bim-checkbox` element when enabled.
    *
-   * @type {Boolean}
    * @default false
    * @example <bim-option checkbox></bim-option>
    * @example
@@ -137,13 +135,12 @@ export class Option extends LitElement {
    * document.body.appendChild(option);
    */
   @property({ type: Boolean, reflect: true })
-  checkbox: boolean;
+  checkbox = false;
 
   /**
    * Controls the visibility of the mark or checkbox when the option is checked. If true, the mark or checkbox is not displayed even if the option is checked.
    * This property allows for a cleaner look in certain UI designs where the checked state is indicated without a visual mark.
    *
-   * @type {Boolean}
    * @default false
    * @example <bim-option no-mark></bim-option>
    * @example
@@ -152,7 +149,7 @@ export class Option extends LitElement {
    * document.body.appendChild(option);
    */
   @property({ type: Boolean, attribute: "no-mark", reflect: true })
-  noMark: boolean;
+  noMark = false;
 
   private _value: any;
 
@@ -204,7 +201,6 @@ export class Option extends LitElement {
    * Sets the orientation of the label and icon/image within the component. When true, they are arranged vertically.
    * This property influences the internal layout of the component, specifically affecting how the `bim-label` is displayed.
    *
-   * @type {Boolean}
    * @default false
    * @example <bim-option vertical></bim-option>
    * @example
@@ -213,15 +209,7 @@ export class Option extends LitElement {
    * document.body.appendChild(option);
    */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
-
-  constructor() {
-    super();
-    this.checked = false;
-    this.checkbox = false;
-    this.noMark = false;
-    this.vertical = false;
-  }
+  vertical = false;
 
   protected render() {
     return html`

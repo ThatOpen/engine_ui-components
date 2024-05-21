@@ -76,13 +76,42 @@ export class Component extends LitElement {
     this.observeLastElement();
   };
 
+  /**
+   * Creates a new UI component instance based on the provided template and initial state.
+   *
+   * @template T - The type of the UI component element.
+   * @template S - The type of the component state.
+   *
+   * @param template - The stateful component template function.
+   * @param state - The initial state of the component.
+   * @returns An array containing the created UI component element and a function to update its state.
+   */
   static create<T extends HTMLElement, S extends Record<string, any>>(
     template: StatefullComponent<S>,
     state: S,
   ): [element: T, update: UpdateFunction<S>];
 
+  /**
+   * Creates a new UI component instance based on the provided template and initial state.
+   *
+   * @template T - The type of the UI component element.
+   * @template S - The type of the component state.
+   *
+   * @param template - The stateless component template function.
+   * @returns The created UI component element.
+   */
   static create<T extends HTMLElement>(template: StatelessComponent): T;
 
+  /**
+   * Creates a new UI component instance based on the provided template and initial state.
+   *
+   * @template T - The type of the UI component element.
+   * @template S - The type of the component state.
+   *
+   * @param template - The component template function (stateless or stateful).
+   * @param initialState - The initial state of the component (optional for stateless components).
+   * @returns The created UI component element or an array containing the element and a function to update its state.
+   */
   static create<T extends HTMLElement, S extends Record<string, any>>(
     template: StatefullComponent<S> | StatelessComponent,
     initialState?: S,

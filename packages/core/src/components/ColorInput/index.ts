@@ -109,7 +109,6 @@ export class ColorInput extends LitElement implements HasValue, HasName {
 
   /**
    * A boolean attribute which, if present, indicates that the color input should be displayed vertically.
-   * @type {boolean}
    * @default false
    * @example
    * <bim-color-input vertical></bim-color-input>
@@ -118,7 +117,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
    * colorInput.vertical = true;
    */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   /**
    * The opacity of the color input.
@@ -135,7 +134,6 @@ export class ColorInput extends LitElement implements HasValue, HasName {
 
   /**
    * The color value of the color input in hexadecimal format.
-   * @type {string}
    * @default #bcf124
    * @example
    * <bim-color-input color="#ff0000"></bim-color-input>
@@ -144,7 +142,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
    * colorInput.color = '#ff0000';
    */
   @property({ type: String, reflect: true })
-  color: string;
+  color = "#bcf124";
 
   private _colorInput = createRef<HTMLInputElement>();
   private _textInput = createRef<HTMLInputElement>();
@@ -194,11 +192,11 @@ export class ColorInput extends LitElement implements HasValue, HasName {
     }
   }
 
-  constructor() {
-    super();
-    this.vertical = false;
-    this.color = "#bcf124";
-  }
+  private onOpacityInput = (e: Event) => {
+    const input = e.target as NumberInput;
+    this.opacity = input.value;
+    this.dispatchEvent(this.onValueChange);
+  };
 
   /**
    * Focuses on the color input by programmatically triggering a click event on the underlying color input element.
@@ -211,12 +209,6 @@ export class ColorInput extends LitElement implements HasValue, HasName {
   }
 
   protected render() {
-    const onOpacityInput = (e: Event) => {
-      const input = e.target as NumberInput;
-      this.opacity = input.value;
-      this.dispatchEvent(this.onValueChange);
-    };
-
     return html`
       <div class="parent">
         <bim-input
@@ -250,7 +242,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
             </div>
             ${this.opacity !== undefined
               ? html`<bim-number-input
-                  @input=${onOpacityInput}
+                  @input=${this.onOpacityInput}
                   slider
                   suffix="%"
                   min="0"

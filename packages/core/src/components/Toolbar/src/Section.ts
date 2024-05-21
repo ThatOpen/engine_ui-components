@@ -1,4 +1,5 @@
 import { LitElement, css, html } from "lit";
+import { property } from "lit/decorators.js";
 import { ToolbarGroup } from "./Group";
 import { HasName } from "../../../core/types";
 
@@ -42,18 +43,15 @@ export class ToolbarSection extends LitElement implements HasName {
     }
   `;
 
-  static properties = {
-    label: { type: String, reflect: true },
-    icon: { type: String, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-    labelHidden: { type: Boolean, attribute: "label-hidden", reflect: true },
-  };
+  @property({ type: String, reflect: true })
+  label?: string;
 
-  declare label?: string;
-  declare icon?: string;
+  @property({ type: String, reflect: true })
+  icon?: string;
 
   private _vertical = false;
 
+  @property({ type: Boolean, reflect: true })
   set vertical(value: boolean) {
     this._vertical = value;
     this.updateChildren();
@@ -65,6 +63,19 @@ export class ToolbarSection extends LitElement implements HasName {
 
   private _labelHidden = false;
 
+  /**
+   * Sets the value of the `labelHidden` property and updates the children accordingly.
+   *
+   * @example
+   * ```typescript
+   * toolbarSection.labelHidden = true;
+   * ```
+   * @example
+   * ```html
+   * <bim-toolbar-section label-hidden></bim-toolbar-section>
+   * ```
+   */
+  @property({ type: Boolean, attribute: "label-hidden", reflect: true })
   set labelHidden(value: boolean) {
     this._labelHidden = value;
     this.updateChildren();
@@ -82,7 +93,7 @@ export class ToolbarSection extends LitElement implements HasName {
     }
   }
 
-  render() {
+  protected render() {
     return html`
       <div class="parent">
         <div class="children">

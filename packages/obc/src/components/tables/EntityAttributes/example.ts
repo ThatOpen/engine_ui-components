@@ -2,6 +2,7 @@
 import * as WEBIFC from "web-ifc";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
 import * as CUI from "../..";
 
 BUI.Manager.init();
@@ -44,7 +45,7 @@ grids.create(world);
 
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
-const file = await fetch("/resources/testing.ifc");
+const file = await fetch("/resources/small.ifc");
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
@@ -53,11 +54,11 @@ world.scene.three.add(model);
 /* MD
   :::tip
 
-  You don't need to load the model into the scene to display its properties.
+  You don't need to add the model into the scene to display its properties. However, as we are going to display the attributes for each selected element, then having the model into the scene is obvious, right?
 
   :::
 
-  Now, in order to get the most out of the entities table, you need to calculate the relations index of your model. To do it, you will need to use the [IfcRelationsIndexer]() component from `@thatopen/components` to speed up the process.
+  Now, in order to get the most out of the entities table, you need to calculate the relations index of your model. To do it, you will need to use the IfcRelationsIndexer component from `@thatopen/components` to speed up the process.
   */
 
 const indexer = components.get(OBC.IfcRelationsIndexer);
@@ -78,7 +79,7 @@ const baseStyle: Record<string, string> = {
 
   :::tip
 
-  If you want to learn more about the `html` template tag and how to use it, just take a look at the [tutorial on how to make a custom component]().
+  If you want to learn more about the `html` template tag and how to use it, just take a look at the tutorial on how to make a custom component.
 
   :::
   */
@@ -122,122 +123,59 @@ const tableDefinition: BUI.TableDefinition = {
 };
 
 /* MD 
-  Keep in mind the step above is optional! Not needed for the table to work.<br><br>
+  Keep in mind the step above is optional! Not needed for the table to work.
+  <br><br>
 
   Now its time to create the table using the predefine functional component that ships with the library 🙂
   */
 
 const [attributesTable, updateAttributesTable] = CUI.tables.entityAttributes({
   components,
-  model,
-  expressIDs: [],
+  fragmentIdMap: {},
   tableDefinition,
+  attributesToInclude: () => {
+    const attributes: any[] = [
+      "Name",
+      "ContainedInStructure",
+      "HasProperties",
+      "HasPropertySets",
+      (name: string) => name.includes("Value"),
+      (name: string) => name.startsWith("Material"),
+      (name: string) => name.startsWith("Relating"),
+      (name: string) => {
+        const ignore = ["IsGroupedBy", "IsDecomposedBy"];
+        return name.startsWith("Is") && !ignore.includes(name);
+      },
+    ];
+    return attributes;
+  },
 });
 
 attributesTable.expanded = true;
 attributesTable.indentationInText = true;
 attributesTable.preserveStructureOnFilter = true;
 
-// const dropdown = BUI.Component.create(() => {
-//   const dropdown = document.createElement("bim-dropdown");
-//   dropdown.label = "ExpressIDs";
-//   dropdown.multiple = true;
-//   const props = model.getLocalProperties();
-//   if (props) {
-//     for (const expressID in props) {
-//       const { type } = props[expressID];
-//       if (type !== WEBIFC.IFCWALL) continue;
-//       const option = document.createElement("bim-option");
-//       const entityTypeName = OBC.IfcCategoryMap[type];
-//       option.label = `${expressID}: ${entityTypeName}`;
-//       option.value = expressID;
-//       dropdown.append(option);
-//     }
-//   }
+/* MD
+  Cool! attributes table created. Then after, let's tell the attributes table to update each time the user makes a selection over the model. For it, we will use the highlighter from `@thatopen/components-front`:
+  */
 
-//   dropdown.addEventListener("change", () => {
-//     updateAttributesTable({ expressIDs: dropdown.value });
-//   });
+const highlighter = components.get(OBF.Highlighter);
+highlighter.setup({ world });
 
-//   return BUI.html`<div>${dropdown}</div>`;
-// });
-
-/** MD
- Now, to make things even more interesting, let's add a dropdown that let's the user decide which attributes they want to see.
- */
-
-const attributesDropdown = document.getElementById(
-  "attributes",
-) as BUI.Dropdown;
-
-const attributes = [
-  "Name",
-  "ContainedInStructure",
-  "ForLayerSet",
-  "LayerThickness",
-  "HasProperties",
-  "HasAssociations",
-  "HasAssignments",
-  "HasPropertySets",
-  "PredefinedType",
-  "Quantities",
-  "ReferencedSource",
-  "Identification",
-  "Prefix",
-  "LongName",
-];
-
-for (const attribute of attributes) {
-  const option = document.createElement("bim-option");
-  option.label = attribute;
-  attributesDropdown.append(option);
-}
-
-attributesDropdown.addEventListener("change", () => {
-  updateAttributesTable({
-    attributesToInclude: () => {
-      const attributes: any[] = [
-        ...attributesDropdown.value,
-        (name: string) => name.includes("Value"),
-        (name: string) => name.startsWith("Material"),
-        (name: string) => name.startsWith("Relating"),
-        (name: string) => {
-          const ignore = ["IsGroupedBy", "IsDecomposedBy"];
-          return name.startsWith("Is") && !ignore.includes(name);
-        },
-      ];
-      return attributes;
-    },
-  });
+highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+  updateAttributesTable({ fragmentIdMap });
 });
 
-attributesDropdown.value = attributes;
+highlighter.events.select.onClear.add(() =>
+  updateAttributesTable({ fragmentIdMap: {} }),
+);
 
-const exportBtn = document.getElementById("export-json") as BUI.Button;
-exportBtn.addEventListener("click", () => {
-  attributesTable.downloadData("entities-attributes");
-});
+/* MD
+  ### Creating a panel to append the table
+  Allright! Let's now create a BIM Panel to control some aspects of the attributes table and to trigger some functionalities like copying the values to TSV or exporing the data to JSON 😉
+  */
 
-const propsManager = components.get(OBC.IfcPropertiesManager);
-const exportIfc = document.getElementById("export-ifc") as BUI.Button;
-exportIfc.addEventListener("click", async () => {
-  const modifiedIFC = await propsManager.saveToIfc(model, typedArray);
-  const file = new File([modifiedIFC], "small-modified.ifc");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(file);
-  a.download = file.name;
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-
-const entityAttributes = BUI.Component.create(() => {
-  const onCopyTSV = async () => {
-    await navigator.clipboard.writeText(attributesTable.tsv);
-    alert(
-      "Table data copied as TSV in clipboard! Try to paste it in a spreadsheet app.",
-    );
-  };
-
+const entityAttributesPanel = BUI.Component.create(() => {
   const onSearchInput = (e: Event) => {
     const input = e.target as BUI.TextInput;
     attributesTable.queryString = input.value;
@@ -248,32 +186,89 @@ const entityAttributes = BUI.Component.create(() => {
     attributesTable.preserveStructureOnFilter = checkbox.checked;
   };
 
+  const onExportJSON = () => {
+    attributesTable.downloadData("entities-attributes");
+  };
+
+  const onCopyTSV = async () => {
+    await navigator.clipboard.writeText(attributesTable.tsv);
+    alert(
+      "Table data copied as TSV in clipboard! Try to paste it in a spreadsheet app.",
+    );
+  };
+
+  const onAttributesChange = (e: Event) => {
+    const dropdown = e.target as BUI.Dropdown;
+    updateAttributesTable({
+      attributesToInclude: () => {
+        const attributes: any[] = [
+          ...dropdown.value,
+          (name: string) => name.includes("Value"),
+          (name: string) => name.startsWith("Material"),
+          (name: string) => name.startsWith("Relating"),
+          (name: string) => {
+            const ignore = ["IsGroupedBy", "IsDecomposedBy"];
+            return name.startsWith("Is") && !ignore.includes(name);
+          },
+        ];
+        return attributes;
+      },
+    });
+  };
+
   return BUI.html`
-    <bim-panel name="entityAttributes" label="Entity Attributes">
-      <bim-panel-section name="tableAttributes" label="Table Settings">
-        <bim-dropdown multiple id="attributes" label="Attributes"></bim-dropdown>
-        <bim-button @click=${onCopyTSV} label="Copy as TSV"></bim-button>
-        <bim-button label="Export to JSON"></bim-button>
-        <bim-button label="Export IFC"></bim-button>
-        <div style="display: flex; gap: 0.5rem">
-          <bim-text-input @input=${onSearchInput} type="search" placeholder="Search" debounce="250"></bim-text-input>
-          <bim-checkbox @change=${onPreserveStructureChange} label="Preserve Structure" inverted checked></bim-checkbox>
+    <bim-panel>
+      <bim-panel-section label="Entity Attributes" fixed>
+        <div style="display: flex; gap: 0.5rem; justify-content: space-between;">
+          <div style="display: flex; gap: 0.5rem;">
+            <bim-text-input @input=${onSearchInput} type="search" placeholder="Search" debounce="250"></bim-text-input>
+            <bim-checkbox @change=${onPreserveStructureChange} label="Preserve Structure" inverted checked></bim-checkbox>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <bim-dropdown @change=${onAttributesChange} multiple>
+              <bim-option label="Name" checked></bim-option> 
+              <bim-option label="ContainedInStructure" checked></bim-option>
+              <bim-option label="ForLayerSet"></bim-option>
+              <bim-option label="LayerThickness"></bim-option>
+              <bim-option label="HasProperties" checked></bim-option>
+              <bim-option label="HasAssociations"></bim-option>
+              <bim-option label="HasAssignments"></bim-option>
+              <bim-option label="HasPropertySets" checked></bim-option>
+              <bim-option label="PredefinedType"></bim-option>
+              <bim-option label="Quantities"></bim-option>
+              <bim-option label="ReferencedSource"></bim-option>
+              <bim-option label="Identification"></bim-option>
+              <bim-option label="Prefix"></bim-option>
+              <bim-option label="LongName"></bim-option>
+            </bim-dropdown>
+            <bim-button @click=${onCopyTSV} icon="solar:copy-bold" tooltip-title="Copy TSV" tooltip-text="Copy the table contents as tab separated text values, so you can copy them into a spreadsheet."></bim-button>
+            <bim-button @click=${onExportJSON} icon="ph:export-fill" tooltip-title="Export JSON" tooltip-text="Download the table contents as a JSON file."></bim-button>
+          </div>
         </div>
+        ${attributesTable}
       </bim-panel-section>
     </bim-panel>
   `;
 });
 
-const grid = document.createElement("bim-grid");
-grid.layouts = {
+/* MD
+  Finally, let's create a BIM Grid element and provide both the panel and the viewport to display everything.
+  */
+
+const app = document.createElement("bim-grid");
+app.layouts = {
   main: {
     template: `
-      "entityAttributes viewport" 1fr
-      "entityAttributes attributesTable" minmax(auto, 450px)
-      /24rem 1fr
+      "viewport" 1fr
+      "entityAttributesPanel" 1fr
     `,
-    elements: { entityAttributes, viewport, attributesTable },
+    elements: { entityAttributesPanel, viewport },
   },
 };
 
-grid.layout = "main";
+app.layout = "main";
+document.body.append(app);
+
+/* MD
+  Congratulations! You have now created a fully working advanced attributes table for your app in less than 10 minutes of work. Keep going with more tutorials! 💪
+  */

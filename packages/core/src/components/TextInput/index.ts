@@ -48,29 +48,99 @@ export class TextInput extends LitElement implements HasName, HasValue {
     "week",
   ];
 
+  /**
+   * Represents the icon property of the TextInput component.
+   * This property is used to display an icon next to the input field.
+   *
+   * @example
+   * <bim-text-input icon="material-symbols:search"></bim-text-input>
+   */
   @property({ type: String, reflect: true })
   icon?: string;
 
+  /**
+   * Represents the label property of the TextInput component.
+   * This property is used to display a label above or next to the input field.
+   *
+   * @example
+   * <bim-text-input label="Name"></bim-text-input>
+   */
   @property({ type: String, reflect: true })
   label?: string;
 
+  /**
+   * Represents the name property of the TextInput component.
+   * This property is used to uniquely identify the input field within a form or group of inputs.
+   *
+   * @example
+   * <bim-text-input name="username"></bim-text-input>
+   */
   @property({ type: String, reflect: true })
   name?: string;
 
+  /**
+   * Represents the placeholder property of the TextInput component.
+   * This property is used to display a hint or a placeholder text inside the input field.
+   * The placeholder text is displayed when the input field is empty and loses focus.
+   *
+   * @example
+   * <bim-text-input placeholder="Enter your name.."></bim-text-input>
+   */
   @property({ type: String, reflect: true })
   placeholder?: string;
 
+  /**
+   * Represents the value property of the TextInput component.
+   * This property is used to get or set the current value of the input field.
+   *
+   * @example
+   * // Get the current value
+   * const currentValue = textInput.value;
+   *
+   * // Set a new value
+   * textInput.value = "New Value";
+   */
   @property({ type: String, reflect: true })
-  value: string;
+  value = "";
 
+  /**
+   * Represents the vertical property of the TextInput component.
+   * This property is used to control the layout of the input field.
+   * When set to `true`, the input field will be displayed vertically.
+   *
+   * @default false
+   *
+   * @example
+   * <bim-text-input vertical></bim-text-input>
+   */
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
+  /**
+   * Represents the debounce property of the TextInput component.
+   * This property is used to control the delay in milliseconds before the `input` event is fired.
+   * The `input` event is debounced to prevent excessive event firing when the user types rapidly.
+   *
+   * @default undefined
+   *
+   * @example
+   * <bim-text-input debounce="500"></bim-text-input>
+   */
   @property({ type: Number, reflect: true })
   debounce?: number;
 
   private _type = "text";
 
+  /**
+   * Sets the type of the input field.
+   * The type property determines the behavior of the input field.
+   * It can be any of the following: "date", "datetime-local", "email", "month", "password", "search", "tel", "text", "time", "url", "week".
+   * If an invalid type is provided, the type will not be changed.
+   *
+   * @example
+   * // Set the type to "email"
+   * textInput.type = "email";
+   */
   @property({ type: String, reflect: true })
   set type(value: string) {
     if (this._inputTypes.includes(value)) {
@@ -82,17 +152,25 @@ export class TextInput extends LitElement implements HasName, HasValue {
     return this._type;
   }
 
+  /**
+   * Gets the query value derived from the current input value.
+   * The `getQuery` function is assumed to be a utility function that takes a string as input
+   * and returns a processed query value based on the input.
+   *
+   * @returns The processed query value derived from the current input value.
+   *
+   * @example
+   * ```typescript
+   * const textInput = new TextInput();
+   * textInput.value = "Key?Value";
+   * console.log(textInput.query);
+   * ```
+   */
   get query() {
     return getQuery(this.value);
   }
 
   onValueChange = new Event("input");
-
-  constructor() {
-    super();
-    this.value = "";
-    this.vertical = false;
-  }
 
   private onInputChange(e: Event) {
     e.stopPropagation();

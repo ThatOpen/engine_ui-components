@@ -116,6 +116,17 @@ export class Checkbox extends LitElement implements HasValue {
     return this.checked;
   }
 
+  /**
+   * Event that is dispatched when the checkbox's checked state changes.
+   * This event can be used to listen for changes to the checkbox's value and perform
+   * necessary actions when the value changes.
+   *
+   * @event change
+   * @example
+   * checkbox.addEventListener('change', (event) => {
+   *   console.log('Checkbox value changed:', event.target.checked);
+   * });
+   */
   readonly onValueChange = new Event("change");
 
   private onChange(e: Event) {

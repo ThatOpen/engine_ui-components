@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as FRAGS from "@thatopen/fragments";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
@@ -8,7 +7,7 @@ import * as WEBIFC from "web-ifc";
 
 export interface ElementPropertiesUIState {
   components: OBC.Components;
-  data: { model: FRAGS.FragmentsGroup; expressIDs: Iterable<number> }[];
+  fragmentIdMap: FRAGS.FragmentIdMap;
 }
 
 const attrsToIgnore = ["OwnerHistory", "ObjectPlacement", "CompositionType"];
@@ -225,14 +224,36 @@ const getClassificationsRow = async (
 };
 
 export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
-  const { components, data } = state;
+  const { components, fragmentIdMap } = state;
 
   const indexer = components.get(OBC.IfcRelationsIndexer);
+  const fragments = components.get(OBC.FragmentsManager);
 
   const onCreated = async (element?: Element) => {
     if (!element) return;
 
     const rows: BUI.TableGroupData[] = [];
+
+    const data: {
+      model: FRAGS.FragmentsGroup;
+      expressIDs: Iterable<number>;
+    }[] = [];
+    const expressIDs = [];
+    for (const fragID in fragmentIdMap) {
+      const fragment = fragments.list.get(fragID);
+      if (!(fragment && fragment.group)) continue;
+      const model = fragment.group;
+      const existingModel = data.find((value) => value.model === model);
+      if (existingModel) {
+        for (const id of fragmentIdMap[fragID]) {
+          (existingModel.expressIDs as Set<number>).add(id);
+          expressIDs.push(id);
+        }
+      } else {
+        const info = { model, expressIDs: new Set(fragmentIdMap[fragID]) };
+        data.push(info);
+      }
+    }
 
     for (const value in data) {
       const { model, expressIDs } = data[value];

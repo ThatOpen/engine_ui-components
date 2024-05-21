@@ -1,4 +1,5 @@
 import { LitElement, css, html } from "lit";
+import { property } from "lit/decorators.js";
 
 export class ToolbarGroup extends LitElement {
   static styles = css`
@@ -12,15 +13,22 @@ export class ToolbarGroup extends LitElement {
     }
   `;
 
-  static properties = {
-    rows: { type: Number, reflect: true },
-    vertical: { type: Boolean, reflect: true },
-  };
-
-  declare rows: number;
+  /**
+   * The number of rows to display in the toolbar group.
+   *
+   * @defaultValue 2
+   */
+  @property({ type: Number, reflect: true })
+  rows = 2;
 
   private _vertical = false;
 
+  /**
+   * Sets the vertical property of the ToolbarGroup.
+   * When vertical is true, the toolbar group will display its children vertically.
+   * When vertical is false, the toolbar group will display its children horizontally.
+   */
+  @property({ type: Boolean, reflect: true })
   set vertical(value: boolean) {
     this._vertical = value;
     this.updateChildren();
@@ -28,12 +36,6 @@ export class ToolbarGroup extends LitElement {
 
   get vertical() {
     return this._vertical;
-  }
-
-  constructor() {
-    super();
-    this.rows = 2;
-    this.vertical = false;
   }
 
   private updateChildren() {
@@ -47,7 +49,7 @@ export class ToolbarGroup extends LitElement {
     }
   }
 
-  render() {
+  protected render() {
     return html`
       <style>
         .parent {

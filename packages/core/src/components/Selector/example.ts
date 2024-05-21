@@ -13,7 +13,7 @@ const customOption = selectorInput.querySelector<BUI.Option>(
 const customOptionValue = { data: "Hi!" };
 customOption.value = customOptionValue;
 
-selectorInput.value = 0;
+// selectorInput.value = 0;
 
 selectorInput.addEventListener("change", () => {
   const value = selectorInput.value;

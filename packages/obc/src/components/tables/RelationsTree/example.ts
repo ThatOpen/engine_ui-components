@@ -63,8 +63,8 @@ const panel = BUI.Component.create(() => {
   `;
 });
 
-const grid = document.getElementById("app") as BUI.Grid;
-grid.layouts = {
+const app = document.getElementById("app") as BUI.Grid;
+app.layouts = {
   main: {
     template: `
       "panel viewport"
@@ -74,4 +74,4 @@ grid.layouts = {
   },
 };
 
-grid.layout = "main";
+app.layout = "main";
