@@ -4,22 +4,7 @@ import * as CUI from "../..";
 
 BUI.Manager.init();
 
-const grid = document.querySelector("bim-grid")!;
-grid.layouts = {
-  main: `
-    "c-panels-left viewer"
-    "c-panels-left viewer"
-    / 23rem 1fr
-  `,
-};
-
-grid.layout = "main";
-
 const components = new OBC.Components();
-
-const viewerContainer = document.querySelector(
-  "bim-viewport[name='viewer']",
-) as BUI.Viewport;
 
 const worlds = components.get(OBC.Worlds);
 const world = worlds.create();
@@ -28,13 +13,14 @@ const sceneComponent = new OBC.SimpleScene(components);
 sceneComponent.setup();
 world.scene = sceneComponent;
 
-const rendererComponent = new OBC.SimpleRenderer(components, viewerContainer);
+const viewport = document.createElement("bim-viewport");
+const rendererComponent = new OBC.SimpleRenderer(components, viewport);
 world.renderer = rendererComponent;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
 
-viewerContainer.addEventListener("resize", () => {
+viewport.addEventListener("resize", () => {
   rendererComponent.resize();
   cameraComponent.updateAspect();
 });
@@ -53,14 +39,14 @@ components.init();
   First of all, we're going to get the `FragmentIfcLoader` from an existing components instance:
   */
 
-const ifcLoader = components.get(OBC.FragmentIfcLoader);
+const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
 /* MD
   The step above is super important as none of the existing functional components setup any tool, they just get it as they are! So, if we don't setup the `FragmentIfcLoader` then the wasm path is not going to be defined and an error will arise 🤓. Just after we have setup the loader, let's then configure the `FragmentManager` so any time a model is loaded it gets added to some world scene created before: 
   */
 
-const fragmentsManager = components.get(OBC.FragmentManager);
+const fragmentsManager = components.get(OBC.FragmentsManager);
 fragmentsManager.onFragmentsLoaded.add((model) => {
   if (world.scene) world.scene.three.add(model);
 });
@@ -92,17 +78,22 @@ const panel = BUI.Component.create(() => {
 });
 
 /* MD
-  :::tip
-
-  If you haven't see it, take a look at the [LoadIfc]() button tutorial, is pretty simple to set up!
-
-  :::
-
   Finally, let's append the BIM Panel to the page to see the models list working 😉
   */
 
-const leftPanelsContainer = grid.getContainer("panels", "left");
-leftPanelsContainer.append(panel);
+const app = document.createElement("bim-grid");
+app.layouts = {
+  main: {
+    template: `
+      "panel viewport"
+      / 23rem 1fr
+    `,
+    elements: { panel, viewport },
+  },
+};
+
+app.layout = "main";
+document.body.append(app);
 
 /* MD
   Congratulations! You've now a ready to go user interface that let's you show and dispose IFC models loaded into your app 🥳

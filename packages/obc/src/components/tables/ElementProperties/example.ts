@@ -1,7 +1,6 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
-import * as FRAGS from "@thatopen/fragments";
 import * as CUI from "../..";
 
 BUI.Manager.init();
@@ -73,7 +72,7 @@ await indexer.process(model);
 
 const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
   components,
-  data: [],
+  fragmentIdMap: {},
 });
 
 propertiesTable.preserveStructureOnFilter = true;
@@ -89,32 +88,15 @@ propertiesTable.indentationInText = false;
   Cool! properties table created. Then after, let's tell the properties table to update each time the user makes a selection over the model. For it, we will use the highlighter from `@thatopen/components-front`:
   */
 
-const fragments = components.get(OBC.FragmentsManager);
 const highlighter = components.get(OBF.Highlighter);
 highlighter.setup({ world });
 
 highlighter.events.select.onHighlight.add((fragmentIdMap) => {
-  const data: { model: FRAGS.FragmentsGroup; expressIDs: Iterable<number> }[] =
-    [];
-  for (const fragID in fragmentIdMap) {
-    const fragment = fragments.list.get(fragID);
-    if (!(fragment && fragment.group)) continue;
-    const model = fragment.group;
-    const existingModel = data.find((value) => value.model === model);
-    if (existingModel) {
-      for (const id of fragmentIdMap[fragID]) {
-        (existingModel.expressIDs as Set<number>).add(id);
-      }
-    } else {
-      const info = { model, expressIDs: new Set(fragmentIdMap[fragID]) };
-      data.push(info);
-    }
-  }
-  updatePropertiesTable({ data });
+  updatePropertiesTable({ fragmentIdMap });
 });
 
 highlighter.events.select.onClear.add(() =>
-  updatePropertiesTable({ data: [] }),
+  updatePropertiesTable({ fragmentIdMap: {} }),
 );
 
 /* MD
@@ -156,8 +138,8 @@ const propertiesPanel = BUI.Component.create(() => {
   Finally, let's create a BIM Grid element and provide both the panel and the viewport to display everything.
   */
 
-const grid = document.createElement("bim-grid");
-grid.layouts = {
+const app = document.createElement("bim-grid");
+app.layouts = {
   main: {
     template: `
     "propertiesPanel viewport"
@@ -167,8 +149,8 @@ grid.layouts = {
   },
 };
 
-grid.layout = "main";
-document.body.append(grid);
+app.layout = "main";
+document.body.append(app);
 
 /* MD
   Congratulations! You have now created a fully working properties table for your app in less than 5 minutes of work. Keep going with more tutorials! 💪

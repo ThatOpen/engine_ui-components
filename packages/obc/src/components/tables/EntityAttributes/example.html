@@ -25,6 +25,7 @@
     bim-table {
       grid-area: table;
       width: 100%;
+      border-radius: 0.5rem;
     }
 
     bim-panel {
@@ -34,22 +35,6 @@
 </head>
 
 <body>
-  <bim-grid id="grid">
-    <bim-viewport id="viewer-container" style="grid-area: viewer;"></bim-viewport>
-    <bim-panel name="entityAttributes" label="Entity Attributes">
-      <bim-panel-section name="tableAttributes" label="Table Settings">
-        <bim-dropdown multiple id="attributes" label="Attributes"></bim-dropdown>
-        <bim-checkbox id="make-editable" label="Editable"></bim-checkbox>
-        <bim-button id="copy-tsv" label="Copy as TSV"></bim-button>
-        <bim-button id="export-json" label="Export to JSON"></bim-button>
-        <bim-button id="export-ifc" label="Export IFC"></bim-button>
-        <div style="display: flex; gap: 0.5rem">
-          <bim-text-input id="search-box" type="search" placeholder="Search" debounce="250"></bim-text-input>
-          <bim-checkbox id="preserve-structure" label="Preserve Structure" inverted checked></bim-checkbox>
-        </div>
-      </bim-panel-section>
-    </bim-panel>
-  </bim-grid>
   <script type="module" src="./example.ts"></script>
 </body>
 

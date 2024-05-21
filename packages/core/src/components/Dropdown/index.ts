@@ -171,32 +171,17 @@ export class Dropdown extends Component implements HasValue, HasName {
    */
 
   set value(value: any[]) {
-    if (this.required && Object.keys(value).length === 0) {
-      console.warn(
-        `bim-dropdown was set as required but not value is set. Nothing has changed.`,
-      );
-      return;
-    }
-    const _value: string[] = [];
+    if (this.required && Object.keys(value).length === 0) return;
+    const _value: any[] = [];
     for (const option of value) {
       const existingOption = this.findOption(option);
-      if (existingOption) {
-        _value.push(existingOption.value);
-        if (!this.multiple && Object.keys(value).length > 1) {
-          console.warn(
-            `bim-dropdown wasn't set as multiple, but provided an array of values. Only first was taken.`,
-          );
-          break;
-        }
-      } else {
-        console.warn(
-          `bim-dropdown doesn't have ${option} as a possible value.`,
-        );
-      }
+      if (!existingOption) continue;
+      _value.push(existingOption.value);
+      if (!this.multiple && Object.keys(value).length > 1) break;
     }
     this._value = _value;
-    this.dispatchEvent(this.onValueChange);
     this.updateOptionsState();
+    if (this._canEmitEvents) this.dispatchEvent(this.onValueChange);
   }
 
   get value() {
@@ -210,6 +195,8 @@ export class Dropdown extends Component implements HasValue, HasName {
     }
     return options;
   }
+
+  private _canEmitEvents = false;
 
   onValueChange = new Event("change");
 
@@ -286,6 +273,17 @@ export class Dropdown extends Component implements HasValue, HasName {
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener("mouseup", this.onWindowMouseUp);
+  }
+
+  firstUpdated() {
+    setTimeout(() => {
+      const options = [...this.children].filter(
+        (child) => child instanceof Option && child.checked,
+      ) as Option[];
+      const values = options.map((option) => option.label);
+      this.value = values;
+      this._canEmitEvents = true;
+    });
   }
 
   disconnectedCallback() {

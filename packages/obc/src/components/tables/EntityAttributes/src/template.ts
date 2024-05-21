@@ -12,8 +12,7 @@ type AttributesToInclude =
 
 export interface EntityAttributesUIState {
   components: OBC.Components;
-  model: FRAGS.FragmentsGroup;
-  expressIDs: number[];
+  fragmentIdMap: FRAGS.FragmentIdMap;
   tableDefinition: BUI.TableDefinition;
   editable?: boolean;
   attributesToInclude?: AttributesToInclude;
@@ -181,12 +180,13 @@ async function processEntityAttributes(
 export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
   const {
     components,
-    model: modelID,
-    expressIDs,
+    fragmentIdMap,
     attributesToInclude,
     editable,
     tableDefinition,
   } = state;
+
+  const fragments = components.get(OBC.FragmentsManager);
 
   let attributes: Attributes[] | undefined;
   if (typeof attributesToInclude === "function") {
@@ -199,15 +199,38 @@ export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
     if (!el) return;
     const table = el as BUI.Table;
     const groups: BUI.TableGroupData[] = [];
-    for (const expressID of expressIDs) {
-      const group = await processEntityAttributes(
-        components,
-        modelID,
-        expressID,
-        attributes,
-        editable,
-      );
-      groups.push(group);
+    const data: {
+      model: FRAGS.FragmentsGroup;
+      expressIDs: Iterable<number>;
+    }[] = [];
+    const expressIDs = [];
+    for (const fragID in fragmentIdMap) {
+      const fragment = fragments.list.get(fragID);
+      if (!(fragment && fragment.group)) continue;
+      const model = fragment.group;
+      const existingModel = data.find((value) => value.model === model);
+      if (existingModel) {
+        for (const id of fragmentIdMap[fragID]) {
+          (existingModel.expressIDs as Set<number>).add(id);
+          expressIDs.push(id);
+        }
+      } else {
+        const info = { model, expressIDs: new Set(fragmentIdMap[fragID]) };
+        data.push(info);
+      }
+    }
+    for (const value of data) {
+      const { model, expressIDs } = value;
+      for (const id of expressIDs) {
+        const group = await processEntityAttributes(
+          components,
+          model,
+          id,
+          attributes,
+          editable,
+        );
+        groups.push(group);
+      }
     }
     table.definition = tableDefinition;
     table.data = groups;
