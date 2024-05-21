@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
-import { panelSections } from "..";
+import { panelSections } from "../panel-sections";
 
 interface MeshUIState {
   mesh: THREE.Mesh;
