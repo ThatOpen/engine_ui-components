@@ -1,5 +1,36 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{E as v,d as x,q as A,$ as S,W as B,F as $,I as P,p as R,t as T,a as D,C as F,M as f,b as W}from"./index-BJN8AjRC.js";import{b as M,E as N,m as d,_ as p}from"./index-RJxXwJnz.js";M.registerComponents();const m=document.getElementById("grid");m.layouts={main:`
-  "c-panels-left viewer" 1fr
-  "c-panels-table c-panels-table" minmax(auto, 450px)
-  /auto 1fr
-  `};m.layout="main";const U=document.querySelector("bim-panel[name='entityAttributes']"),q=m.getContainer("panels","left");q.append(U);const y=document.getElementById("viewer-container"),o=new v,H=o.get(x),c=H.create(),g=new A(o);g.setup();c.scene=g;const w=new S(o,y);c.renderer=w;const E=new B(o);c.camera=E;y.addEventListener("resize",()=>{w.resize(),E.updateAspect()});o.init();const j=o.get($);j.create(c);const I=o.get(P);await I.setup();const O=await fetch("/resources/small.ifc"),z=await O.arrayBuffer(),h=new Uint8Array(z),i=await I.load(h);c.scene.three.add(i);const V=o.get(R);await V.process(i);const s={padding:"0.25rem",borderRadius:"0.25rem"},_={Entity:t=>{let e={};return t===f[W]&&(e={...s,backgroundColor:"purple",color:"white"}),String(t).includes("IFCWALL")&&(e={...s,backgroundColor:"green",color:"white"}),d`<bim-label label=${t} style=${p(e)}></bim-label>`},PredefinedType:t=>{const e=["#1c8d83","#3c1c8d","#386c19","#837c24"],n=Math.floor(Math.random()*e.length),l=e[n],a={...s,backgroundColor:l,color:"white"};return d`<bim-label label=${t} style=${p(a)}></bim-label>`},NominalValue:t=>{let e={};return typeof t=="boolean"&&t===!1&&(e={...s,backgroundColor:"#b13535",color:"white"}),typeof t=="boolean"&&t===!0&&(e={...s,backgroundColor:"#18882c",color:"white"}),d`<bim-label label=${t} style=${p(e)}></bim-label>`}},[C,u]=T.entityAttributes({components:o,model:i,expressIDs:[],attributeElements:_}),G=m.getContainer("panels","table");G.append(C);const Q=N.create(()=>{const t=document.createElement("bim-dropdown");t.label="ExpressIDs",t.multiple=!0;const e=i.getLocalProperties();if(e)for(const n in e){const{type:l}=e[n];if(l!==D)continue;const a=document.createElement("bim-option"),k=f[l];a.label=`${n}: ${k}`,a.value=n,t.append(a)}return t.addEventListener("change",()=>{u({expressIDs:t.value})}),d`<div>${t}</div>`}),r=document.getElementById("attributes"),Y=document.querySelector("bim-panel-section[name='tableAttributes']");Y.insertBefore(Q,r);const L=["Name","ContainedInStructure","ForLayerSet","LayerThickness","HasProperties","HasAssociations","HasAssignments","HasPropertySets","PredefinedType","Quantities","ReferencedSource","Identification","Prefix","LongName"];for(const t of L){const e=document.createElement("bim-option");e.label=t,r.append(e)}r.addEventListener("change",()=>{u({attributesToInclude:()=>[...r.value,e=>e.includes("Value"),e=>e.startsWith("Material"),e=>e.startsWith("Relating"),e=>{const n=["IsGroupedBy","IsDecomposedBy"];return e.startsWith("Is")&&!n.includes(e)}]})});r.value=L;const J=document.getElementById("export-json");J.addEventListener("click",()=>{C.downloadData("entities-attributes")});const b=document.getElementById("make-editable");b.addEventListener("change",()=>{u({editable:b.checked})});const K=o.get(F),X=document.getElementById("export-ifc");X.addEventListener("click",async()=>{const t=await K.saveToIfc(i,h),e=new File([t],"small-modified.ifc"),n=document.createElement("a");n.href=URL.createObjectURL(e),n.download=e.name,n.click(),URL.revokeObjectURL(n.href)});
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as v,f as I,a as A,s as T,i as P,k as $,N as E,m as N,A as L,e as H,g as b,t as p,h as O,j as V}from"./index-Dhy3Nnp8.js";import{A as W}from"./index-L7zXnaxf.js";import{t as M}from"./index-BQd6VEx2.js";v.init();const o=new I,R=o.get(A),a=R.create(),w=new T(o);w.setup();a.scene=w;const d=document.createElement("bim-viewport"),S=new P(o,d);a.renderer=S;const m=new $(o);a.camera=m;m.controls.setLookAt(10,5.5,5,-4,-1,-6.5);d.addEventListener("resize",()=>{S.resize(),m.updateAspect()});o.init();const B=o.get(E);B.create(a);const x=o.get(N);await x.setup();const D=await fetch("/resources/small.ifc"),F=await D.arrayBuffer(),J=new Uint8Array(F),C=await x.load(J);a.scene.three.add(C);const j=o.get(L);await j.process(C);const l={padding:"0.25rem",borderRadius:"0.25rem"},z={Entity:e=>{let t={};return e===O[V]&&(t={...l,backgroundColor:"purple",color:"white"}),String(e).includes("IFCWALL")&&(t={...l,backgroundColor:"green",color:"white"}),b`<bim-label label=${e} style=${p(t)}></bim-label>`},PredefinedType:e=>{const t=["#1c8d83","#3c1c8d","#386c19","#837c24"],c=Math.floor(Math.random()*t.length),g=t[c],f={...l,backgroundColor:g,color:"white"};return b`<bim-label label=${e} style=${p(f)}></bim-label>`},NominalValue:e=>{let t={};return typeof e=="boolean"&&e===!1&&(t={...l,backgroundColor:"#b13535",color:"white"}),typeof e=="boolean"&&e===!0&&(t={...l,backgroundColor:"#18882c",color:"white"}),b`<bim-label label=${e} style=${p(t)}></bim-label>`}},[n,u]=M.entityAttributes({components:o,fragmentIdMap:{},tableDefinition:z,attributesToInclude:()=>["Name","ContainedInStructure","HasProperties","HasPropertySets",t=>t.includes("Value"),t=>t.startsWith("Material"),t=>t.startsWith("Relating"),t=>{const c=["IsGroupedBy","IsDecomposedBy"];return t.startsWith("Is")&&!c.includes(t)}]});n.expanded=!0;n.indentationInText=!0;n.preserveStructureOnFilter=!0;const h=o.get(W);h.setup({world:a});h.events.select.onHighlight.add(e=>{u({fragmentIdMap:e})});h.events.select.onClear.add(()=>u({fragmentIdMap:{}}));const G=H.create(()=>b`
+    <bim-panel>
+      <bim-panel-section label="Entity Attributes" fixed>
+        <div style="display: flex; gap: 0.5rem; justify-content: space-between;">
+          <div style="display: flex; gap: 0.5rem;">
+            <bim-text-input @input=${r=>{const s=r.target;n.queryString=s.value}} type="search" placeholder="Search" debounce="250"></bim-text-input>
+            <bim-checkbox @change=${r=>{const s=r.target;n.preserveStructureOnFilter=s.checked}} label="Preserve Structure" inverted checked></bim-checkbox>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <bim-dropdown @change=${r=>{const s=r.target;u({attributesToInclude:()=>[...s.value,i=>i.includes("Value"),i=>i.startsWith("Material"),i=>i.startsWith("Relating"),i=>{const k=["IsGroupedBy","IsDecomposedBy"];return i.startsWith("Is")&&!k.includes(i)}]})}} multiple>
+              <bim-option label="Name" checked></bim-option> 
+              <bim-option label="ContainedInStructure" checked></bim-option>
+              <bim-option label="ForLayerSet"></bim-option>
+              <bim-option label="LayerThickness"></bim-option>
+              <bim-option label="HasProperties" checked></bim-option>
+              <bim-option label="HasAssociations"></bim-option>
+              <bim-option label="HasAssignments"></bim-option>
+              <bim-option label="HasPropertySets" checked></bim-option>
+              <bim-option label="PredefinedType"></bim-option>
+              <bim-option label="Quantities"></bim-option>
+              <bim-option label="ReferencedSource"></bim-option>
+              <bim-option label="Identification"></bim-option>
+              <bim-option label="Prefix"></bim-option>
+              <bim-option label="LongName"></bim-option>
+            </bim-dropdown>
+            <bim-button @click=${async()=>{await navigator.clipboard.writeText(n.tsv),alert("Table data copied as TSV in clipboard! Try to paste it in a spreadsheet app.")}} icon="solar:copy-bold" tooltip-title="Copy TSV" tooltip-text="Copy the table contents as tab separated text values, so you can copy them into a spreadsheet."></bim-button>
+            <bim-button @click=${()=>{n.downloadData("entities-attributes")}} icon="ph:export-fill" tooltip-title="Export JSON" tooltip-text="Download the table contents as a JSON file."></bim-button>
+          </div>
+        </div>
+        ${n}
+      </bim-panel-section>
+    </bim-panel>
+  `),y=document.createElement("bim-grid");y.layouts={main:{template:`
+      "viewport" 1fr
+      "entityAttributesPanel" 1fr
+    `,elements:{entityAttributesPanel:G,viewport:d}}};y.layout="main";document.body.append(y);

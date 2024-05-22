@@ -1,1 +1,0 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as o}from"./index-D05NiQ0D.js";o.registerComponents();const e=document.body.querySelector("bim-selector-input"),n=e.querySelector("bim-option[label='Custom']"),r={data:"Hi!"};n.value=r;e.value=0;e.addEventListener("change",()=>{const t=e.value;alert(`Your new camera projection is: ${JSON.stringify(t)}.`)});

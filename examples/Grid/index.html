@@ -13,7 +13,7 @@
     }
 
     html {
-      font-family: "sans-serif";
+      font-family: sans-serif;
     }
 
     body {
@@ -31,18 +31,20 @@
     bim-button {
       flex: 0;
     }
+
+    bim-panel {
+      border-radius: 0;
+    }
   </style>
   <script type="module" crossorigin src="../assets/grid.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-D05NiQ0D.js">
+  <link rel="modulepreload" crossorigin href="../assets/state-CdSmRkb4.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-laUBdS2o.js">
 </head>
 
 <body>
   <bim-button label="Change Layout" icon="mingcute:layout-fill"></bim-button>
-  <bim-grid>
-    <!-- <div style="grid-area: header; background-color: red;"></div>
-    <div style="grid-area: sidebar; background-color: green;"></div> -->
-  </bim-grid>
+  <bim-grid layout="app"></bim-grid>
 </body>
 
 </html>

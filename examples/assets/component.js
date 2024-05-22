@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t,x as l}from"./index-D05NiQ0D.js";c.registerComponents();const b=t.create(()=>l`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-laUBdS2o.js";import{x as l}from"./state-CdSmRkb4.js";c.init();const b=t.create(()=>l`
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
     </bim-panel-section>
@@ -6,7 +6,7 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t,x as l}from"./
       <bim-panel-section label=${n}>
         <bim-label label=${i}></bim-label>
       </bim-panel-section>
-    `},{label:"Statefull Panel Section",counter:0}),p=t.create(()=>{let e=0;return l`
+    `},{label:"Statefull Panel Section",counter:0}),m=t.create(()=>{let e=0;return l`
     <bim-panel label="My Panel">
       <bim-panel-section label="Update Functions">
         <bim-button @click=${()=>{e++,e>=5?o({label:"Powered Statefull Panel Section 💪",counter:e}):o({counter:e})}} label="Update Statefull Section"></bim-button>
@@ -14,4 +14,4 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t,x as l}from"./
       ${b}
       ${s}
     </bim-panel>
-  `});document.body.append(p);
+  `});document.body.append(m);

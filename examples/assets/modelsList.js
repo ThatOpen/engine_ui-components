@@ -1,14 +1,13 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{E as c,d as l,q as m,$ as d,W as p,F as b,I as f,c as g,t as w}from"./index-BJN8AjRC.js";import{b as u,E as C,m as v}from"./index-RJxXwJnz.js";import{b as I}from"./index-B0R8Bj5n.js";u.registerComponents();const o=document.querySelector("bim-grid");o.layouts={main:`
-    "c-panels-left viewer"
-    "c-panels-left viewer"
-    / 23rem 1fr
-  `};o.layout="main";const e=new c,s=document.querySelector("bim-viewport[name='viewer']"),L=e.get(l),n=L.create(),a=new m(e);a.setup();n.scene=a;const r=new d(e,s);n.renderer=r;const i=new p(e);n.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const E=e.get(b);E.create(n);e.init();const q=e.get(f);await q.setup();const y=e.get(g);y.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[F]=w.modelsList({components:e}),$=C.create(()=>{const[t]=I.loadIfc({components:e});return v`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as m,f as c,a as l,s as p,i as d,k as b,N as f,m as g,I as w,e as u,g as I}from"./index-Dhy3Nnp8.js";import{b as L}from"./index-k1wvrl6r.js";import{t as v}from"./index-BQd6VEx2.js";m.init();const e=new c,C=e.get(l),t=C.create(),s=new p(e);s.setup();t.scene=s;const a=document.createElement("bim-viewport"),i=new d(e,a);t.renderer=i;const r=new b(e);t.camera=r;a.addEventListener("resize",()=>{i.resize(),r.updateAspect()});const y=e.get(f);y.create(t);e.init();const E=e.get(g);await E.setup();const M=e.get(w);M.onFragmentsLoaded.add(n=>{t.scene&&t.scene.three.add(n)});const[$]=v.modelsList({components:e}),k=u.create(()=>{const[n]=L.loadIfc({components:e});return I`
    <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
-      ${t}
+      ${n}
     </bim-panel-section>
     <bim-panel-section icon="mage:box-3d-fill" label="Loaded Models">
-      ${F}
+      ${$}
     </bim-panel-section>
    </bim-panel> 
-  `}),M=o.getContainer("panels","left");M.append($);
+  `}),o=document.createElement("bim-grid");o.layouts={main:{template:`
+      "panel viewport"
+      / 23rem 1fr
+    `,elements:{panel:k,viewport:a}}};o.layout="main";document.body.append(o);
