@@ -43,8 +43,10 @@ fragmentsManager.onFragmentsLoaded.add((model) => {
 /* MD 
   ## Displaying elements grouping 📦
   ---
-  One of the greatest things we can make using BIM models is to group elements based on their properties. This has many use cases! Like grouping elements to check their collisions 💥, grouping elements based on their construction activities 🔨, or grouping fininshed elements during the construction phase ✅. Other than grouping the elements, the next most important thing is to show them to your user in an easy way... well, here is where it comes the `ClassificationsTree` functional component!
-  <br><br>
+  One of the greatest things we can make using BIM models is to group elements based on their properties. This has many use cases! Like grouping elements to check their collisions 💥, grouping elements based on their construction activities 🔨, or grouping fininshed elements during the construction phase ✅. 
+  
+  Other than grouping the elements, the next most important thing is to show them to your user in an easy way... well, here is where it comes the `ClassificationsTree` functional component!
+
   ### Creating the classifications tree
   First things first, let's create an instance of the functional component, like this:
   */
@@ -78,8 +80,7 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
 
 /* MD
   The `classifications` value is just an object where they keys are the names in the tree, and the values are the orders in which you want to group the elements. So, for example, "Entities" groups the elements based on their entities and then based on their predefined types. Needless to say, the classifications need to be computed before they can be used on the tree. You can check the system names from `classifier.list`.
-  <br><br>
-
+  
   Great! As we already told the UI when it needs to update, let's add the classifications tree to the HTML page. For it, let's create simple BIM panel component where we include the tree and also a pre-made IFC load button 👇
   */
 

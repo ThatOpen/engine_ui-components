@@ -24,7 +24,7 @@ function convertToTableRows(treeNodes: ClassificationTree[]) {
     const row: BUI.TableGroupData = {
       data: {
         System: extractGroupSystem(node.filter),
-        Actions: JSON.stringify(node.filter),
+        // Actions: JSON.stringify(node.filter),
       },
     };
 
@@ -97,7 +97,7 @@ export const classificationTreeTemplate = (
     }
 
     table.data = rows;
-    table.columns = ["System", { name: "Actions", width: "auto" }];
+    // table.columns = ["System", { name: "Actions", width: "auto" }];
   };
 
   return BUI.html`

@@ -57,7 +57,7 @@ world.scene.three.add(model);
 
   :::
 
-  Now, in order to get the most out of the properties table, you need to calculate the relations index of your model. To do it, you will need to use the IfcRelationsIndexer component from `@thatopen/components` to speed up the process.
+  Now, in order to get the most out of the properties table, you need to calculate the relations index of your model. To do it, you will need to use the [IfcRelationsIndexer](/Tutorials/Components/Core/IfcRelationsIndexer) component from `@thatopen/components` to speed up the process.
   */
 
 const indexer = components.get(OBC.IfcRelationsIndexer);

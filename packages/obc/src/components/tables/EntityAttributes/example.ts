@@ -58,7 +58,7 @@ world.scene.three.add(model);
 
   :::
 
-  Now, in order to get the most out of the entities table, you need to calculate the relations index of your model. To do it, you will need to use the IfcRelationsIndexer component from `@thatopen/components` to speed up the process.
+  Now, in order to get the most out of the entities table, you need to calculate the relations index of your model. To do it, you will need to use the [IfcRelationsIndexer](/Tutorials/Components/Core/IfcRelationsIndexer) component from `@thatopen/components` to speed up the process.
   */
 
 const indexer = components.get(OBC.IfcRelationsIndexer);
@@ -123,10 +123,7 @@ const tableDefinition: BUI.TableDefinition = {
 };
 
 /* MD 
-  Keep in mind the step above is optional! Not needed for the table to work.
-  <br><br>
-
-  Now its time to create the table using the predefine functional component that ships with the library 🙂
+  Keep in mind the step above is optional! Not needed for the table to work. Now its time to create the table using the predefine functional component that ships with the library 🙂
   */
 
 const [attributesTable, updateAttributesTable] = CUI.tables.entityAttributes({
@@ -156,7 +153,7 @@ attributesTable.indentationInText = true;
 attributesTable.preserveStructureOnFilter = true;
 
 /* MD
-  Cool! attributes table created. Then after, let's tell the attributes table to update each time the user makes a selection over the model. For it, we will use the highlighter from `@thatopen/components-front`:
+  Cool! attributes table created. Then after, let's tell the attributes table to update each time the user makes a selection over the model. For it, we will use the [Highlighter](/Tutorials/Components/Front/Highlighter):
   */
 
 const highlighter = components.get(OBF.Highlighter);
