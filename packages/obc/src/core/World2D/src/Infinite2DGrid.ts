@@ -85,6 +85,8 @@ export class Infinite2DGrid {
       return;
     }
     this._regenerateCounter = 0;
+    this._camera.updateMatrix();
+    this._camera.updateMatrixWorld();
 
     const matrix = this._frustumMat.multiplyMatrices(
       this._camera.projectionMatrix,

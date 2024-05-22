@@ -75,13 +75,6 @@ export class World2D extends LitElement {
 
     const cameraComponent = new OBC.OrthoPerspectiveCamera(components);
     world.camera = cameraComponent;
-    cameraComponent.controls.dollySpeed = 3;
-    cameraComponent.controls.draggingSmoothTime = 0.085;
-    cameraComponent.controls.maxZoom = 1000;
-    cameraComponent.controls.zoom(4);
-    cameraComponent.set("Plan");
-    cameraComponent.controls.setPosition(0, 0, 1);
-    cameraComponent.projection.set("Orthographic");
 
     const grid = new Infinite2DGrid(cameraComponent.threeOrtho, this);
     this._grid = grid;
@@ -89,6 +82,17 @@ export class World2D extends LitElement {
     cameraComponent.controls.addEventListener("update", () =>
       grid.regenerate(),
     );
+
+    setTimeout(async () => {
+      world.camera.updateAspect();
+      cameraComponent.set("Plan");
+      await cameraComponent.controls.setLookAt(0, 0, 100, 0, 0, 0);
+      await cameraComponent.projection.set("Orthographic");
+      cameraComponent.controls.dollySpeed = 3;
+      cameraComponent.controls.draggingSmoothTime = 0.085;
+      cameraComponent.controls.maxZoom = 1000;
+      cameraComponent.controls.zoom(4);
+    });
   }
 
   private _world: OBC.SimpleWorld<
@@ -103,8 +107,8 @@ export class World2D extends LitElement {
 
   private resize = () => {
     if (!(this._world && this._grid)) return;
-    this._world.renderer?.resize();
-    this._world.camera.updateAspect();
+    // this._world.renderer?.resize();
+    // this._world.camera.updateAspect();
     this._grid.regenerate();
   };
 
