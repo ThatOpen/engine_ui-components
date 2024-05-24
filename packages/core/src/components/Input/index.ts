@@ -2,6 +2,9 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { HasValue, HasName } from "../../core/types";
 
+/**
+ * Heloooooooooo
+ */
 export class Input extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {

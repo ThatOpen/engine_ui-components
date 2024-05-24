@@ -3,6 +3,9 @@ import { property } from "lit/decorators.js";
 import { HasValue } from "../../core/types";
 
 // HTML tag: bim-checkbox
+/**
+ * Heloooooooooo
+ */
 export class Checkbox extends LitElement implements HasValue {
   static styles = css`
     :host {
@@ -52,7 +55,7 @@ export class Checkbox extends LitElement implements HasValue {
   icon?: string;
 
   /**
-   * The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal <input> element.
+   * The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal \<input\> element.
    * @type {string}
    * @default undefined
    * @example <bim-checkbox name="agreement"></bim-checkbox>
@@ -78,7 +81,7 @@ export class Checkbox extends LitElement implements HasValue {
   label?: string;
 
   /**
-   * Indicates whether the checkbox is checked or not. This property reflects the checked state of the internal <input> element and can be used to set or get the checkbox's state. Changing this property dynamically updates the checkbox's visual state and its checked attribute.
+   * Indicates whether the checkbox is checked or not. This property reflects the checked state of the internal \<input\> element and can be used to set or get the checkbox's state. Changing this property dynamically updates the checkbox's visual state and its checked attribute.
    * @default false
    * @example <bim-checkbox checked></bim-checkbox>
    * @example

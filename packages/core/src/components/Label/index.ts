@@ -3,6 +3,9 @@ import { property } from "lit/decorators.js";
 import { convertString } from "../../core/utils";
 
 // HTML tag: bim-label
+/**
+ * Heloooooooooo
+ */
 export class Label extends LitElement {
   static styles = css`
     :host {

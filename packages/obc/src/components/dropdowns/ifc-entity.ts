@@ -2,6 +2,9 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
+/**
+ * Heloooooooooo
+ */
 export const ifcEntities = () => {
   const dropdown = document.createElement(
     "bim-dropdown",

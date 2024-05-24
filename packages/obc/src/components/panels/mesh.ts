@@ -2,10 +2,16 @@ import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 import { panelSections } from "../panel-sections";
 
+/**
+ * Heloooooooooo
+ */
 interface MeshUIState {
   mesh: THREE.Mesh;
 }
 
+/**
+ * Heloooooooooo
+ */
 export const meshTemplate = (state: MeshUIState) => {
   const { mesh } = state;
 
@@ -36,6 +42,9 @@ export const meshTemplate = (state: MeshUIState) => {
   `;
 };
 
+/**
+ * Heloooooooooo
+ */
 export const mesh = (mesh: THREE.Mesh) => {
   const [element] = BUI.Component.create<BUI.Panel, MeshUIState>(meshTemplate, {
     mesh,

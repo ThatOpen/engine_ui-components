@@ -2,10 +2,16 @@ import * as BUI from "@thatopen/ui";
 import * as THREE from "three";
 import { panelSections } from "../panel-sections";
 
+/**
+ * Heloooooooooo
+ */
 export interface MaterialsListUIState {
   materials: THREE.Material[];
 }
 
+/**
+ * Heloooooooooo
+ */
 export const materialsListTemplate = (state: MaterialsListUIState) => {
   const { materials: inputList } = state;
 
@@ -62,6 +68,9 @@ export const materialsListTemplate = (state: MaterialsListUIState) => {
   `;
 };
 
+/**
+ * Heloooooooooo
+ */
 export const materialsList = (materials: THREE.Material[]) => {
   const component = BUI.Component.create<HTMLDivElement, MaterialsListUIState>(
     materialsListTemplate,

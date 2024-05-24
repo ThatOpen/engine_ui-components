@@ -1,5 +1,8 @@
 import { EntryQuery, Query, QueryCondition, QueryGroup } from "./types";
 
+/**
+ * Heloooooooooo
+ */
 export const getElementValue = (child: HTMLElement, recursive = true) => {
   let value: Record<string, any> = {};
   for (const _child of child.children) {
@@ -24,6 +27,9 @@ export const getElementValue = (child: HTMLElement, recursive = true) => {
   return value;
 };
 
+/**
+ * Heloooooooooo
+ */
 export const convertString = (value: string) => {
   if (value === "true" || value === "false") {
     return value === "true";
@@ -52,6 +58,9 @@ function parseSearch(search: string) {
   return entryQuery;
 }
 
+/**
+ * Heloooooooooo
+ */
 export const getQuery = (queryString: string) => {
   try {
     const queryGroup: Query = [];
@@ -87,6 +96,9 @@ export const getQuery = (queryString: string) => {
   }
 };
 
+/**
+ * Heloooooooooo
+ */
 export const evalCondition = (
   left: string | boolean | number,
   condition: QueryCondition,

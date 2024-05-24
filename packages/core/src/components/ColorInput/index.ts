@@ -5,6 +5,9 @@ import { HasName, HasValue } from "../../core/types";
 import { NumberInput } from "../NumberInput";
 
 // HTML tag: bim-color-input
+/**
+ * Heloooooooooo
+ */
 export class ColorInput extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {

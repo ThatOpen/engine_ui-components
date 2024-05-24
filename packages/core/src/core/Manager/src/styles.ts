@@ -122,6 +122,9 @@ const globalStyles = css`
   }
 `;
 
+/**
+ * Heloooooooooo
+ */
 export const styles = {
   scrollbar,
   globalStyles,

@@ -3,6 +3,9 @@ import { property } from "lit/decorators.js";
 import { ToolbarSection } from "./Section";
 import { Manager } from "../../../core/Manager";
 
+/**
+ * Heloooooooooo
+ */
 export class Toolbar extends LitElement {
   static styles = css`
     :host {

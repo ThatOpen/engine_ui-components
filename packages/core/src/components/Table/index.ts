@@ -9,36 +9,16 @@ import {
 } from "./src";
 import { evalCondition, getQuery } from "../../core/utils";
 
+/**
+ * Heloooooooooo
+ */
 export interface ColumnData {
   name: string;
   width: string;
 }
 
 /**
- * A custom web component representing a table with hierarchical data.
- * This component allows users to filter and export the table data.
- * It also provides options for customizing the appearance and behavior of the table.
- * @example
- * ```ts
- * const table = document.createElement("bim-table")
- * table.data = [
- *  {
- *    data: {
- *      ColumnA: "ValueA",
- *      ColumnB: "ValueB",
- *    },
- *    children: [
- *      {
- *        data: {
- *          ColumnA: "ValueC",
- *          ColumnB: "ValueD",
- *        }
- *       }
- *    ]
- *  }
- * ]
- * document.body.append(table)
- * ```
+ * Heloooooooooo
  */
 export class Table extends LitElement {
   static styles = [

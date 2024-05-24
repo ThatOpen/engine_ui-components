@@ -6,6 +6,7 @@ import * as packageJson from "./package.json";
 
 export default defineConfig({
   build: {
+    outDir: "./dist",
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       formats: ["es"],
@@ -15,7 +16,6 @@ export default defineConfig({
       external: Object.keys(packageJson.peerDependencies),
       output: {
         globals: {
-          "openbim-components": "OBC",
           three: "THREE",
           "@thatopen/ui-components": "BUI",
         },

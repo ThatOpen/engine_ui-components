@@ -1,10 +1,16 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
+/**
+ * Heloooooooooo
+ */
 export interface LoadIfcUIState {
   components: OBC.Components;
 }
 
+/**
+ * Heloooooooooo
+ */
 export const loadIfcTemplate = (state: LoadIfcUIState) => {
   const { components } = state;
   const ifcLoader = components.get(OBC.IfcLoader);

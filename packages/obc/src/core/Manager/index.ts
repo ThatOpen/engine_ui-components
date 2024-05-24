@@ -1,6 +1,9 @@
 import { Manager as BUIManager } from "@thatopen/ui";
 import { World2D, ViewCube } from "..";
 
+/**
+ * Heloooooooooo
+ */
 export class Manager {
   static init() {
     BUIManager.defineCustomElement("bim-view-cube", ViewCube);

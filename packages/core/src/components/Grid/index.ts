@@ -9,6 +9,9 @@ interface Layouts {
 }
 
 // HTML tag: bim-grid
+/**
+ * Heloooooooooo
+ */
 export class Grid extends LitElement {
   static styles = css`
     :host {

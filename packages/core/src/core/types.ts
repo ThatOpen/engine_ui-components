@@ -1,19 +1,33 @@
+/**
+ * Heloooooooooo
+ */
 export interface HasValue {
   value: any;
   onValueChange: Event;
 }
 
+/**
+ * Heloooooooooo
+ */
 export interface HasName {
   name?: string;
   label?: string;
 }
 
 // Query builder types
-
+/**
+ * Heloooooooooo
+ */
 export type QueryCondition = "=" | ">" | ">=" | "<" | "<=" | "?" | "/" | "#";
 
+/**
+ * Heloooooooooo
+ */
 export type QueryOperators = "&" | "|";
 
+/**
+ * Heloooooooooo
+ */
 export interface EntryQuery {
   operator?: QueryOperators;
   key: string;
@@ -21,13 +35,22 @@ export interface EntryQuery {
   value: string | number | boolean;
 }
 
+/**
+ * Heloooooooooo
+ */
 export interface QueryGroup {
   operator?: QueryOperators;
   queries: (EntryQuery | QueryGroup)[];
 }
 
+/**
+ * Heloooooooooo
+ */
 export type Query = (EntryQuery | QueryGroup)[];
 
+/**
+ * Heloooooooooo
+ */
 export type ConditionFunctions = {
   [queryCondition in QueryCondition]: (
     leftValue: string | boolean | number,

@@ -5,6 +5,9 @@ import { property } from "lit/decorators.js";
 import { Infinite2DGrid } from "./src/Infinite2DGrid";
 
 // HTML tag: bim-world-2d
+/**
+ * Heloooooooooo
+ */
 export class World2D extends LitElement {
   static styles = css`
     :host {

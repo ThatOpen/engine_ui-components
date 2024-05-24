@@ -2,6 +2,9 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
 // HTML Tag: bim-tab
+/**
+ * Heloooooooooo
+ */
 export class Tab extends LitElement {
   static styles = css`
     :host {

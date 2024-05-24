@@ -5,6 +5,9 @@ import { HasName, HasValue } from "../../core/types";
 import { getQuery } from "../../core/utils";
 
 // HTML Tag: bim-text-input
+/**
+ * Heloooooooooo
+ */
 export class TextInput extends LitElement implements HasName, HasValue {
   static styles = css`
     :host {

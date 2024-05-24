@@ -4,6 +4,9 @@ import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 
 // HTML tag: bim-selector
+/**
+ * Heloooooooooo
+ */
 export class Selector extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {

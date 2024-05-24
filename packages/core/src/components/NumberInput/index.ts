@@ -4,6 +4,9 @@ import { property } from "lit/decorators.js";
 import { HasName, HasValue } from "../../core/types";
 
 // HTML tag: bim-number-input
+/**
+ * Heloooooooooo
+ */
 export class NumberInput extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {

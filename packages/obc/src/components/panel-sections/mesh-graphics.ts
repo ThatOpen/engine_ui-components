@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 
+/**
+ * Heloooooooooo
+ */
 export const meshGraphics = (
   mesh: THREE.Mesh,
   options?: { collapsed?: boolean },

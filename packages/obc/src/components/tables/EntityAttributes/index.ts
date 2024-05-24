@@ -4,6 +4,9 @@ import {
   entityAttributesTemplate,
 } from "./src/template";
 
+/**
+ * Heloooooooooo
+ */
 export const entityAttributes = (state: EntityAttributesUIState) => {
   const element = BUI.Component.create<BUI.Table, EntityAttributesUIState>(
     entityAttributesTemplate,

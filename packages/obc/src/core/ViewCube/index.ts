@@ -3,6 +3,9 @@ import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
 // HTML Tag: bim-view-cube
+/**
+ * Heloooooooooo
+ */
 export class ViewCube extends LitElement {
   static styles = css`
     :host {

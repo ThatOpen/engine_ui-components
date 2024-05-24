@@ -1,6 +1,9 @@
 import { LitElement, css, html } from "lit";
 import "iconify-icon";
 
+/**
+ * Heloooooooooo
+ */
 export class Icon extends LitElement {
   static styles = css`
     :host {

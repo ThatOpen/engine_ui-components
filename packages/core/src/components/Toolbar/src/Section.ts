@@ -3,6 +3,9 @@ import { property } from "lit/decorators.js";
 import { ToolbarGroup } from "./Group";
 import { HasName } from "../../../core/types";
 
+/**
+ * Heloooooooooo
+ */
 export class ToolbarSection extends LitElement implements HasName {
   static styles = css`
     :host {

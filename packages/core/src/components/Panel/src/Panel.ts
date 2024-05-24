@@ -6,6 +6,9 @@ import { HasName, HasValue } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
 
 // HTML tag: bim-panel
+/**
+ * Heloooooooooo
+ */
 export class Panel extends LitElement implements HasName, HasValue {
   static styles = [
     styles.scrollbar,

@@ -6,6 +6,9 @@ import "iconify-icon";
 import { ContextMenu } from "../ContextMenu";
 
 // HTML tag: bim-button
+/**
+ * Heloooooooooo
+ */
 export class Button extends LitElement {
   static styles = css`
     :host {

@@ -4,6 +4,9 @@ import { Tab } from "./Tab";
 import { styles } from "../../../core/Manager/src/styles";
 
 // HTML Tag: bim-tabs
+/**
+ * Heloooooooooo
+ */
 export class Tabs extends LitElement {
   static styles = [
     styles.scrollbar,

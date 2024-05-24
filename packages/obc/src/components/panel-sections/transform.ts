@@ -27,6 +27,9 @@ const onScaleChange = (e: Event, scale: THREE.Vector3) => {
   scale.set(x, y, z);
 };
 
+/**
+ * Heloooooooooo
+ */
 export const meshTransform = (
   transform: {
     position?: THREE.Vector3;

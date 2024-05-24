@@ -2,10 +2,16 @@ import { TemplateResult } from "lit";
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 
+/**
+ * Heloooooooooo
+ */
 export interface MaterialUIState {
   material: THREE.Material;
 }
 
+/**
+ * Heloooooooooo
+ */
 const colorTemplate = (material: THREE.Material) => {
   if (!("color" in material && material.color instanceof THREE.Color))
     return null;
@@ -30,6 +36,9 @@ const colorTemplate = (material: THREE.Material) => {
   `;
 };
 
+/**
+ * Heloooooooooo
+ */
 const metalnessTemplate = (material: THREE.Material) => {
   if (!("metalness" in material && typeof material.metalness === "number"))
     return null;
@@ -54,6 +63,9 @@ const metalnessTemplate = (material: THREE.Material) => {
     ></bim-number-input>`;
 };
 
+/**
+ * Heloooooooooo
+ */
 const roughnessTemplate = (material: THREE.Material) => {
   if (!("roughness" in material && typeof material.roughness === "number"))
     return null;
@@ -78,6 +90,9 @@ const roughnessTemplate = (material: THREE.Material) => {
   ></bim-number-input>`;
 };
 
+/**
+ * Heloooooooooo
+ */
 const transparencyTemplate = (material: THREE.Material) => {
   const onChange = (e: Event) => {
     const input = e.target as BUI.Checkbox;
@@ -94,6 +109,9 @@ const transparencyTemplate = (material: THREE.Material) => {
   `;
 };
 
+/**
+ * Heloooooooooo
+ */
 export const materialTemplate = (state: MaterialUIState) => {
   const { material } = state;
 
@@ -115,6 +133,9 @@ export const materialTemplate = (state: MaterialUIState) => {
   `;
 };
 
+/**
+ * Heloooooooooo
+ */
 export const material = (material: THREE.Material) => {
   const component = BUI.Component.create<HTMLDivElement, MaterialUIState>(
     materialTemplate,

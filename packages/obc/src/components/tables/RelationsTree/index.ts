@@ -2,6 +2,9 @@ import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import { RelationsTreeUIState, relationsTreeTemplate } from "./src/template";
 
+/**
+ * Heloooooooooo
+ */
 export const relationsTree = (
   state: RelationsTreeUIState,
   autoUpdate = true,

@@ -8,6 +8,9 @@ import { ContextMenu } from "../ContextMenu";
 import { HasName, HasValue } from "../../core/types";
 
 // HTML tag: bim-dropdown
+/**
+ * Heloooooooooo
+ */
 export class Dropdown extends Component implements HasValue, HasName {
   static styles = [
     styles.scrollbar,

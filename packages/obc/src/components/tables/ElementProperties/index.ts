@@ -4,6 +4,9 @@ import {
   elementPropertiesTemplate,
 } from "./src/template";
 
+/**
+ * Heloooooooooo
+ */
 export const elementProperties = (state: ElementPropertiesUIState) => {
   const element = BUI.Component.create<BUI.Table, ElementPropertiesUIState>(
     elementPropertiesTemplate,

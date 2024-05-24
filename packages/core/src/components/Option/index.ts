@@ -4,6 +4,9 @@ import { property } from "lit/decorators.js";
 import { convertString } from "../../core/utils";
 
 // HTML tag: bim-option
+/**
+ * Heloooooooooo
+ */
 export class Option extends LitElement {
   static styles = css`
     :host {

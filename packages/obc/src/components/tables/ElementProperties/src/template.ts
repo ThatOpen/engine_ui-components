@@ -5,6 +5,9 @@ import * as WEBIFC from "web-ifc";
 
 // TODO: Refactor to remove redundancy
 
+/**
+ * Heloooooooooo
+ */
 export interface ElementPropertiesUIState {
   components: OBC.Components;
   fragmentIdMap: FRAGS.FragmentIdMap;
@@ -223,6 +226,9 @@ const getClassificationsRow = async (
   return row;
 };
 
+/**
+ * Heloooooooooo
+ */
 export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
   const { components, fragmentIdMap } = state;
 
