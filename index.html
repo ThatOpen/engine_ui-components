@@ -1,29 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+  <!DOCTYPE html>
+  <html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples Index</title>
+    <style>
+      * {
+        margin: 0;
+      }
+  
+      html {
+        font-family: sans-serif;
+      }
+  
+      body {
+        padding: 1rem;
+      }
+    </style> 
+  </head>
+  
+  <body>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <h3>Choose an example</h3>
+      <a style="width: fit-content;" href="./packages\obc\src\core\World2D\example.html">obc/World2D</a>
+<a style="width: fit-content;" href="./packages\obc\src\core\ViewCube\example.html">obc/ViewCube</a>
+<a style="width: fit-content;" href="./packages\obc\src\components\tables\RelationsTree\example.html">obc/RelationsTree</a>
+<a style="width: fit-content;" href="./packages\obc\src\components\tables\ModelsList\example.html">obc/ModelsList</a>
+<a style="width: fit-content;" href="./packages\obc\src\components\tables\EntityAttributes\example.html">obc/EntityAttributes</a>
+<a style="width: fit-content;" href="./packages\obc\src\components\tables\ElementProperties\example.html">obc/ElementProperties</a>
+<a style="width: fit-content;" href="./packages\obc\src\components\tables\ClassificationsTree\example.html">obc/ClassificationsTree</a>
+<a style="width: fit-content;" href="./packages\core\src\core\Component\example.html">core/Component</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Toolbar\example.html">core/Toolbar</a>
+<a style="width: fit-content;" href="./packages\core\src\components\TextInput\example.html">core/TextInput</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Tabs\example.html">core/Tabs</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Table\example.html">core/Table</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Selector\example.html">core/Selector</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Panel\example.html">core/Panel</a>
+<a style="width: fit-content;" href="./packages\core\src\components\NumberInput\example.html">core/NumberInput</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Grid\example.html">core/Grid</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Dropdown\example.html">core/Dropdown</a>
+<a style="width: fit-content;" href="./packages\core\src\components\ColorInput\example.html">core/ColorInput</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Checkbox\example.html">core/Checkbox</a>
+<a style="width: fit-content;" href="./packages\core\src\components\Button\example.html">core/Button</a>
 
-<body>
-  <h2>
-    If you're developing, append the package and component folder to the URL in order to see the example working without
-    compiling. For example: <a id="dev"></a>
-  </h2>
-  <h2>
-    To see the compiled example after you run yarn build, append the name of the component at the end of the URL. For
-    example: <a id="exp"></a>
-  </h2>
-  <script>
-    const dev = document.getElementById("dev")
-    dev.href = location.href + "packages/components/src/core/Worlds/example.html"
-    dev.textContent = dev.href.replace(location.href, "")
-
-    const exp = document.getElementById("exp")
-    exp.href = location.href + "examples/Worlds/"
-    exp.textContent = exp.href.replace(location.href, "")
-  </script>
-</body>
-
-</html>
+    </div>
+  </body>
+  
+  </html>
+      
