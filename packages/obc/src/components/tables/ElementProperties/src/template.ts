@@ -208,7 +208,8 @@ const getClassificationsRow = async (
           {
             data: {
               Name: "Identification",
-              Value: relAttrs.Identification.value,
+              Value:
+                relAttrs.Identification?.value || relAttrs.ItemReference?.value,
             },
           },
           {
