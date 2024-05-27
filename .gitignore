@@ -138,3 +138,6 @@ resources/bbbb.*
 
 resources/asdf2.frag
 resources/asdf2.json
+examples/resources/cover.png
+examples/resources/favicon.ico
+examples/resources/.DS_Store
