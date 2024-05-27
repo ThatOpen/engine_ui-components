@@ -77,7 +77,9 @@ table.definition = {
 };
 
 const fetchedData = (await (
-  await fetch("/resources/table-data.json")
+  await fetch(
+    "https://thatopen.github.io/engine_ui-components/resources/table-data.json",
+  )
 ).json()) as BUI.TableGroupData[];
 
 table.data = fetchedData;

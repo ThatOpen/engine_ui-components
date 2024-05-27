@@ -38,11 +38,6 @@ const restructureExamples = () => {
         path.join("examples", "paths.json"),
         JSON.stringify(paths),
       );
-
-      if (!fs.existsSync("./examples/resources"))
-        fs.mkdirSync("./examples/resources");
-
-      fs.cpSync("./resources", "./examples/resources", { recursive: true });
     },
   };
 };

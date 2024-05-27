@@ -45,7 +45,9 @@ grids.create(world);
 
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
-const file = await fetch("/resources/small.ifc");
+const file = await fetch(
+  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
+);
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
