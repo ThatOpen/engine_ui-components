@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as p,n as m}from"./index-Dt8Sdbv0.js";import{x as d}from"./state-CdSmRkb4.js";p.init();const n=document.body.querySelector("bim-table");n.addEventListener("rowcreated",({detail:o})=>{const{row:e}=o;e.style.borderBottom="1px solid var(--bim-ui_bg-contrast-20)"});n.dataTransform={Age:(o,e)=>{const{Name:t}=e;if(t==="Lisa")return d`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as p,n as m}from"./index-BRdHpjwg.js";import{x as d}from"./state-CdSmRkb4.js";p.init();const n=document.body.querySelector("bim-table");n.addEventListener("rowcreated",({detail:o})=>{const{row:e}=o;e.style.borderBottom="1px solid var(--bim-ui_bg-contrast-20)"});n.dataTransform={Age:(o,e)=>{const{Name:t}=e;if(t==="Lisa")return d`
         <bim-number-input @change=${c=>{const i=c.target;e.Age=i.value}} slider min="23" value=${o} max="45"></bim-number-input>
       `;if(t==="Laura"){const a=i=>{const r=i.target;alert(`${e.Name}'s age is ${r.value}.`),e.Age=r.value};return d`
         <bim-selector ${m(i=>{if(!i)return;const r=i;r.value=e.Age})} @change=${a}>

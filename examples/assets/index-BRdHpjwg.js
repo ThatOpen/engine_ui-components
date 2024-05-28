@@ -733,7 +733,7 @@ var Xn=Object.defineProperty;var Jn=(i,t,e)=>t in i?Xn(i,t,{enumerable:!0,config
       <div class="parent" .title=${this.textContent??""}>
         ${this.img?m`<img .src=${this.img} .alt=${this.textContent||""} />`:null}
         ${!this.iconHidden&&this.icon?m`<bim-icon .icon=${this.icon}></bim-icon>`:null}
-        ${this.labelHidden?null:m`<p><slot></slot></p>`}
+        <p><slot></slot></p>
       </div>
     `}};ci.styles=C`
     :host {
@@ -762,6 +762,11 @@ var Xn=Object.defineProperty;var Jn=(i,t,e)=>t in i?Xn(i,t,{enumerable:!0,config
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+
+    :host([label-hidden]) .parent p,
+    :host(:empty) .parent p {
+      display: none;
     }
 
     img {
@@ -1293,6 +1298,7 @@ var Xn=Object.defineProperty;var Jn=(i,t,e)=>t in i?Xn(i,t,{enumerable:!0,config
         background-color: var(--bim-ui_bg-base);
         padding: 0rem 0.75rem;
         color: var(--bim-ui_bg-contrast-60);
+        display: flex;
       }
 
       .switcher:hover,
