@@ -36,6 +36,11 @@ export class Label extends LitElement {
       overflow: hidden;
     }
 
+    :host([label-hidden]) .parent p,
+    :host(:empty) .parent p {
+      display: none;
+    }
+
     img {
       height: 100%;
       aspect-ratio: 1;
@@ -141,7 +146,7 @@ export class Label extends LitElement {
         ${!this.iconHidden && this.icon
           ? html`<bim-icon .icon=${this.icon}></bim-icon>`
           : null}
-        ${!this.labelHidden ? html`<p><slot></slot></p>` : null}
+        <p><slot></slot></p>
       </div>
     `;
   }

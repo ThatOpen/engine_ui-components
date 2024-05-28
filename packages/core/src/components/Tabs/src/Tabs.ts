@@ -44,6 +44,7 @@ export class Tabs extends LitElement {
         background-color: var(--bim-ui_bg-base);
         padding: 0rem 0.75rem;
         color: var(--bim-ui_bg-contrast-60);
+        display: flex;
       }
 
       .switcher:hover,
