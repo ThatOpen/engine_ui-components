@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import * as FRAGS from "@thatopen/fragments";
@@ -97,6 +98,19 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     }
 
     const table = element as BUI.Table;
+    table.addEventListener("cellcreated", ({ detail }) => {
+      const parent = detail.cell.parentNode;
+      if (!parent) return;
+      const entityCell = parent.querySelector<BUI.TableCell>(
+        "bim-table-cell[column='Entity']",
+      );
+      const nameCell = parent.querySelector<BUI.TableCell>(
+        "bim-table-cell[column='Name']",
+      );
+      if (!nameCell?.data && entityCell) {
+        entityCell.style.gridColumn = "1 / -1";
+      }
+    });
     table.columns = ["Entity", "Name"];
     table.data = rows;
   };

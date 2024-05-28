@@ -13,26 +13,34 @@ export class TableRow extends LitElement {
       grid-area: Data;
       display: grid;
       min-height: 2.25rem;
-      /* border-bottom: 1px solid var(--bim-ui_bg-contrast-20); */
     }
   `;
 
-  @property({ type: Array, attribute: false })
-  columns: ColumnData[];
+  @property({ attribute: false })
+  columns: ColumnData[] = [];
 
-  @property({ type: Object, attribute: false })
+  @property({ attribute: false })
+  hiddenColumns: string[] = [];
+
+  @property({ attribute: false })
   data: TableRowData = {};
 
   @property({ type: Boolean, attribute: "is-header", reflect: true })
-  isHeader: boolean;
+  isHeader = false;
 
   private get _columnNames() {
-    const names = this.columns.map((column) => column.name);
+    const columns = this.columns.filter(
+      (column) => !this.hiddenColumns.includes(column.name),
+    );
+    const names = columns.map((column) => column.name);
     return names;
   }
 
   private get _columnWidths() {
-    const widths = this.columns.map((column) => column.width);
+    const columns = this.columns.filter(
+      (column) => !this.hiddenColumns.includes(column.name),
+    );
+    const widths = columns.map((column) => column.width);
     return widths;
   }
 
@@ -45,11 +53,16 @@ export class TableRow extends LitElement {
         "columnschange",
         this.onTableColumnsChange,
       );
+      this._table.removeEventListener(
+        "columnshidden",
+        this.onTableColumnsHidden,
+      );
     }
     this._table = value;
     if (this._table) {
       this.columns = this._table.columns;
       this._table.addEventListener("columnschange", this.onTableColumnsChange);
+      this._table.addEventListener("columnshidden", this.onTableColumnsHidden);
       this._table.addEventListener(
         "indentation",
         this.onTableIndentationColorChange,
@@ -59,12 +72,6 @@ export class TableRow extends LitElement {
 
   get table() {
     return this._table;
-  }
-
-  constructor() {
-    super();
-    this.columns = [];
-    this.isHeader = false;
   }
 
   private onTableIndentationColorChange = (e: any) => {
@@ -80,6 +87,11 @@ export class TableRow extends LitElement {
   private onTableColumnsChange = () => {
     if (!this.table) return;
     this.columns = this.table.columns;
+  };
+
+  private onTableColumnsHidden = () => {
+    if (!this.table) return;
+    this.hiddenColumns = this.table.hiddenColumns;
   };
 
   @state()
@@ -104,6 +116,7 @@ export class TableRow extends LitElement {
       : this.data;
     const cells: TemplateResult[] = [];
     for (const column in declaration) {
+      if (this.hiddenColumns.includes(column)) continue;
       const value = declaration[column];
       let content;
       if (
@@ -111,7 +124,7 @@ export class TableRow extends LitElement {
         typeof value === "boolean" ||
         typeof value === "number"
       ) {
-        content = html`<bim-label label="${value}"></bim-label>`;
+        content = html`<bim-label>${value}</bim-label>`;
       } else {
         content = value;
       }
@@ -144,13 +157,10 @@ export class TableRow extends LitElement {
       cells.push(cell);
     }
 
+    this.style.gridTemplateAreas = `"${this._columnNames.join(" ")}"`;
+    this.style.gridTemplateColumns = `${this._columnWidths.join(" ")}`;
+
     return html`
-      <style>
-        :host {
-          grid-template-areas: "${this._columnNames.join(" ")}";
-          grid-template-columns: ${this._columnWidths.join(" ")};
-        }
-      </style>
       ${cells}
       <slot></slot>
     `;

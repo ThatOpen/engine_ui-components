@@ -417,9 +417,9 @@ export class NumberInput extends LitElement implements HasValue, HasName {
         ? html`<bim-label
             style="pointer-events: auto"
             @mousedown=${this.onSliderMouseDown}
-            .label=${this.pref}
             .icon=${this.icon}
-          ></bim-label>`
+            >${this.pref}</bim-label
+          >`
         : null}
       <input
         ${ref(this._input)}
@@ -436,8 +436,8 @@ export class NumberInput extends LitElement implements HasValue, HasName {
         ? html`<bim-label
             style="pointer-events: auto"
             @mousedown=${this.onSliderMouseDown}
-            .label=${this.suffix}
-          ></bim-label>`
+            >${this.suffix}</bim-label
+          >`
         : null}
     `;
 
@@ -455,19 +455,13 @@ export class NumberInput extends LitElement implements HasValue, HasName {
         ${this.pref || this.icon
           ? html`<bim-label
               style="z-index: 1; margin-right: 0.125rem"
-              .label=${`${this.pref}: `}
               .icon=${this.icon}
-            ></bim-label>`
+              >${`${this.pref}: `}</bim-label
+            >`
           : null}
-        <bim-label
-          style="z-index: 1;"
-          .label=${this.value.toString()}
-        ></bim-label>
+        <bim-label style="z-index: 1;">${this.value}</bim-label>
         ${this.suffix
-          ? html`<bim-label
-              style="z-index: 1;"
-              .label=${this.suffix}
-            ></bim-label>`
+          ? html`<bim-label style="z-index: 1;">${this.suffix}</bim-label>`
           : null}
       </div>
     `;

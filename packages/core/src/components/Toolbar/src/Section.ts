@@ -103,10 +103,7 @@ export class ToolbarSection extends LitElement implements HasName {
           <slot @slotchange=${this.updateChildren}></slot>
         </div>
         ${!this.labelHidden && (this.label || this.icon)
-          ? html`<bim-label
-              .label=${this.label}
-              .icon=${this.icon}
-            ></bim-label>`
+          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
       </div>
     `;

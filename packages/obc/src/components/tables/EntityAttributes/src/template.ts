@@ -13,7 +13,7 @@ type AttributesToInclude =
 export interface EntityAttributesUIState {
   components: OBC.Components;
   fragmentIdMap: FRAGS.FragmentIdMap;
-  tableDefinition: BUI.TableDefinition;
+  tableDefinition: BUI.TableDataTransform;
   editable?: boolean;
   attributesToInclude?: AttributesToInclude;
 }
@@ -232,7 +232,7 @@ export const entityAttributesTemplate = (state: EntityAttributesUIState) => {
         groups.push(group);
       }
     }
-    table.definition = tableDefinition;
+    table.dataTransform = tableDefinition;
     table.data = groups;
     table.columns = [{ name: "Entity", width: "minmax(15rem, 1fr)" }];
   };

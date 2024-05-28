@@ -46,7 +46,7 @@ export const classificationTreeTemplate = (
   const onTableCreated = (el?: Element) => {
     if (!el) return;
     const table = el as BUI.Table;
-    table.definition = {
+    table.dataTransform = {
       Actions: (value) => {
         if (typeof value !== "string") return value;
         // const filter = JSON.parse(value);

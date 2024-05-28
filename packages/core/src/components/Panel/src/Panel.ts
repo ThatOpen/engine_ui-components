@@ -17,7 +17,6 @@ export class Panel extends LitElement implements HasName, HasValue {
         display: flex;
         border-radius: var(--bim-ui_size-base);
         background-color: var(--bim-ui_bg-base);
-        min-width: 20rem;
         overflow: auto;
       }
 
@@ -30,6 +29,7 @@ export class Panel extends LitElement implements HasName, HasValue {
         flex: 1;
         flex-direction: column;
         pointer-events: auto;
+        overflow: auto;
       }
 
       .parent bim-label {
@@ -208,10 +208,7 @@ export class Panel extends LitElement implements HasName, HasValue {
     return html`
       <div class="parent">
         ${this.label || this.name || this.icon
-          ? html`<bim-label
-              .label=${this.label || this.name}
-              .icon=${this.icon}
-            ></bim-label>`
+          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="sections">
           <slot></slot>

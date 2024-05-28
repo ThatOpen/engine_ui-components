@@ -227,10 +227,10 @@ export class Option extends LitElement {
                 : null}
               <bim-label
                 .vertical=${this.vertical}
-                .label=${this.label}
                 .icon=${this.icon}
                 .img=${this.img}
-              ></bim-label>
+                >${this.label}</bim-label
+              >
             </div>`
           : null}
         ${!this.checkbox && !this.noMark && this.checked

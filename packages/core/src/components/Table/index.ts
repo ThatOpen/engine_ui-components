@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import {
-  TableDefinition,
+  TableDataTransform,
   TableGroupData,
   TableRowData,
   TableRowTemplate,
@@ -299,12 +299,27 @@ export class Table extends LitElement {
   indentationInText = false;
 
   /**
-   * A property representing the definition for transforming table data.
+   * A property representing the rules for transforming table data.
    * The keys of the object are the column names, and the values are functions that define the transformation logic.
    *
    * @defaultValue An empty object.
    */
-  definition: TableDefinition = {};
+  dataTransform: TableDataTransform = {};
+
+  private _onColumnsHidden = new Event("columnshidden");
+
+  private _hiddenColumns: string[] = [];
+
+  set hiddenColumns(value: string[]) {
+    this._hiddenColumns = value;
+    setTimeout(() => {
+      this.dispatchEvent(this._onColumnsHidden);
+    });
+  }
+
+  get hiddenColumns() {
+    return this._hiddenColumns;
+  }
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
     let computed = false;
@@ -401,7 +416,7 @@ export class Table extends LitElement {
   computeRowDeclaration(data: TableRowData) {
     const declaration: TableRowTemplate = {};
     for (const key in data) {
-      const rowDeclaration = this.definition[key];
+      const rowDeclaration = this.dataTransform[key];
       if (rowDeclaration) {
         declaration[key] = rowDeclaration(data[key], data);
       } else {

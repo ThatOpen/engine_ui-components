@@ -20,6 +20,11 @@ export class TableCell extends LitElement {
     ::slotted(bim-input) {
       --bim-input--olw: 0;
     }
+
+    ::slotted(bim-label) {
+      white-space: normal;
+      text-align: center;
+    }
   `;
 
   @property({ type: String, reflect: true })

@@ -376,11 +376,11 @@ export class Button extends LitElement {
                 @mouseleave=${() => (this.mouseLeave = true)}
               >
                 <bim-label
-                  .label=${this.label}
                   .icon=${this.icon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
-                ></bim-label>
+                  >${this.label}</bim-label
+                >
               </div>
             `
           : null}

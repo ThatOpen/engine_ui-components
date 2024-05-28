@@ -55,7 +55,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
       padding: "0.25rem 0.375rem",
       borderRadius: "0.25rem",
     };
-    table.definition = {
+    table.dataTransform = {
       Status: (value) => {
         if (typeof value !== "string") return value;
         if (value === "In Progress") {
@@ -64,7 +64,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
             backgroundColor: "#3c59c3",
             color: "white",
           };
-          return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
+          return BUI.html`<bim-label style=${BUI.styleMap(style)}>${value}</bim-label>`;
         }
         if (value === "Pending") {
           const style = {
@@ -72,7 +72,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
             backgroundColor: "#5c5c5c",
             color: "white",
           };
-          return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
+          return BUI.html`<bim-label style=${BUI.styleMap(style)}>${value}</bim-label>`;
         }
         if (value === "Completed") {
           const style = {
@@ -80,7 +80,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
             backgroundColor: "#3a7829",
             color: "white",
           };
-          return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
+          return BUI.html`<bim-label style=${BUI.styleMap(style)}>${value}</bim-label>`;
         }
         if (value === "Scheduled") {
           const style = {
@@ -88,7 +88,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
             backgroundColor: "#9e2980",
             color: "white",
           };
-          return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
+          return BUI.html`<bim-label style=${BUI.styleMap(style)}>${value}</bim-label>`;
         }
         return value;
       },
@@ -99,7 +99,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
         };
         return BUI.html`
           <div style="display: flex; gap: 0.5rem">
-            <bim-label label=${value}></bim-label>
+            <bim-label>${value}</bim-label>
             <bim-button @click=${onClick} icon="mingcute:send-fill" tooltip-title="Send reminder!"></bim-button>
           </div> 
         `;

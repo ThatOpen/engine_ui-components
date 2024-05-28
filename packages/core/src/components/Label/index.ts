@@ -13,6 +13,8 @@ export class Label extends LitElement {
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
       font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
       overflow: hidden;
+      display: block;
+      white-space: nowrap;
     }
 
     .parent {
@@ -28,9 +30,9 @@ export class Label extends LitElement {
       flex-direction: column;
     }
 
-    label {
+    .parent p {
+      margin: 0;
       text-overflow: ellipsis;
-      white-space: nowrap;
       overflow: hidden;
     }
 
@@ -57,25 +59,11 @@ export class Label extends LitElement {
   `;
 
   /**
-   * Represents the text label of the component. This is the primary content displayed by the component.
-   * When the `label` property changes, the displayed text updates to reflect the new value. If the label is hidden (controlled by `labelHidden`), changing this property will not affect the visibility of the label.
-   * @type {String}
-   * @default undefined
-   * @example <bim-label label="Example Label"></bim-label>
-   * @example
-   * const labelComponent = document.createElement('bim-label');
-   * labelComponent.label = 'Example Label';
-   * document.body.appendChild(labelComponent);
-   */
-  @property({ type: String, reflect: true })
-  label?: string;
-
-  /**
    * Specifies the image URL for the component. When set, an `<img>` element is rendered within the component.
    * Changing this property updates the source of the image. If the property is not set or removed, the image will not be displayed.
    * @type {String}
    * @default undefined
-   * @example <bim-label img="path/to/image.png"></bim-label>
+   * @example <bim-label img="path/to/image.png">My Label</bim-label>
    * @example
    * const labelComponent = document.createElement('bim-label');
    * labelComponent.img = 'path/to/image.png';
@@ -88,7 +76,7 @@ export class Label extends LitElement {
    * Controls the visibility of the label text. When `true`, the label text is not rendered to the user.
    * Changing this property to `true` hides the label text if it was previously visible. Setting it to `false` will show the label text if it is defined.
    * @default false
-   * @example <bim-label label-hidden></bim-label>
+   * @example <bim-label label-hidden>My Label</bim-label>
    * @example
    * const labelComponent = document.createElement('bim-label');
    * labelComponent.labelHidden = true;
@@ -103,7 +91,7 @@ export class Label extends LitElement {
    * Note: The actual rendering of the icon is managed by a nested `<bim-icon>` component in the shadow DOM.
    * @type {String}
    * @default undefined
-   * @example <bim-label icon="example-icon"></bim-label>
+   * @example <bim-label icon="solar:settings-bold">My Label</bim-label>
    * @example
    * const labelComponent = document.createElement('bim-label');
    * labelComponent.icon = 'example-icon';
@@ -117,7 +105,7 @@ export class Label extends LitElement {
    * Changing this property to `true` hides the icon if it was previously visible. Setting it to `false` will show the icon if it is defined.
    * Note: This does not affect the visibility of the label or image, only the icon.
    * @default false
-   * @example <bim-label icon-hidden></bim-label>
+   * @example <bim-label icon-hidden>My Label</bim-label>
    * @example
    * const labelComponent = document.createElement('bim-label');
    * labelComponent.iconHidden = true;
@@ -130,7 +118,7 @@ export class Label extends LitElement {
    * Determines the orientation of the component. When `true`, the component's contents (label, image, and icon) are stacked vertically.
    * Changing this property affects the layout of the component, switching between a horizontal and vertical arrangement of its contents.
    * @default false
-   * @example <bim-label vertical></bim-label>
+   * @example <bim-label vertical icon="solar:settings-bold">My Label</bim-label>
    * @example
    * const labelComponent = document.createElement('bim-label');
    * labelComponent.vertical = true;
@@ -140,22 +128,20 @@ export class Label extends LitElement {
   vertical = false;
 
   get value() {
-    if (!this.label) return this.label;
-    return convertString(this.label);
+    if (!this.textContent) return this.textContent;
+    return convertString(this.textContent);
   }
 
   protected render() {
     return html`
-      <div class="parent" .title=${this.label ?? ""}>
+      <div class="parent" .title=${this.textContent ?? ""}>
         ${this.img
-          ? html`<img .src=${this.img} .alt=${this.label || ""} />`
+          ? html`<img .src=${this.img} .alt=${this.textContent || ""} />`
           : null}
         ${!this.iconHidden && this.icon
           ? html`<bim-icon .icon=${this.icon}></bim-icon>`
           : null}
-        ${!this.labelHidden && this.label
-          ? html`<label>${this.label}</label>`
-          : null}
+        ${!this.labelHidden ? html`<p><slot></slot></p>` : null}
       </div>
     `;
   }

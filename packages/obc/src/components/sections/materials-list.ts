@@ -62,7 +62,7 @@ export const materialsListTemplate = (state: MaterialsListUIState) => {
               ${materialSection}
             </div>
             `
-          : BUI.html`<bim-label label="The list of materials is empty"></bim-label>`
+          : BUI.html`<bim-label>The list of materials is empty</bim-label>`
       }
     </div>
   `;

@@ -142,10 +142,7 @@ export class Checkbox extends LitElement implements HasValue {
     return html`
       <div class="parent">
         ${this.label
-          ? html`<bim-label
-              label="${this.label}"
-              .icon="${this.icon}"
-            ></bim-label> `
+          ? html`<bim-label .icon="${this.icon}">${this.label}</bim-label> `
           : null}
         <input
           type="checkbox"

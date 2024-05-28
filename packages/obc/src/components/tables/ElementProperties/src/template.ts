@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import * as FRAGS from "@thatopen/fragments";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
@@ -376,6 +377,19 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
     }
 
     const table = element as BUI.Table;
+    table.addEventListener("cellcreated", ({ detail }) => {
+      const parent = detail.cell.parentNode;
+      if (!parent) return;
+      const nameCell = parent.querySelector<BUI.TableCell>(
+        "bim-table-cell[column='Name']",
+      );
+      const valueCell = parent.querySelector<BUI.TableCell>(
+        "bim-table-cell[column='Value']",
+      );
+      if (!valueCell?.data && nameCell) {
+        nameCell.style.gridColumn = "1 / -1";
+      }
+    });
     table.columns = [{ name: "Name", width: "12rem" }];
     table.data = rows;
   };

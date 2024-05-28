@@ -209,7 +209,7 @@ export class Infinite2DGrid {
 
   private newNumber(offset: number) {
     const text = document.createElement("bim-label");
-    text.label = String(Math.round(offset * 100) / 100);
+    text.textContent = String(Math.round(offset * 100) / 100);
     const sign = new CSS2DObject(text);
     this.numbers.add(sign);
     return sign;

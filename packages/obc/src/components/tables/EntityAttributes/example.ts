@@ -86,7 +86,7 @@ const baseStyle: Record<string, string> = {
   :::
   */
 
-const tableDefinition: BUI.TableDefinition = {
+const tableDefinition: BUI.TableDataTransform = {
   Entity: (entity) => {
     let style = {};
     if (entity === OBC.IfcCategoryMap[WEBIFC.IFCPROPERTYSET]) {
@@ -103,14 +103,14 @@ const tableDefinition: BUI.TableDefinition = {
         color: "white",
       };
     }
-    return BUI.html`<bim-label label=${entity} style=${BUI.styleMap(style)}></bim-label>`;
+    return BUI.html`<bim-label style=${BUI.styleMap(style)}>${entity}</bim-label>`;
   },
   PredefinedType: (type) => {
     const colors = ["#1c8d83", "#3c1c8d", "#386c19", "#837c24"];
     const randomIndex = Math.floor(Math.random() * colors.length);
     const backgroundColor = colors[randomIndex];
     const style = { ...baseStyle, backgroundColor, color: "white" };
-    return BUI.html`<bim-label label=${type} style=${BUI.styleMap(style)}></bim-label>`;
+    return BUI.html`<bim-label style=${BUI.styleMap(style)}>${type}</bim-label>`;
   },
   NominalValue: (value) => {
     let style = {};
@@ -120,7 +120,7 @@ const tableDefinition: BUI.TableDefinition = {
     if (typeof value === "boolean" && value === true) {
       style = { ...baseStyle, backgroundColor: "#18882c", color: "white" };
     }
-    return BUI.html`<bim-label label=${value} style=${BUI.styleMap(style)}></bim-label>`;
+    return BUI.html`<bim-label style=${BUI.styleMap(style)}>${value}</bim-label>`;
   },
 };
 

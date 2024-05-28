@@ -64,7 +64,7 @@ const [statefullPanelSection, updateStatefullPanelSection] =
       const msg = `This panel section has been updated ${counter} ${counter === 1 ? "time" : "times"}`;
       return BUI.html`
       <bim-panel-section label=${label}>
-        <bim-label label=${msg}></bim-label>
+        <bim-label>${msg}</bim-label>
       </bim-panel-section>
     `;
     },

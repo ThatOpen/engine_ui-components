@@ -24,7 +24,7 @@ export interface TableGroupTemplate {
   children?: TableGroupTemplate[];
 }
 
-export interface TableDefinition {
+export interface TableDataTransform {
   [columnName: string]: (
     value: string | number | boolean,
     data: TableRowData,

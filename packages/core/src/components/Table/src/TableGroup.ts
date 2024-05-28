@@ -21,8 +21,8 @@ export class TableGroup extends LitElement {
     }
 
     .branch-vertical {
-      top: 1rem;
-      bottom: 1rem;
+      top: 1.125rem;
+      bottom: 1.125rem;
       border-left: 1px dotted var(--bim-ui_bg-contrast-40);
     }
 
@@ -78,6 +78,16 @@ export class TableGroup extends LitElement {
 
   protected render() {
     const indentation = this.table?.getGroupIndentation(this.data) ?? 0;
+
+    // const verticalBranch = document.createElement("div");
+    // verticalBranch.classList.add("branch", "branch-vertical");
+    // const verticalBranchStyle = document.createElement("style");
+    // verticalBranchStyle.textContent = `
+    //   .branch-vertical {
+    //     left: ${indentation + 0.5625}rem;
+    //   }
+    // `;
+    // verticalBranch.append(verticalBranchStyle);
 
     const verticalBranchTemplate = html`
       <style>

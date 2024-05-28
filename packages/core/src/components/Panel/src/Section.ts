@@ -218,10 +218,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         @click=${this.onHeaderClick}
       >
         ${this.label || this.icon || this.name
-          ? html`<bim-label
-              .label=${this.label || this.name}
-              .icon=${this.icon}
-            ></bim-label>`
+          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         ${!this.fixed ? expandIcon : null}
       </div>

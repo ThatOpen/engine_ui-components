@@ -5,8 +5,12 @@ import * as BUI from "../..";
 BUI.Manager.init();
 
 const table = document.body.querySelector<BUI.Table>("bim-table")!;
+table.addEventListener("rowcreated", ({ detail }) => {
+  const { row } = detail;
+  row.style.borderBottom = "1px solid var(--bim-ui_bg-contrast-20)";
+});
 
-table.definition = {
+table.dataTransform = {
   Age: (value, data) => {
     const { Name } = data;
     if (Name === "Lisa") {

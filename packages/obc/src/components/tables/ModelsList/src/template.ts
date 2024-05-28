@@ -26,7 +26,7 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
     rowGroups.push(rowGroup);
   }
 
-  table.definition = {
+  table.dataTransform = {
     Actions: (modelID) => {
       if (typeof modelID !== "string") return modelID;
       const model = fragments.groups.get(modelID);
@@ -51,7 +51,7 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
 
   return BUI.html`
     <div>
-      ${rowGroups.length === 0 ? BUI.html`<bim-label label="No models has been loaded yet"></bim-label>` : table}
+      ${rowGroups.length === 0 ? BUI.html`<bim-label>No models has been loaded yet</bim-label>` : table}
     </div>
   `;
 };

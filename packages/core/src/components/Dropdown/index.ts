@@ -318,11 +318,11 @@ export class Dropdown extends Component implements HasValue, HasName {
           @click=${() => (this.visible = !this.visible)}
         >
           <bim-label
-            label=${inputLabel}
             .img=${inputImg}
             .icon=${inputIcon}
             style="overflow: hidden;"
-          ></bim-label>
+            >${inputLabel}</bim-label
+          >
           <svg
             style="flex-shrink: 0"
             xmlns="http://www.w3.org/2000/svg"

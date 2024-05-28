@@ -51,7 +51,7 @@ export class Input extends LitElement implements HasValue, HasName {
     }
 
     :host(:not([vertical])[label]) .input {
-      max-width: 13rem;
+      max-width: fit-content;
     }
   `;
 
@@ -109,10 +109,7 @@ export class Input extends LitElement implements HasValue, HasName {
     return html`
       <div class="parent">
         ${this.label || this.icon
-          ? html`<bim-label
-              .label=${this.label}
-              .icon=${this.icon}
-            ></bim-label>`
+          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="input">
           <slot></slot>

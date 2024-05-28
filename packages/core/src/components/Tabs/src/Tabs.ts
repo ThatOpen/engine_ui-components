@@ -216,7 +216,7 @@ export class Tabs extends LitElement {
       element.setAttribute("data-name", child.name);
       element.className = "switcher";
       const label = document.createElement("bim-label");
-      label.label = child.label;
+      label.textContent = child.label ?? "";
       label.icon = child.icon;
       element.append(label);
       this._switchers.push(element);
