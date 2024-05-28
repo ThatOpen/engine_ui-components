@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui",
   "description": "Collection of web components (UI components) meant to be used, but not limited to, BIM applications.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
