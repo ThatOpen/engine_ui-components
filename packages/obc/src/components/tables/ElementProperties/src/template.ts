@@ -386,7 +386,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
       const valueCell = parent.querySelector<BUI.TableCell>(
         "bim-table-cell[column='Value']",
       );
-      if (!valueCell?.data && nameCell) {
+      if (nameCell && !valueCell) {
         nameCell.style.gridColumn = "1 / -1";
       }
     });

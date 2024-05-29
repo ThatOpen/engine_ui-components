@@ -107,7 +107,7 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
       const nameCell = parent.querySelector<BUI.TableCell>(
         "bim-table-cell[column='Name']",
       );
-      if (!nameCell?.data && entityCell) {
+      if (entityCell && !nameCell) {
         entityCell.style.gridColumn = "1 / -1";
       }
     });

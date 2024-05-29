@@ -11,39 +11,45 @@ const components = new OBC.Components();
 
 const worlds = components.get(OBC.Worlds);
 
-const world = worlds.create();
-const sceneComponent = new OBC.SimpleScene(components);
-sceneComponent.setup();
-world.scene = sceneComponent;
+const world = worlds.create<
+  OBC.SimpleScene,
+  OBC.SimpleCamera,
+  OBF.PostproductionRenderer
+>();
 
-const rendererComponent = new OBF.PostproductionRenderer(components, viewport);
-world.renderer = rendererComponent;
+world.scene = new OBC.SimpleScene(components);
+world.scene.setup();
+
+world.renderer = new OBF.PostproductionRenderer(components, viewport);
+const { postproduction } = world.renderer;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
-cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
+cameraComponent.controls.setLookAt(1.5, 1.4, 0.12, -3.5, -0.5, -7);
 
 viewport.addEventListener("resize", () => {
-  rendererComponent.resize();
+  if (world.renderer) world.renderer.resize();
   cameraComponent.updateAspect();
 });
 
 components.init();
-rendererComponent.postproduction.enabled = true;
-rendererComponent.postproduction.setPasses({ ao: true });
 
 const grids = components.get(OBC.Grids);
-grids.create(world);
+// grids.create(world);
 
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
-const file = await fetch(
-  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
-);
+// const file = await fetch(
+//   "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
+// );
+const file = await fetch("/resources/small.ifc");
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
 world.scene.three.add(model);
+
+postproduction.enabled = true;
+postproduction.setPasses({ ao: true });
 
 const [worldsConfigurationTable] = CUI.tables.worldsConfiguration({
   components,

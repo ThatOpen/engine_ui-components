@@ -11,6 +11,15 @@ export class TableCell extends LitElement {
       justify-content: center;
     }
 
+    :host([data-column-index="0"]:not([data-cell-header])) {
+      justify-content: normal;
+    }
+
+    :host([data-column-index="0"]:not([data-cell-header]))
+      ::slotted(bim-label) {
+      text-align: left;
+    }
+
     ::slotted(*) {
       --bim-input--bgc: transparent;
       --bim-input--olc: var(--bim-ui_bg-contrast-20);
@@ -29,6 +38,8 @@ export class TableCell extends LitElement {
 
   @property({ type: String, reflect: true })
   column?: string;
+
+  columnIndex = 0;
 
   rowData: TableRowData = {};
 

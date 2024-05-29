@@ -12,124 +12,6 @@ export interface WorldsConfigurationUIState {
   components: OBC.Components;
 }
 
-const createNearFrustumInput = (
-  camera: OBC.BaseCamera,
-  defaultValue: number,
-) => {
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    if (camera.three instanceof THREE.PerspectiveCamera) {
-      camera.three.near = input.value;
-      camera.three.updateProjectionMatrix();
-    }
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="0.1" value=${defaultValue} max="10" step="0.1" slider></bim-number-input>
-  `;
-};
-
-const createFarFrustumInput = (
-  camera: OBC.BaseCamera,
-  defaultValue: number,
-) => {
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    if (camera.three instanceof THREE.PerspectiveCamera) {
-      camera.three.far = input.value;
-      camera.three.updateProjectionMatrix();
-    }
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="300" value=${defaultValue} max="2000" step="10" slider></bim-number-input>
-  `;
-};
-
-const createFovInput = (camera: OBC.BaseCamera, defaultValue: number) => {
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    if (camera.three instanceof THREE.PerspectiveCamera) {
-      camera.three.fov = input.value;
-      camera.three.updateProjectionMatrix();
-    }
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="10" value=${defaultValue} max="120" slider></bim-number-input>
-  `;
-};
-
-const createInvertDragInput = (
-  camera: OBC.BaseCamera,
-  defaultValue: boolean,
-) => {
-  if (!camera.hasCameraControls()) return defaultValue;
-  const { controls } = camera;
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.Checkbox;
-    controls.dollyDragInverted = input.checked;
-  };
-  return BUI.html`
-    <bim-checkbox @change=${onInputChange} .checked=${defaultValue}></bim-checkbox>
-  `;
-};
-
-const createDollySpeedInput = (
-  camera: OBC.BaseCamera,
-  defaultValue: number,
-) => {
-  if (!camera.hasCameraControls()) return defaultValue;
-  const { controls } = camera;
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    controls.dollySpeed = input.value;
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="0.5" value=${defaultValue} max="3" step="0.1" slider></bim-number-input>
-  `;
-};
-
-const createTruckSpeedInput = (
-  camera: OBC.BaseCamera,
-  defaultValue: number,
-) => {
-  if (!camera.hasCameraControls()) return defaultValue;
-  const { controls } = camera;
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    controls.truckSpeed = input.value;
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="0.5" value=${defaultValue} max="6" step="0.1" slider></bim-number-input>
-  `;
-};
-
-const createSmoothTimeInput = (
-  camera: OBC.BaseCamera,
-  defaultValue: number,
-) => {
-  if (!camera.hasCameraControls()) return defaultValue;
-  const { controls } = camera;
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    controls.smoothTime = input.value;
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="0.01" value=${defaultValue} max="2" step="0.01" slider></bim-number-input>
-  `;
-};
-
-const createLightIntensityInput = (
-  light: THREE.Light,
-  defaultValue: number,
-) => {
-  const onInputChange = (e: Event) => {
-    const input = e.target as BUI.NumberInput;
-    light.intensity = input.value;
-  };
-  return BUI.html`
-    <bim-number-input @change=${onInputChange} min="0" value=${defaultValue} max="10" step="0.1" slider></bim-number-input>
-  `;
-};
-
 const createLightColorInput = (light: THREE.Light, defaultValue: string) => {
   const onInputChange = (e: Event) => {
     const input = e.target as BUI.ColorInput;
@@ -169,6 +51,57 @@ const createAOEnabledInput = (
   `;
 };
 
+const createCheckboxInput = (
+  obj: Record<string, any>,
+  key: string,
+  defaultValue: boolean,
+  onInputSet: (value: boolean) => void = () => {},
+) => {
+  const onInputChange = (e: Event) => {
+    const input = e.target as BUI.Checkbox;
+    const value = input.checked;
+    obj[key] = value;
+    onInputSet(value);
+  };
+  return BUI.html`
+    <bim-checkbox .checked="${defaultValue}" @change="${onInputChange}"></bim-checkbox> 
+  `;
+};
+
+interface NumberInputConfig {
+  slider: boolean;
+  min: number;
+  max: number;
+  step: number;
+  onInputSet: (value: number) => void;
+}
+
+const createNumberInput = (
+  obj: Record<string, any>,
+  key: string,
+  defaultValue: number,
+  _config?: Partial<NumberInputConfig>,
+) => {
+  const config: NumberInputConfig = {
+    slider: false,
+    min: 0,
+    max: 100,
+    step: 1,
+    onInputSet: () => {},
+    ..._config,
+  };
+  const { slider, min, max, step, onInputSet } = config;
+  const onInputChange = (e: Event) => {
+    const input = e.target as BUI.NumberInput;
+    const value = input.value;
+    obj[key] = value;
+    onInputSet(value);
+  };
+  return BUI.html`
+    <bim-number-input .slider=${slider} min=${min} value="${defaultValue}" max=${max} step=${step} @change="${onInputChange}"></bim-number-input> 
+  `;
+};
+
 /**
  * Heloooooooooo
  */
@@ -191,34 +124,118 @@ export const worldsConfigurationTemplate = (
         if (!world) return value;
         const { scene, camera, renderer } = world;
         const configName = data.Name as string;
-        if (configName === "Near Frustum" && typeof value === "number") {
-          return createNearFrustumInput(camera, value);
+        if (
+          configName === "Near Frustum" &&
+          camera.three instanceof THREE.PerspectiveCamera &&
+          typeof value === "number"
+        ) {
+          const perspectiveCamera = camera.three;
+          return createNumberInput(camera.three, "near", value, {
+            slider: true,
+            min: 0.1,
+            max: 10,
+            step: 0.1,
+            onInputSet: () => perspectiveCamera.updateProjectionMatrix(),
+          });
         }
-        if (configName === "Far Frustum" && typeof value === "number") {
-          return createFarFrustumInput(camera, value);
+        if (
+          configName === "Far Frustum" &&
+          camera.three instanceof THREE.PerspectiveCamera &&
+          typeof value === "number"
+        ) {
+          const perspectiveCamera = camera.three;
+          return createNumberInput(camera.three, "far", value, {
+            slider: true,
+            min: 300,
+            max: 2000,
+            step: 10,
+            onInputSet: () => perspectiveCamera.updateProjectionMatrix(),
+          });
         }
-        if (configName === "Field of View" && typeof value === "number") {
-          return createFovInput(camera, value);
+        if (
+          configName === "Field of View" &&
+          camera.three instanceof THREE.PerspectiveCamera &&
+          typeof value === "number"
+        ) {
+          const perspectiveCamera = camera.three;
+          return createNumberInput(camera.three, "fov", value, {
+            slider: true,
+            min: 10,
+            max: 120,
+            onInputSet: () => perspectiveCamera.updateProjectionMatrix(),
+          });
         }
-        if (configName === "Invert Drag" && typeof value === "boolean") {
-          return createInvertDragInput(camera, value);
+        if (
+          configName === "Invert Drag" &&
+          camera.hasCameraControls() &&
+          typeof value === "boolean"
+        ) {
+          return createCheckboxInput(
+            camera.controls,
+            "dollyDragInverted",
+            value,
+          );
         }
-        if (configName === "Dolly Speed" && typeof value === "number") {
-          return createDollySpeedInput(camera, value);
+        if (
+          configName === "Dolly Speed" &&
+          camera.hasCameraControls() &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(camera.controls, "dollySpeed", value, {
+            slider: true,
+            min: 0.5,
+            max: 3,
+            step: 0.1,
+          });
         }
-        if (configName === "Truck Speed" && typeof value === "number") {
-          return createTruckSpeedInput(camera, value);
+        if (
+          configName === "Truck Speed" &&
+          camera.hasCameraControls() &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(camera.controls, "truckSpeed", value, {
+            slider: true,
+            min: 0.5,
+            max: 6,
+            step: 0.1,
+          });
         }
-        if (configName === "Smooth Time" && typeof value === "number") {
-          return createSmoothTimeInput(camera, value);
+        if (
+          configName === "Smooth Time" &&
+          camera.hasCameraControls() &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(camera.controls, "smoothTime", value, {
+            slider: true,
+            min: 0.01,
+            max: 2,
+            step: 0.01,
+          });
         }
         if (configName === "Intensity" && typeof value === "number") {
-          const lightID = data.Light as string;
-          const light = scene.three.children.find(
-            (child) => child.uuid === lightID,
-          );
-          if (!(light && light instanceof THREE.Light)) return value;
-          return createLightIntensityInput(light, value);
+          if (data.Light && typeof data.Light === "string") {
+            const light = scene.three.children.find(
+              (child) => child.uuid === data.Light,
+            );
+            if (!(light && light instanceof THREE.Light)) return value;
+            return createNumberInput(light, "intensity", value, {
+              slider: true,
+              min: 0,
+              max: 10,
+              step: 0.1,
+            });
+          }
+          if (
+            data.IsAOConfig &&
+            renderer instanceof OBF.PostproductionRenderer
+          ) {
+            return createNumberInput(
+              renderer.postproduction.n8ao.configuration,
+              "intensity",
+              value,
+              { slider: true, max: 16, step: 0.5 },
+            );
+          }
         }
         if (configName === "Color" && typeof value === "string") {
           const lightID = data.Light as string;
@@ -243,6 +260,143 @@ export const worldsConfigurationTemplate = (
             return createAOEnabledInput(renderer, value);
           }
         }
+        if (
+          configName === "Half Resolution" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "boolean"
+        ) {
+          return createCheckboxInput(
+            renderer.postproduction.n8ao.configuration,
+            "halfRes",
+            value,
+          );
+        }
+        if (
+          configName === "Screen Space Radius" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "boolean"
+        ) {
+          return createCheckboxInput(
+            renderer.postproduction.n8ao.configuration,
+            "screenSpaceRadius",
+            value,
+          );
+        }
+        if (
+          configName === "Radius" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.n8ao.configuration,
+            "aoRadius",
+            value,
+            { slider: true, max: 2, step: 0.1 },
+          );
+        }
+        if (
+          configName === "Denoise Samples" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.n8ao.configuration,
+            "denoiseSamples",
+            value,
+            { slider: true, min: 1, max: 16 },
+          );
+        }
+        if (
+          configName === "Samples" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.n8ao.configuration,
+            "aoSamples",
+            value,
+            { slider: true, min: 1, max: 16 },
+          );
+        }
+        if (
+          configName === "Denoise Radius" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.n8ao.configuration,
+            "denoiseRadius",
+            value,
+            { slider: true, min: 0, max: 16 },
+          );
+        }
+        if (
+          configName === "Distance Falloff" &&
+          data.IsAOConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.n8ao.configuration,
+            "distanceFalloff",
+            value,
+            { slider: true, min: 0, max: 16 },
+          );
+        }
+        if (
+          configName === "X" &&
+          data.Light &&
+          typeof data.Light === "string" &&
+          typeof value === "number"
+        ) {
+          const light = scene.three.children.find(
+            (child) => child.uuid === data.Light,
+          );
+          if (!(light && light instanceof THREE.Light)) return value;
+          return createNumberInput(light.position, "x", value, {
+            slider: true,
+            min: -50,
+            max: 50,
+          });
+        }
+        if (
+          configName === "Y" &&
+          data.Light &&
+          typeof data.Light === "string" &&
+          typeof value === "number"
+        ) {
+          const light = scene.three.children.find(
+            (child) => child.uuid === data.Light,
+          );
+          if (!(light && light instanceof THREE.Light)) return value;
+          return createNumberInput(light.position, "y", value, {
+            slider: true,
+            min: -50,
+            max: 50,
+          });
+        }
+        if (
+          configName === "Z" &&
+          data.Light &&
+          typeof data.Light === "string" &&
+          typeof value === "number"
+        ) {
+          const light = scene.three.children.find(
+            (child) => child.uuid === data.Light,
+          );
+          if (!(light && light instanceof THREE.Light)) return value;
+          return createNumberInput(light.position, "z", value, {
+            slider: true,
+            min: -50,
+            max: 50,
+          });
+        }
         return value;
       },
     };
@@ -256,7 +410,7 @@ export const worldsConfigurationTemplate = (
       const valueCell = parent.querySelector<BUI.TableCell>(
         "bim-table-cell[column='Value']",
       );
-      if (!valueCell?.data && nameCell) {
+      if (nameCell && !valueCell) {
         nameCell.style.gridColumn = "1 / -1";
       }
     });
@@ -286,6 +440,37 @@ export const worldsConfigurationTemplate = (
               Name: "Directional Light",
             },
             children: [
+              // {
+              //   data: {
+              //     Name: "Position",
+              //   },
+              //   children: [
+              //     {
+              //       data: {
+              //         Name: "X",
+              //         Value: light.position.x,
+              //         World: world.uuid,
+              //         Light: light.uuid,
+              //       },
+              //     },
+              //     {
+              //       data: {
+              //         Name: "Y",
+              //         Value: light.position.y,
+              //         World: world.uuid,
+              //         Light: light.uuid,
+              //       },
+              //     },
+              //     {
+              //       data: {
+              //         Name: "Z",
+              //         Value: light.position.z,
+              //         World: world.uuid,
+              //         Light: light.uuid,
+              //       },
+              //     },
+              //   ],
+              // },
               {
                 data: {
                   Name: "Intensity",
@@ -415,8 +600,72 @@ export const worldsConfigurationTemplate = (
                 },
                 {
                   data: {
+                    Name: "Samples",
+                    Value: ao.aoSamples,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
                     Name: "Color",
                     Value: `#${ao.color.getHexString()}`,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Half Resolution",
+                    Value: ao.halfRes,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Screen Space Radius",
+                    Value: ao.screenSpaceRadius,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Radius",
+                    Value: ao.aoRadius,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Intensity",
+                    Value: ao.intensity,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Distance Falloff",
+                    Value: ao.distanceFalloff,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Denoise Samples",
+                    Value: ao.denoiseSamples,
+                    World: world.uuid,
+                    IsAOConfig: true,
+                  },
+                },
+                {
+                  data: {
+                    Name: "Denoise Radius",
+                    Value: ao.denoiseRadius,
                     World: world.uuid,
                     IsAOConfig: true,
                   },

@@ -133,13 +133,15 @@ export class TableRow extends LitElement {
 
       const isFirstCell = this._columnNames.indexOf(column) === 0;
       const style = `
-        ${isFirstCell && !this.isHeader ? "justify-content: normal" : ""};
         ${isFirstCell && !this.isHeader ? `margin-left: ${indentation + 0.125}rem` : ""}
       `;
 
       const onCellCreated = (el?: Element) => {
         if (!el) return;
         const cell = el as TableCell;
+        const columnIndex = this._columnNames.indexOf(column);
+        cell.setAttribute("data-column-index", String(columnIndex));
+        cell.toggleAttribute("data-cell-header", this.isHeader);
         cell.rowData = this.data;
         setTimeout(() => {
           this.table?.dispatchEvent(
