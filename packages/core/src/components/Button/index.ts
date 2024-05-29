@@ -80,7 +80,7 @@ export class Button extends LitElement {
     }
 
     :host(:not([label-hidden])[label]) .button {
-      padding: 0 0.75rem;
+      padding: 0 0.5rem;
     }
 
     :host([disabled]) .parent {

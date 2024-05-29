@@ -42,12 +42,13 @@ export const convertString = (value: string) => {
 };
 
 // QueryString logic
-const conditions = ["=", ">", ">=", "<", "<=", "?", "/", "#"];
+// Conditions with more than one symbol must be set first
+const conditions = [">=", "<=", "=", ">", "<", "?", "/", "#"];
 
 function parseSearch(search: string) {
-  const condition = conditions.filter(
+  const condition = conditions.find(
     (condition) => search.split(condition).length === 2,
-  )[0] as QueryCondition;
+  ) as QueryCondition;
   const splitQuery = search.split(condition).map((value) => value.trim());
   const [key, _value] = splitQuery;
   const value =

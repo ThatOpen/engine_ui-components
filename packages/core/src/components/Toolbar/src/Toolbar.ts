@@ -22,6 +22,7 @@ export class Toolbar extends LitElement {
     .parent {
       display: flex;
       width: min-content;
+      pointer-events: auto;
     }
 
     :host([vertical]) .parent {

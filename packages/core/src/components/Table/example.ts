@@ -86,8 +86,9 @@ const fetchedData = (await (
   )
 ).json()) as BUI.TableGroupData[];
 
-table.data = fetchedData;
+table.data = fetchedData.slice(0, 1);
 table.columns = [{ name: "Entity", width: "12rem" }];
+table.hiddenColumns = ["Name"];
 
 // You can get an object with the current values of the table taking into account any filtering
 const printBtn = document.getElementById("print-data") as BUI.Button;

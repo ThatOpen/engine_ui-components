@@ -26,6 +26,9 @@ export class ToolbarSection extends LitElement implements HasName {
       gap: 0.5rem;
       align-items: center;
       padding: 0.5rem;
+      height: 100%;
+      box-sizing: border-box;
+      justify-content: space-between;
     }
 
     :host([vertical]) .parent {

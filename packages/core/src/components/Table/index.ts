@@ -160,11 +160,10 @@ export class Table extends LitElement {
    * ```
    */
   get value() {
-    if (this.queryString) return this._filteredData;
-    return this.data;
+    return this._filteredData;
   }
 
-  private _expandedBeforeSearch?: boolean;
+  private _expandedBeforeFilter?: boolean;
   private _queryString: string | null = null;
 
   /**
@@ -174,8 +173,6 @@ export class Table extends LitElement {
    * The search criteria can be a simple string or a complex query.
    * If a simple string is provided, the table will filter rows based on the string's presence in any column.
    * If a complex query is provided, the table will filter rows based on the query's conditions and values.
-   *
-   * @param _value - The search string or `null` to clear the search.
    *
    * @example
    * ```typescript
@@ -187,35 +184,9 @@ export class Table extends LitElement {
    * table.queryString = "column1="Jhon Doe" & column2=20";
    * ```
    */
-  @property({ type: String, attribute: "search-string", reflect: true })
   set queryString(_value: string | null) {
-    const value = _value && _value.trim() !== "" ? _value.trim() : null;
-    this._queryString = value;
-    if (value) {
-      const query = getQuery(value);
-      if (query) {
-        this.filterFunction = this._queryFilterFunction;
-        this._filteredData = this.filter(value);
-      } else {
-        this.filterFunction = this._stringFilterFunction;
-        this._filteredData = this.filter(value);
-      }
-      if (this.preserveStructureOnFilter) {
-        if (this._expandedBeforeSearch === undefined) {
-          this._expandedBeforeSearch = this.expanded;
-        }
-        this.expanded = true;
-      }
-    } else {
-      if (
-        this.preserveStructureOnFilter &&
-        this._expandedBeforeSearch !== undefined
-      ) {
-        this.expanded = this._expandedBeforeSearch;
-        this._expandedBeforeSearch = undefined;
-      }
-      this._filteredData = this.data;
-    }
+    this._queryString = _value && _value.trim() !== "" ? _value.trim() : null;
+    this.updateFilteredData();
   }
 
   get queryString() {
@@ -244,7 +215,7 @@ export class Table extends LitElement {
   @property({ type: Array, attribute: false })
   set data(value: TableGroupData[]) {
     this._data = value;
-    // this._columns = [];
+    this.updateFilteredData();
     const computed = this.computeMissingColumns(value);
     if (computed) this.columns = this._columns;
   }
@@ -319,6 +290,34 @@ export class Table extends LitElement {
 
   get hiddenColumns() {
     return this._hiddenColumns;
+  }
+
+  private updateFilteredData() {
+    if (this.queryString) {
+      const query = getQuery(this.queryString);
+      if (query) {
+        this.filterFunction = this._queryFilterFunction;
+        this._filteredData = this.filter(this.queryString);
+      } else {
+        this.filterFunction = this._stringFilterFunction;
+        this._filteredData = this.filter(this.queryString);
+      }
+      if (this.preserveStructureOnFilter) {
+        if (this._expandedBeforeFilter === undefined) {
+          this._expandedBeforeFilter = this.expanded;
+        }
+        this.expanded = true;
+      }
+    } else {
+      if (
+        this.preserveStructureOnFilter &&
+        this._expandedBeforeFilter !== undefined
+      ) {
+        this.expanded = this._expandedBeforeFilter;
+        this._expandedBeforeFilter = undefined;
+      }
+      this._filteredData = this.data;
+    }
   }
 
   private computeMissingColumns(row: TableGroupData[]): boolean {
@@ -514,7 +513,7 @@ export class Table extends LitElement {
    * A function type representing the filter function for the table.
    * This function is used to determine whether a given row of data should be included in the filtered results.
    *
-   * @param queryString - The search string or query used to filter the data.
+   * @param queryString - The search string used to filter the data.
    * @param data - The data row to be filtered.
    *
    * @returns A boolean value indicating whether the data row should be included in the filtered results.

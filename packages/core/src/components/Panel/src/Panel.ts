@@ -41,6 +41,10 @@ export class Panel extends LitElement implements HasName, HasValue {
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
+      :host([header-hidden]) .parent bim-label {
+        display: none;
+      }
+
       .sections {
         display: flex;
         flex-direction: column;
@@ -164,6 +168,9 @@ export class Panel extends LitElement implements HasName, HasValue {
       input.value = data[key];
     }
   }
+
+  @property({ type: Boolean, attribute: "header-hidden", reflect: true })
+  headerHidden = false;
 
   readonly activationButton: Button = document.createElement("bim-button");
 

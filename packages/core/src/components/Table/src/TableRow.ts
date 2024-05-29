@@ -49,6 +49,7 @@ export class TableRow extends LitElement {
   set table(value: Table | null) {
     if (this._table) {
       this.columns = [];
+      this.hiddenColumns = [];
       this._table.removeEventListener(
         "columnschange",
         this.onTableColumnsChange,
@@ -61,6 +62,7 @@ export class TableRow extends LitElement {
     this._table = value;
     if (this._table) {
       this.columns = this._table.columns;
+      this.hiddenColumns = this._table.hiddenColumns;
       this._table.addEventListener("columnschange", this.onTableColumnsChange);
       this._table.addEventListener("columnshidden", this.onTableColumnsHidden);
       this._table.addEventListener(
