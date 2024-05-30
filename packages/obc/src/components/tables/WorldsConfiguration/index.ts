@@ -18,16 +18,17 @@ export const worldsConfiguration = (
   );
 
   if (autoUpdate) {
-    const [table, updateTable] = element;
+    const [table] = element;
+    const updateTable = () => element[1]();
     const { components } = state;
     const worlds = components.get(OBC.Worlds);
-    table.addEventListener("connected", () => {
-      worlds.onDisposed.add(table.remove);
-      for (const [, world] of worlds.list) {
-        world.onDisposed.add(updateTable);
-      }
-    });
+    // worlds.onWorldCreated.add(updateTable);
+    worlds.onDisposed.add(table.remove);
+    for (const [, world] of worlds.list) {
+      world.onDisposed.add(updateTable);
+    }
     table.addEventListener("disconnected", () => {
+      // worlds.onWorldCreated.remove(updateTable);
       worlds.onDisposed.remove(table.remove);
       for (const [, world] of worlds.list) {
         world.onDisposed.remove(updateTable);

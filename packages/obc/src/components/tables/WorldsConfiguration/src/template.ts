@@ -666,7 +666,10 @@ export const worldsConfigurationTemplate = (
       const worldGrid = getWorldGrid(components, world);
       const row: BUI.TableGroupData = {
         data: {
-          Name: world.uuid,
+          Name:
+            world instanceof OBC.SimpleWorld
+              ? world.name || world.uuid
+              : world.uuid,
         },
         children: [],
       };

@@ -18,6 +18,8 @@ const world = worlds.create<
   OBF.PostproductionRenderer
 >();
 
+world.name = "Default World";
+
 world.scene = new OBC.SimpleScene(components);
 world.scene.three.background = null;
 world.scene.setup();
