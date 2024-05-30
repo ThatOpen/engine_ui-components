@@ -80,11 +80,10 @@ table.dataTransform = {
   },
 };
 
-const fetchedData = (await (
-  await fetch(
-    "https://thatopen.github.io/engine_ui-components/resources/table-data.json",
-  )
-).json()) as BUI.TableGroupData[];
+const fetchedData = (await // await fetch(
+//   "https://thatopen.github.io/engine_ui-components/resources/table-data.json",
+// )
+(await fetch("/resources/table-data.json")).json()) as BUI.TableGroupData[];
 
 table.data = fetchedData.slice(0, 1);
 table.columns = [{ name: "Entity", width: "12rem" }];

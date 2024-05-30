@@ -274,7 +274,6 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
         const elementRow: BUI.TableGroupData = {
           data: {
             Name: elementAttrs.Name?.value,
-            Value: "",
           },
         };
 
@@ -377,6 +376,7 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
     }
 
     const table = element as BUI.Table;
+
     table.addEventListener("cellcreated", ({ detail }) => {
       const parent = detail.cell.parentNode;
       if (!parent) return;
@@ -386,10 +386,11 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
       const valueCell = parent.querySelector<BUI.TableCell>(
         "bim-table-cell[column='Value']",
       );
-      if (!valueCell?.data && nameCell) {
+      if (nameCell && !valueCell) {
         nameCell.style.gridColumn = "1 / -1";
       }
     });
+
     table.columns = [{ name: "Name", width: "12rem" }];
     table.data = rows;
   };

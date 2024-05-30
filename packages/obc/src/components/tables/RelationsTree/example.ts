@@ -1,4 +1,5 @@
 import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "../..";
 
@@ -33,6 +34,10 @@ components.init();
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
+const highlighter = components.get(OBF.Highlighter);
+highlighter.setup({ world });
+highlighter.zoomToSelection = true;
+
 const indexer = components.get(OBC.IfcRelationsIndexer);
 
 const fragmentsManager = components.get(OBC.FragmentsManager);
@@ -43,6 +48,8 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
 
 const [relationsTree] = CUI.tables.relationsTree({
   components,
+  selectHighlighterName: "select",
+  hoverHighlighterName: "hover",
   models: [],
 });
 

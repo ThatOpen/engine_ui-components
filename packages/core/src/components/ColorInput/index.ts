@@ -245,7 +245,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
             </div>
             ${this.opacity !== undefined
               ? html`<bim-number-input
-                  @input=${this.onOpacityInput}
+                  @change=${this.onOpacityInput}
                   slider
                   suffix="%"
                   min="0"

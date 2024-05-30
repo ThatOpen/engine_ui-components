@@ -56,6 +56,8 @@ declare global {
   }
 
   interface GlobalEventHandlersEventMap {
+    connected: Event;
+    disconnected: Event;
     childrenhidden: Event;
     layoutchange: Event;
     hiddenchange: Event;
