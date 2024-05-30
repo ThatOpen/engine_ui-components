@@ -78,6 +78,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       justify-content: center;
       width: 100%;
       height: 100%;
+      padding: 0 0.5rem;
     }
 
     .slider-indicator {

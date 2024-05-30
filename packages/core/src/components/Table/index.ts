@@ -224,6 +224,14 @@ export class Table extends LitElement {
     return this._data;
   }
 
+  get dataAsync() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.data);
+      });
+    });
+  }
+
   /**
    * A boolean property that determines whether the table is expanded or not.
    * When `true`, the table will be expanded to show all rows.
@@ -507,6 +515,16 @@ export class Table extends LitElement {
       { detail: { indentationLevel, color } },
     );
     this.dispatchEvent(event);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.dispatchEvent(new Event("connected"));
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.dispatchEvent(new Event("disconnected"));
   }
 
   /**

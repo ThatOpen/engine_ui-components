@@ -36,7 +36,7 @@ export class Input extends LitElement implements HasValue, HasName {
       align-items: center;
       flex-wrap: wrap;
       min-height: 1.75rem;
-      min-width: 8rem;
+      min-width: 3rem;
       gap: var(--bim-input--g, var(--bim-ui_size-4xs));
       padding: var(--bim-input--p, 0);
       background-color: var(--bim-input--bgc, transparent);

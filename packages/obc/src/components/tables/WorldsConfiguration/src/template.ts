@@ -3,7 +3,7 @@ import * as THREE from "three";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
 
-// TODO: Refactor to remove redundancy
+// TODO: Refactor a LOT
 
 /**
  * Heloooooooooo
@@ -11,6 +11,12 @@ import * as OBF from "@thatopen/components-front";
 export interface WorldsConfigurationUIState {
   components: OBC.Components;
 }
+
+const getWorldGrid = (components: OBC.Components, world: OBC.World) => {
+  const grids = components.get(OBC.Grids);
+  const grid = [...grids.list.values()].find((grid) => grid.world === world);
+  return grid;
+};
 
 const createLightColorInput = (light: THREE.Light, defaultValue: string) => {
   const onInputChange = (e: Event) => {
@@ -37,6 +43,35 @@ const createAOColorInput = (
   `;
 };
 
+const createOutlineColorInput = (
+  renderer: OBF.PostproductionRenderer,
+  defaultValue: string,
+) => {
+  const { color, opacity } = JSON.parse(defaultValue);
+  const { postproduction } = renderer;
+  const { customEffects } = postproduction;
+  const onInputChange = (e: Event) => {
+    const { color, opacity } = e.target as BUI.ColorInput;
+    customEffects.lineColor = new THREE.Color(color).getHex();
+    if (opacity) customEffects.opacity = opacity / 100;
+  };
+  return BUI.html`
+    <bim-color-input @input=${onInputChange} color=${color} opacity=${opacity * 100}></bim-color-input>
+  `;
+};
+
+const createGridColorInput = (grid: any, defaultValue: string) => {
+  const onInputChange = (e: Event) => {
+    const input = e.target as BUI.ColorInput;
+    const color = new THREE.Color(input.color);
+    grid.material.uniforms.uColor.value = color;
+    console.log(grid.material.uniforms);
+  };
+  return BUI.html`
+    <bim-color-input @input=${onInputChange} color=${defaultValue}></bim-color-input>
+  `;
+};
+
 const createAOEnabledInput = (
   renderer: OBF.PostproductionRenderer,
   defaultValue: boolean,
@@ -45,6 +80,34 @@ const createAOEnabledInput = (
   const onInputChange = (e: Event) => {
     const input = e.target as BUI.Checkbox;
     postproduction.setPasses({ ao: input.checked });
+  };
+  return BUI.html`
+    <bim-checkbox @change=${onInputChange} .checked=${defaultValue}></bim-checkbox>
+  `;
+};
+
+const createGammaEnabledInput = (
+  renderer: OBF.PostproductionRenderer,
+  defaultValue: boolean,
+) => {
+  const { postproduction } = renderer;
+  const onInputChange = (e: Event) => {
+    const input = e.target as BUI.Checkbox;
+    postproduction.setPasses({ gamma: input.checked });
+  };
+  return BUI.html`
+    <bim-checkbox @change=${onInputChange} .checked=${defaultValue}></bim-checkbox>
+  `;
+};
+
+const createCEEnabledInput = (
+  renderer: OBF.PostproductionRenderer,
+  defaultValue: boolean,
+) => {
+  const { postproduction } = renderer;
+  const onInputChange = (e: Event) => {
+    const input = e.target as BUI.Checkbox;
+    postproduction.setPasses({ custom: input.checked });
   };
   return BUI.html`
     <bim-checkbox @change=${onInputChange} .checked=${defaultValue}></bim-checkbox>
@@ -73,6 +136,8 @@ interface NumberInputConfig {
   min: number;
   max: number;
   step: number;
+  prefix: string | null;
+  suffix: string | null;
   onInputSet: (value: number) => void;
 }
 
@@ -87,10 +152,12 @@ const createNumberInput = (
     min: 0,
     max: 100,
     step: 1,
+    prefix: null,
+    suffix: null,
     onInputSet: () => {},
     ..._config,
   };
-  const { slider, min, max, step, onInputSet } = config;
+  const { slider, min, max, step, suffix, prefix, onInputSet } = config;
   const onInputChange = (e: Event) => {
     const input = e.target as BUI.NumberInput;
     const value = input.value;
@@ -98,7 +165,16 @@ const createNumberInput = (
     onInputSet(value);
   };
   return BUI.html`
-    <bim-number-input .slider=${slider} min=${min} value="${defaultValue}" max=${max} step=${step} @change="${onInputChange}"></bim-number-input> 
+    <bim-number-input
+      .pref=${prefix}
+      .suffix=${suffix}
+      .slider=${slider} 
+      min=${min} 
+      value="${defaultValue}" 
+      max=${max} 
+      step=${step} 
+      @change="${onInputChange}"
+    ></bim-number-input> 
   `;
 };
 
@@ -124,6 +200,62 @@ export const worldsConfigurationTemplate = (
         if (!world) return value;
         const { scene, camera, renderer } = world;
         const configName = data.Name as string;
+        if (
+          configName === "Grid" &&
+          data.IsGridConfig &&
+          typeof value === "boolean"
+        ) {
+          const worldGrid = getWorldGrid(components, world);
+          if (!worldGrid) return value;
+          return createCheckboxInput(worldGrid, "visible", value);
+        }
+        if (
+          configName === "Color" &&
+          data.IsGridConfig &&
+          typeof value === "string"
+        ) {
+          const worldGrid = getWorldGrid(components, world);
+          if (!worldGrid) return value;
+          return createGridColorInput(worldGrid, value);
+        }
+        if (
+          configName === "Distance" &&
+          data.IsGridConfig &&
+          typeof value === "number"
+        ) {
+          const worldGrid = getWorldGrid(components, world);
+          if (!worldGrid) return value;
+          return createNumberInput(
+            worldGrid.material.uniforms.uDistance,
+            "value",
+            value,
+            { slider: true, min: 300, max: 1000 },
+          );
+        }
+        if (
+          configName === "Size" &&
+          data.IsGridConfig &&
+          typeof value === "string"
+        ) {
+          const worldGrid = getWorldGrid(components, world);
+          if (!worldGrid) return value;
+          const { x, y } = JSON.parse(value);
+          const xInput = createNumberInput(
+            worldGrid.material.uniforms.uSize1,
+            "value",
+            x,
+            { slider: true, suffix: "m", prefix: "A", min: 1, max: 20 },
+          );
+          const yInput = createNumberInput(
+            worldGrid.material.uniforms.uSize2,
+            "value",
+            y,
+            { slider: true, suffix: "m", prefix: "B", min: 1, max: 20 },
+          );
+          return BUI.html`
+            <div style="display: flex; gap: 0.25rem; width: 100%; flex-wrap: wrap">${xInput}${yInput}</div>
+          `;
+        }
         if (
           configName === "Near Frustum" &&
           camera.three instanceof THREE.PerspectiveCamera &&
@@ -233,7 +365,7 @@ export const worldsConfigurationTemplate = (
               renderer.postproduction.n8ao.configuration,
               "intensity",
               value,
-              { slider: true, max: 16, step: 0.5 },
+              { slider: true, max: 16, step: 0.1 },
             );
           }
         }
@@ -252,7 +384,7 @@ export const worldsConfigurationTemplate = (
             return createAOColorInput(renderer, value);
           }
         }
-        if (configName === "Enabled" && typeof value === "boolean") {
+        if (configName === "Ambient Oclussion" && typeof value === "boolean") {
           if (
             data.IsAOConfig &&
             renderer instanceof OBF.PostproductionRenderer
@@ -333,7 +465,7 @@ export const worldsConfigurationTemplate = (
             renderer.postproduction.n8ao.configuration,
             "denoiseRadius",
             value,
-            { slider: true, min: 0, max: 16 },
+            { slider: true, min: 0, max: 16, step: 0.1 },
           );
         }
         if (
@@ -346,56 +478,168 @@ export const worldsConfigurationTemplate = (
             renderer.postproduction.n8ao.configuration,
             "distanceFalloff",
             value,
-            { slider: true, min: 0, max: 16 },
+            { slider: true, min: 0, max: 4, step: 0.1 },
           );
         }
         if (
-          configName === "X" &&
+          configName === "Directional Light" &&
           data.Light &&
           typeof data.Light === "string" &&
-          typeof value === "number"
+          typeof value === "boolean"
         ) {
           const light = scene.three.children.find(
             (child) => child.uuid === data.Light,
           );
           if (!(light && light instanceof THREE.Light)) return value;
-          return createNumberInput(light.position, "x", value, {
-            slider: true,
-            min: -50,
-            max: 50,
-          });
+          return createCheckboxInput(light, "visible", value);
         }
         if (
-          configName === "Y" &&
+          configName === "Ambient Light" &&
           data.Light &&
           typeof data.Light === "string" &&
-          typeof value === "number"
+          typeof value === "boolean"
         ) {
           const light = scene.three.children.find(
             (child) => child.uuid === data.Light,
           );
           if (!(light && light instanceof THREE.Light)) return value;
-          return createNumberInput(light.position, "y", value, {
-            slider: true,
-            min: -50,
-            max: 50,
-          });
+          return createCheckboxInput(light, "visible", value);
         }
         if (
-          configName === "Z" &&
+          configName === "Position" &&
           data.Light &&
           typeof data.Light === "string" &&
-          typeof value === "number"
+          typeof value === "string"
         ) {
           const light = scene.three.children.find(
             (child) => child.uuid === data.Light,
           );
           if (!(light && light instanceof THREE.Light)) return value;
-          return createNumberInput(light.position, "z", value, {
+          const { x, y, z } = JSON.parse(value);
+          const xInput = createNumberInput(light.position, "x", x, {
             slider: true,
+            prefix: "X",
+            suffix: "m",
             min: -50,
             max: 50,
           });
+          const yInput = createNumberInput(light.position, "y", y, {
+            slider: true,
+            prefix: "Y",
+            suffix: "m",
+            min: -50,
+            max: 50,
+          });
+          const zInput = createNumberInput(light.position, "z", z, {
+            slider: true,
+            prefix: "Z",
+            suffix: "m",
+            min: -50,
+            max: 50,
+          });
+          return BUI.html`
+            <div style="display: flex; gap: 0.25rem; width: 100%; flex-wrap: wrap">${xInput}${yInput}${zInput}</div>
+          `;
+        }
+        if (
+          configName === "Custom Effects" &&
+          data.IsCEConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "boolean"
+        ) {
+          return createCEEnabledInput(renderer, value);
+        }
+        if (
+          configName === "Color" &&
+          data.IsOutlineConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "string"
+        ) {
+          return createOutlineColorInput(renderer, value);
+        }
+        if (
+          configName === "Tolerance" &&
+          data.IsOutlineConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.customEffects,
+            "tolerance",
+            value,
+            { slider: true, min: 0, max: 6, step: 0.01 },
+          );
+        }
+        if (
+          configName === "Outline" &&
+          data.IsOutlineConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "boolean"
+        ) {
+          return createCheckboxInput(
+            renderer.postproduction.customEffects,
+            "outlineEnabled",
+            value,
+          );
+        }
+        if (
+          configName === "Gloss" &&
+          data.IsGlossConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "boolean"
+        ) {
+          return createCheckboxInput(
+            renderer.postproduction.customEffects,
+            "glossEnabled",
+            value,
+          );
+        }
+        if (
+          configName === "Min" &&
+          data.IsGlossConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.customEffects,
+            "minGloss",
+            value,
+            { slider: true, min: -0.5, max: 0.5, step: 0.01 },
+          );
+        }
+        if (
+          configName === "Max" &&
+          data.IsGlossConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.customEffects,
+            "maxGloss",
+            value,
+            { slider: true, min: -0.5, max: 0.5, step: 0.01 },
+          );
+        }
+        if (
+          configName === "Exponent" &&
+          data.IsGlossConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "number"
+        ) {
+          return createNumberInput(
+            renderer.postproduction.customEffects,
+            "glossExponent",
+            value,
+            { slider: true, min: 0, max: 5, step: 0.01 },
+          );
+        }
+        if (
+          configName === "Gamma Correction" &&
+          data.IsGammaConfig &&
+          renderer instanceof OBF.PostproductionRenderer &&
+          typeof value === "boolean"
+        ) {
+          return createGammaEnabledInput(renderer, value);
         }
         return value;
       },
@@ -419,6 +663,7 @@ export const worldsConfigurationTemplate = (
 
     for (const [, world] of worlds.list) {
       const { scene, camera, renderer } = world;
+      const worldGrid = getWorldGrid(components, world);
       const row: BUI.TableGroupData = {
         data: {
           Name: world.uuid,
@@ -431,6 +676,52 @@ export const worldsConfigurationTemplate = (
             Name: "Scene",
           },
         };
+        if (worldGrid) {
+          const gridRow: BUI.TableGroupData = {
+            data: {
+              Name: "Grid",
+              Value: worldGrid.three.visible,
+              World: world.uuid,
+              IsGridConfig: true,
+            },
+            children: [
+              {
+                data: {
+                  Name: "Color",
+                  get Value() {
+                    const color = worldGrid.material.uniforms.uColor
+                      .value as THREE.Color;
+                    return `#${color.getHexString()}`;
+                  },
+                  World: world.uuid,
+                  IsGridConfig: true,
+                },
+              },
+              {
+                data: {
+                  Name: "Size",
+                  get Value() {
+                    const x = worldGrid.material.uniforms.uSize1.value;
+                    const y = worldGrid.material.uniforms.uSize2.value;
+                    return JSON.stringify({ x, y });
+                  },
+                  World: world.uuid,
+                  IsGridConfig: true,
+                },
+              },
+              {
+                data: {
+                  Name: "Distance",
+                  Value: worldGrid.material.uniforms.uDistance.value,
+                  World: world.uuid,
+                  IsGridConfig: true,
+                },
+              },
+            ],
+          };
+          if (!sceneRow.children) sceneRow.children = [];
+          sceneRow.children.push(gridRow);
+        }
         const directionalLights = scene.three.children.filter(
           (child) => child instanceof THREE.DirectionalLight,
         ) as THREE.DirectionalLight[];
@@ -438,39 +729,19 @@ export const worldsConfigurationTemplate = (
           const lightRow: BUI.TableGroupData = {
             data: {
               Name: "Directional Light",
+              Value: light.visible,
+              World: world.uuid,
+              Light: light.uuid,
             },
             children: [
-              // {
-              //   data: {
-              //     Name: "Position",
-              //   },
-              //   children: [
-              //     {
-              //       data: {
-              //         Name: "X",
-              //         Value: light.position.x,
-              //         World: world.uuid,
-              //         Light: light.uuid,
-              //       },
-              //     },
-              //     {
-              //       data: {
-              //         Name: "Y",
-              //         Value: light.position.y,
-              //         World: world.uuid,
-              //         Light: light.uuid,
-              //       },
-              //     },
-              //     {
-              //       data: {
-              //         Name: "Z",
-              //         Value: light.position.z,
-              //         World: world.uuid,
-              //         Light: light.uuid,
-              //       },
-              //     },
-              //   ],
-              // },
+              {
+                data: {
+                  Name: "Position",
+                  Value: JSON.stringify(light.position),
+                  World: world.uuid,
+                  Light: light.uuid,
+                },
+              },
               {
                 data: {
                   Name: "Intensity",
@@ -499,6 +770,9 @@ export const worldsConfigurationTemplate = (
           const lightRow: BUI.TableGroupData = {
             data: {
               Name: "Ambient Light",
+              Value: light.visible,
+              World: world.uuid,
+              Light: light.uuid,
             },
             children: [
               {
@@ -587,17 +861,20 @@ export const worldsConfigurationTemplate = (
           children: [
             {
               data: {
+                Name: "Gamma Correction",
+                Value: postproduction.settings.gamma ?? false,
+                World: world.uuid,
+                IsGammaConfig: true,
+              },
+            },
+            {
+              data: {
                 Name: "Ambient Oclussion",
+                Value: postproduction.settings.ao ?? false,
+                World: world.uuid,
+                IsAOConfig: true,
               },
               children: [
-                {
-                  data: {
-                    Name: "Enabled",
-                    Value: postproduction.settings.ao ?? false,
-                    World: world.uuid,
-                    IsAOConfig: true,
-                  },
-                },
                 {
                   data: {
                     Name: "Samples",
@@ -674,13 +951,82 @@ export const worldsConfigurationTemplate = (
             },
             {
               data: {
-                Name: "Edges",
+                Name: "Custom Effects",
+                Value: postproduction.settings.custom ?? false,
+                World: world.uuid,
+                IsCEConfig: true,
               },
-            },
-            {
-              data: {
-                Name: "Gloss",
-              },
+              children: [
+                {
+                  data: {
+                    Name: "Gloss",
+                    Value: postproduction.customEffects.glossEnabled,
+                    World: world.uuid,
+                    IsGlossConfig: true,
+                  },
+                  children: [
+                    {
+                      data: {
+                        Name: "Min",
+                        Value: postproduction.customEffects.minGloss,
+                        World: world.uuid,
+                        IsGlossConfig: true,
+                      },
+                    },
+                    {
+                      data: {
+                        Name: "Max",
+                        Value: postproduction.customEffects.maxGloss,
+                        World: world.uuid,
+                        IsGlossConfig: true,
+                      },
+                    },
+                    {
+                      data: {
+                        Name: "Exponent",
+                        Value: postproduction.customEffects.glossExponent,
+                        World: world.uuid,
+                        IsGlossConfig: true,
+                      },
+                    },
+                  ],
+                },
+                {
+                  data: {
+                    Name: "Outline",
+                    Value: postproduction.customEffects.outlineEnabled,
+                    World: world.uuid,
+                    IsOutlineConfig: true,
+                  },
+                  children: [
+                    {
+                      data: {
+                        Name: "Color",
+                        get Value() {
+                          const color = new THREE.Color(
+                            postproduction.customEffects.lineColor,
+                          );
+                          const opacity = postproduction.customEffects.opacity;
+                          return JSON.stringify({
+                            color: `#${color.getHexString()}`,
+                            opacity,
+                          });
+                        },
+                        World: world.uuid,
+                        IsOutlineConfig: true,
+                      },
+                    },
+                    {
+                      data: {
+                        Name: "Tolerance",
+                        Value: postproduction.customEffects.tolerance,
+                        World: world.uuid,
+                        IsOutlineConfig: true,
+                      },
+                    },
+                  ],
+                },
+              ],
             },
           ],
         };
@@ -688,7 +1034,18 @@ export const worldsConfigurationTemplate = (
       }
       rows.push(row);
     }
-    table.hiddenColumns = ["World", "Light", "IsAOConfig"];
+
+    table.columns = [{ name: "Name", width: "11rem" }];
+    table.hiddenColumns = [
+      "World",
+      "Light",
+      "IsAOConfig",
+      "IsCEConfig",
+      "IsGlossConfig",
+      "IsOutlineConfig",
+      "IsGammaConfig",
+      "IsGridConfig",
+    ];
     table.data = rows;
   };
   return BUI.html`<bim-table ${BUI.ref(onTableCreated)} headers-hidden expanded></bim-table>`;

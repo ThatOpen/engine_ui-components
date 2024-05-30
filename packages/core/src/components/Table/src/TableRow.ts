@@ -103,7 +103,7 @@ export class TableRow extends LitElement {
     (entries) => {
       this._intersecting = entries[0].isIntersecting;
     },
-    { rootMargin: "10px" },
+    { rootMargin: "36px" },
   );
 
   connectedCallback() {

@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
@@ -18,24 +19,27 @@ const world = worlds.create<
 >();
 
 world.scene = new OBC.SimpleScene(components);
+world.scene.three.background = null;
 world.scene.setup();
 
 world.renderer = new OBF.PostproductionRenderer(components, viewport);
 const { postproduction } = world.renderer;
 
-const cameraComponent = new OBC.SimpleCamera(components);
-world.camera = cameraComponent;
-cameraComponent.controls.setLookAt(1.5, 1.4, 0.12, -3.5, -0.5, -7);
+world.camera = new OBC.SimpleCamera(components);
+world.camera.controls.setLookAt(1.5, 1.4, 0.12, -3.5, -0.5, -7).then(() => {
+  world.camera.enabled = false;
+});
 
 viewport.addEventListener("resize", () => {
   if (world.renderer) world.renderer.resize();
-  cameraComponent.updateAspect();
+  world.camera.updateAspect();
 });
 
 components.init();
 
 const grids = components.get(OBC.Grids);
-// grids.create(world);
+const worldGrid = grids.create(world);
+worldGrid.material.uniforms.uColor.value = new THREE.Color("#4D4D4D");
 
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
@@ -51,19 +55,18 @@ world.scene.three.add(model);
 postproduction.enabled = true;
 postproduction.setPasses({ ao: true });
 
-const [worldsConfigurationTable] = CUI.tables.worldsConfiguration({
+const [worldsConfig] = CUI.tables.worldsConfiguration({
   components,
 });
 
 const worldsConfigPanel = BUI.Component.create(() => {
   const onSearch = (e: Event) => {
     const input = e.target as BUI.TextInput;
-    worldsConfigurationTable.queryString =
-      input.value !== "" ? input.value : null;
+    worldsConfig.queryString = input.value !== "" ? input.value : null;
   };
 
   const expandTable = () => {
-    worldsConfigurationTable.expanded = !worldsConfigurationTable.expanded;
+    worldsConfig.expanded = !worldsConfig.expanded;
   };
 
   return BUI.html`
@@ -73,7 +76,7 @@ const worldsConfigPanel = BUI.Component.create(() => {
           <bim-text-input @input=${onSearch} placeholder="Search..."></bim-text-input>
           <bim-button style="flex: 0;" @click=${expandTable} icon="eva:expand-outline"></bim-button> 
         </div> 
-        ${worldsConfigurationTable}
+        ${worldsConfig}
       </bim-panel-section>
     </bim-panel>
   `;
@@ -84,7 +87,7 @@ app.layouts = {
   main: {
     template: `
     "worldsConfigPanel viewport"
-    /24rem 1fr
+    /26rem 1fr
     `,
     elements: { worldsConfigPanel, viewport },
   },
