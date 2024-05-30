@@ -26,9 +26,7 @@ world.renderer = new OBF.PostproductionRenderer(components, viewport);
 const { postproduction } = world.renderer;
 
 world.camera = new OBC.SimpleCamera(components);
-world.camera.controls.setLookAt(1.5, 1.4, 0.12, -3.5, -0.5, -7).then(() => {
-  world.camera.enabled = false;
-});
+world.camera.controls.setLookAt(1.5, 1.4, 0.12, -3.5, -0.5, -7);
 
 viewport.addEventListener("resize", () => {
   if (world.renderer) world.renderer.resize();
@@ -43,16 +41,16 @@ worldGrid.material.uniforms.uColor.value = new THREE.Color("#4D4D4D");
 
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
-// const file = await fetch(
-//   "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
-// );
-const file = await fetch("/resources/small.ifc");
+const file = await fetch(
+  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
+);
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
 world.scene.three.add(model);
 
 postproduction.enabled = true;
+postproduction.customEffects.excludedMeshes.push(worldGrid.three);
 postproduction.setPasses({ ao: true });
 
 const [worldsConfig] = CUI.tables.worldsConfiguration({

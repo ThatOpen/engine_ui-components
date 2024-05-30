@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as FRAGS from "@thatopen/fragments";
 import * as WEBIFC from "web-ifc";
@@ -7,6 +8,8 @@ import * as WEBIFC from "web-ifc";
 export interface RelationsTreeUIState {
   components: OBC.Components;
   models: Iterable<FRAGS.FragmentsGroup>;
+  selectHighlighterName?: string;
+  hoverHighlighterName?: string;
   inverseAttributes?: OBC.InverseAttribute[];
   expressID?: number;
 }
@@ -27,12 +30,15 @@ const getDecompositionTree = async (
     data: {
       Entity: OBC.IfcCategoryMap[type],
       Name: entityAttrs.Name?.value,
+      modelID: model.uuid,
     },
   };
 
   for (const attrName of inverseAttributes) {
     const relations = indexer.getEntityRelations(model, expressID, attrName);
+    entityRow.data.expressID = expressID;
     if (!relations) continue;
+    entityRow.data.relations = JSON.stringify(relations);
     for (const id of relations) {
       const decompositionRow = await getDecompositionTree(
         components,
@@ -50,8 +56,33 @@ const getDecompositionTree = async (
   return rows;
 };
 
+const getRowFragmentIdMap = (components: OBC.Components, row: BUI.TableRow) => {
+  const fragments = components.get(OBC.FragmentsManager);
+  const { modelID, expressID, relations } = row.data as {
+    modelID: string;
+    expressID: number;
+    relations: string;
+  };
+  if (!(modelID && expressID)) return null;
+  const model = fragments.groups.get(modelID);
+  if (!model) return null;
+  const fragmentIDMap = model.getFragmentMap([
+    expressID,
+    ...JSON.parse(relations ?? "[]"),
+  ]);
+  return fragmentIDMap;
+};
+
 export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
-  const { components, models, inverseAttributes, expressID } = state;
+  const {
+    components,
+    models,
+    inverseAttributes,
+    expressID,
+    selectHighlighterName,
+    hoverHighlighterName,
+  } = state;
+
   const _inverseAttributes: OBC.InverseAttribute[] = inverseAttributes ?? [
     "IsDecomposedBy",
     "ContainsElements",
@@ -98,6 +129,41 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     }
 
     const table = element as BUI.Table;
+
+    table.addEventListener("rowcreated", ({ detail }) => {
+      const { row } = detail;
+      const highlighter = components.get(OBF.Highlighter);
+      row.onmouseover = () => {
+        if (!hoverHighlighterName) return;
+        const fragmentIDMap = getRowFragmentIdMap(components, row);
+        if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
+        row.style.backgroundColor = "var(--bim-ui_bg-contrast-20)";
+        highlighter.highlightByID(
+          hoverHighlighterName,
+          fragmentIDMap,
+          true,
+          false,
+        );
+      };
+
+      row.onmouseout = () => {
+        row.style.backgroundColor = "";
+        highlighter.clear(hoverHighlighterName);
+      };
+
+      row.onclick = () => {
+        if (!selectHighlighterName) return;
+        const fragmentIDMap = getRowFragmentIdMap(components, row);
+        if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
+        highlighter.highlightByID(
+          selectHighlighterName,
+          fragmentIDMap,
+          true,
+          true,
+        );
+      };
+    });
+
     table.addEventListener("cellcreated", ({ detail }) => {
       const parent = detail.cell.parentNode;
       if (!parent) return;
@@ -111,6 +177,8 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
         entityCell.style.gridColumn = "1 / -1";
       }
     });
+
+    table.hiddenColumns = ["modelID", "expressID", "relations"];
     table.columns = ["Entity", "Name"];
     table.data = rows;
   };
