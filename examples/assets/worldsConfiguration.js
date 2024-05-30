@@ -1,14 +1,14 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as d,f as m,a as u,s as b,e as f,k as w,N as g,m as y,h,j as v}from"./index-B-aNsZHc.js";import{t as x}from"./index-DwzI1lTL.js";d.init();const a=document.createElement("bim-viewport"),e=new m,C=e.get(u),t=C.create(),c=new b(e);c.setup();t.scene=c;const o=new f(e,a);t.renderer=o;const s=new w(e);t.camera=s;s.controls.setLookAt(10,5.5,5,-4,-1,-6.5);a.addEventListener("resize",()=>{o.resize(),s.updateAspect()});e.init();o.postproduction.enabled=!0;o.postproduction.setPasses({ao:!0});const A=e.get(g);A.create(t);const l=e.get(y);await l.setup();const k=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),S=await k.arrayBuffer(),$=new Uint8Array(S),E=await l.load($);t.scene.three.add(E);const[n]=x.worldsConfiguration({components:e}),L=h.create(()=>v`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as d,a as p,C as u,i as m,x as f,k as b,u as w,g,R as h,h as x,j as y}from"./index-iHSjA6qM.js";import{t as v}from"./index-BdZzXOWY.js";d.init();const a=document.createElement("bim-viewport"),t=new p,C=t.get(u),e=C.create();e.name="Default World";e.scene=new m(t);e.scene.three.background=null;e.scene.setup();e.renderer=new f(t,a);const{postproduction:o}=e.renderer;e.camera=new b(t);e.camera.controls.setLookAt(1.5,1.4,.12,-3.5,-.5,-7);a.addEventListener("resize",()=>{e.renderer&&e.renderer.resize(),e.camera.updateAspect()});t.init();const k=t.get(w),i=k.create(e);i.material.uniforms.uColor.value=new g("#4D4D4D");const l=t.get(h);await l.setup();const A=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),D=await A.arrayBuffer(),E=new Uint8Array(D),S=await l.load(E);e.scene.three.add(S);o.enabled=!0;o.customEffects.excludedMeshes.push(i.three);o.setPasses({ao:!0});const[n]=v.worldsConfiguration({components:t}),$=x.create(()=>y`
     <bim-panel label="App Config">
       <bim-panel-section label="Worlds">
         <div style="display: flex; gap: 0.5rem;">
-          <bim-text-input @input=${p=>{const r=p.target;n.queryString=r.value!==""?r.value:null}} placeholder="Search..."></bim-text-input>
+          <bim-text-input @input=${c=>{const s=c.target;n.queryString=s.value!==""?s.value:null}} placeholder="Search..."></bim-text-input>
           <bim-button style="flex: 0;" @click=${()=>{n.expanded=!n.expanded}} icon="eva:expand-outline"></bim-button> 
         </div> 
         ${n}
       </bim-panel-section>
     </bim-panel>
-  `),i=document.createElement("bim-grid");i.layouts={main:{template:`
+  `),r=document.createElement("bim-grid");r.layouts={main:{template:`
     "worldsConfigPanel viewport"
-    /24rem 1fr
-    `,elements:{worldsConfigPanel:L,viewport:a}}};i.layout="main";document.body.append(i);
+    /26rem 1fr
+    `,elements:{worldsConfigPanel:$,viewport:a}}};r.layout="main";document.body.append(r);

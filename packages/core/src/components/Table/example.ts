@@ -80,12 +80,13 @@ table.dataTransform = {
   },
 };
 
-const fetchedData = (await // await fetch(
-//   "https://thatopen.github.io/engine_ui-components/resources/table-data.json",
-// )
-(await fetch("/resources/table-data.json")).json()) as BUI.TableGroupData[];
+const jsonData = await fetch(
+  "https://thatopen.github.io/engine_ui-components/resources/table-data.json",
+);
+if (!jsonData.ok) throw new Error("Failed fetching table data from GitHub.");
+const fetchedData = (await jsonData.json()) as BUI.TableGroupData[];
 
-table.data = fetchedData.slice(0, 1);
+table.data = fetchedData;
 table.columns = [{ name: "Entity", width: "12rem" }];
 table.hiddenColumns = ["Name"];
 

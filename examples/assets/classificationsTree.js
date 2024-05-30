@@ -1,13 +1,13 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as m,f as d,a as l,s as f,i as b,k as u,N as w,m as g,u as y,R as T,h as v,j as C}from"./index-B-aNsZHc.js";import{b as E}from"./index-Bnilb3I6.js";import{t as L}from"./index-DwzI1lTL.js";m.init();const e=new d,n=document.createElement("bim-viewport");n.name="viewer";const I=e.get(l),s=I.create(),o=new f(e);o.setup();s.scene=o;const c=new b(e,n);s.renderer=c;const r=new u(e);s.camera=r;n.addEventListener("resize",()=>{c.resize(),r.updateAspect()});const $=e.get(w);$.create(s);e.init();const h=e.get(g);await h.setup();const p=e.get(y);p.onFragmentsLoaded.add(t=>{s.scene&&s.scene.three.add(t)});const[k,z]=L.classificationTree({components:e,classifications:{}}),i=e.get(T);p.onFragmentsLoaded.add(async t=>{i.byEntity(t),await i.byPredefinedType(t),z({classifications:{Entities:["entities","predefinedTypes"],"Predefined Types":["predefinedTypes"]}})});const F=v.create(()=>{const[t]=E.loadIfc({components:e});return C`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as m,a as d,C as l,i as f,n as b,k as u,u as w,R as g,b as y,A as C,h as T,j as v}from"./index-iHSjA6qM.js";import{b as E}from"./index-B3Tx1nQG.js";import{t as L}from"./index-BdZzXOWY.js";m.init();const e=new d,a=document.createElement("bim-viewport");a.name="viewer";const A=e.get(l),t=A.create(),o=new f(e);o.setup();t.scene=o;const c=new b(e,a);t.renderer=c;const r=new u(e);t.camera=r;a.addEventListener("resize",()=>{c.resize(),r.updateAspect()});const I=e.get(w);I.create(t);e.init();const $=e.get(g);await $.setup();const p=e.get(y);p.onFragmentsLoaded.add(n=>{t.scene&&t.scene.three.add(n)});const[h,k]=L.classificationTree({components:e,classifications:{}}),i=e.get(C);p.onFragmentsLoaded.add(async n=>{i.byEntity(n),await i.byPredefinedType(n),k({classifications:{Entities:["entities","predefinedTypes"],"Predefined Types":["predefinedTypes"]}})});const z=T.create(()=>{const[n]=E.loadIfc({components:e});return v`
    <bim-panel label="Classifications Tree">
     <bim-panel-section label="Importing">
-      ${t}
+      ${n}
     </bim-panel-section>
     <bim-panel-section label="Classifications">
-      ${k}
+      ${h}
     </bim-panel-section>
    </bim-panel> 
-  `}),a=document.createElement("bim-grid");a.layouts={main:{template:`
+  `}),s=document.createElement("bim-grid");s.layouts={main:{template:`
       "panel viewport"
       / 23rem 1fr
-    `,elements:{panel:F,viewport:n}}};a.layout="main";document.body.append(a);
+    `,elements:{panel:z,viewport:a}}};s.layout="main";document.body.append(s);
