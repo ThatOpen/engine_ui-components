@@ -373,21 +373,25 @@ const computeTableData = async (
   return rows;
 };
 
-const table = document.createElement("bim-table");
-table.columns = [{ name: "Name", width: "12rem" }];
-table.headersHidden = true;
-table.addEventListener("cellcreated", ({ detail }) => {
-  const { cell } = detail;
-  if (cell.column === "Name" && !("Value" in cell.rowData)) {
-    cell.style.gridColumn = "1 / -1";
-  }
-});
+let table: BUI.Table;
 
 /**
  * Heloooooooooo
  */
 export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
   const { components, fragmentIdMap } = state;
+
+  if (!table) {
+    table = document.createElement("bim-table");
+    table.columns = [{ name: "Name", width: "12rem" }];
+    table.headersHidden = true;
+    table.addEventListener("cellcreated", ({ detail }) => {
+      const { cell } = detail;
+      if (cell.column === "Name" && !("Value" in cell.rowData)) {
+        cell.style.gridColumn = "1 / -1";
+      }
+    });
+  }
 
   computeTableData(components, fragmentIdMap).then(
     (data) => (table.data = data),

@@ -102,17 +102,7 @@ const computeRowData = async (
   return rows;
 };
 
-const table = document.createElement("bim-table");
-table.hiddenColumns = ["modelID", "expressID", "relations"];
-table.columns = ["Entity", "Name"];
-table.headersHidden = true;
-
-table.addEventListener("cellcreated", ({ detail }) => {
-  const { cell } = detail;
-  if (cell.column === "Entity" && !("Name" in cell.rowData)) {
-    cell.style.gridColumn = "1 / -1";
-  }
-});
+let table: BUI.Table;
 
 const getRowFragmentIdMap = (components: OBC.Components, row: BUI.TableRow) => {
   const fragments = components.get(OBC.FragmentsManager);
@@ -141,10 +131,19 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     expressID,
   } = state;
 
-  const _inverseAttributes: OBC.InverseAttribute[] = inverseAttributes ?? [
-    "IsDecomposedBy",
-    "ContainsElements",
-  ];
+  if (!table) {
+    table = document.createElement("bim-table");
+    table.hiddenColumns = ["modelID", "expressID", "relations"];
+    table.columns = ["Entity", "Name"];
+    table.headersHidden = true;
+
+    table.addEventListener("cellcreated", ({ detail }) => {
+      const { cell } = detail;
+      if (cell.column === "Entity" && !("Name" in cell.rowData)) {
+        cell.style.gridColumn = "1 / -1";
+      }
+    });
+  }
 
   table.addEventListener("rowcreated", (e) => {
     e.stopImmediatePropagation();
@@ -180,6 +179,11 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
       );
     };
   });
+
+  const _inverseAttributes: OBC.InverseAttribute[] = inverseAttributes ?? [
+    "IsDecomposedBy",
+    "ContainsElements",
+  ];
 
   computeRowData(components, models, _inverseAttributes, expressID).then(
     (data) => (table.data = data),
