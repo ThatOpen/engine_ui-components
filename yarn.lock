@@ -666,7 +666,7 @@ __metadata:
     "@thatopen/components": ~2.0.0
     "@thatopen/components-front": ~2.0.0
     "@thatopen/fragments": ~2.0.0
-    "@thatopen/ui": 2.0.3
+    "@thatopen/ui": 2.0.4
     "@types/three": 0.160.0
     lit: 3.1.2
     three: 0.160.1
@@ -679,7 +679,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@thatopen/ui@2.0.3, @thatopen/ui@workspace:packages/core":
+"@thatopen/ui@2.0.4, @thatopen/ui@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@thatopen/ui@workspace:packages/core"
   dependencies:
