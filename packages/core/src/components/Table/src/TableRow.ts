@@ -1,10 +1,7 @@
-import { LitElement, TemplateResult, css, html } from "lit";
+import { LitElement, css, html, render } from "lit";
 import { property, state } from "lit/decorators.js";
-import { ref } from "lit/directives/ref.js";
-import { cache } from "lit/directives/cache.js";
 import { Table, ColumnData } from "../index";
 import { TableRowData, CellCreatedEventDetail } from "./types";
-import { TableCell } from "./TableCell";
 
 export class TableRow extends LitElement {
   static styles = css`
@@ -44,47 +41,7 @@ export class TableRow extends LitElement {
     return widths;
   }
 
-  private _table = this.closest<Table>("bim-table");
-
-  set table(value: Table | null) {
-    if (this._table) {
-      this.columns = [];
-      this.hiddenColumns = [];
-      this._table.removeEventListener(
-        "columnschange",
-        this.onTableColumnsChange,
-      );
-      this._table.removeEventListener(
-        "columnshidden",
-        this.onTableColumnsHidden,
-      );
-    }
-    this._table = value;
-    if (this._table) {
-      this.columns = this._table.columns;
-      this.hiddenColumns = this._table.hiddenColumns;
-      this._table.addEventListener("columnschange", this.onTableColumnsChange);
-      this._table.addEventListener("columnshidden", this.onTableColumnsHidden);
-      this._table.addEventListener(
-        "indentation",
-        this.onTableIndentationColorChange,
-      );
-    }
-  }
-
-  get table() {
-    return this._table;
-  }
-
-  private onTableIndentationColorChange = (e: any) => {
-    if (!this.table) return;
-    const detail = e.detail as { indentationLevel: number; color: string };
-    const { indentationLevel, color } = detail;
-    const indentation = this.table?.getRowIndentation(this.data);
-    if (indentation === indentationLevel) {
-      this.style.backgroundColor = color;
-    }
-  };
+  table = this.closest<Table>("bim-table");
 
   private onTableColumnsChange = () => {
     if (!this.table) return;
@@ -109,6 +66,21 @@ export class TableRow extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this._observer.observe(this);
+    if (!this.table) return;
+    this.columns = this.table.columns;
+    this.hiddenColumns = this.table.hiddenColumns;
+    this.table.addEventListener("columnschange", this.onTableColumnsChange);
+    this.table.addEventListener("columnshidden", this.onTableColumnsHidden);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._observer.unobserve(this);
+    if (!this.table) return;
+    this.columns = [];
+    this.hiddenColumns = [];
+    this.table.removeEventListener("columnschange", this.onTableColumnsChange);
+    this.table.removeEventListener("columnshidden", this.onTableColumnsHidden);
   }
 
   compute() {
@@ -116,54 +88,47 @@ export class TableRow extends LitElement {
     const declaration = !this.isHeader
       ? this.table?.computeRowDeclaration(this.data) ?? this.data
       : this.data;
-    const cells: TemplateResult[] = [];
+    const cells: Element[] = [];
     for (const column in declaration) {
       if (this.hiddenColumns.includes(column)) continue;
       const value = declaration[column];
-      let content;
+      let content: DocumentFragment | Element | undefined;
       if (
         typeof value === "string" ||
         typeof value === "boolean" ||
         typeof value === "number"
       ) {
-        content = html`<bim-label>${value}</bim-label>`;
-      } else {
+        content = document.createElement("bim-label");
+        content.textContent = String(value);
+      } else if (value instanceof HTMLElement) {
         content = value;
+      } else {
+        content = document.createDocumentFragment();
+        render(value, content);
       }
 
-      const isFirstCell = this._columnNames.indexOf(column) === 0;
-      const style = `
-        ${isFirstCell && !this.isHeader ? `margin-left: ${indentation + 0.125}rem` : ""}
-      `;
+      if (!content) continue;
 
-      const onCellCreated = (el?: Element) => {
-        if (!el) return;
-        const cell = el as TableCell;
-        const columnIndex = this._columnNames.indexOf(column);
-        cell.setAttribute("data-column-index", String(columnIndex));
-        cell.toggleAttribute("data-cell-header", this.isHeader);
-        cell.rowData = this.data;
-        setTimeout(() => {
-          this.table?.dispatchEvent(
-            new CustomEvent<CellCreatedEventDetail>("cellcreated", {
-              detail: { cell },
-            }),
-          );
-        });
-      };
-
-      const cell = html`
-        <bim-table-cell ${ref(onCellCreated)} style="${style}" .column=${column}
-          >${content}</bim-table-cell
-        >
-      `;
+      const cell = document.createElement("bim-table-cell");
+      cell.append(content);
+      cell.column = column;
+      if (this._columnNames.indexOf(column) === 0 && !this.isHeader)
+        cell.style.marginLeft = `${indentation + 0.125}rem`;
+      const columnIndex = this._columnNames.indexOf(column);
+      cell.setAttribute("data-column-index", String(columnIndex));
+      cell.toggleAttribute("data-cell-header", this.isHeader);
+      cell.rowData = this.data;
+      this.table?.dispatchEvent(
+        new CustomEvent<CellCreatedEventDetail>("cellcreated", {
+          detail: { cell },
+        }),
+      );
 
       cells.push(cell);
     }
 
     this.style.gridTemplateAreas = `"${this._columnNames.join(" ")}"`;
     this.style.gridTemplateColumns = `${this._columnWidths.join(" ")}`;
-
     return html`
       ${cells}
       <slot></slot>
@@ -171,6 +136,6 @@ export class TableRow extends LitElement {
   }
 
   protected render() {
-    return html`${cache(this._intersecting ? this.compute() : html``)}`;
+    return html`${this._intersecting ? this.compute() : html``}`;
   }
 }

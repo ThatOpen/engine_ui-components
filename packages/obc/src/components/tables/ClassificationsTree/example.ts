@@ -71,7 +71,7 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
   await classifier.byPredefinedType(model);
 
   const classifications = {
-    Entities: ["entities", "predefinedTypes"],
+    Entities: ["entities"],
     "Predefined Types": ["predefinedTypes"],
   };
 

@@ -52,7 +52,6 @@ export class TableGroup extends LitElement {
 
   private _children?: TableChildren;
 
-  // @property({ type: Object, attribute: false })
   data: TableGroupData = { data: {} };
 
   @property({ type: Boolean, attribute: "children-hidden", reflect: true })
@@ -78,16 +77,6 @@ export class TableGroup extends LitElement {
 
   protected render() {
     const indentation = this.table?.getGroupIndentation(this.data) ?? 0;
-
-    // const verticalBranch = document.createElement("div");
-    // verticalBranch.classList.add("branch", "branch-vertical");
-    // const verticalBranchStyle = document.createElement("style");
-    // verticalBranchStyle.textContent = `
-    //   .branch-vertical {
-    //     left: ${indentation + 0.5625}rem;
-    //   }
-    // `;
-    // verticalBranch.append(verticalBranchStyle);
 
     const verticalBranchTemplate = html`
       <style>
@@ -145,7 +134,10 @@ export class TableGroup extends LitElement {
     childrenVisibleCaret.append(childrenVisibleCaretPath);
 
     const caret = document.createElement("div");
-    caret.addEventListener("click", () => this.toggleChildren());
+    caret.addEventListener("click", (e: Event) => {
+      e.stopPropagation();
+      this.toggleChildren();
+    });
     caret.classList.add("caret");
     caret.style.left = `${0.125 + indentation}rem`;
     if (this.childrenHidden) {

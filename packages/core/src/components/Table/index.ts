@@ -509,14 +509,6 @@ export class Table extends LitElement {
     return null;
   }
 
-  setIndentationColor(indentationLevel: number, color: string) {
-    const event = new CustomEvent<{ indentationLevel: number; color: string }>(
-      "indentation",
-      { detail: { indentationLevel, color } },
-    );
-    this.dispatchEvent(event);
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this.dispatchEvent(new Event("connected"));

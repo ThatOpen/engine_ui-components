@@ -228,171 +228,170 @@ const getClassificationsRow = async (
   return row;
 };
 
+const computeTableData = async (
+  components: OBC.Components,
+  fragmentIdMap: FRAGS.FragmentIdMap,
+) => {
+  const indexer = components.get(OBC.IfcRelationsIndexer);
+  const fragments = components.get(OBC.FragmentsManager);
+  const rows: BUI.TableGroupData[] = [];
+
+  const data: {
+    model: FRAGS.FragmentsGroup;
+    expressIDs: Iterable<number>;
+  }[] = [];
+
+  const expressIDs = [];
+
+  for (const fragID in fragmentIdMap) {
+    const fragment = fragments.list.get(fragID);
+    if (!(fragment && fragment.group)) continue;
+    const model = fragment.group;
+    const existingModel = data.find((value) => value.model === model);
+    if (existingModel) {
+      for (const id of fragmentIdMap[fragID]) {
+        (existingModel.expressIDs as Set<number>).add(id);
+        expressIDs.push(id);
+      }
+    } else {
+      const info = { model, expressIDs: new Set(fragmentIdMap[fragID]) };
+      data.push(info);
+    }
+  }
+
+  for (const value in data) {
+    const { model, expressIDs } = data[value];
+    const modelRelations = indexer.relationMaps[model.uuid];
+    if (!modelRelations) continue;
+    for (const expressID of expressIDs) {
+      const elementAttrs = await model.getProperties(expressID);
+      if (!elementAttrs) continue;
+
+      const elementRow: BUI.TableGroupData = {
+        data: {
+          Name: elementAttrs.Name?.value,
+        },
+      };
+
+      rows.push(elementRow);
+
+      const attributesRow = await getAttributesRow(model, expressID, {
+        includeClass: true,
+      });
+
+      if (!elementRow.children) elementRow.children = [];
+      elementRow.children.push(attributesRow);
+
+      const elementRelations = modelRelations.get(expressID);
+      if (!elementRelations) continue;
+
+      const definedByRelations = indexer.getEntityRelations(
+        model,
+        expressID,
+        "IsDefinedBy",
+      );
+
+      if (definedByRelations) {
+        const psetRels = definedByRelations.filter(async (rel) => {
+          const relAttrs = await model.getProperties(rel);
+          if (relAttrs) {
+            return relAttrs.type === WEBIFC.IFCPROPERTYSET;
+          }
+          return false;
+        });
+        const psetRow = await getPsetRow(model, psetRels);
+        if (psetRow.children) elementRow.children.push(psetRow);
+
+        const qsetRels = definedByRelations.filter(async (rel) => {
+          const relAttrs = await model.getProperties(rel);
+          if (relAttrs) {
+            return relAttrs.type === WEBIFC.IFCELEMENTQUANTITY;
+          }
+          return false;
+        });
+        const qsetRow = await getQsetRow(model, qsetRels);
+        if (qsetRow.children) elementRow.children.push(qsetRow);
+      }
+
+      const associateRelations = indexer.getEntityRelations(
+        model,
+        expressID,
+        "HasAssociations",
+      );
+
+      if (associateRelations) {
+        const materialRelations = associateRelations.filter(async (rel) => {
+          const relAttrs = await model.getProperties(rel);
+          if (relAttrs) {
+            const isMaterial =
+              relAttrs.type === WEBIFC.IFCMATERIALLAYERSETUSAGE ||
+              relAttrs.type === WEBIFC.IFCMATERIALLAYERSET ||
+              relAttrs.type === WEBIFC.IFCMATERIALLAYER ||
+              relAttrs.type === WEBIFC.IFCMATERIAL ||
+              relAttrs.type === WEBIFC.IFCMATERIALLIST;
+            return isMaterial;
+          }
+          return false;
+        });
+        const materialRow = await getMaterialRow(model, materialRelations);
+        if (materialRow.children) elementRow.children.push(materialRow);
+
+        const classificationRelations = associateRelations.filter(
+          async (rel) => {
+            const relAttrs = await model.getProperties(rel);
+            if (relAttrs) {
+              const isClassification =
+                relAttrs.type === WEBIFC.IFCCLASSIFICATIONREFERENCE;
+              return isClassification;
+            }
+            return false;
+          },
+        );
+        const classificationRow = await getClassificationsRow(
+          model,
+          classificationRelations,
+        );
+        if (classificationRow.children)
+          elementRow.children.push(classificationRow);
+      }
+
+      const contianerRelations = indexer.getEntityRelations(
+        model,
+        expressID,
+        "ContainedInStructure",
+      );
+
+      if (contianerRelations) {
+        const containerID = contianerRelations[0];
+        const attributesRow = await getAttributesRow(model, containerID, {
+          groupName: "SpatialContainer",
+        });
+        elementRow.children.push(attributesRow);
+      }
+    }
+  }
+  return rows;
+};
+
+const table = document.createElement("bim-table");
+table.columns = [{ name: "Name", width: "12rem" }];
+table.headersHidden = true;
+table.addEventListener("cellcreated", ({ detail }) => {
+  const { cell } = detail;
+  if (cell.column === "Name" && !("Value" in cell.rowData)) {
+    cell.style.gridColumn = "1 / -1";
+  }
+});
+
 /**
  * Heloooooooooo
  */
 export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
   const { components, fragmentIdMap } = state;
 
-  const indexer = components.get(OBC.IfcRelationsIndexer);
-  const fragments = components.get(OBC.FragmentsManager);
+  computeTableData(components, fragmentIdMap).then(
+    (data) => (table.data = data),
+  );
 
-  const onCreated = async (element?: Element) => {
-    if (!element) return;
-
-    const rows: BUI.TableGroupData[] = [];
-
-    const data: {
-      model: FRAGS.FragmentsGroup;
-      expressIDs: Iterable<number>;
-    }[] = [];
-    const expressIDs = [];
-    for (const fragID in fragmentIdMap) {
-      const fragment = fragments.list.get(fragID);
-      if (!(fragment && fragment.group)) continue;
-      const model = fragment.group;
-      const existingModel = data.find((value) => value.model === model);
-      if (existingModel) {
-        for (const id of fragmentIdMap[fragID]) {
-          (existingModel.expressIDs as Set<number>).add(id);
-          expressIDs.push(id);
-        }
-      } else {
-        const info = { model, expressIDs: new Set(fragmentIdMap[fragID]) };
-        data.push(info);
-      }
-    }
-
-    for (const value in data) {
-      const { model, expressIDs } = data[value];
-      const modelRelations = indexer.relationMaps[model.uuid];
-      if (!modelRelations) return;
-      for (const expressID of expressIDs) {
-        const elementAttrs = await model.getProperties(expressID);
-        if (!elementAttrs) continue;
-
-        const elementRow: BUI.TableGroupData = {
-          data: {
-            Name: elementAttrs.Name?.value,
-          },
-        };
-
-        rows.push(elementRow);
-
-        const attributesRow = await getAttributesRow(model, expressID, {
-          includeClass: true,
-        });
-
-        if (!elementRow.children) elementRow.children = [];
-        elementRow.children.push(attributesRow);
-
-        const elementRelations = modelRelations.get(expressID);
-        if (!elementRelations) continue;
-
-        const definedByRelations = indexer.getEntityRelations(
-          model,
-          expressID,
-          "IsDefinedBy",
-        );
-
-        if (definedByRelations) {
-          const psetRels = definedByRelations.filter(async (rel) => {
-            const relAttrs = await model.getProperties(rel);
-            if (relAttrs) {
-              return relAttrs.type === WEBIFC.IFCPROPERTYSET;
-            }
-            return false;
-          });
-          const psetRow = await getPsetRow(model, psetRels);
-          if (psetRow.children) elementRow.children.push(psetRow);
-
-          const qsetRels = definedByRelations.filter(async (rel) => {
-            const relAttrs = await model.getProperties(rel);
-            if (relAttrs) {
-              return relAttrs.type === WEBIFC.IFCELEMENTQUANTITY;
-            }
-            return false;
-          });
-          const qsetRow = await getQsetRow(model, qsetRels);
-          if (qsetRow.children) elementRow.children.push(qsetRow);
-        }
-
-        const associateRelations = indexer.getEntityRelations(
-          model,
-          expressID,
-          "HasAssociations",
-        );
-
-        if (associateRelations) {
-          const materialRelations = associateRelations.filter(async (rel) => {
-            const relAttrs = await model.getProperties(rel);
-            if (relAttrs) {
-              const isMaterial =
-                relAttrs.type === WEBIFC.IFCMATERIALLAYERSETUSAGE ||
-                relAttrs.type === WEBIFC.IFCMATERIALLAYERSET ||
-                relAttrs.type === WEBIFC.IFCMATERIALLAYER ||
-                relAttrs.type === WEBIFC.IFCMATERIAL ||
-                relAttrs.type === WEBIFC.IFCMATERIALLIST;
-              return isMaterial;
-            }
-            return false;
-          });
-          const materialRow = await getMaterialRow(model, materialRelations);
-          if (materialRow.children) elementRow.children.push(materialRow);
-
-          const classificationRelations = associateRelations.filter(
-            async (rel) => {
-              const relAttrs = await model.getProperties(rel);
-              if (relAttrs) {
-                const isClassification =
-                  relAttrs.type === WEBIFC.IFCCLASSIFICATIONREFERENCE;
-                return isClassification;
-              }
-              return false;
-            },
-          );
-          const classificationRow = await getClassificationsRow(
-            model,
-            classificationRelations,
-          );
-          if (classificationRow.children)
-            elementRow.children.push(classificationRow);
-        }
-
-        const contianerRelations = indexer.getEntityRelations(
-          model,
-          expressID,
-          "ContainedInStructure",
-        );
-
-        if (contianerRelations) {
-          const containerID = contianerRelations[0];
-          const attributesRow = await getAttributesRow(model, containerID, {
-            groupName: "SpatialContainer",
-          });
-          elementRow.children.push(attributesRow);
-        }
-      }
-    }
-
-    const table = element as BUI.Table;
-
-    table.addEventListener("cellcreated", ({ detail }) => {
-      const parent = detail.cell.parentNode;
-      if (!parent) return;
-      const nameCell = parent.querySelector<BUI.TableCell>(
-        "bim-table-cell[column='Name']",
-      );
-      const valueCell = parent.querySelector<BUI.TableCell>(
-        "bim-table-cell[column='Value']",
-      );
-      if (nameCell && !valueCell) {
-        nameCell.style.gridColumn = "1 / -1";
-      }
-    });
-
-    table.columns = [{ name: "Name", width: "12rem" }];
-    table.data = rows;
-  };
-  return BUI.html`<bim-table ${BUI.ref(onCreated)} headers-hidden></bim-table>`;
+  return BUI.html`${table}`;
 };

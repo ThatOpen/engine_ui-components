@@ -65,7 +65,6 @@ const createGridColorInput = (grid: any, defaultValue: string) => {
     const input = e.target as BUI.ColorInput;
     const color = new THREE.Color(input.color);
     grid.material.uniforms.uColor.value = color;
-    console.log(grid.material.uniforms);
   };
   return BUI.html`
     <bim-color-input @input=${onInputChange} color=${defaultValue}></bim-color-input>

@@ -64,7 +64,6 @@ declare global {
     columnschange: Event;
     cellcreated: CustomEvent<CellCreatedEventDetail>;
     rowcreated: CustomEvent<RowCreatedEventDetail>;
-    indentation: CustomEvent;
   }
 }
 

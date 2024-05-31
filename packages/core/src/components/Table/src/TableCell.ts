@@ -37,7 +37,7 @@ export class TableCell extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  column?: string;
+  column = "";
 
   columnIndex = 0;
 

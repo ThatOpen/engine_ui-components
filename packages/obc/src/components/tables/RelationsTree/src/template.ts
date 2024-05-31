@@ -1,8 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as FRAGS from "@thatopen/fragments";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
-import * as FRAGS from "@thatopen/fragments";
 import * as WEBIFC from "web-ifc";
 
 export interface RelationsTreeUIState {
@@ -56,6 +56,64 @@ const getDecompositionTree = async (
   return rows;
 };
 
+const computeRowData = async (
+  components: OBC.Components,
+  models: Iterable<FRAGS.FragmentsGroup>,
+  inverseAttributes: OBC.InverseAttribute[],
+  expressID?: number,
+) => {
+  const indexer = components.get(OBC.IfcRelationsIndexer);
+  const rows: BUI.TableGroupData[] = [];
+  for (const model of models) {
+    let modelData: BUI.TableGroupData;
+    if (expressID) {
+      modelData = {
+        data: {
+          Entity: model.name !== "" ? model.name : model.uuid,
+        },
+        children: await getDecompositionTree(
+          components,
+          model,
+          expressID,
+          inverseAttributes,
+        ),
+      };
+    } else {
+      const modelRelations = indexer.relationMaps[model.uuid];
+      const projectAttrs = await model.getAllPropertiesOfType(
+        WEBIFC.IFCPROJECT,
+      );
+      if (!(modelRelations && projectAttrs)) continue;
+      const { expressID } = Object.values(projectAttrs)[0];
+      modelData = {
+        data: {
+          Entity: model.name !== "" ? model.name : model.uuid,
+        },
+        children: await getDecompositionTree(
+          components,
+          model,
+          expressID,
+          inverseAttributes,
+        ),
+      };
+    }
+    rows.push(modelData);
+  }
+  return rows;
+};
+
+const table = document.createElement("bim-table");
+table.hiddenColumns = ["modelID", "expressID", "relations"];
+table.columns = ["Entity", "Name"];
+table.headersHidden = true;
+
+table.addEventListener("cellcreated", ({ detail }) => {
+  const { cell } = detail;
+  if (cell.column === "Entity" && !("Name" in cell.rowData)) {
+    cell.style.gridColumn = "1 / -1";
+  }
+});
+
 const getRowFragmentIdMap = (components: OBC.Components, row: BUI.TableRow) => {
   const fragments = components.get(OBC.FragmentsManager);
   const { modelID, expressID, relations } = row.data as {
@@ -78,9 +136,9 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     components,
     models,
     inverseAttributes,
-    expressID,
     selectHighlighterName,
     hoverHighlighterName,
+    expressID,
   } = state;
 
   const _inverseAttributes: OBC.InverseAttribute[] = inverseAttributes ?? [
@@ -88,100 +146,44 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     "ContainsElements",
   ];
 
-  const onCreated = async (element?: Element) => {
-    if (!element) return;
-    const indexer = components.get(OBC.IfcRelationsIndexer);
-    const rows: BUI.TableGroupData[] = [];
-    for (const model of models) {
-      let modelData: BUI.TableGroupData;
-      if (expressID) {
-        modelData = {
-          data: {
-            Entity: model.name !== "" ? model.name : model.uuid,
-          },
-          children: await getDecompositionTree(
-            components,
-            model,
-            expressID,
-            _inverseAttributes,
-          ),
-        };
-      } else {
-        const modelRelations = indexer.relationMaps[model.uuid];
-        const projectAttrs = await model.getAllPropertiesOfType(
-          WEBIFC.IFCPROJECT,
-        );
-        if (!(modelRelations && projectAttrs)) continue;
-        const { expressID } = Object.values(projectAttrs)[0];
-        modelData = {
-          data: {
-            Entity: model.name !== "" ? model.name : model.uuid,
-          },
-          children: await getDecompositionTree(
-            components,
-            model,
-            expressID,
-            _inverseAttributes,
-          ),
-        };
-      }
-      rows.push(modelData);
-    }
-
-    const table = element as BUI.Table;
-
-    table.addEventListener("rowcreated", ({ detail }) => {
-      const { row } = detail;
-      const highlighter = components.get(OBF.Highlighter);
-      row.onmouseover = () => {
-        if (!hoverHighlighterName) return;
-        const fragmentIDMap = getRowFragmentIdMap(components, row);
-        if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
-        row.style.backgroundColor = "var(--bim-ui_bg-contrast-20)";
-        highlighter.highlightByID(
-          hoverHighlighterName,
-          fragmentIDMap,
-          true,
-          false,
-        );
-      };
-
-      row.onmouseout = () => {
-        row.style.backgroundColor = "";
-        highlighter.clear(hoverHighlighterName);
-      };
-
-      row.onclick = () => {
-        if (!selectHighlighterName) return;
-        const fragmentIDMap = getRowFragmentIdMap(components, row);
-        if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
-        highlighter.highlightByID(
-          selectHighlighterName,
-          fragmentIDMap,
-          true,
-          true,
-        );
-      };
-    });
-
-    table.addEventListener("cellcreated", ({ detail }) => {
-      const parent = detail.cell.parentNode;
-      if (!parent) return;
-      const entityCell = parent.querySelector<BUI.TableCell>(
-        "bim-table-cell[column='Entity']",
+  table.addEventListener("rowcreated", (e) => {
+    e.stopImmediatePropagation();
+    const { row } = e.detail;
+    const highlighter = components.get(OBF.Highlighter);
+    row.onmouseover = () => {
+      if (!hoverHighlighterName) return;
+      const fragmentIDMap = getRowFragmentIdMap(components, row);
+      if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
+      row.style.backgroundColor = "var(--bim-ui_bg-contrast-20)";
+      highlighter.highlightByID(
+        hoverHighlighterName,
+        fragmentIDMap,
+        true,
+        false,
       );
-      const nameCell = parent.querySelector<BUI.TableCell>(
-        "bim-table-cell[column='Name']",
+    };
+
+    row.onmouseout = () => {
+      row.style.backgroundColor = "";
+      highlighter.clear(hoverHighlighterName);
+    };
+
+    row.onclick = () => {
+      if (!selectHighlighterName) return;
+      const fragmentIDMap = getRowFragmentIdMap(components, row);
+      if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
+      highlighter.highlightByID(
+        selectHighlighterName,
+        fragmentIDMap,
+        true,
+        true,
       );
-      if (entityCell && !nameCell) {
-        entityCell.style.gridColumn = "1 / -1";
-      }
-    });
+    };
+  });
 
-    table.hiddenColumns = ["modelID", "expressID", "relations"];
-    table.columns = ["Entity", "Name"];
-    table.data = rows;
-  };
+  computeRowData(components, models, _inverseAttributes, expressID).then(
+    (data) => (table.data = data),
+  );
 
-  return BUI.html`<bim-table ${BUI.ref(onCreated)} headers-hidden></bim-table>`;
+  return BUI.html`${table}`;
 };
