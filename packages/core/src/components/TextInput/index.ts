@@ -185,6 +185,13 @@ export class TextInput extends LitElement implements HasName, HasValue {
     }, this.debounce) as unknown as number;
   }
 
+  focus() {
+    setTimeout(() => {
+      const input = this.shadowRoot?.querySelector("input");
+      input?.focus();
+    });
+  }
+
   protected render() {
     return html`
       <bim-input
@@ -194,7 +201,7 @@ export class TextInput extends LitElement implements HasName, HasValue {
         .vertical=${this.vertical}
       >
         <input
-          aria-label=${this.label || this.name || "Checkbox Input"}
+          aria-label=${this.label || this.name || "Text Input"}
           .type=${this.type}
           .value=${this.value}
           placeholder=${ifDefined(this.placeholder)}

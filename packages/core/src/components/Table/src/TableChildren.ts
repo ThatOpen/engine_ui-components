@@ -14,6 +14,11 @@ export class TableChildren extends LitElement {
     :host([hidden]) {
       display: none;
     }
+
+    ::slotted(.branch.branch-vertical) {
+      top: 0;
+      bottom: 1.125rem;
+    }
   `;
 
   private _groups: TableGroup[] = [];
@@ -34,6 +39,7 @@ export class TableChildren extends LitElement {
   protected render() {
     this._groups = [];
     return html`
+      <slot></slot>
       ${this.data.map((group) => {
         const tableGroup = document.createElement(
           "bim-table-group",

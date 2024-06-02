@@ -60,7 +60,7 @@ const getAttributesRow = async (
   return attrsRow;
 };
 
-const getPsetRow = async (model: any, psetIDs: number[]) => {
+const getPsetRow = async (model: FRAGS.FragmentsGroup, psetIDs: number[]) => {
   const row: BUI.TableGroupData = { data: { Name: "Property Sets" } };
   for (const psetID of psetIDs) {
     const setAttrs = await model.getProperties(psetID);
@@ -93,7 +93,7 @@ const getPsetRow = async (model: any, psetIDs: number[]) => {
   return row;
 };
 
-const getQsetRow = async (model: any, psetIDs: number[]) => {
+const getQsetRow = async (model: FRAGS.FragmentsGroup, psetIDs: number[]) => {
   const row: BUI.TableGroupData = { data: { Name: "Quantity Sets" } };
   for (const psetID of psetIDs) {
     const setAttrs = await model.getProperties(psetID);
@@ -126,19 +126,25 @@ const getQsetRow = async (model: any, psetIDs: number[]) => {
   return row;
 };
 
-const getMaterialRow = async (model: any, materialIDs: number[]) => {
+const getMaterialRow = async (
+  model: FRAGS.FragmentsGroup,
+  materialIDs: number[],
+) => {
   const row: BUI.TableGroupData = { data: { Name: "Materials" } };
   for (const materialID of materialIDs) {
     const relAttrs = await model.getProperties(materialID);
-    if (relAttrs.type === WEBIFC.IFCMATERIALLAYERSETUSAGE) {
+    if (relAttrs && relAttrs.type === WEBIFC.IFCMATERIALLAYERSETUSAGE) {
       const layerSetID = relAttrs.ForLayerSet.value;
       const layerSetAttrs = await model.getProperties(layerSetID);
+      if (!layerSetAttrs) continue;
       for (const layerHandle of layerSetAttrs.MaterialLayers) {
         const { value: layerID } = layerHandle;
         const layerAttrs = await model.getProperties(layerID);
+        if (!layerAttrs) continue;
         const materialAttrs = await model.getProperties(
           layerAttrs.Material.value,
         );
+        if (!materialAttrs) continue;
         const layerRow = {
           data: {
             Name: "Layer",
@@ -162,10 +168,11 @@ const getMaterialRow = async (model: any, materialIDs: number[]) => {
         row.children.push(layerRow);
       }
     }
-    if (relAttrs.type === WEBIFC.IFCMATERIALLIST) {
+    if (relAttrs && relAttrs.type === WEBIFC.IFCMATERIALLIST) {
       for (const materialHandle of relAttrs.Materials) {
         const { value: materialID } = materialHandle;
         const materialAttrs = await model.getProperties(materialID);
+        if (!materialAttrs) continue;
         const materialRow: BUI.TableGroupData = {
           data: {
             Name: "Name",
@@ -176,8 +183,9 @@ const getMaterialRow = async (model: any, materialIDs: number[]) => {
         row.children.push(materialRow);
       }
     }
-    if (relAttrs.type === WEBIFC.IFCMATERIAL) {
+    if (relAttrs && relAttrs.type === WEBIFC.IFCMATERIAL) {
       const materialAttrs = await model.getProperties(materialID);
+      if (!materialAttrs) continue;
       const materialRow: BUI.TableGroupData = {
         data: {
           Name: "Name",
@@ -192,15 +200,16 @@ const getMaterialRow = async (model: any, materialIDs: number[]) => {
 };
 
 const getClassificationsRow = async (
-  model: any,
+  model: FRAGS.FragmentsGroup,
   classificationIDs: number[],
 ) => {
   const row: BUI.TableGroupData = { data: { Name: "Classifications" } };
   for (const classificationID of classificationIDs) {
     const relAttrs = await model.getProperties(classificationID);
-    if (relAttrs.type === WEBIFC.IFCCLASSIFICATIONREFERENCE) {
+    if (relAttrs && relAttrs.type === WEBIFC.IFCCLASSIFICATIONREFERENCE) {
       const { value: sourceID } = relAttrs.ReferencedSource;
       const sourceAttrs = await model.getProperties(sourceID);
+      if (!sourceAttrs) continue;
       const classificationRow: BUI.TableGroupData = {
         data: {
           Name: sourceAttrs.Name.value,

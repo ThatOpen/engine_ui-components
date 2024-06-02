@@ -11,6 +11,11 @@ export class TableRow extends LitElement {
       display: grid;
       min-height: 2.25rem;
     }
+
+    ::slotted(.branch.branch-vertical) {
+      top: 50%;
+      bottom: 0;
+    }
   `;
 
   @property({ attribute: false })

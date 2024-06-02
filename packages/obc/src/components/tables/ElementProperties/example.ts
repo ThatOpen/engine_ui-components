@@ -129,7 +129,7 @@ const propertiesPanel = BUI.Component.create(() => {
           <bim-button @click=${expandTable} label=${propertiesTable.expanded ? "Collapse" : "Expand"}></bim-button> 
           <bim-button @click=${copyAsTSV} label="Copy as TSV"></bim-button> 
         </div> 
-        <bim-text-input @input=${onTextInput} placeholder="Search Property"></bim-text-input>
+        <bim-text-input @input=${onTextInput} placeholder="Search Property" debounce="250"></bim-text-input>
         ${propertiesTable}
       </bim-panel-section>
     </bim-panel>

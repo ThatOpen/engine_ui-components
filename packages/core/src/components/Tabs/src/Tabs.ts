@@ -45,6 +45,11 @@ export class Tabs extends LitElement {
         padding: 0rem 0.75rem;
         color: var(--bim-ui_bg-contrast-60);
         display: flex;
+        justify-content: center;
+      }
+
+      :host([switchers-full]) .switcher {
+        flex: 1;
       }
 
       .switcher:hover,
@@ -185,6 +190,9 @@ export class Tabs extends LitElement {
   get tab() {
     return this._tab;
   }
+
+  @property({ type: Boolean, attribute: "switchers-full", reflect: true })
+  switchersFull = false;
 
   private getTabSwitcher(name: string) {
     const switcher = this._switchers.find(

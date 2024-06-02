@@ -54,9 +54,15 @@ const [relationsTree] = CUI.tables.relationsTree({
 });
 
 relationsTree.expanded = true;
+relationsTree.preserveStructureOnFilter = true;
 
 const panel = BUI.Component.create(() => {
   const [loadIfcBtn] = CUI.buttons.loadIfc({ components });
+
+  const onSearch = (e: Event) => {
+    const input = e.target as BUI.TextInput;
+    relationsTree.queryString = input.value;
+  };
 
   return BUI.html`
    <bim-panel label="Classifications Tree">
@@ -64,6 +70,7 @@ const panel = BUI.Component.create(() => {
       ${loadIfcBtn}
     </bim-panel-section>
     <bim-panel-section label="Classifications">
+      <bim-text-input @input=${onSearch} placeholder="Search..." debounce="200"></bim-text-input>
       ${relationsTree}
     </bim-panel-section>
    </bim-panel> 

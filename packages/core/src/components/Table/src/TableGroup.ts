@@ -1,4 +1,4 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, render } from "lit";
 import { property } from "lit/decorators.js";
 import { Table } from "../index";
 import { RowCreatedEventDetail, TableGroupData } from "./types";
@@ -21,8 +21,6 @@ export class TableGroup extends LitElement {
     }
 
     .branch-vertical {
-      top: 1.125rem;
-      bottom: 1.125rem;
       border-left: 1px dotted var(--bim-ui_bg-contrast-40);
     }
 
@@ -87,6 +85,9 @@ export class TableGroup extends LitElement {
       <div class="branch branch-vertical"></div>
     `;
 
+    const verticalBranchRow = document.createDocumentFragment();
+    render(verticalBranchTemplate, verticalBranchRow);
+
     const horizontalBranch = document.createElement("div");
     horizontalBranch.classList.add("branch", "branch-horizontal");
     horizontalBranch.style.left = `${indentation - 1 + 0.5625}rem`;
@@ -147,6 +148,8 @@ export class TableGroup extends LitElement {
     }
 
     const row = document.createElement("bim-table-row");
+    if (this.data.children && !this.childrenHidden)
+      row.append(verticalBranchRow);
     row.table = this.table;
     row.data = this.data.data;
     this.table?.dispatchEvent(
@@ -163,15 +166,13 @@ export class TableGroup extends LitElement {
       this._children = children;
       children.table = this.table;
       children.data = this.data.children;
+      const verticalBranchChildren = document.createDocumentFragment();
+      render(verticalBranchTemplate, verticalBranchChildren);
+      children.append(verticalBranchChildren);
     }
 
     return html`
-      <div class="parent">
-        ${this.data.children && !this.childrenHidden
-          ? verticalBranchTemplate
-          : null}
-        ${row} ${!this.childrenHidden ? children : null}
-      </div>
+      <div class="parent">${row} ${!this.childrenHidden ? children : null}</div>
     `;
   }
 }

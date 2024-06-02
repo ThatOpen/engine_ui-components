@@ -65,7 +65,7 @@ export class Input extends LitElement implements HasValue, HasName {
   icon?: string;
 
   @property({ type: Boolean, reflect: true })
-  vertical: boolean;
+  vertical = false;
 
   onValueChange = new Event("change");
 
@@ -98,11 +98,6 @@ export class Input extends LitElement implements HasValue, HasName {
         input.value = value;
       }
     }
-  }
-
-  constructor() {
-    super();
-    this.vertical = false;
   }
 
   protected render() {
