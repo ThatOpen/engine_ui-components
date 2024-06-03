@@ -43,7 +43,7 @@ export class ViewCube extends LitElement {
     }
 
     .x-direction:hover {
-      background-color: var(--bim-ui_color-accent, white);
+      background-color: var(--bim-ui_accent-base, white);
     }
 
     .y-direction {
@@ -52,7 +52,7 @@ export class ViewCube extends LitElement {
     }
 
     .y-direction:hover {
-      background-color: var(--bim-ui_color-accent, white);
+      background-color: var(--bim-ui_accent-base, white);
     }
 
     .z-direction {
@@ -61,7 +61,7 @@ export class ViewCube extends LitElement {
     }
 
     .z-direction:hover {
-      background-color: var(--bim-ui_color-accent, white);
+      background-color: var(--bim-ui_accent-base, white);
     }
 
     .face-front {

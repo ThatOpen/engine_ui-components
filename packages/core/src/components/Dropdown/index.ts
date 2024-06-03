@@ -30,7 +30,7 @@ export class Dropdown extends Component implements HasValue, HasName {
       :host([visible]) {
         --bim-input--olc: var(
           --bim-dropdown¡focus--c,
-          var(--bim-ui_color-accent)
+          var(--bim-ui_accent-base)
         );
       }
 

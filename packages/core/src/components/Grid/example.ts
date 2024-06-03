@@ -210,7 +210,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
 
 const rightPanel = BUI.Component.create<BUI.Panel>(() => {
   const onBtnClick = () => {
-    alert("asdasd");
+    alert("You are awesome 😏");
   };
   return BUI.html`
     <bim-panel>

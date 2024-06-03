@@ -28,7 +28,7 @@ export class TextInput extends LitElement implements HasName, HasValue {
     }
 
     :host(:focus) {
-      --bim-input--olc: var(--bim-ui_color-accent);
+      --bim-input--olc: var(--bim-ui_accent-base);
     }
 
     /* :host([disabled]) {

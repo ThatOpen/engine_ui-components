@@ -32,12 +32,12 @@ export class Checkbox extends LitElement implements HasValue {
       cursor: pointer;
       border: none;
       outline: none;
-      accent-color: var(--bim-checkbox--c, var(--bim-ui_color-main));
+      accent-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
     }
 
     input:focus {
       outline: var(--bim-checkbox--olw, 2px) solid
-        var(--bim-checkbox--olc, var(--bim-ui_color-accent));
+        var(--bim-checkbox--olc, var(--bim-ui_accent-base));
     }
   `;
 

@@ -26,7 +26,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       --bim-input--olw: var(--bim-number-input--olw, 2px);
       --bim-input--olc: var(
         --bim-number-input¡focus--c,
-        var(--bim-ui_color-accent)
+        var(--bim-ui_accent-base)
       );
     }
 
@@ -83,7 +83,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
 
     .slider-indicator {
       height: 100%;
-      background-color: var(--bim-ui_color-main);
+      background-color: var(--bim-ui_main-base);
       position: absolute;
       top: 0;
       left: 0;

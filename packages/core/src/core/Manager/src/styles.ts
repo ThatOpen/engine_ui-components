@@ -11,7 +11,7 @@ const scrollbar = css`
     border-radius: 0.25rem;
     background-color: var(
       --bim-scrollbar--c,
-      color-mix(in lab, var(--bim-ui_color-main), white 15%)
+      color-mix(in lab, var(--bim-ui_main-base), white 15%)
     );
   }
 
@@ -22,27 +22,23 @@ const scrollbar = css`
 
 const globalStyles = css`
   :root {
-    /* Backgrounds */
-    --bim-ui_bg-base: hsl(210 10% 5%);
-    --bim-ui_bg-contrast-10: hsl(210 10% 10%);
-    --bim-ui_bg-contrast-20: hsl(210 10% 20%);
-    --bim-ui_bg-contrast-40: hsl(210 10% 40%);
-    --bim-ui_bg-contrast-60: hsl(210 10% 60%);
-    --bim-ui_bg-contrast-80: hsl(210 10% 80%);
-    --bim-ui_bg-contrast-100: hsl(210 10% 95%);
+    /* Grayscale Colors */
+    --bim-ui_gray-0: hsl(210 10% 5%);
+    --bim-ui_gray-1: hsl(210 10% 10%);
+    --bim-ui_gray-2: hsl(210 10% 20%);
+    --bim-ui_gray-4: hsl(210 10% 40%);
+    --bim-ui_gray-6: hsl(210 10% 60%);
+    --bim-ui_gray-8: hsl(210 10% 80%);
+    --bim-ui_gray-9: hsl(210 10% 90%);
+    --bim-ui_gray-10: hsl(210 10% 95%);
 
-    /* Main/accent app color that contrasts with bg-base */
-    --bim-ui_bg-main-contrast: #6528d7;
-    --bim-ui_bg-accent-contrast: #6528d7;
-
-    /* Colors */
-    --bim-ui_color-main: #6528d7;
-    --bim-ui_color-accent: #bcf124;
-
+    /* Brand Colors */
     --bim-ui_main-base: #6528d7;
-    --bim-ui_main-contrast: hsl(210 10% 95%);
     --bim-ui_accent-base: #bcf124;
-    --bim-ui_accent-contrast: hsl(210 10% 5%);
+
+    /* Brand Colors Contrasts */
+    --bim-ui_main-contrast: var(--bim-ui_gray-10);
+    --bim-ui_accent-contrast: var(--bim-ui_gray-0);
 
     /* Sizes */
     --bim-ui_size-4xs: 0.375rem;
@@ -63,62 +59,49 @@ const globalStyles = css`
     --bim-ui_size-9xl: 2.25rem;
   }
 
+  /* Background Colors */
   @media (prefers-color-scheme: dark) {
     :root {
-      --bim-ui_bg-base: hsl(210 10% 5%);
-      --bim-ui_bg-contrast-10: hsl(210 10% 10%);
-      --bim-ui_bg-contrast-20: hsl(210 10% 20%);
-      --bim-ui_bg-contrast-40: hsl(210 10% 40%);
-      --bim-ui_bg-contrast-60: hsl(210 10% 60%);
-      --bim-ui_bg-contrast-80: hsl(210 10% 80%);
-      --bim-ui_bg-contrast-100: hsl(210 10% 95%);
+      --bim-ui_bg-base: var(--bim-ui_gray-0);
+      --bim-ui_bg-contrast-10: var(--bim-ui_gray-1);
+      --bim-ui_bg-contrast-20: var(--bim-ui_gray-2);
+      --bim-ui_bg-contrast-40: var(--bim-ui_gray-4);
+      --bim-ui_bg-contrast-60: var(--bim-ui_gray-6);
+      --bim-ui_bg-contrast-80: var(--bim-ui_gray-8);
+      --bim-ui_bg-contrast-100: var(--bim-ui_gray-10);
     }
   }
 
   @media (prefers-color-scheme: light) {
     :root {
-      --bim-ui_bg-base: hsl(210 10% 95%);
-      --bim-ui_bg-contrast-10: hsl(210 10% 90%);
-      --bim-ui_bg-contrast-20: hsl(210 10% 85%);
-      --bim-ui_bg-contrast-40: hsl(210 10% 60%);
-      --bim-ui_bg-contrast-60: hsl(210 10% 40%);
-      --bim-ui_bg-contrast-80: hsl(210 10% 20%);
-      --bim-ui_bg-contrast-100: hsl(210 10% 5%);
-
-      --bim-ui_color-main: #6528d7;
-      --bim-ui_color-accent: #6528d7;
+      --bim-ui_bg-base: var(--bim-ui_gray-10);
+      --bim-ui_bg-contrast-10: var(--bim-ui_gray-9);
+      --bim-ui_bg-contrast-20: var(--bim-ui_gray-8);
+      --bim-ui_bg-contrast-40: var(--bim-ui_gray-6);
+      --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
+      --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
+      --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
     }
   }
 
   html.bim-ui-dark {
-    --bim-ui_bg-base: hsl(210 10% 5%);
-    --bim-ui_bg-contrast-10: hsl(210 10% 10%);
-    --bim-ui_bg-contrast-20: hsl(210 10% 20%);
-    --bim-ui_bg-contrast-40: hsl(210 10% 40%);
-    --bim-ui_bg-contrast-60: hsl(210 10% 60%);
-    --bim-ui_bg-contrast-80: hsl(210 10% 80%);
-    --bim-ui_bg-contrast-100: hsl(210 10% 95%);
+    --bim-ui_bg-base: var(--bim-ui_gray-0);
+    --bim-ui_bg-contrast-10: var(--bim-ui_gray-1);
+    --bim-ui_bg-contrast-20: var(--bim-ui_gray-2);
+    --bim-ui_bg-contrast-40: var(--bim-ui_gray-4);
+    --bim-ui_bg-contrast-60: var(--bim-ui_gray-6);
+    --bim-ui_bg-contrast-80: var(--bim-ui_gray-8);
+    --bim-ui_bg-contrast-100: var(--bim-ui_gray-10);
   }
 
   html.bim-ui-light {
-    --bim-ui_bg-base: hsl(210 10% 95%);
-    --bim-ui_bg-contrast-10: hsl(210 10% 90%);
-    --bim-ui_bg-contrast-20: hsl(210 10% 85%);
-    --bim-ui_bg-contrast-40: hsl(210 10% 60%);
-    --bim-ui_bg-contrast-60: hsl(210 10% 40%);
-    --bim-ui_bg-contrast-80: hsl(210 10% 20%);
-    --bim-ui_bg-contrast-100: hsl(210 10% 5%);
-
-    --bim-ui_color-main: #6528d7;
-    --bim-ui_color-accent: #6528d7;
-  }
-
-  bim-grid:not([floating]) bim-toolbars-container {
-    background-color: var(--bim-ui_bg-base);
-  }
-
-  bim-grid[floating] bim-toolbars-container {
-    background-color: transparent;
+    --bim-ui_bg-base: var(--bim-ui_gray-10);
+    --bim-ui_bg-contrast-10: var(--bim-ui_gray-9);
+    --bim-ui_bg-contrast-20: var(--bim-ui_gray-8);
+    --bim-ui_bg-contrast-40: var(--bim-ui_gray-6);
+    --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
+    --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
+    --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
   }
 `;
 

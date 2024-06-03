@@ -62,7 +62,7 @@ export class Button extends LitElement {
       --bim-label--c: var(--bim-ui_main-contrast);
       --bim-icon--c: var(--bim-ui_main-contrast);
       fill: white;
-      background-color: var(--bim-ui_color-main);
+      background-color: var(--bim-ui_main-base);
     }
 
     :host(:not([label]):not([icon])) .children {
@@ -72,7 +72,7 @@ export class Button extends LitElement {
     :host([active]) .button {
       --bim-label--c: var(--bim-ui_main-contrast);
       --bim-icon--c: var(--bim-ui_main-contrast);
-      background-color: var(--bim-ui_color-main);
+      background-color: var(--bim-ui_main-base);
     }
 
     :host([vertical]) .parent {

@@ -13,30 +13,26 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
+        --bim-label--c: var(--bim-ui_bg-contrast-80);
         display: block;
-        /* height: 100%; */
         pointer-events: auto;
       }
 
       :host(:not([fixed])) .header:hover {
-        --bim-label--c: var(
-          --bim-panel-section¡hover,
-          var(--bim-ui_color-accent)
-        );
+        --bim-label--c: var(--bim-ui_accent-base);
+        color: var(--bim-ui_accent-base);
         cursor: pointer;
-        color: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
       }
 
       :host(:not([fixed])) .header:hover svg {
-        fill: var(--bim-panel-section¡hover, var(--bim-ui_color-accent));
+        fill: var(--bim-ui_accent-base);
       }
 
       .header {
-        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-sm));
+        --bim-label--fz: var(--bim-ui_size-sm);
+        color: var(--bim-ui_bg-contrast-80);
         z-index: 3;
         flex-shrink: 0;
-        /* position: sticky;
-        top: 0; */
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -44,12 +40,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         user-select: none;
         height: 1.5rem;
         padding: 0.75rem 1rem;
-        /* background-color: var(--bim-panel-section--bgc, var(--bim-ui_bg-base)); */
-        color: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80));
       }
 
       .header svg {
-        fill: var(--bim-panel-section--c, var(--bim-ui_bg-contrast-80));
+        fill: var(--bim-ui_bg-contrast-80);
       }
 
       .title {
@@ -59,7 +53,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       .title p {
-        font-size: var(--bim-panel-section--fz, var(--bim-ui_size-sm));
+        font-size: var(--bim-ui_size-sm);
       }
 
       .components {

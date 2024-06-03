@@ -23,16 +23,16 @@ export class Option extends LitElement {
       background-color: color-mix(
         in lab,
         var(--bim-selector--bgc, var(--bim-ui_bg-contrast-20)),
-        var(--bim-ui_color-main) 10%
+        var(--bim-ui_main-base) 10%
       );
     }
 
     :host([checked]) {
-      --bim-label--c: color-mix(in lab, var(--bim-ui_color-main), white 30%);
+      --bim-label--c: color-mix(in lab, var(--bim-ui_main-base), white 30%);
     }
 
     :host([checked]) svg {
-      fill: color-mix(in lab, var(--bim-ui_color-main), white 30%);
+      fill: color-mix(in lab, var(--bim-ui_main-base), white 30%);
     }
 
     .parent {
@@ -51,12 +51,12 @@ export class Option extends LitElement {
       cursor: pointer;
       border: none;
       outline: none;
-      accent-color: var(--bim-checkbox--c, var(--bim-ui_color-main));
+      accent-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
     }
 
     input:focus {
       outline: var(--bim-checkbox--olw, 2px) solid
-        var(--bim-checkbox--olc, var(--bim-ui_color-accent));
+        var(--bim-checkbox--olc, var(--bim-ui_accent-base));
     }
 
     bim-label {

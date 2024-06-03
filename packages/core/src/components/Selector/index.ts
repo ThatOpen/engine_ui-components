@@ -22,8 +22,8 @@ export class Selector extends LitElement implements HasValue, HasName {
     }
 
     ::slotted(bim-option[checked]) {
-      --bim-label--c: white;
-      background-color: var(--bim-ui_color-main);
+      --bim-label--c: var(--bim-ui_main-contrast);
+      background-color: var(--bim-ui_main-base);
     }
   `;
 

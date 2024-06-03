@@ -39,11 +39,11 @@ export class Tabs extends LitElement {
       }
 
       .switcher {
+        --bim-label--c: var(--bim-ui_bg-contrast-80);
+        background-color: var(--bim-ui_bg-base);
         cursor: pointer;
         pointer-events: auto;
-        background-color: var(--bim-ui_bg-base);
         padding: 0rem 0.75rem;
-        color: var(--bim-ui_bg-contrast-60);
         display: flex;
         justify-content: center;
       }
@@ -55,7 +55,7 @@ export class Tabs extends LitElement {
       .switcher:hover,
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_main-contrast);
-        background-color: var(--bim-ui_color-main);
+        background-color: var(--bim-ui_main-base);
       }
 
       .switchers bim-label {

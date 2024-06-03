@@ -18,7 +18,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
 
     :host(:focus) {
       --bim-input--olw: var(--bim-number-input--olw, 2px);
-      --bim-input--olc: var(--bim-ui_color-accent);
+      --bim-input--olc: var(--bim-ui_accent-base);
     }
 
     .parent {
