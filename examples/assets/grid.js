@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{e as d,i as u,t as p,M as g,C as b,n as h}from"./index-C-hIFIKp.js";import{w as f,x as r}from"./state-HK6D0hVF.js";/**
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{e as d,i as u,t as p,M as g,C as b,n as h}from"./index-CS2XUNQe.js";import{w as f,x as r}from"./state-HK6D0hVF.js";/**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
@@ -49,7 +49,7 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{e as d,i as u,t as p,M as g,
   `),C=b.create(()=>r`
     <bim-panel>
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
-        <bim-button @click=${()=>{alert("asdasd")}} label="Click me!"></bim-button>
+        <bim-button @click=${()=>{alert("You are awesome 😏")}} label="Click me!"></bim-button>
         <bim-selector value="Option A">
           <bim-option label="Option A" checked></bim-option>
           <bim-option label="Option B"></bim-option>
