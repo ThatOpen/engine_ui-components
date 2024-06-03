@@ -12,6 +12,7 @@ import { ContextMenu } from "../ContextMenu";
 export class Button extends LitElement {
   static styles = css`
     :host {
+      --bim-label--c: var(--bim-ui_bg-contrast-100);
       display: block;
       flex: 1;
       pointer-events: none;
@@ -26,7 +27,6 @@ export class Button extends LitElement {
     }
 
     .parent {
-      --bim-label--c: var(--bim-ui_bg-contrast-80);
       --bim-label--fz: var(--bim-ui_size-xs);
       --bim-icon--c: var(--bim-label--c);
       display: flex;

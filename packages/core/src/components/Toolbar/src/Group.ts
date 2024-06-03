@@ -14,6 +14,10 @@ export class ToolbarGroup extends LitElement {
     ::slotted(bim-button[label]:not([vertical])) {
       --bim-button--jc: flex-start;
     }
+
+    ::slotted(bim-button) {
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
+    }
   `;
 
   /**

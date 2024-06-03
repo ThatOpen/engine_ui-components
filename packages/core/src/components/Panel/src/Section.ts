@@ -13,7 +13,6 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
-        --bim-label--c: var(--bim-ui_bg-contrast-80);
         display: block;
         pointer-events: auto;
       }
@@ -30,14 +29,11 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
       .header {
         --bim-label--fz: var(--bim-ui_size-sm);
-        color: var(--bim-ui_bg-contrast-80);
-        z-index: 3;
-        flex-shrink: 0;
+        --bim-label--c: var(--bim-ui_bg-contrast-80);
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
-        user-select: none;
         height: 1.5rem;
         padding: 0.75rem 1rem;
       }

@@ -81,6 +81,7 @@ const globalStyles = css`
       --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
       --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
       --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
+      --bim-ui_accent-base: #6528d7;
     }
   }
 
@@ -102,6 +103,7 @@ const globalStyles = css`
     --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
     --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
     --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
+    --bim-ui_accent-base: #6528d7;
   }
 `;
 

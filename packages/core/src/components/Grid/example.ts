@@ -10,6 +10,7 @@ const leftPanel = BUI.Component.create<BUI.Panel>(() => {
   return BUI.html`
     <bim-panel label="My Panel!">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
+        <bim-label>This is just a panel section... cool, right?</bim-label>
         <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
         <bim-selector label="Choose">
           <bim-option label="Option A"></bim-option>
@@ -21,18 +22,31 @@ const leftPanel = BUI.Component.create<BUI.Panel>(() => {
           <bim-option label="Option B"></bim-option>
           <bim-option label="Option C"></bim-option>
         </bim-dropdown>
+        <bim-text-input label="Ultra nice text input" placeholder="Write something..."></bim-text-input>
+        <bim-checkbox label="Is That Open Company nice?" checked></bim-checkbox>
+        <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
       </bim-panel-section>
     </bim-panel>
   `;
 });
 
 const ribbon = BUI.Component.create<BUI.Tabs>(() => {
+  // eslint-disable-next-line no-restricted-globals
+  const onThatOpenPeopleClick = () => open("https://people.thatopen.com/home");
+
   return BUI.html`
    <bim-tabs>
     <bim-tab label="Toolbar A">
       <bim-toolbar>
         <bim-toolbar-section label="Some section">
           <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
+          <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
+          <bim-toolbar-group>
+            <bim-button icon="solar:settings-bold"></bim-button>
+            <bim-button icon="solar:settings-bold"></bim-button>
+            <bim-button icon="solar:settings-bold"></bim-button>
+            <bim-button icon="solar:settings-bold"></bim-button>
+          </bim-toolbar-group>
         </bim-toolbar-section>
       </bim-toolbar>
     </bim-tab>
