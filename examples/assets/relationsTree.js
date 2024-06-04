@@ -1,10 +1,10 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as u,a as d,C as g,i as b,n as h,k as f,u as w,R as v,S,W as C,b as y,J as x,h as I}from"./index-PAbzyhjP.js";import{b as T}from"./index-BXA9d2L0.js";import{t as $}from"./index-DCGQ8DqB.js";u.init();const e=new d,z=e.get(g),t=z.create(),o=new b(e);o.setup();t.scene=o;const s=document.createElement("bim-viewport"),r=new h(e,s);t.renderer=r;const i=new f(e);t.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const E=e.get(w);E.create(t);e.init();const L=e.get(v);await L.setup();const c=e.get(S);c.setup({world:t});c.zoomToSelection=!0;const k=e.get(C),B=e.get(y);B.onFragmentsLoaded.add(async n=>{n.hasProperties&&await k.process(n),t.scene&&t.scene.three.add(n)});const[a]=$.relationsTree({components:e,selectHighlighterName:"select",hoverHighlighterName:"hover",models:[]});a.expanded=!0;a.preserveStructureOnFilter=!0;const F=x.create(()=>{const[n]=T.loadIfc({components:e});return I`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as u,a as d,C as b,i as g,n as f,k as w,u as h,R as S,S as v,W as C,b as y,J as x,g as I}from"./index-CkGX2cDx.js";import{b as T}from"./index-CJFiyFTO.js";import{t as $}from"./index-DB26NqiI.js";u.init();const e=new d,z=e.get(b),t=z.create(),o=new g(e);o.setup();t.scene=o;const s=document.createElement("bim-viewport"),r=new f(e,s);t.renderer=r;const i=new w(e);t.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const E=e.get(h);E.create(t);e.init();const L=e.get(S);await L.setup();const c=e.get(v);c.setup({world:t});c.zoomToSelection=!0;const k=e.get(C),B=e.get(y);B.onFragmentsLoaded.add(async n=>{n.hasProperties&&await k.process(n),t.scene&&t.scene.three.add(n)});const[a]=$.relationsTree({components:e,models:[]});a.expanded=!0;a.preserveStructureOnFilter=!0;const F=x.create(()=>{const[n]=T.loadIfc({components:e});return I`
    <bim-panel label="Classifications Tree">
     <bim-panel-section label="Importing">
       ${n}
     </bim-panel-section>
     <bim-panel-section label="Classifications">
-      <bim-text-input @input=${l=>{const m=l.target;a.queryString=m.value}} placeholder="Search..." debounce="200"></bim-text-input>
+      <bim-text-input @input=${m=>{const l=m.target;a.queryString=l.value}} placeholder="Search..." debounce="200"></bim-text-input>
       ${a}
     </bim-panel-section>
    </bim-panel> 
