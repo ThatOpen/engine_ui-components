@@ -48,8 +48,6 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
 
 const [relationsTree] = CUI.tables.relationsTree({
   components,
-  selectHighlighterName: "select",
-  hoverHighlighterName: "hover",
   models: [],
 });
 

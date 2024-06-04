@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as FRAGS from "@thatopen/fragments";
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
@@ -8,7 +10,10 @@ export interface ModelsListUIState {
 }
 
 export const modelsListTemplate = (state: ModelsListUIState) => {
-  const { components, schemaTag, viewDefinitionTag } = state;
+  const { components } = state;
+
+  const schemaTag = state.schemaTag ?? true;
+  const viewDefinitionTag = state.viewDefinitionTag ?? true;
 
   const fragments = components.get(OBC.FragmentsManager);
 
@@ -38,31 +43,39 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
       if (typeof modelID !== "string") return value;
       const model = fragments.groups.get(modelID);
       if (!model) return modelID;
+      const modelIdMap: FRAGS.FragmentIdMap = {};
+      for (const item of model.items) {
+        modelIdMap[item.id] = item.ids;
+      }
 
       let schemaTagTemplate: BUI.TemplateResult | undefined;
       const { schema } = model.ifcMetadata;
-      if ((schemaTag === undefined || schemaTag === true) && schema) {
+      if (schemaTag && schema) {
         schemaTagTemplate = BUI.html`
           <bim-label style="background-color: var(--bim-ui_main-base); padding: 0 0.25rem; color: var(--bim-ui_main-contrast); border-radius: 0.25rem;">${schema}</bim-label>
           `;
       }
 
       let viewDefinitionTagTemplate: BUI.TemplateResult | undefined;
-      if (
-        (viewDefinitionTag === undefined || viewDefinitionTag === true) &&
-        "viewDefinition" in model.ifcMetadata
-      ) {
+      if (viewDefinitionTag && "viewDefinition" in model.ifcMetadata) {
+        const viewDefinition = model.ifcMetadata.viewDefinition as string;
         viewDefinitionTagTemplate = BUI.html`
-          <bim-label style="background-color: var(--bim-ui_main-base); padding: 0 0.25rem; color: var(--bim-ui_main-contrast); border-radius: 0.25rem;">${model.ifcMetadata.viewDefinition}</bim-label>
+          ${viewDefinition.split(",").map((definition) => {
+            return BUI.html`<bim-label style="background-color: var(--bim-ui_main-base); padding: 0 0.25rem; color: var(--bim-ui_main-contrast); border-radius: 0.25rem;">${definition}</bim-label>`;
+          })}
         `;
       }
 
       const onDeleteClick = () => fragments.disposeGroup(model);
 
       const onHideClick = (e: Event) => {
-        model.visible = !model.visible;
+        const hider = components.get(OBC.Hider);
         const button = e.target as BUI.Button;
-        button.icon = model.visible ? "mdi:eye" : "mdi:eye-off";
+        hider.set(button.hasAttribute("data-model-hidden"), modelIdMap);
+        button.toggleAttribute("data-model-hidden");
+        button.icon = button.hasAttribute("data-model-hidden")
+          ? "mdi:eye-off"
+          : "mdi:eye";
       };
 
       return BUI.html`
@@ -71,8 +84,10 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
           <div style="min-height: 1.75rem; overflow: auto; display: flex;">
             <bim-label style="white-space: normal;">${value}</bim-label>
           </div>
-          ${schemaTagTemplate}
-          ${viewDefinitionTagTemplate}
+          <div style="display: flex; flex-wrap: wrap; gap: var(--bim-ui_size-4xs); overflow: auto;">
+            ${schemaTagTemplate}
+            ${viewDefinitionTagTemplate}
+          </div>
         </div>
         <div style="display: flex; gap: var(--bim-ui_size-4xs); align-self: flex-start; flex-shrink: 0;">
           <bim-button @click=${onHideClick} icon="mdi:eye"></bim-button>

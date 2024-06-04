@@ -122,14 +122,10 @@ const getRowFragmentIdMap = (components: OBC.Components, row: BUI.TableRow) => {
 };
 
 export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
-  const {
-    components,
-    models,
-    inverseAttributes,
-    selectHighlighterName,
-    hoverHighlighterName,
-    expressID,
-  } = state;
+  const { components, models, expressID } = state;
+
+  const selectHighlighterName = state.selectHighlighterName ?? "select";
+  const hoverHighlighterName = state.hoverHighlighterName ?? "hover";
 
   if (!table) {
     table = document.createElement("bim-table");
@@ -159,6 +155,7 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
         fragmentIDMap,
         true,
         false,
+        highlighter.selection[selectHighlighterName] ?? {},
       );
     };
 
@@ -180,12 +177,12 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     };
   });
 
-  const _inverseAttributes: OBC.InverseAttribute[] = inverseAttributes ?? [
+  const inverseAttributes: OBC.InverseAttribute[] = state.inverseAttributes ?? [
     "IsDecomposedBy",
     "ContainsElements",
   ];
 
-  computeRowData(components, models, _inverseAttributes, expressID).then(
+  computeRowData(components, models, inverseAttributes, expressID).then(
     (data) => (table.data = data),
   );
 
