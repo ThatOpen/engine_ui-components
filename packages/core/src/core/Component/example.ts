@@ -7,11 +7,11 @@ BUI.Manager.init();
   ---
   One of the greatest things about the library is that you can create your own reactive and non reactive elements (statefull and stateless components respectively) in a very simple and efficient way, all thanks to the power of [lit-html](https://lit.dev/docs/libraries/standalone-templates/) 💪. 
   
-  The UIComponent class has a static method to create functional components (UI defined as a function) that can be updated anytime. The method is `UIComponent.create`.
+  The `Component` class has a static method to create functional components (UI defined as a function) that can be updated anytime. The method is `Component.create`.
 
   :::note
 
-  Despite the UIComponent is a class that can be instantiated or extended, from a developer perspective using the library is most likely it will only use the create method.
+  Despite the `Component` is a class that can be instantiated or extended, from a developer perspective using the library is most likely it will only use the create method.
 
   :::
   
@@ -30,15 +30,15 @@ const statelessPanelSection = BUI.Component.create<BUI.PanelSection>(() => {
 /* MD
   :::warning
 
-  Remember to first call `UIManager.init()` before anything else!
+  Remember to first call `Manager.init()` before anything else!
 
   :::
 
-  `UIComponent.create` requires you to provide a function declaration that returns an HTML string made with the `html` tag function, and the result of the function is the HTMLElement it self. 
+  `Component.create` requires you to provide a function declaration that returns an HTML string made with the `html` tag function, and the result of the function is the HTMLElement it self. 
   
   :::note
 
-  Tag functions are special declarations that are always set before a template literals to process the string.
+  Tag functions are special declarations that are always set before a template literal to process the string.
 
   :::
   
@@ -46,7 +46,7 @@ const statelessPanelSection = BUI.Component.create<BUI.PanelSection>(() => {
   
   The main difference is that statefull components lets you update them with new states (so the UI component will efficiently re-render and display new data) while stateless components never needs to be updated as they are static.
 
-  The component we just created is stateless, because it doesn't have any state in which its data depends on. 
+  The component we just created is stateless, because it doesn't have any state in which its user interface depends on. 
   
   ### Creating a statefull component
   Now, let's take a look at how to create a component that can be updated based on state changes:
@@ -75,8 +75,8 @@ const [statefullPanelSection, updateStatefullPanelSection] =
   When you pass an object as the argument in your create function, the component has now become statefull. As you see, there are a couple of differences between the stateless and statefull components:
 
   1. The statefull component requires an state object (it must be an object) to be passed in the function declaration. Think on this as the classic properties object you pass to a component in a framework like React.
-  2. When the component is statefull, `UIComponent.create` must have a second argument to specify the initial state of the component.
-  3. Now, `UIComponent.create` does not return the HTMLElement it self, but an array where the first item is the HTMLElement and second is a function to update the component based on an updated state. Think on this as when you use the useState hook in frameworks like React.
+  2. When the component is statefull, `Component.create` must have a second argument to specify the initial state of the component.
+  3. Now, `Component.create` does not return the HTMLElement it self, but an array where the first item is the HTMLElement and second is a function to update the component based on an updated state. Think on this as when you use the useState hook in frameworks like React.
 
   :::note
 
@@ -137,7 +137,7 @@ document.body.append(panel);
 
   :::tip
 
-  The complementary packages of the library such as `@thatopen/ui-components-obc` or `@thatopen/ui-components-three` have premade functional components just like the ones we've learned to create in this tutorial, so you don't need to bother to create them by yourself 😉 
+  The complementary packages of the library such as `@thatopen/ui-obc` have premade functional components just like the ones we've learned to create in this tutorial, so you don't need to bother to create them by yourself 😉
 
   :::
 */
