@@ -382,6 +382,7 @@ const computeTableData = async (
   return rows;
 };
 
+const onDataComputed = new Event("datacomputed");
 let table: BUI.Table;
 
 /**
@@ -402,9 +403,10 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
     });
   }
 
-  computeTableData(components, fragmentIdMap).then(
-    (data) => (table.data = data),
-  );
+  computeTableData(components, fragmentIdMap).then((data) => {
+    table.data = data;
+    if (data.length !== 0) table.dispatchEvent(onDataComputed);
+  });
 
   return BUI.html`${table}`;
 };
