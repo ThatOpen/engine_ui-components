@@ -3,11 +3,13 @@ import { property, state } from "lit/decorators.js";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 
-// HTML tag: bim-selector
 /**
- * Heloooooooooo
+ * A custom selector web component for BIM applications. HTML tag: bim-selector
  */
 export class Selector extends LitElement implements HasValue, HasName {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);

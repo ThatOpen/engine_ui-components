@@ -4,9 +4,12 @@ import { ToolbarSection } from "./Section";
 import { Manager } from "../../../core/Manager";
 
 /**
- * Heloooooooooo
+ * A custom toolbar web component for BIM applications. HTML tag: bim-toolbar
  */
 export class Toolbar extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       --bim-button--bgc: transparent;

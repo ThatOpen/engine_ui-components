@@ -1,5 +1,5 @@
 /**
- * Heloooooooooo
+ * Represents an object that has a value and an event for value changes.
  */
 export interface HasValue {
   value: any;
@@ -7,26 +7,25 @@ export interface HasValue {
 }
 
 /**
- * Heloooooooooo
+ * Represents an object that has a name and an optional label.
  */
 export interface HasName {
   name?: string;
   label?: string;
 }
 
-// Query builder types
 /**
- * Heloooooooooo
+ * Represents a condition used in query building.
  */
 export type QueryCondition = "=" | ">" | ">=" | "<" | "<=" | "?" | "/" | "#";
 
 /**
- * Heloooooooooo
+ * Represents an operator used in query building.
  */
 export type QueryOperators = "&" | "|";
 
 /**
- * Heloooooooooo
+ * Represents a single query condition.
  */
 export interface EntryQuery {
   operator?: QueryOperators;
@@ -36,7 +35,7 @@ export interface EntryQuery {
 }
 
 /**
- * Heloooooooooo
+ * Represents a group of queries with an operator.
  */
 export interface QueryGroup {
   operator?: QueryOperators;
@@ -44,12 +43,12 @@ export interface QueryGroup {
 }
 
 /**
- * Heloooooooooo
+ * Represents a query, which can be a single query or a group of queries.
  */
 export type Query = (EntryQuery | QueryGroup)[];
 
 /**
- * Heloooooooooo
+ * Represents a map of condition functions, where the key is a QueryCondition and the value is a function that evaluates the condition.
  */
 export type ConditionFunctions = {
   [queryCondition in QueryCondition]: (
@@ -58,40 +57,12 @@ export type ConditionFunctions = {
   ) => boolean;
 };
 
-// Initiator:
-// $[]
+//... rest of the code
 
-// Operators:
-// AND &
-// OR |
-
-// Conditions:
-// equals =
-// greater >
-// greater than >=
-// less <
-// less than <=
-// includes ?
-// starts /
-// match reg #
-
-// Modifiers:
-// negate !
-// case sensitive !s
-
-// Rules:
-// 1. Enclose the value in '' is optional. The engine tries to guess the best it can the data type. If you really need to say for example 25 is a string and not a number, then you can enclose it in quotations: '25'.
-// 2. You cannot negate greater, greater than, less, and less than.
-// 3. In cases where you want to evaluate a condition for some keys with a common string in the name (for example: Name, LongName, etc), you can enclose the key in square brackets: [Name]?Wall
-
-// Examples:
-// $[Name=Lisa & Age=25]
-// $[Name=Lisa & Age=25]
-// $[Name?Lisa & (Age>25 & Age<30)]
-// $[Entity?WALL & PredefinedType=SOLIDWALL & LoadBearing=true]
-
-// All IfcWallStandardCase at Nivel 1
-// type=IFCWALLSTANDARDCASE & (type=IFCBUILDINGSTOREY & Name=Nivel 1)
+/**
+ * Represents a query for all IfcWallStandardCase at Nivel 1.
+ * @example type=IFCWALLSTANDARDCASE & (type=IFCBUILDINGSTOREY & Name=Nivel 1)
+ */
 // @ts-ignore
 const wallsAtLevel1: Query = [
   { key: "type", condition: "=", value: "WEBIFC.IFCWALLSTANDARDCASE" },
@@ -113,8 +84,10 @@ const wallsAtLevel1: Query = [
   },
 ];
 
-// All load bearing IfcWallStandardCase with 300 mm in the name at Nivel 2
-// (type=IFCWALLSTANDARDCASE & Name?300mm) & (type=IFCPROPERTYSINGLEVALUE & Name=LoadBearing & NominalValue=true) & (type=IFCBUILDINGSTOREY & Name?Nivel 1)
+/**
+ * Represents a query for all load bearing IfcWallStandardCase with 300 mm in the name at Nivel 2.
+ * @example (type=IFCWALLSTANDARDCASE & Name?300mm) & (type=IFCPROPERTYSINGLEVALUE & Name=LoadBearing & NominalValue=true) & (type=IFCBUILDINGSTOREY & Name?Nivel 1)
+ */
 // @ts-ignore
 const loadBearing300mmWallsAtLevel2: QueryGroup[] = [
   {
@@ -176,8 +149,10 @@ const loadBearing300mmWallsAtLevel2: QueryGroup[] = [
   },
 ];
 
-// All slabs with a property set named Construction
-// type=IFCSLAB & (type:IFCPROPERTYSET AND Name:Construction)
+/**
+ * Represents a query for all slabs with a property set named Construction.
+ * @example type=IFCSLAB & (type:IFCPROPERTYSET AND Name:Construction)
+ */
 // @ts-ignore
 const slabsWithConstructionPset: QueryGroup[] = [
   {

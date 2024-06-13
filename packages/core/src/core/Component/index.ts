@@ -1,8 +1,22 @@
 /* eslint-disable no-dupe-class-members */
 import { LitElement, TemplateResult, render } from "lit";
 
+/**
+ * Represents a function that returns a TemplateResult for a stateless component.
+ *
+ * @returns A TemplateResult that represents the UI of the component.
+ */
 export type StatelessComponent = () => TemplateResult;
 
+/**
+ * Represents a function that returns a TemplateResult for a stateful component.
+ *
+ * @template S - The type of the component state.
+ *
+ * @param state - The current state of the component.
+ *
+ * @returns A TemplateResult that represents the UI of the component based on the current state.
+ */
 export type StatefullComponent<S extends Record<string, any>> = (
   state: S,
 ) => TemplateResult;
@@ -10,7 +24,7 @@ export type StatefullComponent<S extends Record<string, any>> = (
 type UpdateFunction<S extends Record<string, any>> = (state?: Partial<S>) => S;
 
 /**
- * Heloooooooooo
+ * A base class for UI components that utilizes the LitElement library. Provides functionality for rendering stateless and stateful components, as well as lazy loading of elements using Intersection Observer.
  */
 export class Component extends LitElement {
   private _lazyLoadObserver: IntersectionObserver | null = null;

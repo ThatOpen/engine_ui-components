@@ -2,15 +2,22 @@ import * as BUI from "@thatopen/ui";
 import * as THREE from "three";
 import { panelSections } from "../panel-sections";
 
+
 /**
- * Heloooooooooo
+ * Interface representing the state of the MaterialsList component. It contains an array of THREE.Material objects.
  */
 export interface MaterialsListUIState {
+  /**
+   * An array of THREE.Material objects.
+   */
   materials: THREE.Material[];
 }
 
 /**
- * Heloooooooooo
+ * A function that generates a template for the MaterialsList component. This template is a function that takes a MaterialsListUIState object as a parameter and returns a HTMLDivElement.
+ *
+ * @param state - An object representing the state of the MaterialsList component.
+ * @returns A HTMLDivElement representing the template for the MaterialsList component.
  */
 export const materialsListTemplate = (state: MaterialsListUIState) => {
   const { materials: inputList } = state;
@@ -69,7 +76,10 @@ export const materialsListTemplate = (state: MaterialsListUIState) => {
 };
 
 /**
- * Heloooooooooo
+ * A function that creates a MaterialsList component. This component displays a dropdown menu for selecting a material from a list of THREE.Material objects. It also shows a section for editing the properties of the selected material.
+ *
+ * @param materials - An array of THREE.Material objects to populate the dropdown menu.
+ * @returns A BUI.Component representing the MaterialsList component.
  */
 export const materialsList = (materials: THREE.Material[]) => {
   const component = BUI.Component.create<HTMLDivElement, MaterialsListUIState>(

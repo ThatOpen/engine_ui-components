@@ -2,7 +2,14 @@ import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 
 /**
- * Heloooooooooo
+ * Creates a BIM panel section for mesh graphics settings.
+ *
+ * @param mesh - The THREE.Mesh object to be manipulated.
+ * @param options - Optional parameters.
+ * @param options.collapsed - If true, the panel section will be initially collapsed.
+ *
+ * @returns A BUI.html element representing the panel section.
+ *
  */
 export const meshGraphics = (
   mesh: THREE.Mesh,

@@ -9,18 +9,28 @@ import {
 } from "./src";
 import { evalCondition, getQuery } from "../../core/utils";
 
+
 /**
- * Heloooooooooo
+ * Represents a column in the table.
+ *
+ * @property name - The name of the column.
+ * @property width - The width of the column.
  */
 export interface ColumnData {
+  /** The name of the column. */
   name: string;
+
+  /** The width of the column. */
   width: string;
 }
 
 /**
- * Heloooooooooo
+ * A custom table web component for BIM applications. HTML tag: bim-table
  */
 export class Table extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = [
     styles.scrollbar,
     css`

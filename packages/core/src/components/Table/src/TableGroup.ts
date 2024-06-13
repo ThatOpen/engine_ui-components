@@ -5,6 +5,9 @@ import { RowCreatedEventDetail, TableGroupData } from "./types";
 import { TableChildren } from "./TableChildren";
 
 export class TableGroup extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       position: relative;

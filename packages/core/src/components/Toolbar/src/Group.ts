@@ -2,9 +2,12 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
- * Heloooooooooo
+ * A custom toolbar group web component for BIM applications. HTML tag: bim-toolbar-group
  */
 export class ToolbarGroup extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     .parent {
       display: grid;

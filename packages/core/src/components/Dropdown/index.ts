@@ -7,11 +7,13 @@ import { Option } from "../Option";
 import { ContextMenu } from "../ContextMenu";
 import { HasName, HasValue } from "../../core/types";
 
-// HTML tag: bim-dropdown
 /**
- * Heloooooooooo
+ * A custom dropdown web component for BIM applications.
  */
 export class Dropdown extends Component implements HasValue, HasName {
+  /**
+  * CSS styles for the component.
+  */
   static styles = [
     styles.scrollbar,
     css`

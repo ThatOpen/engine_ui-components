@@ -1,7 +1,12 @@
 // https://docs.emmet.io/cheat-sheet/
 
 /**
- * Heloooooooooo
+ * A collection of CSS property abbreviations used in the codebase.
+ * These abbreviations are used to simplify and speed up the writing of CSS properties.
+ *
+ * @remarks
+ * The abbreviations are not part of the official Emmet cheat sheet, but they are used in the codebase.
+ *
  */
 export const abbreviations = {
   borderRadius: "bdrs",

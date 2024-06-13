@@ -3,9 +3,12 @@ import { property } from "lit/decorators.js";
 import { HasValue, HasName } from "../../core/types";
 
 /**
- * Heloooooooooo
+ * A custom input web component for BIM applications. HTML tag: bim-input
  */
 export class Input extends LitElement implements HasValue, HasName {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       flex: 1;

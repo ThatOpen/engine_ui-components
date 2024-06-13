@@ -1,15 +1,19 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
+
 /**
- * Heloooooooooo
+ * Interface representing the state of the LoadIfcUI component. It contains a reference to the Components object from the @thatopen/components library.
  */
 export interface LoadIfcUIState {
   components: OBC.Components;
 }
 
 /**
- * Heloooooooooo
+ * This function generates the template for the LoadIfcUI component. It takes a LoadIfcUIState object as a parameter and returns a BUI.html template.
+ *
+ * @param state - The state object containing the components object from the @thatopen/components library.
+ * @returns A BUI.html template representing the LoadIfcUI component.
  */
 export const loadIfcTemplate = (state: LoadIfcUIState) => {
   const { components } = state;

@@ -2,11 +2,13 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { convertString } from "../../core/utils";
 
-// HTML tag: bim-label
 /**
- * Heloooooooooo
+ * A custom label web component for BIM applications. HTML tag: bim-label
  */
 export class Label extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       --bim-icon--c: var(--bim-label--c);

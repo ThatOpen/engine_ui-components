@@ -3,6 +3,9 @@ import { property } from "lit/decorators.js";
 import { TableRowData } from ".";
 
 export class TableCell extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       padding: 0.25rem 1rem;

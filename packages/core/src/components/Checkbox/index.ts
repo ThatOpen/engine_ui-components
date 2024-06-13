@@ -2,11 +2,15 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { HasValue } from "../../core/types";
 
-// HTML tag: bim-checkbox
 /**
- * Heloooooooooo
+ * A custom checkbox web component for BIM applications. HTML tag: bim-checkbox
+ *
+ * @fires change - Fired when the checkbox changes.
  */
 export class Checkbox extends LitElement implements HasValue {
+  /**
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       display: block;

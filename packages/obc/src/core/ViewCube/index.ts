@@ -2,11 +2,13 @@ import * as THREE from "three";
 import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
-// HTML Tag: bim-view-cube
 /**
- * Heloooooooooo
+ * A custom 3D view cube component for BIM applications. HTML tag: bim-view-cube
  */
 export class ViewCube extends LitElement {
+  /**
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       position: absolute;

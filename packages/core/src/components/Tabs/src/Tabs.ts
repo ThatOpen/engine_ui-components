@@ -3,11 +3,13 @@ import { property, state } from "lit/decorators.js";
 import { Tab } from "./Tab";
 import { styles } from "../../../core/Manager/src/styles";
 
-// HTML Tag: bim-tabs
 /**
- * Heloooooooooo
+ * A custom tabs web component for BIM applications. HTML tag: bim-tabs
  */
 export class Tabs extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = [
     styles.scrollbar,
     css`

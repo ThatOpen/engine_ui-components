@@ -28,7 +28,28 @@ const onScaleChange = (e: Event, scale: THREE.Vector3) => {
 };
 
 /**
- * Heloooooooooo
+ * A function to generate a mesh transform section for a 3D editor.
+ *
+ * @param transform - An object containing optional position, rotation, and scale properties.
+ * @param options - An optional object containing a collapsed property.
+ * @returns A TemplateResult representing the mesh transform section.
+ *
+ * @remarks
+ * This function generates a mesh transform section for a 3D editor. It takes in transform and options parameters,
+ * and returns a TemplateResult representing the mesh transform section.
+ *
+ * The transform parameter is an object with optional position, rotation, and scale properties.
+ * The position property is a THREE.Vector3 representing the position of the mesh.
+ * The rotation property is a THREE.Euler representing the rotation of the mesh.
+ * The scale property is a THREE.Vector3 representing the scale of the mesh.
+ *
+ * The options parameter is an optional object with a collapsed property.
+ * The collapsed property is a boolean indicating whether the mesh transform section should be initially collapsed.
+ *
+ * The function generates the mesh transform section using the provided transform and options.
+ * It creates input fields for position, rotation, and scale, and updates the corresponding properties when the input fields are changed.
+ *
+ * The function returns a TemplateResult representing the mesh transform section.
  */
 export const meshTransform = (
   transform: {

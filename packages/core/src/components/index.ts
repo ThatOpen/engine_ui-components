@@ -25,6 +25,10 @@ import { TextInput } from "./TextInput";
 import { Toolbar, ToolbarGroup, ToolbarSection } from "./Toolbar";
 import { Viewport } from "./Viewport";
 
+/**
+ * Extends the global HTMLElementTagNameMap interface to include custom element tags.
+ * This allows TypeScript to recognize and validate these custom elements.
+ */
 declare global {
   interface HTMLElementTagNameMap {
     "bim-button": Button;
@@ -55,6 +59,10 @@ declare global {
     "bim-viewport": Viewport;
   }
 
+  /**
+   * Extends the GlobalEventHandlersEventMap interface to include custom events.
+   * This allows TypeScript to recognize and validate these custom events.
+   */
   interface GlobalEventHandlersEventMap {
     connected: Event;
     disconnected: Event;

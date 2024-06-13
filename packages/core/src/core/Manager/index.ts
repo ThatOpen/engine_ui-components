@@ -1,12 +1,33 @@
 import * as components from "../../components";
 import { styles } from "./src/styles";
 
+/**
+ * Configuration interface for the Manager class. Defines the properties and their types that can be configured for the Manager.
+ */
 export interface ManagerConfig {
+  /**
+   * Determines whether section labels should be displayed on the vertical toolbar.
+   * Default value is `false`.
+   */
   sectionLabelOnVerticalToolbar: boolean;
+
+  // /**
+  //  * Determines whether toolbars should be draggable.
+  //  * Default value is `true`.
+  //  */
   // draggableToolbars: boolean;
+
+  // /**
+  //  * Determines whether panels should be draggable.
+  //  * Default value is `true`.
+  //  */
   // draggablePanels: boolean;
 }
 
+/**
+ * Manager class is responsible for initializing the BIM UI library, defining custom elements, and providing configuration options.
+ *
+ */
 export class Manager {
   private static _config: Required<ManagerConfig> = {
     sectionLabelOnVerticalToolbar: false,

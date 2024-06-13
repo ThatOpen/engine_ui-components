@@ -1,11 +1,13 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
-// HTML tag: bim-viewport
 /**
- * Heloooooooooo
+ * A custom viewport web component for BIM applications. HTML tag: bim-viewport
  */
 export class Viewport extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       display: grid;

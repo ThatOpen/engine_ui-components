@@ -4,11 +4,13 @@ import { styles } from "../../../core/Manager/src/styles";
 import { HasName, HasValue } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
 
-// HTML tag: bim-panel-section
 /**
- * Heloooooooooo
+ * A custom panel section web component for BIM applications. HTML tag: bim-panel-section
  */
 export class PanelSection extends LitElement implements HasName, HasValue {
+  /**
+  * CSS styles for the component.
+  */
   static styles = [
     styles.scrollbar,
     css`

@@ -1,18 +1,33 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
-interface Layouts {
+/**
+ * Represents a collection of predefined grid layouts for the Grid component. Each layout is defined by a unique name, a grid template string, and a map of area names to HTMLElement instances. The grid template string defines the structure of the grid, and the area names correspond to the grid-area property of the HTMLElement instances. The HTMLElement instances are used to populate the grid with content.
+ */
+export interface Layouts {
+  /**
+   * The unique name of the layout.
+   */
   [name: string]: {
+    /**
+     * The grid template string defining the structure of the grid.
+     */
     template: string;
+    /**
+     * A map of area names to HTMLElement instances.
+     * The area names correspond to the grid-area property of the HTMLElement instances.
+     */
     elements: { [areaName: string]: HTMLElement };
   };
 }
 
-// HTML tag: bim-grid
 /**
- * Heloooooooooo
+ * A custom grid web component for BIM applications. HTML tag: bim-grid
  */
 export class Grid extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       display: grid;

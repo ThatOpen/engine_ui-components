@@ -11,10 +11,10 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 
-/**
- * Heloooooooooo
- */
 export class ContextMenu extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = [
     styles.scrollbar,
     css`

@@ -5,7 +5,11 @@ import {
 } from "./src/template";
 
 /**
- * Heloooooooooo
+ * Creates an instance of ElementProperties component.
+ *
+ * @param state - The initial state for the ElementProperties component.
+ * @returns A new instance of ElementProperties component.
+ *
  */
 export const elementProperties = (state: ElementPropertiesUIState) => {
   const element = BUI.Component.create<BUI.Table, ElementPropertiesUIState>(

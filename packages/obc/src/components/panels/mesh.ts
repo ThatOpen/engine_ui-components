@@ -3,14 +3,20 @@ import * as BUI from "@thatopen/ui";
 import { panelSections } from "../panel-sections";
 
 /**
- * Heloooooooooo
+ * Interface representing the state of a Mesh UI component. It contains a single property: `mesh`, which is a THREE.Mesh object.
  */
-interface MeshUIState {
+export interface MeshUIState {
+  /**
+   * The THREE.Mesh object associated with this UI component.
+   */
   mesh: THREE.Mesh;
 }
 
 /**
- * Heloooooooooo
+ * Function that generates a template for a Mesh UI component. This template is used to create the visual representation of the component in the UI.
+ *
+ * @param state - An object representing the state of the Mesh UI component.
+ * @returns A BUI.html template that describes the UI layout for the Mesh component.
  */
 export const meshTemplate = (state: MeshUIState) => {
   const { mesh } = state;
@@ -43,7 +49,10 @@ export const meshTemplate = (state: MeshUIState) => {
 };
 
 /**
- * Heloooooooooo
+ * Function that generates a Mesh UI component. This function creates a BUI.Panel element with a custom template that displays the properties of a given THREE.Mesh object.
+ *
+ * @param mesh - The THREE.Mesh object for which the UI component will be created.
+ * @returns A BUI.Panel element representing the Mesh UI component.
  */
 export const mesh = (mesh: THREE.Mesh) => {
   const [element] = BUI.Component.create<BUI.Panel, MeshUIState>(meshTemplate, {

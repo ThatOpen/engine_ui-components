@@ -3,11 +3,13 @@ import { createRef, ref } from "lit/directives/ref.js";
 import { property } from "lit/decorators.js";
 import { HasName, HasValue } from "../../core/types";
 
-// HTML tag: bim-number-input
 /**
- * Heloooooooooo
+ * A custom number input web component for BIM applications. HTML tag: bim-number-input
  */
 export class NumberInput extends LitElement implements HasValue, HasName {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       --bim-input--bgc: var(

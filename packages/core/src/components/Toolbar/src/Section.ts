@@ -4,9 +4,12 @@ import { ToolbarGroup } from "./Group";
 import { HasName } from "../../../core/types";
 
 /**
- * Heloooooooooo
+ * A custom toolbar section web component for BIM applications. HTML tag: bim-toolbar-section
  */
 export class ToolbarSection extends LitElement implements HasName {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);

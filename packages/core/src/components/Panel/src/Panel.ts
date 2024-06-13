@@ -5,11 +5,13 @@ import { Button } from "../../Button";
 import { HasName, HasValue } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
 
-// HTML tag: bim-panel
 /**
- * Heloooooooooo
+ * A custom panel web component for BIM applications. HTML tag: bim-panel
  */
 export class Panel extends LitElement implements HasName, HasValue {
+    /**
+  * CSS styles for the component.
+  */
   static styles = [
     styles.scrollbar,
     css`

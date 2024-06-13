@@ -4,11 +4,15 @@ import { property } from "lit/decorators.js";
 import { HasName, HasValue } from "../../core/types";
 import { NumberInput } from "../NumberInput";
 
-// HTML tag: bim-color-input
 /**
- * Heloooooooooo
+ * A custom color input web component for BIM applications. HTML tag: bim-color-input
+ *
+ * @fires input - Fired when the color input changes.
  */
 export class ColorInput extends LitElement implements HasValue, HasName {
+    /**
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);

@@ -3,7 +3,9 @@ import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
 /**
- * Heloooooooooo
+ * This function generates a dropdown component populated with IFC entities.
+ *
+ * @returns {BUI.TemplateResult} - A BUI.TemplateResult containing the dropdown component populated with IFC entities.
  */
 export const ifcEntities = () => {
   const dropdown = document.createElement(

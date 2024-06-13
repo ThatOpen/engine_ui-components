@@ -1,7 +1,10 @@
 import { EntryQuery, Query, QueryCondition, QueryGroup } from "./types";
 
 /**
- * Heloooooooooo
+ * Extracts and returns the value of an HTML element's attributes.
+ * @param child - The HTML element to extract values from.
+ * @param recursive - Whether to recursively extract values from child elements. Default is true.
+ * @returns An object containing the extracted values.
  */
 export const getElementValue = (child: HTMLElement, recursive = true) => {
   let value: Record<string, any> = {};
@@ -12,7 +15,7 @@ export const getElementValue = (child: HTMLElement, recursive = true) => {
       if ("value" in child) {
         const childValue = child.value;
         const isObject =
-          typeof childValue === "object" && !Array.isArray(childValue);
+          typeof childValue === "object" &&!Array.isArray(childValue);
         if (isObject && Object.keys(childValue).length === 0) continue;
         value[key] = child.value;
       } else if (recursive) {
@@ -21,30 +24,38 @@ export const getElementValue = (child: HTMLElement, recursive = true) => {
         value[key] = childValue;
       }
     } else if (recursive) {
-      value = { ...value, ...getElementValue(child) };
+      value = {...value,...getElementValue(child) };
     }
   }
   return value;
 };
 
 /**
- * Heloooooooooo
+ * Converts a string to a boolean, number, or string based on its value.
+ * @param value - The string to convert.
+ * @returns The converted value.
  */
 export const convertString = (value: string) => {
   if (value === "true" || value === "false") {
     return value === "true";
   }
   // eslint-disable-next-line no-restricted-globals
-  if (value && !isNaN(Number(value)) && value.trim() !== "") {
+  if (value &&!isNaN(Number(value)) && value.trim()!== "") {
     return Number(value);
   }
   return value;
 };
 
-// QueryString logic
-// Conditions with more than one symbol must be set first
+/**
+ * QueryString logic. Conditions with more than one symbol must be set first
+ */
 const conditions = [">=", "<=", "=", ">", "<", "?", "/", "#"];
 
+/**
+ * Parses a search query and returns an EntryQuery object.
+ * @param search - The search query to parse.
+ * @returns The parsed EntryQuery object.
+ */
 function parseSearch(search: string) {
   const condition = conditions.find(
     (condition) => search.split(condition).length === 2,
@@ -53,24 +64,26 @@ function parseSearch(search: string) {
   const [key, _value] = splitQuery;
   const value =
     _value.startsWith("'") && _value.endsWith("'")
-      ? _value.replace(/'/g, "")
+     ? _value.replace(/'/g, "")
       : convertString(_value);
   const entryQuery: EntryQuery = { key, condition, value };
   return entryQuery;
 }
 
 /**
- * Heloooooooooo
+ * Parses a query string and returns a Query object.
+ * @param queryString - The query string to parse.
+ * @returns The parsed Query object or null if parsing fails.
  */
 export const getQuery = (queryString: string) => {
   try {
     const queryGroup: Query = [];
     const entryAndGroupQueries = queryString
-      .split(/&(?![^()]*\))/)
-      .map((value) => value.trim());
+     .split(/&(?![^()]*\))/)
+     .map((value) => value.trim());
 
     for (const query of entryAndGroupQueries) {
-      const isEntryQuery = !query.startsWith("(") && !query.endsWith(")");
+      const isEntryQuery =!query.startsWith("(") &&!query.endsWith(")");
       const isGroupQuery = query.startsWith("(") && query.endsWith(")");
       if (isEntryQuery) {
         const entryQuery = parseSearch(query);
@@ -98,7 +111,11 @@ export const getQuery = (queryString: string) => {
 };
 
 /**
- * Heloooooooooo
+ * Evaluates a condition and returns the result.
+ * @param left - The left operand.
+ * @param condition - The condition to evaluate.
+ * @param right - The right operand.
+ * @returns The result of the evaluation.
  */
 export const evalCondition = (
   left: string | boolean | number,

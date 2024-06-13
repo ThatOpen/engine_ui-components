@@ -4,11 +4,13 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Infinite2DGrid } from "./src/Infinite2DGrid";
 
-// HTML tag: bim-world-2d
 /**
- * Heloooooooooo
+ * A custom 2D Scene component for BIM applications. HTML tag: bim-world-2d
  */
 export class World2D extends LitElement {
+  /**
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       position: relative;

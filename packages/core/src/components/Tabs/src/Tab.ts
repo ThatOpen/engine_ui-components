@@ -1,11 +1,13 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
-// HTML Tag: bim-tab
 /**
- * Heloooooooooo
+ * A custom tab web component for BIM applications. HTML tag: bim-tab
  */
 export class Tab extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       display: block;

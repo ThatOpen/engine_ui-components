@@ -2,9 +2,12 @@ import { LitElement, css, html } from "lit";
 import "iconify-icon";
 
 /**
- * Heloooooooooo
+ * A custom icon web component for BIM applications. HTML tag: bim-icon
  */
 export class Icon extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       height: var(--bim-icon--fz, var(--bim-ui_size-sm));

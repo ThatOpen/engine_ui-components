@@ -5,11 +5,15 @@ import { createRef, ref } from "lit/directives/ref.js";
 import "iconify-icon";
 import { ContextMenu } from "../ContextMenu";
 
-// HTML tag: bim-button
 /**
- * Heloooooooooo
+ * A custom button web component for BIM applications. HTML tag: bim-button
+ *
+ * @fires click - Fired when the button is clicked.
  */
 export class Button extends LitElement {
+  /**
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100);

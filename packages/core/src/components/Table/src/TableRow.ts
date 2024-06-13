@@ -4,6 +4,9 @@ import { Table, ColumnData } from "../index";
 import { TableRowData, CellCreatedEventDetail } from "./types";
 
 export class TableRow extends LitElement {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       position: relative;

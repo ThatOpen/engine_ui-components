@@ -4,11 +4,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { HasName, HasValue } from "../../core/types";
 import { getQuery } from "../../core/utils";
 
-// HTML Tag: bim-text-input
 /**
- * Heloooooooooo
+ * A custom text input web component for BIM applications. HTML tag: bim-text-input
  */
 export class TextInput extends LitElement implements HasName, HasValue {
+  /**
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);
