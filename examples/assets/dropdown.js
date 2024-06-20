@@ -1,1 +1,1 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as t}from"./index-C-JVeZL5.js";import"./state-HK6D0hVF.js";t.init();const e=document.body.querySelector("bim-dropdown");e.addEventListener("change",()=>{const o=e.value;alert(`You've selected: ${o.join(", ")}.`)});
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as t}from"./index-By5TQVRZ.js";import"./state--sg4lz7-.js";t.init();const e=document.body.querySelector("bim-dropdown");e.addEventListener("change",()=>{const o=e.value;alert(`You've selected: ${o.join(", ")}.`)});
