@@ -1,13 +1,13 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as m,a as d,C as l,i as f,n as b,k as u,u as w,R as g,b as y,A as C,J as T,h as v}from"./template-Cjrp5NH8.js";import{b as E}from"./index-B09cy6IV.js";import{t as L}from"./index-BulqlRzf.js";m.init();const e=new d,a=document.createElement("bim-viewport");a.name="viewer";const A=e.get(l),t=A.create(),o=new f(e);o.setup();t.scene=o;const c=new b(e,a);t.renderer=c;const r=new u(e);t.camera=r;a.addEventListener("resize",()=>{c.resize(),r.updateAspect()});const I=e.get(w);I.create(t);e.init();const $=e.get(g);await $.setup();const p=e.get(y);p.onFragmentsLoaded.add(n=>{t.scene&&t.scene.three.add(n)});const[h,k]=L.classificationTree({components:e,classifications:{}}),i=e.get(C);p.onFragmentsLoaded.add(async n=>{i.byEntity(n),await i.byPredefinedType(n),k({classifications:{Entities:["entities"],"Predefined Types":["predefinedTypes"]}})});const z=T.create(()=>{const[n]=E.loadIfc({components:e});return v`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as p,p as d,C as l,s as f,i as b,H as u,d as w,R as g,u as y,A as C,t as T,h as v}from"./template-96LIshqX.js";import{b as E}from"./index-pJJ_YfO_.js";import{t as L}from"./index-C1QNbT2t.js";p.init();const e=new d,s=document.createElement("bim-viewport");s.name="viewer";const A=e.get(l),n=A.create(),o=new f(e);o.setup();n.scene=o;const c=new b(e,s);n.renderer=c;const r=new u(e);n.camera=r;s.addEventListener("resize",()=>{c.resize(),r.updateAspect()});const I=e.get(w);I.create(n);e.init();const h=e.get(g);await h.setup();const m=e.get(y);m.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[z,F]=L.classificationTree({components:e,classifications:{}}),i=e.get(C);m.onFragmentsLoaded.add(async t=>{i.byEntity(t),await i.byPredefinedType(t),F({classifications:{Entities:["entities"],"Predefined Types":["predefinedTypes"]}})});const H=T.create(()=>{const[t]=E.loadIfc({components:e});return v`
    <bim-panel label="Classifications Tree">
     <bim-panel-section label="Importing">
-      ${n}
+      ${t}
     </bim-panel-section>
     <bim-panel-section label="Classifications">
-      ${h}
+      ${z}
     </bim-panel-section>
    </bim-panel> 
-  `}),s=document.createElement("bim-grid");s.layouts={main:{template:`
+  `}),a=document.createElement("bim-grid");a.layouts={main:{template:`
       "panel viewport"
       / 23rem 1fr
-    `,elements:{panel:z,viewport:a}}};s.layout="main";document.body.append(s);
+    `,elements:{panel:H,viewport:s}}};a.layout="main";document.body.append(a);
