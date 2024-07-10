@@ -24,6 +24,18 @@
 
 * release 2.1.0 ([4c1bd25](https://github.com/ThatOpen/engine_ui-components/commit/4c1bd251c7d7eadcca24f8aa666002ab29505f2b))
 
+## [2.1.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.1.0...v2.1.0) (2024-07-10)
+
+
+### Bug Fixes
+
+* add publish repo scripts ([a18b1fa](https://github.com/ThatOpen/engine_ui-components/commit/a18b1facf050746a9c95a788fc5c1cf75f0a797d))
+
+
+### Miscellaneous Chores
+
+* release 2.1.0 ([4c1bd25](https://github.com/ThatOpen/engine_ui-components/commit/4c1bd251c7d7eadcca24f8aa666002ab29505f2b))
+
 ## 2.1.0 (2024-07-10)
 
 
