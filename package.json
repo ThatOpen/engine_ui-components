@@ -10,6 +10,7 @@
     "build-obc": "npm run build -w @thatopen/ui-obc",
     "build-libraries": "npm run build-core && npm run build-obc",
     "build-examples": "vite build --config ./vite.config-examples.ts",
+    "publish-repo": "yarn workspace @thatopen/ui publish-repo && yarn workspace @thatopen/ui-obc publish-repo",
     "build-all": "npm run build-examples && npm run build-libraries"
   },
   "license": "MIT",
