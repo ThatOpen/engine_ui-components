@@ -13,7 +13,7 @@
 ![cover](https://thatopen.github.io/engine_ui-components/resources/cover.png)
 
 <h1>BIM UI Components <img src="https://thatopen.github.io/engine_ui-components/resources/favicon.ico" width="22"/></h1>
-
+ 
 BIM UI Components is the ultimate set of user interface elements you need to create fully featured BIM applications 🚀
 <br></br>
 
