@@ -68,6 +68,9 @@ world2d.components = components;
 if (!world2d.world) {
   throw new Error("World not found!");
 }
+
+world2d.gridOffsetX = 10000;
+
 planNavigator.world = world2d.world;
 
 await planNavigator.draw(model);

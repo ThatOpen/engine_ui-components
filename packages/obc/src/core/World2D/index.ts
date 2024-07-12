@@ -60,6 +60,28 @@ export class World2D extends LitElement {
     return this._gridScaleY;
   }
 
+  get gridOffsetX() {
+    return this._grid?.offsetX || 0;
+  }
+
+  @property({ type: Number, attribute: "grid-offset-x", reflect: true })
+  set gridOffsetX(value: number) {
+    if (this._grid) {
+      this._grid.offsetX = value;
+    }
+  }
+
+  get gridOffsetY() {
+    return this._grid?.offsetY || 0;
+  }
+
+  @property({ type: Number, attribute: "grid-offset-y", reflect: true })
+  set gridOffsetY(value: number) {
+    if (this._grid) {
+      this._grid.offsetY = value;
+    }
+  }
+
   private _grid: Infinite2DGrid | null = null;
 
   set components(components: OBC.Components) {

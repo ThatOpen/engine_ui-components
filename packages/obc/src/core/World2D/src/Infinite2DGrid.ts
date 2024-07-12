@@ -47,6 +47,28 @@ export class Infinite2DGrid {
     return this._scaleY;
   }
 
+  private _offsetX = 0;
+
+  set offsetX(value: number) {
+    this._offsetX = value;
+    this.regenerate();
+  }
+
+  get offsetX() {
+    return this._offsetX;
+  }
+
+  private _offsetY = 0;
+
+  set offsetY(value: number) {
+    this._offsetY = value;
+    this.regenerate();
+  }
+
+  get offsetY() {
+    return this._offsetY;
+  }
+
   constructor(camera: THREE.Camera, container: HTMLElement) {
     this._camera = camera;
     this._container = container;
@@ -145,12 +167,14 @@ export class Infinite2DGrid {
 
     const p = 10000;
 
+    const leftWithOffset = mTrueLeft + this._offsetX;
+
     // Avoid horizontal text overlap by computing the real width of a text
     // and computing which lines should have a label starting from zero
-    const minLabel = Math.round(Math.abs(mTrueLeft / this.scaleX) * p) / p;
+    const minLabel = Math.round(Math.abs(leftWithOffset / this.scaleX) * p) / p;
     const maxDist = (mainGridCountHor - 1) * mDistanceHor;
     const maxLabel =
-      Math.round(Math.abs((mTrueLeft + maxDist) / this.scaleX) * p) / p;
+      Math.round(Math.abs((leftWithOffset + maxDist) / this.scaleX) * p) / p;
     const biggestLabelLength = Math.max(minLabel, maxLabel).toString().length;
     const biggestLabelSize = biggestLabelLength * realWidthPerCharacter;
     const cellsOccupiedByALabel = Math.ceil(biggestLabelSize / mDistanceHor);
@@ -159,8 +183,6 @@ export class Infinite2DGrid {
     for (let i = 0; i < mainGridCountHor; i++) {
       let offset = mTrueLeft + i * mDistanceHor;
       mPoints.push(offset, top, 0, offset, bottom, 0);
-
-      const value = offset / this.scaleX;
 
       offset = Math.round(offset * p) / p;
       offsetToZero = Math.round(offsetToZero * p) / p;
@@ -173,11 +195,12 @@ export class Infinite2DGrid {
         continue;
       }
 
-      const sign = this.newNumber(value);
+      const sign = this.newNumber((offset + this._offsetX) / this.scaleX);
       const textOffsetPixels = 12;
       const textOffset = textOffsetPixels * unit3dPixelRel;
       sign.position.set(offset, bottom + textOffset, 0);
     }
+
     for (let i = 0; i < mainGridCountVert; i++) {
       const offset = mTrueBottom + i * mDistanceVert;
       mPoints.push(left, offset, 0, right, offset, 0);
