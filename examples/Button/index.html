@@ -13,16 +13,43 @@
     body {
       background-color: var(--bim-ui_bg-base);
     }
+
+    .btn-1 {
+      --bim-label--c: rgb(255 97 97);
+      background-color: rgb(182 19 19 / 40%);
+      border-radius: 100px;
+    }
+
+    .btn-1:hover {
+      --bim-label--c: rgb(239, 75, 75);
+      background-color: rgb(182 19 19 / 50%);
+      outline: 1px solid rgb(239, 75, 75);
+    }
+
+    .btn-2 {
+      background-color: transparent;
+    }
+
+    .btn-2:hover {
+      --bim-label--c: var(--bim-ui_accent-base);
+    }
   </style>
   <script type="module" crossorigin src="../assets/button.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="../assets/state--sg4lz7-.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-tebY1hZm.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-DrhfWrrY.js">
 </head>
 
 <body>
-  <bim-button label="My Button!" icon="solar:alarm-play-bold" tooltip-title="The Button"
-    tooltip-text="This just activates a popup!"></bim-button>
+  <div style="display: flex; flex-direction: column; gap: 0.35rem; width: 15rem;">
+    <bim-button label="My Button!" icon="solar:alarm-play-bold" tooltip-title="The Button"
+      tooltip-text="This just activates a popup!"></bim-button>
+    <bim-button class="btn-1" label="An nicely styled button" icon="solar:alarm-play-bold"></bim-button>
+    <bim-button class="btn-2" label="An styled button" icon="solar:alarm-play-bold"></bim-button>
+    <bim-button label="Vertical Button" icon="solar:alarm-play-bold" vertical></bim-button>
+    <bim-button label="No icon"></bim-button>
+    <bim-button icon="solar:settings-bold"></bim-button>
+  </div>
 </body>
 
 </html>
