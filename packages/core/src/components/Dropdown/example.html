@@ -14,19 +14,32 @@
       background-color: var(--bim-ui_bg-base);
     }
 
-    bim-dropdown {
-      width: 28rem;
+    .dropdown-1 {
+      --bim-dropdown--c: rgb(239, 75, 75);
+      --bim-input--bgc: rgb(182 19 19 / 50%);
+      --bim-input--bdrs: 100px;
+    }
+
+    .dropdown-1[visible] {
+      --bim-input--olc: rgb(239, 75, 75);
     }
   </style>
 </head>
 
 <body>
-  <div>
-    <bim-dropdown label="IFC Entity" multiple>
+  <div style="display: flex; flex-direction: column; gap: 0.35rem; width: 15rem;">
+    <bim-dropdown id="my-dropdown-1" label="IFC Entity" multiple>
       <bim-option label="IfcWindow" checked></bim-option>
       <bim-option label="IfcWall"></bim-option>
       <bim-option label="IfcSlab"></bim-option>
     </bim-dropdown>
+    <bim-dropdown class="dropdown-1">
+      <bim-option label="IfcSlab"></bim-option>
+    </bim-dropdown>
+    <bim-dropdown label="Vertical Layout" vertical>
+      <bim-option label="IfcSlab"></bim-option>
+    </bim-dropdown>
+    <bim-dropdown id="my-dropdown-2" required></bim-dropdown>
   </div>
   <script type="module" src="./example.ts"></script>
 </body>

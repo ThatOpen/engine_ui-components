@@ -1,10 +1,8 @@
 import { css, html } from "lit";
-import { createRef, ref } from "lit/directives/ref.js";
 import { property, state } from "lit/decorators.js";
 import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
 import { Option } from "../Option";
-import { ContextMenu } from "../ContextMenu";
 import { HasName, HasValue } from "../../core/types";
 
 /**
@@ -12,8 +10,8 @@ import { HasName, HasValue } from "../../core/types";
  */
 export class Dropdown extends Component implements HasValue, HasName {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`
@@ -22,18 +20,15 @@ export class Dropdown extends Component implements HasValue, HasName {
           --bim-dropdown--bgc,
           var(--bim-ui_bg-contrast-20)
         );
-        --bim-input--olw: var(--bim-dropdown--olw, 2px);
-        --bim-input--olc: var(--bim-dropdown--olc, transparent);
-        --bim-input--bdrs: var(--bim-dropdown--bdrs, var(--bim-ui_size-4xs));
+        --bim-input--olw: 2px;
+        --bim-input--olc: transparent;
+        --bim-input--bdrs: var(--bim-ui_size-4xs);
         flex: 1;
         display: block;
       }
 
       :host([visible]) {
-        --bim-input--olc: var(
-          --bim-dropdown¡focus--c,
-          var(--bim-ui_accent-base)
-        );
+        --bim-input--olc: var(--bim-ui_accent-base);
       }
 
       .input {
@@ -132,9 +127,6 @@ export class Dropdown extends Component implements HasValue, HasName {
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
-  private _inputContainer = createRef<HTMLDivElement>();
-  private _listElement = createRef<ContextMenu>();
-
   private _visible = false;
 
   /**
@@ -159,7 +151,7 @@ export class Dropdown extends Component implements HasValue, HasName {
   }
 
   @state()
-  private _value: Option[] = [];
+  private _value: Set<Option> = new Set();
 
   /**
    * The selected values in the dropdown.
@@ -171,12 +163,12 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   set value(value: any[]) {
     if (this.required && Object.keys(value).length === 0) return;
-    const _value: Option[] = [];
+    const _value: Set<Option> = new Set();
     for (const option of value) {
       const existingOption = this.findOption(option);
       if (!existingOption) continue;
-      _value.push(existingOption);
-      if (!this.multiple && Object.keys(value).length > 1) break;
+      _value.add(existingOption);
+      if (!this.multiple && Object.keys(value).length === 1) break;
     }
     this._value = _value;
     this.updateOptionsState();
@@ -184,18 +176,18 @@ export class Dropdown extends Component implements HasValue, HasName {
   }
 
   get value() {
-    const options = this._value.filter(
+    const options = [...this._value].filter(
       (option) => option instanceof Option && option.checked,
     );
     return options.map((option) => option.value);
   }
 
   private get _options() {
-    const options = [...this.elements];
+    const options = new Set([...this.elements]);
     for (const child of this.children) {
-      if (child instanceof Option) options.push(child);
+      if (child instanceof Option) options.add(child);
     }
-    return options;
+    return [...options];
   }
 
   /**
@@ -222,22 +214,24 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   private onOptionClick = (e: MouseEvent) => {
     const option = e.target as Option;
-    const selected = this._value.includes(option);
+    const selected = this._value.has(option);
     if (!this.multiple && !this.required && !selected) {
-      this._value = [option];
+      this._value = new Set([option]);
     } else if (!this.multiple && !this.required && selected) {
-      this._value = [];
+      this._value = new Set([]);
     } else if (!this.multiple && this.required && !selected) {
-      this._value = [option];
+      this._value = new Set([option]);
     } else if (this.multiple && !this.required && !selected) {
-      this._value = [...this._value, option];
+      this._value = new Set([...this._value, option]);
     } else if (this.multiple && !this.required && selected) {
-      this._value = this._value.filter((v) => v !== option);
+      const values = [...this._value].filter((v) => v !== option);
+      this._value = new Set(values);
     } else if (this.multiple && this.required && !selected) {
-      this._value = [...this._value, option];
+      this._value = new Set([...this._value, option]);
     } else if (this.multiple && this.required && selected) {
-      const rest = this._value.filter((v) => v !== option);
-      if (rest.length !== 0) this._value = rest;
+      const options = [...this._value].filter((v) => v !== option);
+      const rest = new Set(options);
+      if (rest.size !== 0) this._value = rest;
     }
     this.updateOptionsState();
     this.dispatchEvent(this.onValueChange);
@@ -246,24 +240,23 @@ export class Dropdown extends Component implements HasValue, HasName {
   private onSlotChange(e: any) {
     const children = e.target.assignedElements();
     this.observe(children);
-    for (const child of children) {
+    const checkedOptions = new Set<Option>();
+    for (const child of this.elements) {
       if (!(child instanceof Option)) {
         child.remove();
         continue;
       }
+      if (child.checked) checkedOptions.add(child);
       child.removeEventListener("click", this.onOptionClick);
       child.addEventListener("click", this.onOptionClick);
     }
+    this._value = checkedOptions;
   }
 
   private updateOptionsState() {
     for (const element of this._options) {
       if (!(element instanceof Option)) continue;
-      if (this._value.includes(element)) {
-        element.checked = true;
-      } else {
-        element.checked = false;
-      }
+      element.checked = this._value.has(element);
     }
   }
 
@@ -280,12 +273,6 @@ export class Dropdown extends Component implements HasValue, HasName {
     window.addEventListener("mouseup", this.onWindowMouseUp);
   }
 
-  firstUpdated() {
-    for (const child of this.children) {
-      if (child instanceof Option && child.checked) this._value.push(child);
-    }
-  }
-
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener("mouseup", this.onWindowMouseUp);
@@ -296,15 +283,15 @@ export class Dropdown extends Component implements HasValue, HasName {
     let inputImg: string | undefined;
     let inputIcon: string | undefined;
 
-    if (this._value.length === 0) {
+    if (this._value.size === 0) {
       inputLabel = "Select an option...";
-    } else if (this._value.length === 1) {
-      const option = this._value[0];
+    } else if (this._value.size === 1) {
+      const option = [...this._value][0];
       inputLabel = option?.label || option?.value;
       inputImg = option?.img;
       inputIcon = option?.icon;
     } else {
-      inputLabel = `Multiple (${this._value.length})`;
+      inputLabel = `Multiple (${this._value.size})`;
     }
 
     return html`
@@ -314,11 +301,7 @@ export class Dropdown extends Component implements HasValue, HasName {
         .icon=${this.icon}
         .vertical=${this.vertical}
       >
-        <div
-          ${ref(this._inputContainer)}
-          class="input"
-          @click=${() => (this.visible = !this.visible)}
-        >
+        <div class="input" @click=${() => (this.visible = !this.visible)}>
           <bim-label
             .img=${inputImg}
             .icon=${inputIcon}
@@ -326,7 +309,7 @@ export class Dropdown extends Component implements HasValue, HasName {
             >${inputLabel}</bim-label
           >
           <svg
-            style="flex-shrink: 0"
+            style="flex-shrink: 0; fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100))"
             xmlns="http://www.w3.org/2000/svg"
             height="1.125rem"
             viewBox="0 0 24 24"
@@ -337,7 +320,7 @@ export class Dropdown extends Component implements HasValue, HasName {
             <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
           </svg>
         </div>
-        <bim-context-menu ${ref(this._listElement)} .visible=${this.visible}>
+        <bim-context-menu .visible=${this.visible}>
           <slot @slotchange=${this.onSlotChange}></slot>
           ${this.visibleElements.map((option) => option)}
         </bim-context-menu>

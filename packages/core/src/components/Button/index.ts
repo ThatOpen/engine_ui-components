@@ -16,10 +16,12 @@ export class Button extends LitElement {
    */
   static styles = css`
     :host {
-      --bim-label--c: var(--bim-ui_bg-contrast-100);
+      --bim-label--c: var(--bim-ui_bg-contrast-100, white);
       display: block;
       flex: 1;
       pointer-events: none;
+      background-color: var(--bim-ui_bg-contrast-20);
+      border-radius: var(--bim-ui_size-4xs);
     }
 
     :host(:not([disabled]):hover) {
@@ -31,13 +33,13 @@ export class Button extends LitElement {
     }
 
     .parent {
-      --bim-label--fz: var(--bim-ui_size-xs);
       --bim-icon--c: var(--bim-label--c);
       display: flex;
       height: 100%;
       user-select: none;
       row-gap: 0.125rem;
-      column-gap: 0.125rem;
+      min-height: var(--bim-ui_size-5xl);
+      min-width: var(--bim-ui_size-5xl);
     }
 
     .button,
@@ -47,10 +49,14 @@ export class Button extends LitElement {
       align-items: center;
       justify-content: center;
       pointer-events: auto;
-      min-height: var(--bim-ui_size-5xl);
-      min-width: var(--bim-ui_size-5xl);
-      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
-      outline: var(--bim-button--olw) solid var(--bim-button--olc);
+    }
+
+    .children {
+      padding: 0 0.375rem;
+    }
+
+    :host(:not([label-hidden])[icon][vertical]) .parent {
+      min-height: 2.5rem;
     }
 
     .button {
@@ -61,22 +67,14 @@ export class Button extends LitElement {
       justify-content: var(--bim-button--jc, center);
     }
 
-    :host(:hover) .button,
-    :host(:hover) .children {
+    :host(:hover),
+    :host([active]) {
       --bim-label--c: var(--bim-ui_main-contrast);
-      --bim-icon--c: var(--bim-ui_main-contrast);
-      fill: white;
       background-color: var(--bim-ui_main-base);
     }
 
     :host(:not([label]):not([icon])) .children {
       flex: 1;
-    }
-
-    :host([active]) .button {
-      --bim-label--c: var(--bim-ui_main-contrast);
-      --bim-icon--c: var(--bim-ui_main-contrast);
-      background-color: var(--bim-ui_main-base);
     }
 
     :host([vertical]) .parent {
@@ -91,17 +89,8 @@ export class Button extends LitElement {
       background-color: gray;
     }
 
-    .children {
-      --bim-icon--fz: var(--bim-ui_size-base);
-      padding: 0 0.125rem;
-    }
-
     ::slotted(bim-button) {
       --bim-icon--fz: var(--bim-ui_size-base);
-      --bim-button--bgc: var(
-        --bim-context-menu--bgc,
-        var(--bim-ui_bg-contrast-20)
-      );
       --bim-button--bdrs: var(--bim-ui_size-4xs);
       --bim-button--olw: 0;
       --bim-button--olc: transparent;
