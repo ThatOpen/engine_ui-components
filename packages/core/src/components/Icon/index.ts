@@ -6,8 +6,8 @@ import "iconify-icon";
  */
 export class Icon extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       height: var(--bim-icon--fz, var(--bim-ui_size-sm));
@@ -18,6 +18,7 @@ export class Icon extends LitElement {
       height: var(--bim-icon--fz, var(--bim-ui_size-sm));
       width: var(--bim-icon--fz, var(--bim-ui_size-sm));
       color: var(--bim-icon--c);
+      transition: all 0.15s;
     }
   `;
 

@@ -8,8 +8,8 @@ import { styles } from "../../../core/Manager/src/styles";
  */
 export class Tabs extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`
@@ -48,6 +48,7 @@ export class Tabs extends LitElement {
         padding: 0rem 0.75rem;
         display: flex;
         justify-content: center;
+        transition: all 0.15s;
       }
 
       :host([switchers-full]) .switcher {

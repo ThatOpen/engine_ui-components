@@ -13,8 +13,8 @@ import { styles } from "../../core/Manager/src/styles";
 
 export class ContextMenu extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`

@@ -7,8 +7,8 @@ import { HasValue, HasName } from "../../core/types";
  */
 export class Input extends LitElement implements HasValue, HasName {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       flex: 1;
@@ -46,6 +46,7 @@ export class Input extends LitElement implements HasValue, HasName {
       outline: var(--bim-input--olw, 2px) solid
         var(--bim-input--olc, transparent);
       border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
+      transition: all 0.15s;
     }
 
     :host(:not([vertical])) .input {

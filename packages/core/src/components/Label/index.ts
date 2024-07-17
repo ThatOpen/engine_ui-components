@@ -7,8 +7,8 @@ import { convertString } from "../../core/utils";
  */
 export class Label extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-icon--c: var(--bim-label--c);
@@ -18,6 +18,7 @@ export class Label extends LitElement {
       display: block;
       white-space: nowrap;
       line-height: 1.1rem;
+      transition: all 0.15s;
     }
 
     .parent {

@@ -9,8 +9,8 @@ import { getElementValue } from "../../../core/utils";
  */
 export class PanelSection extends LitElement implements HasName, HasValue {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`
@@ -63,6 +63,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
       :host(:not([fixed])[collapsed]) .components {
         display: none;
+        height: 0px;
       }
 
       bim-label {

@@ -23,6 +23,7 @@ export class Checkbox extends LitElement implements HasValue {
       column-gap: 0.5rem;
       width: 100%;
       align-items: center;
+      transition: all 0.15s;
     }
 
     :host([inverted]) .parent {
@@ -37,6 +38,7 @@ export class Checkbox extends LitElement implements HasValue {
       border: none;
       outline: none;
       accent-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
+      transition: all 0.15s;
     }
 
     input:focus {
