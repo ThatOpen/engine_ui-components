@@ -20,7 +20,7 @@ export class Button extends LitElement {
       display: block;
       flex: 1;
       pointer-events: none;
-      background-color: var(--bim-ui_bg-contrast-20);
+      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-4xs);
     }
 
