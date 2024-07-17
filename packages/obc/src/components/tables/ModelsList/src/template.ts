@@ -78,6 +78,30 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
           : "mdi:eye";
       };
 
+      const onSaveClick = () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".ifc";
+        input.multiple = false;
+        input.addEventListener("change", async () => {
+          if (!(input.files && input.files.length === 1)) return;
+          const originalFile = input.files[0];
+          const originalBuffer = await originalFile.arrayBuffer();
+          const propsManager = components.get(OBC.IfcPropertiesManager);
+          const modifiedBuffer = await propsManager.saveToIfc(
+            model,
+            new Uint8Array(originalBuffer),
+          );
+          const modifiedFile = new File([modifiedBuffer], originalFile.name);
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(modifiedFile);
+          a.download = modifiedFile.name;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        });
+        input.click();
+      };
+
       return BUI.html`
        <div style="display: flex; flex: 1; gap: var(--bim-ui_size-4xs); justify-content: space-between; overflow: auto;">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--bim-ui_size-4xs); flex-grow: 1; overflow: auto;">
@@ -89,7 +113,8 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
             ${viewDefinitionTagTemplate}
           </div>
         </div>
-        <div style="display: flex; gap: var(--bim-ui_size-4xs); align-self: flex-start; flex-shrink: 0;">
+        <div style="display: flex; align-self: flex-start; flex-shrink: 0;">
+          <bim-button @click=${onSaveClick} icon="flowbite:download-solid"></bim-button>
           <bim-button @click=${onHideClick} icon="mdi:eye"></bim-button>
           <bim-button @click=${onDeleteClick} icon="mdi:delete"></bim-button>
         </div>
