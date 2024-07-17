@@ -22,6 +22,7 @@ export class Button extends LitElement {
       pointer-events: none;
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-4xs);
+      transition: all 0.15s;
     }
 
     :host(:not([disabled]):hover) {
@@ -34,6 +35,7 @@ export class Button extends LitElement {
 
     .parent {
       --bim-icon--c: var(--bim-label--c);
+      position: relative;
       display: flex;
       height: 100%;
       user-select: none;
@@ -53,6 +55,9 @@ export class Button extends LitElement {
 
     .children {
       padding: 0 0.375rem;
+      position: absolute;
+      height: 100%;
+      right: 0;
     }
 
     :host(:not([label-hidden])[icon][vertical]) .parent {
@@ -256,7 +261,6 @@ export class Button extends LitElement {
   constructor() {
     super();
     this.mouseLeave = true;
-    this.addEventListener("click", (e) => e.stopPropagation());
   }
 
   private computeTooltipPosition() {
@@ -342,24 +346,6 @@ export class Button extends LitElement {
     const hasChildren = this.children.length > 0;
 
     return html`
-      <style>
-        .button {
-          border-radius: var(
-            --bim-button--bdrs,
-            ${hasChildren
-              ? "var(--bim-ui_size-4xs) 0 0 var(--bim-ui_size-4xs)"
-              : "var(--bim-ui_size-4xs)"}
-          );
-        }
-        .children {
-          border-radius: var(
-            --bim-button--bdrs,
-            ${hasChildren
-              ? "0 var(--bim-ui_size-4xs) var(--bim-ui_size-4xs) 0"
-              : "var(--bim-ui_size-4xs)"}
-          );
-        }
-      </style>
       <div ${ref(this._parent)} class="parent">
         ${this.label || this.icon
           ? html`
@@ -381,7 +367,19 @@ export class Button extends LitElement {
         ${hasChildren
           ? html`
               <div class="children" @click=${this.onChildrenClick}>
-                <bim-icon .icon=${"ic:round-plus"}></bim-icon>
+                <svg
+                  style="flex-shrink: 0; fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100))"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1.125rem"
+                  viewBox="0 0 24 24"
+                  width="1.125rem"
+                  fill="#9ca3af"
+                >
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path
+                    d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
               </div>
             `
           : null}
