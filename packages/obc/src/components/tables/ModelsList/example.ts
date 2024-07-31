@@ -56,7 +56,11 @@ fragmentsManager.onFragmentsLoaded.add((model) => {
   Allright! Now that some basic events are setup, it's time to create a new fresh models list component:
   */
 
-const [modelsList] = CUI.tables.modelsList({ components });
+const [modelsList] = CUI.tables.modelsList({
+  components,
+  tags: { schema: true, viewDefinition: false },
+  actions: { download: false },
+});
 
 /* MD
   Now that we have a brand new models list created, we need to add it to the HTML page. For it, let's create simple BIM panel component where we include the models list and also a pre-made IFC load button 👇
