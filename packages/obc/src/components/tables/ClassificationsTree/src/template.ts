@@ -1,6 +1,5 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-// import * as THREE from "three";
 // import { html } from "lit";
 
 interface ClassificationTree {
@@ -10,103 +9,70 @@ interface ClassificationTree {
 
 export interface ClassificationTreeUIState {
   components: OBC.Components;
-  classifications: { [name: string]: string[] };
+  classifications: (string | { system: string; label: string })[];
 }
 
-function extractGroupSystem(filter: { [key: string]: string[] }): string {
-  const lastKey = Object.keys(filter).pop();
-  return lastKey && filter[lastKey].length > 0 ? filter[lastKey][0] : "";
-}
-
-// Recursive function to transform ClassifierTree into TableRow
-function convertToTableRows(treeNodes: ClassificationTree[]) {
-  return treeNodes.map((node) => {
-    const row: BUI.TableGroupData = {
-      data: {
-        System: extractGroupSystem(node.filter),
-        // Actions: JSON.stringify(node.filter),
-      },
-    };
-
-    if (node.children && node.children.length > 0) {
-      row.children = convertToTableRows(node.children);
-    }
-
-    return row;
-  });
-}
+let table: BUI.Table;
 
 export const classificationTreeTemplate = (
   state: ClassificationTreeUIState,
 ) => {
   const { components, classifications } = state;
   const classifier = components.get(OBC.Classifier);
-  // const hider = components.get(OBC.FragmentHider);
+  const hider = components.get(OBC.Hider);
 
-  const onTableCreated = (el?: Element) => {
-    if (!el) return;
-    const table = el as BUI.Table;
+  if (!table) {
+    table = document.createElement("bim-table");
+    table.headersHidden = true;
+    table.hiddenColumns = ["system"];
+    table.columns = ["Name", { name: "Actions", width: "auto" }];
     table.dataTransform = {
-      Actions: (value) => {
-        if (typeof value !== "string") return value;
-        // const filter = JSON.parse(value);
-        // const fragmentIdMap = classifier.find(filter);
-        // const onChange = (event: Event) => {
-        //   const checkbox = event.target as BUI.Checkbox;
-        //   hider.set(checkbox.checked, fragmentIdMap);
-        // };
-        // const onInput = (event: Event) => {
-        //   const colorInput = event.target as BUI.ColorInput;
-        //   classifier.setColor(fragmentIdMap, new THREE.Color(colorInput.color));
-        // };
-        // return BUI.html`<bim-color-input @input=${onInput}></bim-color-input>`;
-        // return html`<bim-checkbox checked @change=${onChange}></bim-checkbox>`;
-        return value;
+      Actions: (value, rowData) => {
+        const { system, Name } = rowData;
+        if (!(typeof system === "string" && typeof Name === "string"))
+          return value;
+        const groups = classifier.list[system];
+        if (!groups) return value;
+        const groupData = groups[Name];
+        if (!groupData) return value;
+        const { map: fragmentIdMap } = groupData;
+        const onVisibilityChange = (e: Event) => {
+          const input = e.target as BUI.Checkbox;
+          hider.set(input.value, fragmentIdMap);
+        };
+        return BUI.html`
+          <div>
+            <bim-checkbox checked @change=${onVisibilityChange}></bim-checkbox>
+          </div>
+        `;
       },
     };
+  }
 
-    const regenerate = (groupSystemNames: string[], baseFilter = {}) => {
-      const systems = classifier.list;
-      const currentSystemName = groupSystemNames[0]; // storeys
-      const systemGroups = systems[currentSystemName];
-      const groups: ClassificationTree[] = [];
-      if (!currentSystemName || !systemGroups) return groups;
-      for (const name in systemGroups) {
-        const filter = { ...baseFilter, [currentSystemName]: [name] };
-        const found = classifier.find(filter);
-        const hasElements = Object.keys(found).length > 0;
-        if (hasElements) {
-          const subTree: ClassificationTree = { filter };
-          subTree.children = regenerate(groupSystemNames.slice(1), filter);
-          groups.push(subTree);
-        }
-      }
-      return groups;
-    };
+  const rows: BUI.TableGroupData[] = [];
 
-    const rows: BUI.TableGroupData[] = [];
+  for (const classification of classifications) {
+    const system =
+      typeof classification === "string"
+        ? classification
+        : classification.system;
 
-    for (const classification in classifications) {
-      const groups = classifications[classification];
-      const tree = regenerate(groups);
-      const treeRows = convertToTableRows(tree);
-      rows.push({
-        data: { System: classification },
-        children: treeRows,
-      });
-    }
+    const label =
+      typeof classification === "string"
+        ? classification
+        : classification.label;
 
-    table.data = rows;
-    // table.columns = ["System", { name: "Actions", width: "auto" }];
-  };
+    const groups = classifier.list[system];
+    if (!groups) continue;
+    rows.push({
+      data: { Name: label, system },
+      children: Object.keys(groups).map((group) => {
+        return { data: { Name: group, system, Actions: "" } };
+      }),
+    });
+  }
 
-  return BUI.html`
-  <div>
-    ${
-      Object.keys(classifications).length === 0
-        ? BUI.html`<bim-label label="No classifications to show"></bim-label>`
-        : BUI.html`<bim-table ${BUI.ref(onTableCreated)} headers-hidden expanded></bim-table>`
-    }
-  </div>
-  `;
+  table.data = rows;
+
+  return BUI.html`${table}`;
 };
