@@ -92,11 +92,9 @@ const panel = BUI.Component.create(() => {
   };
 
   return BUI.html`
-   <bim-panel label="Classifications Tree">
-    <bim-panel-section label="Importing">
+   <bim-panel label="Relations Tree">
+    <bim-panel-section label="Model Tree">
       ${loadIfcBtn}
-    </bim-panel-section>
-    <bim-panel-section label="Classifications">
       <bim-text-input @input=${onSearch} placeholder="Search..." debounce="200"></bim-text-input>
       ${relationsTree}
     </bim-panel-section>
