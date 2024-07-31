@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-Deg_IZaY.js";import{x as n}from"./state--sg4lz7-.js";c.init();const b=t.create(()=>n`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-Ce-7a4Bu.js";import{x as n}from"./state--sg4lz7-.js";c.init();const b=t.create(()=>n`
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
     </bim-panel-section>

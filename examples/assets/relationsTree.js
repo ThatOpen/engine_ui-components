@@ -1,9 +1,7 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as u,p as g,C as b,s as f,i as w,H as h,d as v,R as C,j as S,h as y,k as I,t as L,g as T}from"./template-DrdcYDlt.js";import{b as x}from"./index-SntKMQMp.js";import{t as z}from"./index-C_xG4cnO.js";u.init();const e=new g,E=e.get(b),t=E.create(),o=new f(e);o.setup();t.scene=o;const s=document.createElement("bim-viewport"),r=new w(e,s);t.renderer=r;const i=new h(e);t.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const F=e.get(v);F.create(t);e.init();const $=e.get(C);await $.setup();const c=e.get(S);c.setup({world:t});c.zoomToSelection=!0;const p=e.get(y);p.onFragmentsLoaded.add(async n=>{t.scene&&t.scene.three.add(n)});const k=e.get(I);p.onFragmentsLoaded.add(async n=>{n.hasProperties&&await k.process(n)});const[a]=z.relationsTree({components:e,models:[]});a.preserveStructureOnFilter=!0;const B=L.create(()=>{const[n]=x.loadIfc({components:e});return T`
-   <bim-panel label="Classifications Tree">
-    <bim-panel-section label="Importing">
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as u,p as g,C as b,s as w,i as h,H as f,d as v,R as S,j as y,h as C,k as T,t as L,g as x}from"./template-D_pw7qg9.js";import{b as z}from"./index-Brv7ZOZv.js";import{t as E}from"./index-B3vPEHmF.js";u.init();const e=new g,F=e.get(b),t=F.create(),o=new w(e);o.setup();t.scene=o;const s=document.createElement("bim-viewport"),r=new h(e,s);t.renderer=r;const i=new f(e);t.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const I=e.get(v);I.create(t);e.init();const R=e.get(S);await R.setup();const c=e.get(y);c.setup({world:t});c.zoomToSelection=!0;const p=e.get(C);p.onFragmentsLoaded.add(async n=>{t.scene&&t.scene.three.add(n)});const $=e.get(T);p.onFragmentsLoaded.add(async n=>{n.hasProperties&&await $.process(n)});const[a]=E.relationsTree({components:e,models:[]});a.preserveStructureOnFilter=!0;const k=L.create(()=>{const[n]=z.loadIfc({components:e});return x`
+   <bim-panel label="Relations Tree">
+    <bim-panel-section label="Model Tree">
       ${n}
-    </bim-panel-section>
-    <bim-panel-section label="Classifications">
       <bim-text-input @input=${l=>{const d=l.target;a.queryString=d.value}} placeholder="Search..." debounce="200"></bim-text-input>
       ${a}
     </bim-panel-section>
@@ -11,4 +9,4 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as u,p as g,C as b,s as f,
   `}),m=document.getElementById("app");m.layouts={main:{template:`
       "panel viewport"
       / 30rem 1fr
-    `,elements:{panel:B,viewport:s}}};m.layout="main";
+    `,elements:{panel:k,viewport:s}}};m.layout="main";
