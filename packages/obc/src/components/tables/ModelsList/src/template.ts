@@ -5,15 +5,25 @@ import * as BUI from "@thatopen/ui";
 
 export interface ModelsListUIState {
   components: OBC.Components;
-  schemaTag?: boolean;
-  viewDefinitionTag?: boolean;
+  tags?: {
+    schema?: boolean;
+    viewDefinition?: boolean;
+  };
+  actions?: {
+    visibility?: boolean;
+    download?: boolean;
+    dispose?: boolean;
+  };
 }
 
 export const modelsListTemplate = (state: ModelsListUIState) => {
-  const { components } = state;
+  const { components, actions, tags } = state;
 
-  const schemaTag = state.schemaTag ?? true;
-  const viewDefinitionTag = state.viewDefinitionTag ?? true;
+  const disposeBtn = actions?.dispose ?? true;
+  const downloadBtn = actions?.download ?? true;
+  const visibilityBtn = actions?.visibility ?? true;
+  const schemaTag = tags?.schema ?? true;
+  const viewDefinitionTag = tags?.viewDefinition ?? true;
 
   const fragments = components.get(OBC.FragmentsManager);
 
@@ -66,41 +76,53 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
         `;
       }
 
-      const onDeleteClick = () => fragments.disposeGroup(model);
+      let disposeTemplate: BUI.TemplateResult | undefined;
+      if (disposeBtn) {
+        const onDisposeClick = () => fragments.disposeGroup(model);
+        disposeTemplate = BUI.html`<bim-button @click=${onDisposeClick} icon="mdi:delete"></bim-button>`;
+      }
 
-      const onHideClick = (e: Event) => {
-        const hider = components.get(OBC.Hider);
-        const button = e.target as BUI.Button;
-        hider.set(button.hasAttribute("data-model-hidden"), modelIdMap);
-        button.toggleAttribute("data-model-hidden");
-        button.icon = button.hasAttribute("data-model-hidden")
-          ? "mdi:eye-off"
-          : "mdi:eye";
-      };
+      let visibilityTemplate: BUI.TemplateResult | undefined;
+      if (visibilityBtn) {
+        const onHideClick = (e: Event) => {
+          const hider = components.get(OBC.Hider);
+          const button = e.target as BUI.Button;
+          hider.set(button.hasAttribute("data-model-hidden"), modelIdMap);
+          button.toggleAttribute("data-model-hidden");
+          button.icon = button.hasAttribute("data-model-hidden")
+            ? "mdi:eye-off"
+            : "mdi:eye";
+        };
+        visibilityTemplate = BUI.html`<bim-button @click=${onHideClick} icon="mdi:eye"></bim-button>`;
+      }
 
-      const onSaveClick = () => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = ".ifc";
-        input.multiple = false;
-        input.addEventListener("change", async () => {
-          if (!(input.files && input.files.length === 1)) return;
-          const originalFile = input.files[0];
-          const originalBuffer = await originalFile.arrayBuffer();
-          const propsManager = components.get(OBC.IfcPropertiesManager);
-          const modifiedBuffer = await propsManager.saveToIfc(
-            model,
-            new Uint8Array(originalBuffer),
-          );
-          const modifiedFile = new File([modifiedBuffer], originalFile.name);
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(modifiedFile);
-          a.download = modifiedFile.name;
-          a.click();
-          URL.revokeObjectURL(a.href);
-        });
-        input.click();
-      };
+      let downloadTemplate: BUI.TemplateResult | undefined;
+      if (downloadBtn) {
+        const onSaveClick = () => {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = ".ifc";
+          input.multiple = false;
+          input.addEventListener("change", async () => {
+            if (!(input.files && input.files.length === 1)) return;
+            const originalFile = input.files[0];
+            const originalBuffer = await originalFile.arrayBuffer();
+            const propsManager = components.get(OBC.IfcPropertiesManager);
+            const modifiedBuffer = await propsManager.saveToIfc(
+              model,
+              new Uint8Array(originalBuffer),
+            );
+            const modifiedFile = new File([modifiedBuffer], originalFile.name);
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(modifiedFile);
+            a.download = modifiedFile.name;
+            a.click();
+            URL.revokeObjectURL(a.href);
+          });
+          input.click();
+        };
+        downloadTemplate = BUI.html`<bim-button @click=${onSaveClick} icon="flowbite:download-solid"></bim-button>`;
+      }
 
       return BUI.html`
        <div style="display: flex; flex: 1; gap: var(--bim-ui_size-4xs); justify-content: space-between; overflow: auto;">
@@ -114,9 +136,9 @@ export const modelsListTemplate = (state: ModelsListUIState) => {
           </div>
         </div>
         <div style="display: flex; align-self: flex-start; flex-shrink: 0;">
-          <bim-button @click=${onSaveClick} icon="flowbite:download-solid"></bim-button>
-          <bim-button @click=${onHideClick} icon="mdi:eye"></bim-button>
-          <bim-button @click=${onDeleteClick} icon="mdi:delete"></bim-button>
+          ${downloadTemplate}
+          ${visibilityTemplate}
+          ${disposeTemplate}
         </div>
        </div>
       `;
