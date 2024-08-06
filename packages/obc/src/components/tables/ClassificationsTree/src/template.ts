@@ -1,11 +1,5 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-// import { html } from "lit";
-
-interface ClassificationTree {
-  filter: Record<string, string[]>;
-  children?: ClassificationTree[];
-}
 
 export interface ClassificationTreeUIState {
   components: OBC.Components;
@@ -32,9 +26,8 @@ export const classificationTreeTemplate = (
         if (!(typeof system === "string" && typeof Name === "string"))
           return value;
         const groups = classifier.list[system];
-        if (!groups) return value;
+        if (!(groups && groups[Name])) return value;
         const groupData = groups[Name];
-        if (!groupData) return value;
         const { map: fragmentIdMap } = groupData;
         const onVisibilityChange = (e: Event) => {
           const input = e.target as BUI.Checkbox;

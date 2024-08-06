@@ -70,6 +70,10 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
   // This creates a classification system named "predefinedTypes"
   await classifier.byPredefinedType(model);
 
+  // This classifications in the state of the classifications tree.
+  // Is an array with the classification systems to be shown.
+  // You can pass the system name directly, or an object with system and label keys.
+  // The system key is the name in the classifier, and the label is how you want it to be shown in the table.
   const classifications = [
     { system: "entities", label: "Entities" },
     { system: "predefinedTypes", label: "Predefined Types" },
