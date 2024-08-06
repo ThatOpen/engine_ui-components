@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as u,p as g,C as b,s as w,i as h,H as f,d as v,R as S,j as y,h as C,k as T,t as L,g as x}from"./template-CjtT_YCH.js";import{b as z}from"./index-GI6aOwIt.js";import{t as E}from"./index-BiwU9ezV.js";u.init();const e=new g,F=e.get(b),t=F.create(),o=new w(e);o.setup();t.scene=o;const s=document.createElement("bim-viewport"),r=new h(e,s);t.renderer=r;const i=new f(e);t.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const I=e.get(v);I.create(t);e.init();const R=e.get(S);await R.setup();const c=e.get(y);c.setup({world:t});c.zoomToSelection=!0;const p=e.get(C);p.onFragmentsLoaded.add(async n=>{t.scene&&t.scene.three.add(n)});const $=e.get(T);p.onFragmentsLoaded.add(async n=>{n.hasProperties&&await $.process(n)});const[a]=E.relationsTree({components:e,models:[]});a.preserveStructureOnFilter=!0;const k=L.create(()=>{const[n]=z.loadIfc({components:e});return x`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as u,p as g,C as b,o as w,r as f,W as h,u as v,R as y,A as S,h as C,j as T,f as L,i as x}from"./template-RkE92Rn6.js";import{b as z}from"./index-DyU7B9dy.js";import{t as A}from"./index-DKDIl_Nk.js";u.init();const e=new g,E=e.get(b),t=E.create(),s=new w(e);s.setup();t.scene=s;const o=document.createElement("bim-viewport"),r=new f(e,o);t.renderer=r;const i=new h(e);t.camera=i;o.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const F=e.get(v);F.create(t);e.init();const I=e.get(y);await I.setup();const c=e.get(S);c.setup({world:t});c.zoomToSelection=!0;const p=e.get(C);p.onFragmentsLoaded.add(async n=>{t.scene&&t.scene.three.add(n)});const R=e.get(T);p.onFragmentsLoaded.add(async n=>{n.hasProperties&&await R.process(n)});const[a]=A.relationsTree({components:e,models:[]});a.preserveStructureOnFilter=!0;const $=L.create(()=>{const[n]=z.loadIfc({components:e});return x`
    <bim-panel label="Relations Tree">
     <bim-panel-section label="Model Tree">
       ${n}
@@ -9,4 +9,4 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{m as u,p as g,C as b,s as w,
   `}),m=document.getElementById("app");m.layouts={main:{template:`
       "panel viewport"
       / 30rem 1fr
-    `,elements:{panel:k,viewport:s}}};m.layout="main";
+    `,elements:{panel:$,viewport:o}}};m.layout="main";
