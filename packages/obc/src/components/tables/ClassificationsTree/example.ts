@@ -54,7 +54,7 @@ fragmentsManager.onFragmentsLoaded.add((model) => {
 const [classificationsTree, updateClassificationsTree] =
   CUI.tables.classificationTree({
     components,
-    classifications: {},
+    classifications: [],
   });
 
 /* MD 
@@ -70,16 +70,16 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
   // This creates a classification system named "predefinedTypes"
   await classifier.byPredefinedType(model);
 
-  const classifications = {
-    Entities: ["entities"],
-    "Predefined Types": ["predefinedTypes"],
-  };
+  const classifications = [
+    { system: "entities", label: "Entities" },
+    { system: "predefinedTypes", label: "Predefined Types" },
+  ];
 
   updateClassificationsTree({ classifications });
 });
 
 /* MD
-  The `classifications` value is just an object where they keys are the names in the tree, and the values are the orders in which you want to group the elements. So, for example, "Entities" groups the elements based on their entities and then based on their predefined types. Needless to say, the classifications need to be computed before they can be used on the tree. You can check the system names from `classifier.list`.
+  The `classifications` value is just an array of the classification systems from the Classifier that you want to display in the user interface, where `system` is the name in `classifier.list` and `label` is the name you want to use to display in the UI. Needless to say, the classifications need to be computed before they can be used on the tree.
   
   Great! As we already told the UI when it needs to update, let's add the classifications tree to the HTML page. For it, let's create simple BIM panel component where we include the tree and also a pre-made IFC load button 👇
   */
