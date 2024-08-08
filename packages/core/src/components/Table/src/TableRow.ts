@@ -2,24 +2,37 @@ import { LitElement, css, html, render } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Table, ColumnData } from "../index";
 import { TableRowData, CellCreatedEventDetail } from "./types";
+import { Checkbox } from "../../Checkbox";
 
 export class TableRow extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       position: relative;
       grid-area: Data;
       display: grid;
       min-height: 2.25rem;
+      transition: all 0.15s;
     }
 
     ::slotted(.branch.branch-vertical) {
       top: 50%;
       bottom: 0;
     }
+
+    :host([selected]) {
+      background-color: color-mix(
+        in lab,
+        var(--bim-ui_bg-contrast-20) 30%,
+        var(--bim-ui_main-base) 10%
+      );
+    }
   `;
+
+  @property({ type: Boolean, reflect: true })
+  selected = false;
 
   @property({ attribute: false })
   columns: ColumnData[] = [];
@@ -71,6 +84,21 @@ export class TableRow extends LitElement {
     { rootMargin: "36px" },
   );
 
+  private get _isSelected() {
+    return this.table?.selection.has(this.data);
+  }
+
+  private onSelectionChange(e: Event) {
+    if (!this.table) return;
+    const target = e.target as Checkbox;
+    this.selected = target.value;
+    if (target.value) {
+      this.table.selection.add(this.data);
+    } else {
+      this.table.selection.delete(this.data);
+    }
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this._observer.observe(this);
@@ -79,6 +107,7 @@ export class TableRow extends LitElement {
     this.hiddenColumns = this.table.hiddenColumns;
     this.table.addEventListener("columnschange", this.onTableColumnsChange);
     this.table.addEventListener("columnshidden", this.onTableColumnsHidden);
+    this.toggleAttribute("selected", this._isSelected);
   }
 
   disconnectedCallback() {
@@ -135,9 +164,17 @@ export class TableRow extends LitElement {
       cells.push(cell);
     }
 
-    this.style.gridTemplateAreas = `"${this._columnNames.join(" ")}"`;
-    this.style.gridTemplateColumns = `${this._columnWidths.join(" ")}`;
+    this.style.gridTemplateAreas = `"${this.table?.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
+    this.style.gridTemplateColumns = `${this.table?.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+
     return html`
+      ${!this.isHeader
+        ? html`<bim-checkbox
+            @change=${this.onSelectionChange}
+            .checked=${this._isSelected}
+            style="align-self: center; justify-self: center"
+          ></bim-checkbox>`
+        : null}
       ${cells}
       <slot></slot>
     `;

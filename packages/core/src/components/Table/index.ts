@@ -9,7 +9,6 @@ import {
 } from "./src";
 import { evalCondition, getQuery } from "../../core/utils";
 
-
 /**
  * Represents a column in the table.
  *
@@ -29,8 +28,8 @@ export interface ColumnData {
  */
 export class Table extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`
@@ -294,6 +293,12 @@ export class Table extends LitElement {
    * @defaultValue An empty object.
    */
   dataTransform: TableDataTransform = {};
+
+  @property({ type: Boolean, reflect: true, attribute: "selectable-rows" })
+  selectableRows = false;
+
+  @property({ attribute: false })
+  selection: Set<TableRowData> = new Set();
 
   private _onColumnsHidden = new Event("columnshidden");
 

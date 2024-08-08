@@ -30,6 +30,7 @@ loadBtn.addEventListener("click", async () => {
   const fetchedData = (await jsonData.json()) as BUI.TableGroupData[];
 
   table.data = fetchedData;
+  table.selection = new Set([fetchedData[0].data]);
   table.columns = [{ name: "Entity", width: "12rem" }];
 });
 

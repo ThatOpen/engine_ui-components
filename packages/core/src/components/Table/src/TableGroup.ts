@@ -6,8 +6,8 @@ import { TableChildren } from "./TableChildren";
 
 export class TableGroup extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       position: relative;
@@ -82,7 +82,8 @@ export class TableGroup extends LitElement {
     const verticalBranchTemplate = html`
       <style>
         .branch-vertical {
-          left: ${indentation + 0.5625}rem;
+          left: ${indentation +
+          (this.table?.selectableRows ? 1.9375 : 0.5625)}rem;
         }
       </style>
       <div class="branch branch-vertical"></div>
@@ -93,7 +94,7 @@ export class TableGroup extends LitElement {
 
     const horizontalBranch = document.createElement("div");
     horizontalBranch.classList.add("branch", "branch-horizontal");
-    horizontalBranch.style.left = `${indentation - 1 + 0.5625}rem`;
+    horizontalBranch.style.left = `${indentation - 1 + (this.table?.selectableRows ? 2.05 : 0.5625)}rem`;
 
     const childrenHiddenCaret = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -143,7 +144,7 @@ export class TableGroup extends LitElement {
       this.toggleChildren();
     });
     caret.classList.add("caret");
-    caret.style.left = `${0.125 + indentation}rem`;
+    caret.style.left = `${(this.table?.selectableRows ? 1.5 : 0.125) + indentation}rem`;
     if (this.childrenHidden) {
       caret.append(childrenHiddenCaret);
     } else {

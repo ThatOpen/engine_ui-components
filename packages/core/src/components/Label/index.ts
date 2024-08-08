@@ -55,7 +55,7 @@ export class Label extends LitElement {
     :host(:not([vertical])) img {
       max-height: var(
         --bim-label_icon--sz,
-        calc(var(--bim-label--fz, var(--bim-ui_size-xs)) * 1.5)
+        calc(var(--bim-label--fz, var(--bim-ui_size-xs)) * 1.8)
       );
     }
 

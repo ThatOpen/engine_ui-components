@@ -6,8 +6,8 @@ import { TableGroupData } from "./types";
 
 export class TableChildren extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       position: relative;
