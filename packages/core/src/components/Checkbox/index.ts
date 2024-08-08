@@ -20,7 +20,7 @@ export class Checkbox extends LitElement implements HasValue {
       display: flex;
       justify-content: space-between;
       height: 1.75rem;
-      column-gap: 0.5rem;
+      column-gap: 0.25rem;
       width: 100%;
       align-items: center;
       transition: all 0.15s;

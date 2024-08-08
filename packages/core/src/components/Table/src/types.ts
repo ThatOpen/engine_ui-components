@@ -59,3 +59,17 @@ export interface CellCreatedEventDetail {
 export interface RowCreatedEventDetail {
   row: TableRow;
 }
+
+/**
+ * Represents the detail of a row selected event.
+ */
+export interface RowSelectedEventDetail {
+  data: TableRowData;
+}
+
+/**
+ * Represents the detail of a row deselected event.
+ */
+export interface RowDeselectedEventDetail {
+  data: TableRowData;
+}

@@ -4,8 +4,8 @@ import { TableRowData } from ".";
 
 export class TableCell extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       padding: 0.25rem 1rem;
@@ -14,7 +14,7 @@ export class TableCell extends LitElement {
       justify-content: center;
     }
 
-    :host([data-column-index="0"]:not([data-cell-header])) {
+    :host([data-column-index="0"]:not([data-no-indentation])) {
       justify-content: normal;
     }
 

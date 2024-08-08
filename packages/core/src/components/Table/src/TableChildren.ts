@@ -10,6 +10,7 @@ export class TableChildren extends LitElement {
    */
   static styles = css`
     :host {
+      --bim-button--bgc: transparent;
       position: relative;
       grid-area: Children;
     }

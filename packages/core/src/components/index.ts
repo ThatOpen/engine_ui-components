@@ -19,6 +19,8 @@ import {
   TableGroup,
   CellCreatedEventDetail,
   RowCreatedEventDetail,
+  RowSelectedEventDetail,
+  RowDeselectedEventDetail,
 } from "./Table";
 import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
@@ -72,6 +74,8 @@ declare global {
     columnschange: Event;
     cellcreated: CustomEvent<CellCreatedEventDetail>;
     rowcreated: CustomEvent<RowCreatedEventDetail>;
+    rowselected: CustomEvent<RowSelectedEventDetail>;
+    rowdeselected: CustomEvent<RowDeselectedEventDetail>;
   }
 }
 

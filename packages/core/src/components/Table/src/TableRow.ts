@@ -1,7 +1,12 @@
 import { LitElement, css, html, render } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Table, ColumnData } from "../index";
-import { TableRowData, CellCreatedEventDetail } from "./types";
+import {
+  TableRowData,
+  CellCreatedEventDetail,
+  RowSelectedEventDetail,
+  RowDeselectedEventDetail,
+} from "./types";
 import { Checkbox } from "../../Checkbox";
 
 export class TableRow extends LitElement {
@@ -94,8 +99,22 @@ export class TableRow extends LitElement {
     this.selected = target.value;
     if (target.value) {
       this.table.selection.add(this.data);
+      this.table.dispatchEvent(
+        new CustomEvent<RowSelectedEventDetail>("rowselected", {
+          detail: {
+            data: this.data,
+          },
+        }),
+      );
     } else {
       this.table.selection.delete(this.data);
+      this.table.dispatchEvent(
+        new CustomEvent<RowDeselectedEventDetail>("rowdeselected", {
+          detail: {
+            data: this.data,
+          },
+        }),
+      );
     }
   }
 
@@ -118,12 +137,15 @@ export class TableRow extends LitElement {
     this.hiddenColumns = [];
     this.table.removeEventListener("columnschange", this.onTableColumnsChange);
     this.table.removeEventListener("columnshidden", this.onTableColumnsHidden);
+    this.toggleAttribute("selected", false);
   }
 
   compute() {
-    const indentation = this.table?.getRowIndentation(this.data) ?? 0;
+    if (!this.table) throw new Error("TableRow: parent table wasn't found!");
+
+    const indentation = this.table.getRowIndentation(this.data) ?? 0;
     const declaration = !this.isHeader
-      ? this.table?.computeRowDeclaration(this.data) ?? this.data
+      ? this.table.computeRowDeclaration(this.data) ?? this.data
       : this.data;
     const cells: Element[] = [];
     for (const column in declaration) {
@@ -150,12 +172,16 @@ export class TableRow extends LitElement {
       cell.append(content);
       cell.column = column;
       if (this._columnNames.indexOf(column) === 0 && !this.isHeader)
-        cell.style.marginLeft = `${indentation + 0.125}rem`;
+        cell.style.marginLeft = `${(this.table.noIndentation ? 0 : indentation) + 0.125}rem`;
       const columnIndex = this._columnNames.indexOf(column);
       cell.setAttribute("data-column-index", String(columnIndex));
+      cell.toggleAttribute(
+        "data-no-indentation",
+        columnIndex === 0 && this.table.noIndentation,
+      );
       cell.toggleAttribute("data-cell-header", this.isHeader);
       cell.rowData = this.data;
-      this.table?.dispatchEvent(
+      this.table.dispatchEvent(
         new CustomEvent<CellCreatedEventDetail>("cellcreated", {
           detail: { cell },
         }),
@@ -164,11 +190,11 @@ export class TableRow extends LitElement {
       cells.push(cell);
     }
 
-    this.style.gridTemplateAreas = `"${this.table?.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
-    this.style.gridTemplateColumns = `${this.table?.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+    this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
+    this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
 
     return html`
-      ${!this.isHeader
+      ${!this.isHeader && this.table.selectableRows
         ? html`<bim-checkbox
             @change=${this.onSelectionChange}
             .checked=${this._isSelected}
