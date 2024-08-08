@@ -90,7 +90,8 @@ export class Button extends LitElement {
       padding: 0 0.5rem;
     }
 
-    :host([disabled]) .parent {
+    :host([disabled]) {
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
       background-color: gray;
     }
 
@@ -239,6 +240,39 @@ export class Button extends LitElement {
   @property({ type: String, attribute: "tooltip-text", reflect: true })
   tooltipText?: string;
 
+  private _stateBeforeLoading: { disabled: boolean; icon?: string } = {
+    disabled: false,
+    icon: "",
+  };
+
+  private _loading = false;
+
+  /**
+   * Attribute to set the loading state of the button.
+   * When the loading state is set to true, the button is disabled and the icon is changed to a loading spinner.
+   * When the loading state is set to false, the button is reverted to its previous state.
+   */
+  @property({ type: Boolean, reflect: true })
+  set loading(value: boolean) {
+    this._loading = value;
+    if (value) {
+      this._stateBeforeLoading = {
+        disabled: this.disabled,
+        icon: this.icon,
+      };
+      this.disabled = value;
+      this.icon = "eos-icons:loading";
+    } else {
+      const { disabled, icon } = this._stateBeforeLoading;
+      this.disabled = disabled;
+      this.icon = icon;
+    }
+  }
+
+  get loading() {
+    return this._loading;
+  }
+
   private _parent = createRef<HTMLDivElement>();
   private _tooltip = createRef<HTMLDivElement>();
   private _contextMenu = createRef<ContextMenu>();
@@ -319,6 +353,15 @@ export class Button extends LitElement {
       contextMenu.visible = false;
   };
 
+  private onClick = (e: PointerEvent) => {
+    e.stopPropagation();
+    if (!this.disabled) this.dispatchEvent(new Event("click"));
+  };
+
+  click() {
+    if (!this.disabled) super.click();
+  }
+
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener("mouseup", this.onWindowMouseUp);
@@ -346,7 +389,7 @@ export class Button extends LitElement {
     const hasChildren = this.children.length > 0;
 
     return html`
-      <div ${ref(this._parent)} class="parent">
+      <div ${ref(this._parent)} class="parent" @click=${this.onClick}>
         ${this.label || this.icon
           ? html`
               <div
