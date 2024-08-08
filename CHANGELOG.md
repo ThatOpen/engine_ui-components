@@ -1,5 +1,34 @@
 # Changelog
 
+## [2.2.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.1.0...v2.2.0) (2024-08-08)
+
+
+### Features
+
+* add world2d offset ([8ab4fc2](https://github.com/ThatOpen/engine_ui-components/commit/8ab4fc27109ca2d3c6bf5486ebd52279c77766c0))
+* **core:** adds loading skeleton, async data loading and slots to handle table states ([4013ef8](https://github.com/ThatOpen/engine_ui-components/commit/4013ef88b927a4ed99b8617c476dd71d74c8f4f3))
+* **core:** adds loading state to the button ([0a0ee78](https://github.com/ThatOpen/engine_ui-components/commit/0a0ee78e6fbc1589ae4f46b1706e8967e9da699c))
+* **core:** adds row selection to bim-table ([8054202](https://github.com/ThatOpen/engine_ui-components/commit/8054202008d1c10ac4a55b2a81b479ab71d7118f))
+* **core:** adds some simple CSS transitions for smother looking ([b5c2e6f](https://github.com/ThatOpen/engine_ui-components/commit/b5c2e6f983107deba3d80caabdf4a147806db4c2))
+* **obc:** [#39](https://github.com/ThatOpen/engine_ui-components/issues/39) allows to specify the action buttons in the ModelsList ([#42](https://github.com/ThatOpen/engine_ui-components/issues/42)) ([287fee2](https://github.com/ThatOpen/engine_ui-components/commit/287fee29e5970ef7c70308f9da92efd0c26e9618))
+* **obc:** adds download functionality in models list ([e2f310b](https://github.com/ThatOpen/engine_ui-components/commit/e2f310b1295000d66817f5d79ee64fbdeafede32))
+* **obc:** Groups entities with the same name in RelationsTree. [#40](https://github.com/ThatOpen/engine_ui-components/issues/40) ([#41](https://github.com/ThatOpen/engine_ui-components/issues/41)) ([4ef9848](https://github.com/ThatOpen/engine_ui-components/commit/4ef9848dad57646143283318218243dcfee882d5))
+* **obc:** it is now easier to specify the classifications to be added to the table ([76cc43e](https://github.com/ThatOpen/engine_ui-components/commit/76cc43e760972cdd62cef2bb49e8638eb0208753))
+
+
+### Bug Fixes
+
+* add publish repo scripts ([a18b1fa](https://github.com/ThatOpen/engine_ui-components/commit/a18b1facf050746a9c95a788fc5c1cf75f0a797d))
+* **core:** button not triggering click event on React ([7a259d7](https://github.com/ThatOpen/engine_ui-components/commit/7a259d7d52fe5f7d2629ee82ffa190706ca05926))
+* **core:** solves dropdown checked option ([d5e522f](https://github.com/ThatOpen/engine_ui-components/commit/d5e522fcb6b996952d1095fb59d8e0124845705f))
+* **core:** updates button background-color inside toolbars ([7ce9e31](https://github.com/ThatOpen/engine_ui-components/commit/7ce9e31f5429aa50bf8505ad636f7a582c4d4d25))
+
+
+### Miscellaneous Chores
+
+* release 2.1.0 ([4c1bd25](https://github.com/ThatOpen/engine_ui-components/commit/4c1bd251c7d7eadcca24f8aa666002ab29505f2b))
+* release 2.2.0 ([22fd62f](https://github.com/ThatOpen/engine_ui-components/commit/22fd62fce4ce27586df8c5c61e11023d5f5ccb7d))
+
 ## [2.1.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.1.0...v2.1.0) (2024-07-10)
 
 
