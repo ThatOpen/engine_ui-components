@@ -6,20 +6,20 @@ import * as BUI from "@thatopen/ui";
 const createIfcTaskRow = async (
   components: OBC.Components,
   model: FRAGS.FragmentsGroup,
-  attrs: { [attribute: string]: any },
+  task: { [attribute: string]: any },
 ) => {
   const indexer = components.get(OBC.IfcRelationsIndexer);
   const row: BUI.TableGroupData = {
-    data: { Name: attrs.Name?.value },
+    data: { Name: task.Name?.value },
     children: [
-      { data: { Name: "Identification", Value: attrs.Identification?.value } },
-      { data: { Name: "Name", Value: attrs.Name?.value } },
-      { data: { Name: "Description", Value: attrs.Description?.value } },
+      { data: { Name: "Identification", Value: task.Identification?.value } },
+      { data: { Name: "Name", Value: task.Name?.value } },
+      { data: { Name: "Description", Value: task.Description?.value } },
     ],
   };
   const nestings = indexer.getEntityRelations(
     model,
-    attrs.expressID,
+    task.expressID,
     "IsNestedBy",
   );
   if (!nestings) return row;
@@ -35,14 +35,14 @@ const createIfcTaskRow = async (
   return row;
 };
 
-export const getTasksRow = async (
+export const createTasksRow = async (
   components: OBC.Components,
   model: FRAGS.FragmentsGroup,
-  taskAttrs: { [attribute: string]: any }[],
+  tasks: { [attribute: string]: any }[],
 ) => {
   const rows: BUI.TableGroupData[] = [];
-  for (const attrs of taskAttrs) {
-    const row = await createIfcTaskRow(components, model, attrs);
+  for (const task of tasks) {
+    const row = await createIfcTaskRow(components, model, task);
     rows.push(row);
   }
 

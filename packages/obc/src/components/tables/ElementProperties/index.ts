@@ -1,6 +1,6 @@
 import * as BUI from "@thatopen/ui";
 import {
-  ElementPropertiesUIState,
+  ElementPropertiesUI,
   elementPropertiesTemplate,
 } from "./src/template";
 
@@ -11,8 +11,8 @@ import {
  * @returns A new instance of ElementProperties component.
  *
  */
-export const elementProperties = (state: ElementPropertiesUIState) => {
-  const element = BUI.Component.create<BUI.Table, ElementPropertiesUIState>(
+export const elementProperties = (state: ElementPropertiesUI) => {
+  const element = BUI.Component.create<BUI.Table, ElementPropertiesUI>(
     elementPropertiesTemplate,
     state,
   );
