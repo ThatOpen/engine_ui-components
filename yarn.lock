@@ -245,11 +245,11 @@ __metadata:
   linkType: hard
 
 "@floating-ui/core@npm:^1.0.0":
-  version: 1.6.6
-  resolution: "@floating-ui/core@npm:1.6.6"
+  version: 1.6.7
+  resolution: "@floating-ui/core@npm:1.6.7"
   dependencies:
-    "@floating-ui/utils": ^0.2.6
-  checksum: 3992e93f40655798bff7a721258cd9f2ad4d98eca9e29ecbf3dc79154a191f47fbab3d86777fecc08e83fdc64a9f390a5256f3cf10543db87f177863770ddeeb
+    "@floating-ui/utils": ^0.2.7
+  checksum: ff940c228f7c4f95138c4979ba1c1122d804cac55e514c889cbdb9f76d5bebbd0f7a02ae1d468b66a9e728343d5a79430845781230e012560b4719fdde458461
   languageName: node
   linkType: hard
 
@@ -263,10 +263,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/utils@npm:^0.2.0, @floating-ui/utils@npm:^0.2.6":
-  version: 0.2.6
-  resolution: "@floating-ui/utils@npm:0.2.6"
-  checksum: 4350edad705f69f944f853d95b2832fbf3d6ff2347276526198040ddec03a7e4afae0b5863d50373275dd319ae648c8070fd528405a1a10a1620277534846792
+"@floating-ui/utils@npm:^0.2.0, @floating-ui/utils@npm:^0.2.7":
+  version: 0.2.7
+  resolution: "@floating-ui/utils@npm:0.2.7"
+  checksum: 7e6707c4c6d496f86377a97aac0232926953a2da9c2058ed79d8b44031038ef8fcf9743dac7b38c1da7148460194da987814d78af801ec5c278abf9b303adb22
   languageName: node
   linkType: hard
 
@@ -618,8 +618,8 @@ __metadata:
   linkType: hard
 
 "@thatopen/components-front@npm:~2.1.0":
-  version: 2.1.18
-  resolution: "@thatopen/components-front@npm:2.1.18"
+  version: 2.1.24
+  resolution: "@thatopen/components-front@npm:2.1.24"
   dependencies:
     "@thatopen/components": ~2.1.0
     camera-controls: 2.7.3
@@ -631,13 +631,13 @@ __metadata:
     "@thatopen/fragments": ~2.1.0
     three: ^0.160.1
     web-ifc: 0.0.56
-  checksum: 79904d382db50573e6393e82674a03dcd43f3d64488cacabec6ba3e247ac82445c6f92b15c6625a09fa70f1545751418e4fc7be626352c26dc165d86593b04c0
+  checksum: db2d13e9277c4cf6ed03d20e3096855b23dcd9cb1830f05d2db75d6acb15914cff12af36c01a0d294f2ad4088af8541a3e65b30164638bf1fc59a71038540926
   languageName: node
   linkType: hard
 
 "@thatopen/components@npm:~2.1.0":
-  version: 2.1.20
-  resolution: "@thatopen/components@npm:2.1.20"
+  version: 2.1.23
+  resolution: "@thatopen/components@npm:2.1.23"
   dependencies:
     camera-controls: 2.7.3
     three-mesh-bvh: 0.7.0
@@ -645,7 +645,7 @@ __metadata:
     "@thatopen/fragments": ~2.1.0
     three: ^0.160.1
     web-ifc: 0.0.56
-  checksum: 1a46b56ee834c677c90cfd2ad811b79da2ca024a1f52d0b2b7f929bb8aed40a034c2a2ef4a321438484167af4440e18216aef36b2aa0a182b8a5cd58bd83b05c
+  checksum: eafe49c3d6ac40c2f02679a922fe1a26f1405a967f9667fa8dde81d3625bec917185993930fc2cceff08d8a82a021de92d07a8b9f850e4cb18eaab9583173455
   languageName: node
   linkType: hard
 
@@ -926,26 +926,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-core@npm:3.4.36":
-  version: 3.4.36
-  resolution: "@vue/compiler-core@npm:3.4.36"
+"@vue/compiler-core@npm:3.4.37":
+  version: 3.4.37
+  resolution: "@vue/compiler-core@npm:3.4.37"
   dependencies:
     "@babel/parser": ^7.24.7
-    "@vue/shared": 3.4.36
+    "@vue/shared": 3.4.37
     entities: ^5.0.0
     estree-walker: ^2.0.2
     source-map-js: ^1.2.0
-  checksum: a6c4c1b0c64cf3f3f139ce4518bb0e298484fa194f7e4fd3b6181b8f4b1a00b63a61fe68f53e6b1a49e26e7fc14fcc79d661db0a966dd5fbbb39170e7a9dbfed
+  checksum: 2b7ad0f3a101f804269cd3c8876c15e33a49a62e966b15dab340342acb9a7303718d3b4ffc980aee724b70e69bc1987739412b17444bd1c104711f49472aa340
   languageName: node
   linkType: hard
 
 "@vue/compiler-dom@npm:^3.3.0":
-  version: 3.4.36
-  resolution: "@vue/compiler-dom@npm:3.4.36"
+  version: 3.4.37
+  resolution: "@vue/compiler-dom@npm:3.4.37"
   dependencies:
-    "@vue/compiler-core": 3.4.36
-    "@vue/shared": 3.4.36
-  checksum: ba9520bacfbf02baedfebfbd8a9013a972bf9c70c7f193948333aee2e8b157aa56d081f3cb7c644f9601753d917df1b4cc519afca4b7f108eb48ed279c82df1c
+    "@vue/compiler-core": 3.4.37
+    "@vue/shared": 3.4.37
+  checksum: 097f65608962848f054f11fc7c126234ac15db3f43dad46bba676781a15bac3679642f11a8b0c0b6505feb275107d37b30461f000f500c231ab5649f77caf522
   languageName: node
   linkType: hard
 
@@ -971,10 +971,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/shared@npm:3.4.36, @vue/shared@npm:^3.3.0":
-  version: 3.4.36
-  resolution: "@vue/shared@npm:3.4.36"
-  checksum: 540fbdb8495a805771155ec72afaa29ca1cacdff54bf1ffe8a921704e6a7687b49803ae0ec0eb7d96db8acbb97cb0f30de74f63168b5c52b5b50586f535a0a9a
+"@vue/shared@npm:3.4.37, @vue/shared@npm:^3.3.0":
+  version: 3.4.37
+  resolution: "@vue/shared@npm:3.4.37"
+  checksum: 8ea0000b726c54603f63598e5aa634449bd1b92d9eb158e77e1d58a767b83f4343fe3da5de5de74d9b125ad422c143ad0e5289de1b057b1e77a7e75a440ea1f3
   languageName: node
   linkType: hard
 
@@ -2086,12 +2086,12 @@ __metadata:
   linkType: hard
 
 "foreground-child@npm:^3.1.0":
-  version: 3.2.1
-  resolution: "foreground-child@npm:3.2.1"
+  version: 3.3.0
+  resolution: "foreground-child@npm:3.3.0"
   dependencies:
     cross-spawn: ^7.0.0
     signal-exit: ^4.0.1
-  checksum: 3e2e844d6003c96d70affe8ae98d7eaaba269a868c14d997620c088340a8775cd5d2d9043e6ceebae1928d8d9a874911c4d664b9a267e8995945df20337aebc0
+  checksum: 1989698488f725b05b26bc9afc8a08f08ec41807cd7b92ad85d96004ddf8243fd3e79486b8348c64a3011ae5cc2c9f0936af989e1f28339805d8bc178a75b451
   languageName: node
   linkType: hard
 

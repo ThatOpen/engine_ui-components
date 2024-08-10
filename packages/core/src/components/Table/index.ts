@@ -1,4 +1,4 @@
-import { LitElement, TemplateResult, css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import {

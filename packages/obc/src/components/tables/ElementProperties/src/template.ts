@@ -3,6 +3,7 @@ import * as FRAGS from "@thatopen/fragments";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 import * as WEBIFC from "web-ifc";
+import { getTasksRow } from "./create-task-row";
 
 // TODO: Refactor to remove redundancy
 
@@ -12,6 +13,14 @@ import * as WEBIFC from "web-ifc";
 export interface ElementPropertiesUIState {
   components: OBC.Components;
   fragmentIdMap: FRAGS.FragmentIdMap;
+  // dataToDisplay?: (
+  //   | "Attributes"
+  //   | "PropertySets"
+  //   | "QuantitySets"
+  //   | "Classifications"
+  //   | "Tasks"
+  //   | "SpatialContainers"
+  // )[];
 }
 
 const attrsToIgnore = ["OwnerHistory", "ObjectPlacement", "CompositionType"];
@@ -61,7 +70,7 @@ const getAttributesRow = async (
 };
 
 const getPsetRow = async (model: FRAGS.FragmentsGroup, psetIDs: number[]) => {
-  const row: BUI.TableGroupData = { data: { Name: "Property Sets" } };
+  const row: BUI.TableGroupData = { data: { Name: "PropertySets" } };
   for (const psetID of psetIDs) {
     const setAttrs = await model.getProperties(psetID);
     if (!setAttrs) continue;
@@ -94,7 +103,7 @@ const getPsetRow = async (model: FRAGS.FragmentsGroup, psetIDs: number[]) => {
 };
 
 const getQsetRow = async (model: FRAGS.FragmentsGroup, psetIDs: number[]) => {
-  const row: BUI.TableGroupData = { data: { Name: "Quantity Sets" } };
+  const row: BUI.TableGroupData = { data: { Name: "QuantitySets" } };
   for (const psetID of psetIDs) {
     const setAttrs = await model.getProperties(psetID);
     if (!setAttrs) continue;
@@ -362,6 +371,24 @@ const computeTableData = async (
         );
         if (classificationRow.children)
           elementRow.children.push(classificationRow);
+      }
+
+      const assignmentRelations = indexer.getEntityRelations(
+        model,
+        expressID,
+        "HasAssignments",
+      );
+
+      if (assignmentRelations) {
+        const taskAttrs: { [attribute: string]: any }[] = [];
+        for (const assingmentID of assignmentRelations) {
+          const attrs = await model.getProperties(assingmentID);
+          if (attrs && attrs.type === WEBIFC.IFCTASK) {
+            taskAttrs.push(attrs);
+          }
+        }
+        const taskRows = await getTasksRow(components, model, taskAttrs);
+        if (taskRows.children?.length !== 0) elementRow.children.push(taskRows);
       }
 
       const contianerRelations = indexer.getEntityRelations(
