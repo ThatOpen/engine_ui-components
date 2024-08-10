@@ -1,1 +1,1 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as e}from"./index-D5ZWPLWI.js";import"./state-QpXUsnxS.js";e.init();const t=document.body.querySelector("bim-button");t.addEventListener("click",()=>{alert("Your schedule has been created!")});
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as e}from"./index-B56l1KZI.js";import"./state-QpXUsnxS.js";e.init();const t=document.body.querySelector("bim-button");t.addEventListener("click",()=>{alert("Your schedule has been created!")});
