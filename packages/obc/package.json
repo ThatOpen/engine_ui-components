@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui-obc",
   "description": "Collection of web components (UI components) implementations to use with @thatopen/components.",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
