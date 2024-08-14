@@ -3,6 +3,7 @@ import { property } from "lit/decorators.js";
 import { styles } from "../../../core/Manager/src/styles";
 import { HasName, HasValue } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
+import { Panel } from "./Panel";
 
 /**
  * A custom panel section web component for BIM applications. HTML tag: bim-panel-section
@@ -141,14 +142,18 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
   /**
    * The `value` getter computes and returns the current state of the panel section's form elements as an object. This object's keys are the `name` or `label` attributes of the child elements, and the values are the corresponding values of these elements. This property is particularly useful for retrieving a consolidated view of the user's input or selections within the panel section. When the value of any child element changes, the returned object from this getter will reflect those changes, providing a dynamic snapshot of the panel section's state. Note that this property does not have a default value as it dynamically reflects the current state of the panel section's form elements.
-   * @type {Record<string, any>}
    * @example <bim-panel-section></bim-panel-section> <!-- Usage in HTML not directly applicable as this is a getter -->
    * @example
    * const section = document.createElement('bim-panel-section');
    * console.log(section.value); // Logs the current value object
    */
   get value() {
-    const value = getElementValue(this);
+    const parent = this.parentElement;
+    let transform;
+    if (parent instanceof Panel) transform = parent.valueTransform;
+    if (Object.values(this.valueTransform).length !== 0)
+      transform = this.valueTransform;
+    const value = getElementValue(this, transform);
     return value;
   }
 
@@ -173,6 +178,24 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       input.value = data[key];
     }
   }
+
+  /**
+   * A record that maps element names or labels to transformation functions.
+   * This record is used to transform the values from elements before they are returned as part of the `value` property.
+   *
+   * @example
+   * // Example usage of ValueTransform
+   * const valueTransform = {
+   *   date: (value: string) => new Date(value), // Transform date value from string to Date object
+   * };
+   *
+   * const panelSection = document.getElementById('your-bim-panel-section'); // should have some inputs inside
+   * panelSection.valueTransform = valueTransform;
+   *
+   * // Now, when accessing the `value` property of the panelSection, the values of the specified elements will be transformed accordingly
+   * console.log(panelSection.value); // Output: { date: Date object }
+   */
+  valueTransform: Record<string, (value: any) => any> = {};
 
   private onHeaderClick() {
     if (this.fixed) return;

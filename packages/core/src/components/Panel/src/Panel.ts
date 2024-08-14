@@ -9,9 +9,9 @@ import { getElementValue } from "../../../core/utils";
  * A custom panel web component for BIM applications. HTML tag: bim-panel
  */
 export class Panel extends LitElement implements HasName, HasValue {
-    /**
-  * CSS styles for the component.
-  */
+  /**
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`
@@ -135,7 +135,6 @@ export class Panel extends LitElement implements HasName, HasValue {
   /**
    * The `value` getter computes and returns the current state of the panel's form elements as an object. This property is dynamic and reflects the current input values within the panel. When accessed, it traverses the panel's child elements, collecting values from those that have a `name` or `label` attribute, and constructs an object where each key corresponds to the `name` or `label` of the element, and the value is the element's value. This property is particularly useful for forms or interactive panels where the user's input needs to be retrieved programmatically. The value returned is a snapshot of the panel's state at the time of access, and it does not maintain a live link to the input elements.
    *
-   * @type {Record<string, any>}
    * @default {}
    * @example <bim-panel></bim-panel> <!-- Access via JavaScript to get value -->
    * @example
@@ -144,7 +143,7 @@ export class Panel extends LitElement implements HasName, HasValue {
    * console.log(panel.value); // Logs the current value object of the panel
    */
   get value() {
-    const value = getElementValue(this);
+    const value = getElementValue(this, this.valueTransform);
     return value;
   }
 
@@ -171,8 +170,49 @@ export class Panel extends LitElement implements HasName, HasValue {
     }
   }
 
+  /**
+   * Represents a boolean property that controls the visibility of the panel's header.
+   * When `true`, the header (containing the label and icon) is hidden.
+   * When `false`, the header is visible.
+   *
+   * @property headerHidden - The boolean value indicating whether the header should be hidden.
+   * @default false
+   * @attribute header-hidden - The attribute that reflects the `headerHidden` property to the HTML element.
+   * @reflect true - Indicates that the property should be reflected to the HTML attribute.
+   *
+   * @example
+   * // Setting the `headerHidden` property to `true`
+   * panel.headerHidden = true;
+   *
+   * // Setting the `header-hidden` attribute to `true`
+   * panel.setAttribute('header-hidden', 'true');
+   *
+   * // Getting the `headerHidden` property value
+   * console.log(panel.headerHidden); // Output: true
+   *
+   * // Getting the `header-hidden` attribute value
+   * console.log(panel.getAttribute('header-hidden')); // Output: 'true'
+   */
   @property({ type: Boolean, attribute: "header-hidden", reflect: true })
   headerHidden = false;
+
+  /**
+   * A record that maps element names or labels to transformation functions.
+   * This record is used to transform the values from elements before they are returned as part of the `value` property.
+   *
+   * @example
+   * // Example usage of ValueTransform
+   * const valueTransform = {
+   *   date: (value: string) => new Date(value), // Transform date value from string to Date object
+   * };
+   *
+   * const panel = document.getElementById('your-bim-panel'); // should have some inputs inside
+   * panel.valueTransform = valueTransform;
+   *
+   * // Now, when accessing the `value` property of the panel, the values of the specified elements will be transformed accordingly
+   * console.log(panel.value); // Output: { date: Date object }
+   */
+  valueTransform: Record<string, (value: any) => any> = {};
 
   readonly activationButton: Button = document.createElement("bim-button");
 

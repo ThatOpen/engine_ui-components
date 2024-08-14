@@ -6,25 +6,30 @@ import { EntryQuery, Query, QueryCondition, QueryGroup } from "./types";
  * @param recursive - Whether to recursively extract values from child elements. Default is true.
  * @returns An object containing the extracted values.
  */
-export const getElementValue = (child: HTMLElement, recursive = true) => {
+export const getElementValue = (
+  child: HTMLElement,
+  transform: Record<string, (value: any) => any> = {},
+  recursive = true,
+) => {
   let value: Record<string, any> = {};
   for (const _child of child.children) {
     const child = _child as any;
     const key = child.getAttribute("name") || child.getAttribute("label");
+    const keyTransform = transform[key];
     if (key) {
       if ("value" in child) {
         const childValue = child.value;
         const isObject =
-          typeof childValue === "object" &&!Array.isArray(childValue);
+          typeof childValue === "object" && !Array.isArray(childValue);
         if (isObject && Object.keys(childValue).length === 0) continue;
-        value[key] = child.value;
+        value[key] = keyTransform ? keyTransform(child.value) : child.value;
       } else if (recursive) {
-        const childValue = getElementValue(child);
+        const childValue = getElementValue(child, transform);
         if (Object.keys(childValue).length === 0) continue;
-        value[key] = childValue;
+        value[key] = keyTransform ? keyTransform(childValue) : childValue;
       }
     } else if (recursive) {
-      value = {...value,...getElementValue(child) };
+      value = { ...value, ...getElementValue(child, transform) };
     }
   }
   return value;
@@ -40,7 +45,7 @@ export const convertString = (value: string) => {
     return value === "true";
   }
   // eslint-disable-next-line no-restricted-globals
-  if (value &&!isNaN(Number(value)) && value.trim()!== "") {
+  if (value && !isNaN(Number(value)) && value.trim() !== "") {
     return Number(value);
   }
   return value;
@@ -64,7 +69,7 @@ function parseSearch(search: string) {
   const [key, _value] = splitQuery;
   const value =
     _value.startsWith("'") && _value.endsWith("'")
-     ? _value.replace(/'/g, "")
+      ? _value.replace(/'/g, "")
       : convertString(_value);
   const entryQuery: EntryQuery = { key, condition, value };
   return entryQuery;
@@ -79,11 +84,11 @@ export const getQuery = (queryString: string) => {
   try {
     const queryGroup: Query = [];
     const entryAndGroupQueries = queryString
-     .split(/&(?![^()]*\))/)
-     .map((value) => value.trim());
+      .split(/&(?![^()]*\))/)
+      .map((value) => value.trim());
 
     for (const query of entryAndGroupQueries) {
-      const isEntryQuery =!query.startsWith("(") &&!query.endsWith(")");
+      const isEntryQuery = !query.startsWith("(") && !query.endsWith(")");
       const isGroupQuery = query.startsWith("(") && query.endsWith(")");
       if (isEntryQuery) {
         const entryQuery = parseSearch(query);
