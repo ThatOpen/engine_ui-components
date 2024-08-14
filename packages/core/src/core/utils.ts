@@ -17,7 +17,11 @@ export const getElementValue = (
     const key = child.getAttribute("name") || child.getAttribute("label");
     const keyTransform = transform[key];
     if (key) {
-      if ("value" in child) {
+      if (
+        "value" in child &&
+        typeof child.value !== "undefined" &&
+        child.value !== null
+      ) {
         const childValue = child.value;
         const isObject =
           typeof childValue === "object" && !Array.isArray(childValue);

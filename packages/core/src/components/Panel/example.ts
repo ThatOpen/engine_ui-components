@@ -1,5 +1,4 @@
 /* eslint-disable no-alert */
-import * as THREE from "three";
 import * as BUI from "../..";
 
 BUI.Manager.init();
