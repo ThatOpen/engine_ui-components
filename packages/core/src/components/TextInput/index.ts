@@ -3,40 +3,54 @@ import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { HasName, HasValue } from "../../core/types";
 import { getQuery } from "../../core/utils";
+import { styles } from "../../core/Manager/src/styles";
 
 /**
  * A custom text input web component for BIM applications. HTML tag: bim-text-input
  */
 export class TextInput extends LitElement implements HasName, HasValue {
   /**
-  * CSS styles for the component.
-  */
-  static styles = css`
-    :host {
-      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
-      flex: 1;
-      display: block;
-    }
+   * CSS styles for the component.
+   */
+  static styles = [
+    styles.scrollbar,
+    css`
+      :host {
+        --bim-input--bgc: var(--bim-ui_bg-contrast-20);
+        flex: 1;
+        display: block;
+      }
 
-    input {
-      background-color: transparent;
-      outline: none;
-      border: none;
-      width: 100%;
-      height: 100%;
-      padding: 0 var(--bim-ui_size-3xs);
-      border-radius: var(--bim-text-input--bdrs, var(--bim-ui_size-4xs));
-      color: var(--bim-text-input--c, var(--bim-ui_bg-contrast-100));
-    }
+      input {
+        background-color: transparent;
+        outline: none;
+        border: none;
+        width: 100%;
+        height: 100%;
+        padding: 0 var(--bim-ui_size-3xs);
+        border-radius: var(--bim-text-input--bdrs, var(--bim-ui_size-4xs));
+        color: var(--bim-text-input--c, var(--bim-ui_bg-contrast-100));
+      }
 
-    :host(:focus) {
-      --bim-input--olc: var(--bim-ui_accent-base);
-    }
+      textarea {
+        font-family: inherit;
+        background-color: transparent;
+        border: none;
+        width: 100%;
+        resize: vertical;
+        padding: var(--bim-ui_size-3xs);
+        color: var(--bim-text-input--c, var(--bim-ui_bg-contrast-100));
+      }
 
-    /* :host([disabled]) {
+      :host(:focus) {
+        --bim-input--olc: var(--bim-ui_accent-base);
+      }
+
+      /* :host([disabled]) {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);
     } */
-  `;
+    `,
+  ];
 
   private _debounceTimeoutID?: number;
   private _inputTypes = [
@@ -51,6 +65,7 @@ export class TextInput extends LitElement implements HasName, HasValue {
     "time",
     "url",
     "week",
+    "area",
   ];
 
   /**
@@ -134,6 +149,9 @@ export class TextInput extends LitElement implements HasName, HasValue {
   @property({ type: Number, reflect: true })
   debounce?: number;
 
+  @property({ type: Number, reflect: true })
+  rows?: number;
+
   private _type = "text";
 
   /**
@@ -202,13 +220,21 @@ export class TextInput extends LitElement implements HasName, HasValue {
         .label=${this.label}
         .vertical=${this.vertical}
       >
-        <input
-          aria-label=${this.label || this.name || "Text Input"}
-          .type=${this.type}
-          .value=${this.value}
-          placeholder=${ifDefined(this.placeholder)}
-          @input=${this.onInputChange}
-        />
+        ${this.type === "area"
+          ? html` <textarea
+              aria-label=${this.label || this.name || "Text Input"}
+              .value=${this.value}
+              .rows=${this.rows ?? 5}
+              placeholder=${ifDefined(this.placeholder)}
+              @input=${this.onInputChange}
+            ></textarea>`
+          : html` <input
+              aria-label=${this.label || this.name || "Text Input"}
+              .type=${this.type}
+              .value=${this.value}
+              placeholder=${ifDefined(this.placeholder)}
+              @input=${this.onInputChange}
+            />`}
       </bim-input>
     `;
   }
