@@ -44,7 +44,7 @@
   <script type="module" crossorigin src="../assets/panel.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="../assets/state-QpXUsnxS.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-B56l1KZI.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-Bgl-j1gb.js">
 </head>
 
 <body>
@@ -53,7 +53,7 @@
     <div id="panels">
       <bim-panel name="panelA" label="Panel A" icon="fluent:puzzle-cube-piece-20-filled">
         <!-- bim-panel usually have bim-panel-section as children, but it can be any other form of section you want -->
-        <bim-panel-section label="asdasd">
+        <bim-panel-section label="Section">
           <bim-number-input></bim-number-input>
           <bim-dropdown></bim-dropdow>
         </bim-panel-section>
@@ -69,6 +69,7 @@
       <bim-panel name="panelB" label="Panel B" icon="solar:archive-up-minimlistic-bold">
         <div class="section">
           <div style="display: flex; flex-direction: column; gap: 0.375rem">
+            <bim-text-input label="Pick a date" name="date" type="date"></bim-text-input>
             <bim-color-input name="selectionColor" label="Selection Color" color="#ffffff"></bim-color-input>
             <bim-color-input name="hoverColor" label="Hover Color" color="#ffff00"></bim-color-input>
           </div>
