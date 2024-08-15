@@ -23,6 +23,8 @@ export interface ColumnData {
 
   /** The width of the column. */
   width: string;
+
+  forceDataTransform?: boolean;
 }
 
 /**
@@ -454,8 +456,13 @@ export class Table extends LitElement {
     return this.generateText("tab");
   }
 
-  computeRowDeclaration(data: TableRowData) {
+  applyDataTransform(data: TableRowData) {
     const declaration: TableRowTemplate = {};
+    for (const key of Object.keys(this.dataTransform)) {
+      const columnConfig = this.columns.find((column) => column.name === key);
+      if (!(columnConfig && columnConfig.forceDataTransform)) continue;
+      if (!(key in data)) data[key] = "";
+    }
     for (const key in data) {
       const rowDeclaration = this.dataTransform[key];
       if (rowDeclaration) {

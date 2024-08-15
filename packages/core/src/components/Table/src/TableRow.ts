@@ -145,7 +145,7 @@ export class TableRow extends LitElement {
 
     const indentation = this.table.getRowIndentation(this.data) ?? 0;
     const declaration = !this.isHeader
-      ? this.table.computeRowDeclaration(this.data) ?? this.data
+      ? this.table.applyDataTransform(this.data) ?? this.data
       : this.data;
     const cells: Element[] = [];
     for (const column in declaration) {
@@ -172,7 +172,7 @@ export class TableRow extends LitElement {
       cell.append(content);
       cell.column = column;
       if (this._columnNames.indexOf(column) === 0 && !this.isHeader)
-        cell.style.marginLeft = `${(this.table.noIndentation ? 0 : indentation) + 0.125}rem`;
+        cell.style.marginLeft = `${(this.table.noIndentation ? 0 : indentation) + 0.75}rem`;
       const columnIndex = this._columnNames.indexOf(column);
       cell.setAttribute("data-column-index", String(columnIndex));
       cell.toggleAttribute(

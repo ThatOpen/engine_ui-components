@@ -8,7 +8,7 @@ export class TableCell extends LitElement {
    */
   static styles = css`
     :host {
-      padding: 0.25rem 1rem;
+      padding: 0.375rem;
       display: flex;
       align-items: center;
       justify-content: center;

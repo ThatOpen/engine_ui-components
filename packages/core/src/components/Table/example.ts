@@ -50,7 +50,7 @@ table.loadFunction = async () => {
   if (!jsonData.ok) throw new Error("Failed fetching data from GitHub!");
 
   const data = (await jsonData.json()) as BUI.TableGroupData[];
-  return data;
+  return data.slice(0, 10);
 };
 
 const loadBtn = document.getElementById("load-data") as BUI.Button;
