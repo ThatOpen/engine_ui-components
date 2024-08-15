@@ -240,6 +240,9 @@ export class Button extends LitElement {
   @property({ type: String, attribute: "tooltip-text", reflect: true })
   tooltipText?: string;
 
+  @property({ type: String, attribute: "context-menu", reflect: true })
+  contextMenu?: string;
+
   private _stateBeforeLoading: { disabled: boolean; icon?: string } = {
     disabled: false,
     icon: "",
@@ -275,7 +278,6 @@ export class Button extends LitElement {
 
   private _parent = createRef<HTMLDivElement>();
   private _tooltip = createRef<HTMLDivElement>();
-  private _contextMenu = createRef<ContextMenu>();
   private timeoutID?: number;
 
   private _mouseLeave = false;
@@ -324,35 +326,6 @@ export class Button extends LitElement {
     }, tooltipTime) as unknown as number;
   }
 
-  private onChildrenClick(e: MouseEvent) {
-    e.stopPropagation();
-    const { value: contextMenu } = this._contextMenu;
-    if (!contextMenu) return;
-    contextMenu.visible = !contextMenu.visible;
-  }
-
-  private onSlotChange(e: any) {
-    const { value: contextMenu } = this._contextMenu;
-    const children = e.target.assignedElements();
-    for (const child of children) {
-      if (!(child instanceof Button)) {
-        child.remove();
-        console.warn(
-          "Only bim-button is allowed inside bim-button. Child has been removed.",
-        );
-        continue;
-      }
-      child.addEventListener("click", () => contextMenu?.updatePosition());
-    }
-    this.requestUpdate();
-  }
-
-  private onWindowMouseUp = (e: MouseEvent) => {
-    const { value: contextMenu } = this._contextMenu;
-    if (!this.contains(e.target as Node) && contextMenu)
-      contextMenu.visible = false;
-  };
-
   private onClick = (e: PointerEvent) => {
     e.stopPropagation();
     if (!this.disabled) this.dispatchEvent(new Event("click"));
@@ -362,14 +335,24 @@ export class Button extends LitElement {
     if (!this.disabled) super.click();
   }
 
+  private get _contextMenu() {
+    if (!this.contextMenu) return undefined;
+    return document.getElementById(this.contextMenu) as ContextMenu | undefined;
+  }
+
+  private showContextMenu = () => {
+    const contextMenu = this._contextMenu;
+    if (contextMenu) contextMenu.visible = true;
+  };
+
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener("mouseup", this.onWindowMouseUp);
+    this.addEventListener("click", this.showContextMenu);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener("mouseup", this.onWindowMouseUp);
+    this.removeEventListener("click", this.showContextMenu);
   }
 
   protected render() {
@@ -385,8 +368,6 @@ export class Button extends LitElement {
           : null}
       </div>
     `;
-
-    const hasChildren = this.children.length > 0;
 
     return html`
       <div ${ref(this._parent)} class="parent" @click=${this.onClick}>
@@ -407,31 +388,7 @@ export class Button extends LitElement {
             `
           : null}
         ${this.tooltipTitle || this.tooltipText ? tooltipTemplate : null}
-        ${hasChildren
-          ? html`
-              <div class="children" @click=${this.onChildrenClick}>
-                <svg
-                  style="flex-shrink: 0; fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100))"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="1.125rem"
-                  viewBox="0 0 24 24"
-                  width="1.125rem"
-                  fill="#9ca3af"
-                >
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path
-                    d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
-                  />
-                </svg>
-              </div>
-            `
-          : null}
-        <bim-context-menu
-          ${ref(this._contextMenu)}
-          style="row-gap: var(--bim-ui_size-4xs)"
-        >
-          <slot @slotchange=${this.onSlotChange}></slot>
-        </bim-context-menu>
+        <slot></slot>
       </div>
     `;
   }
