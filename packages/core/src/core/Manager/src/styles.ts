@@ -111,6 +111,10 @@ const globalStyles = css`
     --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
     --bim-ui_accent-base: #6528d7;
   }
+
+  [data-context-dialog]::backdrop {
+    background-color: transparent;
+  }
 `;
 
 /**
