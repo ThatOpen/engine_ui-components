@@ -46,11 +46,15 @@
     <bim-button label="No icon"></bim-button>
     <bim-button icon="solar:settings-bold"></bim-button>
     <bim-button loading label="Loading..."></bim-button>
-    <bim-button context-menu="context-menu-a" icon="fe:elipsis-v" style="width: min-content;">
-      <bim-context-menu id="context-menu-a">
-        <bim-button label="Action A" context-menu="context-menu-b">
-          <bim-context-menu id="context-menu-b">
-            <bim-button label="Sub Action A"></bim-button>
+    <bim-button icon="fe:elipsis-v" style="width: min-content;">
+      <bim-context-menu>
+        <bim-button label="Action A">
+          <bim-context-menu>
+            <bim-button label="Sub Action A">
+              <bim-context-menu>
+                <bim-button label="Hi there"></bim-button>
+              </bim-context-menu>
+            </bim-button>
             <bim-button label="Sub Action B"></bim-button>
           </bim-context-menu>
         </bim-button>

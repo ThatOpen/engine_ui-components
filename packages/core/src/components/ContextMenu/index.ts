@@ -9,6 +9,7 @@ import {
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
+import { Component } from "../../core";
 
 export class ContextMenu extends LitElement {
   /**
@@ -56,6 +57,37 @@ export class ContextMenu extends LitElement {
     this.updatePosition();
   }
 
+  static dialog = Component.create<HTMLDialogElement>(() => {
+    const onClick = (event: PointerEvent) => {
+      if (event.target === ContextMenu.dialog) ContextMenu.removeMenus();
+    };
+    return html` <dialog
+      @click=${onClick}
+      @cancel=${() => ContextMenu.removeMenus()}
+      data-context-dialog
+      style="
+      width: 0;
+      height: 0;
+      position: relative;
+      padding: 0;
+      border: none;
+      outline: none;
+      margin: none;
+      overflow: visible;
+      background-color: transparent;
+    "
+    ></dialog>`;
+  });
+  static menus: HTMLElement[] = [];
+  static removeMenus() {
+    for (const menu of ContextMenu.menus) {
+      if (!(menu instanceof ContextMenu)) continue;
+      menu.visible = false;
+    }
+    ContextMenu.dialog.close();
+    ContextMenu.dialog.remove();
+  }
+
   private _visible = false;
 
   @property({ type: Boolean, reflect: true })
@@ -66,43 +98,20 @@ export class ContextMenu extends LitElement {
   set visible(value: boolean) {
     this._visible = value;
     if (value) {
+      if (!ContextMenu.dialog.parentElement) {
+        document.body.append(ContextMenu.dialog);
+      }
       this._previousContainer = this.parentElement;
-      this._dialog.style.top = `${window.scrollY || document.documentElement.scrollTop}px`;
-      document.body.append(this._dialog);
-      this._dialog.showModal();
+      ContextMenu.dialog.style.top = `${window.scrollY || document.documentElement.scrollTop}px`;
+      ContextMenu.dialog.append(this);
+      ContextMenu.dialog.showModal();
       this.updatePosition();
-      this._dialog.append(this);
       this.dispatchEvent(new Event("visible"));
     } else {
       this._previousContainer?.append(this);
       this._previousContainer = null;
-      this._dialog.close();
-      this._dialog.remove();
       this.dispatchEvent(new Event("hidden"));
     }
-  }
-
-  private _dialog: HTMLDialogElement;
-
-  constructor() {
-    super();
-    this._dialog = document.createElement("dialog");
-    this._dialog.toggleAttribute("data-context-dialog");
-    this._dialog.style.width = "0";
-    this._dialog.style.height = "0";
-    this._dialog.style.position = "relative";
-    this._dialog.style.padding = "0";
-    this._dialog.style.border = "none";
-    this._dialog.style.outline = "none";
-    this._dialog.style.margin = "none";
-    this._dialog.style.overflow = "visible";
-    this._dialog.style.backgroundColor = "transparent";
-    this._dialog.addEventListener("cancel", (event) => {
-      event.preventDefault();
-    });
-    this._dialog.addEventListener("click", (event) => {
-      if (event.target === this._dialog) this.visible = false;
-    });
   }
 
   /**
@@ -128,6 +137,11 @@ export class ContextMenu extends LitElement {
     const { x, y } = position;
     this.style.left = `${x}px`;
     this.style.top = `${y}px`;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    ContextMenu.menus.push(this);
   }
 
   protected render() {

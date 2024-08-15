@@ -3,7 +3,6 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import "iconify-icon";
-import { ContextMenu } from "../ContextMenu";
 
 /**
  * A custom button web component for BIM applications. HTML tag: bim-button
@@ -240,9 +239,6 @@ export class Button extends LitElement {
   @property({ type: String, attribute: "tooltip-text", reflect: true })
   tooltipText?: string;
 
-  @property({ type: String, attribute: "context-menu", reflect: true })
-  contextMenu?: string;
-
   private _stateBeforeLoading: { disabled: boolean; icon?: string } = {
     disabled: false,
     icon: "",
@@ -336,8 +332,7 @@ export class Button extends LitElement {
   }
 
   private get _contextMenu() {
-    if (!this.contextMenu) return undefined;
-    return document.getElementById(this.contextMenu) as ContextMenu | undefined;
+    return this.querySelector("bim-context-menu");
   }
 
   private showContextMenu = () => {
@@ -388,8 +383,8 @@ export class Button extends LitElement {
             `
           : null}
         ${this.tooltipTitle || this.tooltipText ? tooltipTemplate : null}
-        <slot></slot>
       </div>
+      <slot></slot>
     `;
   }
 }
