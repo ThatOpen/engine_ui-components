@@ -6,7 +6,7 @@ import { globSync } from "glob";
 
 const writeIndexHTML = () => {
   let links: string = "";
-  const examplePaths = globSync("packages/**/src/**/example.html");
+  const examplePaths = globSync("packages/**/src/**/example*.html");
   for (const examplePath of examplePaths) {
     const directory = path.dirname(examplePath);
     const packageNameMatch = directory.match(/packages\\([^\\]+)/);
