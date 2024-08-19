@@ -1,5 +1,5 @@
-import { ifcEntities } from "./ifc-entity";
+// import { ifcEntities } from "./ifc-entity";
 
-export const dropdowns = {
-  ifcEntities,
-};
+// export const dropdowns = {
+//   ifcEntities,
+// };
