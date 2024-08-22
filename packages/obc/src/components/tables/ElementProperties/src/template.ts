@@ -227,9 +227,6 @@ const computeTableData = async (
   return rows;
 };
 
-const onDataComputed = new Event("datacomputed");
-let table: BUI.Table;
-
 /**
  * Heloooooooooo
  */
@@ -241,32 +238,36 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUI) => {
 
   const { components, fragmentIdMap, emptySelectionWarning } = _state;
 
-  if (!table) {
-    table = document.createElement("bim-table");
+  const onTableCreated = async (e?: Element) => {
+    if (!e) return;
+    const table = e as BUI.Table;
     table.columns = [{ name: "Name", width: "12rem" }];
     table.headersHidden = true;
-    table.addEventListener("cellcreated", ({ detail }) => {
-      const { cell } = detail;
-      if (cell.column === "Name" && !("Value" in cell.rowData)) {
-        cell.style.gridColumn = "1 / -1";
-      }
-    });
+    table.loadFunction = () => computeTableData(components, fragmentIdMap);
+    const loaded = await table.loadData(true);
+    if (loaded) table.dispatchEvent(new Event("datacomputed"));
+  };
 
-    if (emptySelectionWarning) {
-      const missingDataElement = document.createElement("bim-label");
-      missingDataElement.style.setProperty("--bim-icon--c", "gold");
-      missingDataElement.slot = "missing-data";
-      missingDataElement.icon = "ic:round-warning";
-      missingDataElement.textContent =
-        "Select some elements to display its properties";
-      table.append(missingDataElement);
+  const onCellCreated = ({
+    detail,
+  }: CustomEvent<BUI.CellCreatedEventDetail>) => {
+    const { cell } = detail;
+    if (cell.column === "Name" && !("Value" in cell.rowData)) {
+      cell.style.gridColumn = "1 / -1";
     }
-  }
+  };
 
-  computeTableData(components, fragmentIdMap).then((data) => {
-    table.data = data;
-    if (data.length !== 0) table.dispatchEvent(onDataComputed);
-  });
-
-  return BUI.html`${table}`;
+  return BUI.html`
+    <bim-table @cellcreated=${onCellCreated} ${BUI.ref(onTableCreated)}>
+      ${
+        emptySelectionWarning
+          ? BUI.html`
+            <bim-label slot="missing-data" style="--bim-icon--c: gold" icon="ic:round-warning">
+              Select some elements to display its properties
+            </bim-label>
+          `
+          : null
+      }
+    </bim-table>
+  `;
 };
