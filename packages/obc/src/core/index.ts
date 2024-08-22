@@ -1,5 +1,6 @@
 import { World2D } from "./World2D";
 import { ViewCube } from "./ViewCube";
+import { World } from "./World";
 
 declare global {
   /**
@@ -8,6 +9,7 @@ declare global {
   interface HTMLElementTagNameMap {
     "bim-world-2d": World2D;
     "bim-view-cube": ViewCube;
+    "bim-world": World;
   }
 
   /**
@@ -23,5 +25,5 @@ declare global {
   }
 }
 
-export { ViewCube, World2D };
+export { ViewCube, World2D, World };
 export * from "./Manager";
