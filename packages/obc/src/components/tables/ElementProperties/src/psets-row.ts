@@ -2,11 +2,15 @@
 import * as FRAGS from "@thatopen/fragments";
 import * as BUI from "@thatopen/ui";
 import * as WEBIFC from "web-ifc";
+import { getModelUnit } from "./get-model-unit";
+import { ElementPropertiesUI } from "./template";
 
 export const createPsetsRow = async (
   model: FRAGS.FragmentsGroup,
   psets: { [attribute: string]: any }[],
+  uiState: ElementPropertiesUI,
 ) => {
+  const { displayUnits } = uiState;
   const row: BUI.TableGroupData = { data: { Name: "PropertySets" } };
   for (const pset of psets) {
     const setRow: BUI.TableGroupData = {
@@ -21,10 +25,22 @@ export const createPsetsRow = async (
         attr.includes("Value"),
       );
       if (!(valueKey && propAttrs[valueKey])) continue;
+      let value = propAttrs[valueKey].value;
+      let symbol = "";
+      if (displayUnits) {
+        const { name } = propAttrs[valueKey];
+        const units: Record<string, any> =
+          (await getModelUnit(model, name)) ?? {};
+        symbol = units.symbol;
+        value = propAttrs[valueKey].value;
+        if (typeof value === "number" && units.digits) {
+          value = value.toFixed(units.digits);
+        }
+      }
       const propRow: BUI.TableGroupData = {
         data: {
           Name: propAttrs.Name.value,
-          Value: propAttrs[valueKey].value,
+          Value: `${value} ${symbol ?? ""}`,
         },
       };
       if (!setRow.children) setRow.children = [];

@@ -11,19 +11,35 @@ import { createQsetsRow } from "./qsets-row";
 import { createAttributesRow } from "./attributes-row";
 
 /**
- * Heloooooooooo
+ * UI State to render an element properties table
  */
 export interface ElementPropertiesUI {
+  /**
+   * The main entry point of @thatopen/components in your app
+   */
   components: OBC.Components;
+  /**
+   * The selection of elements to show its properties in the table
+   */
   fragmentIdMap: FRAGS.FragmentIdMap;
+  /**
+   * Display a warning instead of the table in case there is no selection
+   * @default true
+   */
   emptySelectionWarning?: boolean;
+  /**
+   * Display units (m, mm, m², etc) in numeric values when apply
+   * @remarks It can be expensive (temporal)
+   * @default false
+   */
+  displayUnits?: boolean;
   // dataToDisplay?: (
   //   | "Attributes"
   //   | "PropertySets"
   //   | "QuantitySets"
   //   | "Classifications"
   //   | "Tasks"
-  //   | "SpatialContainers"
+  //   | "SpatialContainer"
   // )[];
 }
 
@@ -40,6 +56,7 @@ const processDefinedByRelations = async (
   model: FRAGS.FragmentsGroup,
   expressID: number,
   row: BUI.TableGroupData,
+  uiState: ElementPropertiesUI,
 ) => {
   const indexer = components.get(OBC.IfcRelationsIndexer);
   const definedByRelations = indexer.getEntityRelations(
@@ -59,11 +76,11 @@ const processDefinedByRelations = async (
       if (attrs.type === WEBIFC.IFCELEMENTQUANTITY) qsets.push(attrs);
     }
 
-    const psetRow = await createPsetsRow(model, psets);
+    const psetRow = await createPsetsRow(model, psets, uiState);
     if (psetRow.children) addRowChildren(row, psetRow);
 
-    const qsetRow = await createQsetsRow(model, qsets);
-    if (qsetRow.children) addRowChildren(row, psetRow);
+    const qsetRow = await createQsetsRow(model, qsets, uiState);
+    if (qsetRow.children) addRowChildren(row, qsetRow);
   }
 };
 
@@ -167,6 +184,7 @@ let processedElements: { [modelID: string]: Map<number, BUI.TableGroupData> } =
 const computeTableData = async (
   components: OBC.Components,
   fragmentIdMap: FRAGS.FragmentIdMap,
+  uiState: ElementPropertiesUI,
 ) => {
   const indexer = components.get(OBC.IfcRelationsIndexer);
   const fragments = components.get(OBC.FragmentsManager);
@@ -212,7 +230,13 @@ const computeTableData = async (
       const elementRelations = modelRelations.get(expressID);
       if (!elementRelations) continue;
 
-      await processDefinedByRelations(components, model, expressID, elementRow);
+      await processDefinedByRelations(
+        components,
+        model,
+        expressID,
+        elementRow,
+        uiState,
+      );
       await processAssociateRelations(components, model, expressID, elementRow);
       await processAssignmentRelations(
         components,
@@ -243,7 +267,8 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUI) => {
     const table = e as BUI.Table;
     table.columns = [{ name: "Name", width: "12rem" }];
     table.headersHidden = true;
-    table.loadFunction = () => computeTableData(components, fragmentIdMap);
+    table.loadFunction = () =>
+      computeTableData(components, fragmentIdMap, state);
     const loaded = await table.loadData(true);
     if (loaded) table.dispatchEvent(new Event("datacomputed"));
   };
