@@ -3,6 +3,8 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import "iconify-icon";
+import { Manager } from "../../core";
+import { ContextMenu } from "../ContextMenu";
 
 /**
  * A custom button web component for BIM applications. HTML tag: bim-button
@@ -327,6 +329,22 @@ export class Button extends LitElement {
     if (!this.disabled) this.dispatchEvent(new Event("click"));
   };
 
+  closeNestedContexts() {
+    const groupID = this.getAttribute("data-context-group");
+    if (!groupID) return;
+    for (const menu of ContextMenu.dialog.children) {
+      const menuGroup = menu.getAttribute("data-context-group");
+      if (!(menu instanceof ContextMenu && menuGroup === groupID)) continue;
+      menu.visible = false;
+      menu.removeAttribute("data-context-group");
+      for (const child of menu.children) {
+        if (!(child instanceof Button)) continue;
+        child.closeNestedContexts();
+        child.removeAttribute("data-context-group");
+      }
+    }
+  }
+
   click() {
     if (!this.disabled) super.click();
   }
@@ -337,7 +355,17 @@ export class Button extends LitElement {
 
   private showContextMenu = () => {
     const contextMenu = this._contextMenu;
-    if (contextMenu) contextMenu.visible = true;
+    if (contextMenu) {
+      const id = this.getAttribute("data-context-group");
+      if (id) contextMenu.setAttribute("data-context-group", id);
+      this.closeNestedContexts();
+      const childID = Manager.newRandomId();
+      for (const child of contextMenu.children) {
+        if (!(child instanceof Button)) continue;
+        child.setAttribute("data-context-group", childID);
+      }
+      contextMenu.visible = true;
+    }
   };
 
   connectedCallback() {
@@ -364,6 +392,17 @@ export class Button extends LitElement {
       </div>
     `;
 
+    const hasChildrenSVG = html`<svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="1.125rem"
+      viewBox="0 0 24 24"
+      width="1.125rem"
+      style="fill: var(--bim-label--c)"
+    >
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+    </svg>`;
+
     return html`
       <div ${ref(this._parent)} class="parent" @click=${this.onClick}>
         ${this.label || this.icon
@@ -377,7 +416,9 @@ export class Button extends LitElement {
                   .icon=${this.icon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
-                  >${this.label}</bim-label
+                  >${this.label}${this.label && this._contextMenu
+                    ? hasChildrenSVG
+                    : null}</bim-label
                 >
               </div>
             `

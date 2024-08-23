@@ -38,6 +38,9 @@ export class Label extends LitElement {
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 0.125rem;
     }
 
     :host([label-hidden]) .parent p,
