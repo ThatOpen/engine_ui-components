@@ -9,7 +9,7 @@ import { TopicFormUI, createTopicTemplate } from "./src/template";
  * @returns A tuple containing the created Topic Form component and a function to update it.
  */
 export const createTopic = (state: TopicFormUI) => {
-  const element = BUI.Component.create<BUI.Table, TopicFormUI>(
+  const element = BUI.Component.create<BUI.Panel, TopicFormUI>(
     createTopicTemplate,
     state,
   );

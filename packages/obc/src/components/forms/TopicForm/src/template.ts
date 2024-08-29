@@ -8,27 +8,82 @@ interface DataStyles {
   };
 }
 
+interface FormValue {
+  title: string;
+  status: string;
+  type: string;
+  priority: string;
+  assignedTo: string;
+  labels: Iterable<string>;
+  stage: string;
+  description: string;
+}
+
+/**
+ * Represents the UI elements and configuration for a topic form in the OBC system.
+ *
+ * @interface TopicFormUI
+ */
 export interface TopicFormUI {
+  /**
+   * The main components entry point of your app.
+   */
   components: OBC.Components;
+
+  /**
+   * The topic data to be used in the form. This can be undefined if no topic is being edited.
+   */
   topic?: OBC.Topic;
+
+  /**
+   * The initial values for the form fields. Can be a partial raw topic object.
+   */
+  value?: Partial<FormValue>;
+
+  /**
+   * Callback function triggered when the form is submitted.
+   *
+   * @param {OBC.Topic} topic - The topic created/updated from the form.
+   * @returns {void | Promise<void>} - A void or a promise that resolves to void.
+   */
   onSubmit?: (topic: OBC.Topic) => void | Promise<void>;
+
+  /**
+   * Callback function triggered when the form is canceled.
+   *
+   * @returns {void | Promise<void>} - A void or a promise that resolves to void.
+   */
   onCancel?: () => void | Promise<void>;
+
+  /**
+   * Custom styles for the form components.
+   */
   styles?: Partial<DataStyles>;
 }
 
 export const createTopicTemplate = (state: TopicFormUI) => {
-  const { components, topic, onCancel, onSubmit: _onSubmit, styles } = state;
+  const {
+    components,
+    topic,
+    value,
+    onCancel,
+    onSubmit: _onSubmit,
+    styles,
+  } = state;
   const onSubmit = _onSubmit ?? (() => {});
   const bcfTopics = components.get(OBC.BCFTopics);
 
-  const title = topic?.title ?? null;
-  const status = topic?.status ?? null;
-  const type = topic?.type ?? null;
-  const priority = topic?.priority ?? null;
-  const assignedTo = topic?.assignedTo ?? null;
-  const labels = topic?.labels ?? null;
-  const stage = topic?.stage ?? null;
-  const description = topic?.description ?? null;
+  const title = value?.title ?? topic?.title ?? OBC.Topic.default.title;
+  const status = value?.status ?? topic?.status ?? OBC.Topic.default.status;
+  const type = value?.type ?? topic?.type ?? OBC.Topic.default.type;
+  const priority =
+    value?.priority ?? topic?.priority ?? OBC.Topic.default.priority;
+  const assignedTo =
+    value?.assignedTo ?? topic?.assignedTo ?? OBC.Topic.default.assignedTo;
+  const labels = value?.labels ?? topic?.labels ?? OBC.Topic.default.labels;
+  const stage = value?.stage ?? topic?.stage ?? OBC.Topic.default.stage;
+  const description =
+    value?.description ?? topic?.description ?? OBC.Topic.default.description;
   const dueDate = topic?.dueDate
     ? topic.dueDate.toISOString().split("T")[0]
     : null;
@@ -94,11 +149,19 @@ export const createTopicTemplate = (state: TopicFormUI) => {
     }
   };
 
+  const submitButton = createRef<BUI.Button>();
+  const updateSubmitButton = (e: Event) => {
+    const { value: button } = submitButton;
+    if (!button) return;
+    const input = e.target as BUI.TextInput;
+    button.disabled = input.value.trim() === "";
+  };
+
   return BUI.html`
     <bim-panel style="border-radius: var(--bim-ui_size-base); outline: 2px solid var(--bim-ui_bg-contrast-20); width: 22rem;">
       <bim-panel-section ${BUI.ref(topicForm)} fixed label="New Topic" name="topic">
         <div style="display: flex; gap: 0.375rem">
-          <bim-text-input vertical label="Title" name="title" .value=${title}></bim-text-input>
+          <bim-text-input @input=${updateSubmitButton} vertical label="Title" name="title" .value=${title}></bim-text-input>
           ${
             topic
               ? BUI.html`
@@ -118,7 +181,7 @@ export const createTopicTemplate = (state: TopicFormUI) => {
         </div>
         <div style="display: flex; gap: 0.375rem">
           <bim-dropdown vertical label="Labels" name="labels" multiple>
-            ${[...labelsList].map((l) => BUI.html`<bim-option label=${l} .checked=${labels?.has(l)}></bim-option>`)}
+            ${[...labelsList].map((l) => BUI.html`<bim-option label=${l} .checked=${labels ? [...labels].includes(l) : false}></bim-option>`)}
           </bim-dropdown>
           <bim-dropdown vertical label="Assignee" name="assignedTo">
             ${[...users].map((u) => {
@@ -151,7 +214,7 @@ export const createTopicTemplate = (state: TopicFormUI) => {
             }
           </style>
           <bim-button @click=${onCancel} style="flex: 0" id="A7T9K" label="Cancel"></bim-button>
-          <bim-button @click=${onAddTopic} style="flex: 0" id="W3F2J" label=${topic ? "Update Topic" : "Add Topic"} icon=${topic ? "tabler:refresh" : "mi:add"}></bim-button>
+          <bim-button ${BUI.ref(submitButton)} @click=${onAddTopic} style="flex: 0" id="W3F2J" label=${topic ? "Update Topic" : "Add Topic"} icon=${topic ? "tabler:refresh" : "mi:add"}></bim-button>
         </div>
       </bim-panel-section>
     </bim-panel>
