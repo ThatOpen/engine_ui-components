@@ -92,8 +92,8 @@ export class Button extends LitElement {
     }
 
     :host([disabled]) {
-      --bim-label--c: var(--bim-ui_bg-contrast-80);
-      background-color: gray;
+      --bim-label--c: var(--bim-ui_bg-contrast-80) !important;
+      background-color: gray !important;
     }
 
     ::slotted(bim-button) {
