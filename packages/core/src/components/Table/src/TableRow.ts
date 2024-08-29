@@ -171,8 +171,8 @@ export class TableRow extends LitElement {
       const cell = document.createElement("bim-table-cell");
       cell.append(content);
       cell.column = column;
-      if (this._columnNames.indexOf(column) === 0 && !this.isHeader)
-        cell.style.marginLeft = `${(this.table.noIndentation ? 0 : indentation) + 0.75}rem`;
+      if (this._columnNames.indexOf(column) === 0)
+        cell.style.marginLeft = `${this.table.noIndentation ? 0 : indentation + 0.75}rem`;
       const columnIndex = this._columnNames.indexOf(column);
       cell.setAttribute("data-column-index", String(columnIndex));
       cell.toggleAttribute(

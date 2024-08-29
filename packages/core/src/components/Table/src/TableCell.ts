@@ -14,7 +14,7 @@ export class TableCell extends LitElement {
       justify-content: center;
     }
 
-    :host([data-column-index="0"]:not([data-no-indentation])) {
+    :host([data-column-index="0"]) {
       justify-content: normal;
     }
 
