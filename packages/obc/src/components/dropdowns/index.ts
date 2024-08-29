@@ -1,5 +1,7 @@
-// import { ifcEntities } from "./ifc-entity";
+import { predefinedTypes } from "./PredefinedTypes";
+import { entities } from "./IfcEntities";
 
-// export const dropdowns = {
-//   ifcEntities,
-// };
+export const dropdowns = {
+  predefinedTypes,
+  entities,
+};
