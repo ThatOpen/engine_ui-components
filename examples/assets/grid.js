@@ -1,8 +1,8 @@
-import{R as u,k as l}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./index-CQnxjHcO.js";import{e as p,b as g,t as h,K as f}from"./state-_jIz2SEY.js";/**
+import{R as u,k as r}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./index-CZ_xnYLb.js";import"./state-PLJivh1p.js";import{e as p,a as g,t as h,K as f}from"./ref-VCMWEIwC.js";/**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const c="important",k=" !"+c,s=p(class extends g{constructor(e){var i;if(super(e),e.type!==h.ATTRIBUTE||e.name!=="style"||((i=e.strings)==null?void 0:i.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((i,n)=>{const o=e[n];return o==null?i:i+`${n=n.includes("-")?n:n.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${o};`},"")}update(e,[i]){const{style:n}=e.element;if(this.ft===void 0)return this.ft=new Set(Object.keys(i)),this.render(i);for(const o of this.ft)i[o]==null&&(this.ft.delete(o),o.includes("-")?n.removeProperty(o):n[o]=null);for(const o in i){const t=i[o];if(t!=null){this.ft.add(o);const a=typeof t=="string"&&t.endsWith(k);o.includes("-")||a?n.setProperty(o,a?t.slice(0,-11):t,a?c:""):n[o]=t}}return u}});d.init();const y=b.create(()=>l`
+ */const c="important",k=" !"+c,s=p(class extends g{constructor(e){var i;if(super(e),e.type!==h.ATTRIBUTE||e.name!=="style"||((i=e.strings)==null?void 0:i.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((i,n)=>{const o=e[n];return o==null?i:i+`${n=n.includes("-")?n:n.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${o};`},"")}update(e,[i]){const{style:n}=e.element;if(this.ft===void 0)return this.ft=new Set(Object.keys(i)),this.render(i);for(const o of this.ft)i[o]==null&&(this.ft.delete(o),o.includes("-")?n.removeProperty(o):n[o]=null);for(const o in i){const t=i[o];if(t!=null){this.ft.add(o);const a=typeof t=="string"&&t.endsWith(k);o.includes("-")||a?n.setProperty(o,a?t.slice(0,-11):t,a?c:""):n[o]=t}}return u}});d.init();const y=b.create(()=>r`
     <bim-panel label="My Panel!">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-label>This is just a panel section... cool, right?</bim-label>
@@ -22,7 +22,7 @@ import{R as u,k as l}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./in
         <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
       </bim-panel-section>
     </bim-panel>
-  `),D=b.create(()=>l`
+  `),D=b.create(()=>r`
    <bim-tabs>
     <bim-tab label="Toolbar A">
       <bim-toolbar>
@@ -46,10 +46,10 @@ import{R as u,k as l}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./in
       </bim-toolbar>
     </bim-tab>
    </bim-tabs> 
-  `),T=b.create(()=>l`
+  `),T=b.create(()=>r`
     <bim-panel>
       <bim-panel-section label="Assignments" fixed>
-        <bim-table ${f(i=>{if(!i)return;const n=i,o={padding:"0.25rem 0.375rem",borderRadius:"0.25rem"};n.dataTransform={Status:t=>{if(typeof t!="string")return t;if(t==="In Progress"){const a={...o,backgroundColor:"#3c59c3",color:"white"};return l`<bim-label style=${s(a)}>${t}</bim-label>`}if(t==="Pending"){const a={...o,backgroundColor:"#5c5c5c",color:"white"};return l`<bim-label style=${s(a)}>${t}</bim-label>`}if(t==="Completed"){const a={...o,backgroundColor:"#3a7829",color:"white"};return l`<bim-label style=${s(a)}>${t}</bim-label>`}if(t==="Scheduled"){const a={...o,backgroundColor:"#9e2980",color:"white"};return l`<bim-label style=${s(a)}>${t}</bim-label>`}return t},AssignedTo:(t,a)=>l`
+        <bim-table ${f(i=>{if(!i)return;const n=i,o={padding:"0.25rem 0.375rem",borderRadius:"0.25rem"};n.dataTransform={Status:t=>{if(typeof t!="string")return t;if(t==="In Progress"){const a={...o,backgroundColor:"#3c59c3",color:"white"};return r`<bim-label style=${s(a)}>${t}</bim-label>`}if(t==="Pending"){const a={...o,backgroundColor:"#5c5c5c",color:"white"};return r`<bim-label style=${s(a)}>${t}</bim-label>`}if(t==="Completed"){const a={...o,backgroundColor:"#3a7829",color:"white"};return r`<bim-label style=${s(a)}>${t}</bim-label>`}if(t==="Scheduled"){const a={...o,backgroundColor:"#9e2980",color:"white"};return r`<bim-label style=${s(a)}>${t}</bim-label>`}return t},AssignedTo:(t,a)=>r`
           <div style="display: flex; gap: 0.5rem">
             <bim-label>${t}</bim-label>
             <bim-button @click=${()=>{const{Task:m}=a;alert(`Will send ${t} a reminder of ${m}!`)}} icon="mingcute:send-fill" tooltip-title="Send reminder!"></bim-button>
@@ -57,7 +57,7 @@ import{R as u,k as l}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./in
         `},n.data=[{data:{Task:"Code Review",Description:"Review code for the new feature implementation",AssignedTo:"Alice",DueDate:"2024-05-20",Status:"In Progress"}},{data:{Task:"Write Documentation",Description:"Write user documentation for the latest release",AssignedTo:"Bob",DueDate:"2024-05-25",Status:"Pending"}},{data:{Task:"Unit Testing",Description:"Create and run unit tests for the new modules",AssignedTo:"Charlie",DueDate:"2024-05-22",Status:"Completed"}},{data:{Task:"Deploy to Staging",Description:"Deploy the current build to the staging environment",AssignedTo:"David",DueDate:"2024-05-18",Status:"Pending"}},{data:{Task:"UI Design",Description:"Design the user interface for the new dashboard",AssignedTo:"Eve",DueDate:"2024-05-30",Status:"In Progress"}},{data:{Task:"Database Migration",Description:"Migrate the database schema to the new version",AssignedTo:"Frank",DueDate:"2024-05-21",Status:"Not Started"}},{data:{Task:"Client Meeting",Description:"Discuss project requirements and deliverables",AssignedTo:"Grace",DueDate:"2024-05-19",Status:"Scheduled"}},{data:{Task:"Bug Fixing",Description:"Fix critical bugs reported by QA",AssignedTo:"Hank",DueDate:"2024-05-23",Status:"In Progress"}},{data:{Task:"Performance Optimization",Description:"Optimize the application for better performance",AssignedTo:"Ivy",DueDate:"2024-05-27",Status:"Pending"}},{data:{Task:"Code Merge",Description:"Merge the feature branch into the main branch",AssignedTo:"Jack",DueDate:"2024-05-24",Status:"Completed"}}]})}></bim-table>
       </bim-panel-section>
     </bim-panel> 
-  `),C=b.create(()=>l`
+  `),C=b.create(()=>r`
     <bim-panel>
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button @click=${()=>{alert("You are awesome 😏")}} label="Click me!"></bim-button>
@@ -67,7 +67,7 @@ import{R as u,k as l}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./in
         </bim-selector>
       </bim-panel-section>
     </bim-panel>
-  `),P=document.createElement("bim-viewport"),r=document.body.querySelector("bim-grid");r.layouts={main:{template:`
+  `),P=document.createElement("bim-viewport"),l=document.body.querySelector("bim-grid");l.layouts={main:{template:`
       "header header" 80px
       "sidebar content" 1fr
       / 80px 1fr
@@ -76,4 +76,4 @@ import{R as u,k as l}from"./lit-html-DcU_S_gY.js";import{M as d,C as b}from"./in
       "leftPanel viewport rightPanel" 2fr
       "leftPanel bottomPanel bottomPanel" 1fr
       / 22rem 1fr 20rem
-    `,elements:{ribbon:D,leftPanel:y,viewport:P,bottomPanel:T,rightPanel:C}}};r.addEventListener("layoutchange",()=>{r.layout?alert(`Your have changed to "${r.layout}" layout!`):alert("Your have cleaned up your layout!")});const S=document.body.querySelector("bim-button");S.addEventListener("click",()=>{const{layout:e}=r;switch(e){case void 0:r.layout="main";break;case"main":r.layout="app";break;case"app":r.layout=void 0;break;default:console.log("No follow up action")}});
+    `,elements:{ribbon:D,leftPanel:y,viewport:P,bottomPanel:T,rightPanel:C}}};l.addEventListener("layoutchange",()=>{l.layout?alert(`Your have changed to "${l.layout}" layout!`):alert("Your have cleaned up your layout!")});const S=document.body.querySelector("bim-button");S.addEventListener("click",()=>{const{layout:e}=l;switch(e){case void 0:l.layout="main";break;case"main":l.layout="app";break;case"app":l.layout=void 0;break;default:console.log("No follow up action")}});
