@@ -1,1 +1,1 @@
-import"./lit-html-DcU_S_gY.js";import{M as t}from"./index-Dw3E4t0p.js";import"./state-PLJivh1p.js";t.init();const e=document.body.querySelector("bim-checkbox");e.addEventListener("change",()=>{const{checked:o}=e;alert(o?"You want BIM Tiles! :)":"You don't want BIM Tiles :(")});
+import"./lit-html-DcU_S_gY.js";import{M as t}from"./index-CQnxjHcO.js";import"./state-_jIz2SEY.js";t.init();const e=document.body.querySelector("bim-checkbox");e.addEventListener("change",()=>{const{checked:o}=e;alert(o?"You want BIM Tiles! :)":"You don't want BIM Tiles :(")});

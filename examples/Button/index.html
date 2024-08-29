@@ -36,8 +36,8 @@
   </style>
   <script type="module" crossorigin src="../assets/button.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/lit-html-DcU_S_gY.js">
-  <link rel="modulepreload" crossorigin href="../assets/state-PLJivh1p.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-Dw3E4t0p.js">
+  <link rel="modulepreload" crossorigin href="../assets/state-_jIz2SEY.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CQnxjHcO.js">
 </head>
 
 <body>
@@ -63,7 +63,13 @@
           </bim-context-menu>
         </bim-button>
         <bim-button id="context-btn" label="Action B"></bim-button>
-        <bim-button label="Action C"></bim-button>
+        <bim-button label="Action C">
+          <bim-context-menu>
+            <bim-button label="Action"></bim-button>
+            <bim-button label="Another Action"></bim-button>
+            <bim-button label="Another Cool Action"></bim-button>
+          </bim-context-menu>
+        </bim-button>
       </bim-context-menu>
     </bim-button>
   </div>
