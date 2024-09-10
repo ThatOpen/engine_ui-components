@@ -19,7 +19,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.24.7":
+"@babel/parser@npm:^7.25.3":
   version: 7.25.6
   resolution: "@babel/parser@npm:7.25.6"
   dependencies:
@@ -636,8 +636,8 @@ __metadata:
   linkType: hard
 
 "@thatopen/components@npm:~2.2.0":
-  version: 2.2.10
-  resolution: "@thatopen/components@npm:2.2.10"
+  version: 2.2.11
+  resolution: "@thatopen/components@npm:2.2.11"
   dependencies:
     camera-controls: 2.7.3
     fast-xml-parser: 4.4.1
@@ -647,7 +647,7 @@ __metadata:
     "@thatopen/fragments": ~2.2.0
     three: ^0.160.1
     web-ifc: 0.0.57
-  checksum: 92e608762e2929c012dc42e3c0131eae45616795c2694b083af01a872ba03bea4ee9c2164ff0a12d3f0b4baa0d510157cd4e3a6b35fc5f3a66fc70da98fe2988
+  checksum: 20d1a9594a1381d12a88915ae646aec4e8d90e9f2165cdb1d76eaff5208a13da81a4a995c4f7e27048c9454d23d0c00fcfaac715191347b8b2db507e90af17a9
   languageName: node
   linkType: hard
 
@@ -928,26 +928,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-core@npm:3.4.38":
-  version: 3.4.38
-  resolution: "@vue/compiler-core@npm:3.4.38"
+"@vue/compiler-core@npm:3.5.4":
+  version: 3.5.4
+  resolution: "@vue/compiler-core@npm:3.5.4"
   dependencies:
-    "@babel/parser": ^7.24.7
-    "@vue/shared": 3.4.38
+    "@babel/parser": ^7.25.3
+    "@vue/shared": 3.5.4
     entities: ^4.5.0
     estree-walker: ^2.0.2
     source-map-js: ^1.2.0
-  checksum: dbfda932e03743aa4575a61c28b40bfeddbc89d665e99f148a6b356d4a5f41a174c421e25193dc3483baa3060afbbd46f78bf82abb3e0eea99373f33258814fc
+  checksum: 29e7ffda3712f4456c3d12aa29722ff73f6114304c6b405fa503b3dcbec082ad9011e50600fceefefb3dcb89ea6a20f31ad8e22719d4e8acfaa9862b04168dfc
   languageName: node
   linkType: hard
 
 "@vue/compiler-dom@npm:^3.3.0":
-  version: 3.4.38
-  resolution: "@vue/compiler-dom@npm:3.4.38"
+  version: 3.5.4
+  resolution: "@vue/compiler-dom@npm:3.5.4"
   dependencies:
-    "@vue/compiler-core": 3.4.38
-    "@vue/shared": 3.4.38
-  checksum: eef48039b05727c545d2d13436ea529b239aa2151ba383b6938cb53204a6e867fd7f40f8fa69d1d27c86a51ca09f9ca15fc2e4bdb785e2702ee3a0b93a81d2fb
+    "@vue/compiler-core": 3.5.4
+    "@vue/shared": 3.5.4
+  checksum: 37e17064d81878e532567229987da91b294e82e87fea69fb958a78295f014d28c80bfe75c9f501a3555bcd65f75f6d9f98795f93a034dcfd7bf49d1c537f86b2
   languageName: node
   linkType: hard
 
@@ -973,10 +973,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/shared@npm:3.4.38, @vue/shared@npm:^3.3.0":
-  version: 3.4.38
-  resolution: "@vue/shared@npm:3.4.38"
-  checksum: 598d36eb2e4793d3c0b01594683fb37fd257ddfac7d02013c9d2d1f5e2ab5df41b2d9b1d1bf9384aa0cca69a4a2b09d43931c73c2e372dfe1e11bb6cbe16f5b0
+"@vue/shared@npm:3.5.4, @vue/shared@npm:^3.3.0":
+  version: 3.5.4
+  resolution: "@vue/shared@npm:3.5.4"
+  checksum: 7c47e95c8f3eed3c7164e03529e6e43c70144152f5d4d3308759878ab318437ef6ef6a0c8033a6270b7b3a866ef50f2cea600bd479f097b32bada8126f6afea3
   languageName: node
   linkType: hard
 
@@ -1044,9 +1044,9 @@ __metadata:
   linkType: hard
 
 "ansi-regex@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "ansi-regex@npm:6.0.1"
-  checksum: 1ff8b7667cded1de4fa2c9ae283e979fc87036864317da86a2e546725f96406746411d0d85e87a2d12fa5abd715d90006de7fa4fa0477c92321ad3b4c7d4e169
+  version: 6.1.0
+  resolution: "ansi-regex@npm:6.1.0"
+  checksum: 495834a53b0856c02acd40446f7130cb0f8284f4a39afdab20d5dc42b2e198b1196119fe887beed8f9055c4ff2055e3b2f6d4641d0be018cdfb64fedf6fc1aac
   languageName: node
   linkType: hard
 
@@ -1394,14 +1394,14 @@ __metadata:
   linkType: hard
 
 "debug@npm:4, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
-  version: 4.3.6
-  resolution: "debug@npm:4.3.6"
+  version: 4.3.7
+  resolution: "debug@npm:4.3.7"
   dependencies:
-    ms: 2.1.2
+    ms: ^2.1.3
   peerDependenciesMeta:
     supports-color:
       optional: true
-  checksum: 1630b748dea3c581295e02137a9f5cbe2c1d85fea35c1e6597a65ca2b16a6fce68cec61b299d480787ef310ba927dc8c92d3061faba0ad06c6a724672f66be7f
+  checksum: 822d74e209cd910ef0802d261b150314bbcf36c582ccdbb3e70f0894823c17e49a50d3e66d96b633524263975ca16b6a833f3e3b7e030c157169a5fabac63160
   languageName: node
   linkType: hard
 
@@ -1770,14 +1770,14 @@ __metadata:
   linkType: hard
 
 "eslint-module-utils@npm:^2.8.0":
-  version: 2.8.2
-  resolution: "eslint-module-utils@npm:2.8.2"
+  version: 2.11.0
+  resolution: "eslint-module-utils@npm:2.11.0"
   dependencies:
     debug: ^3.2.7
   peerDependenciesMeta:
     eslint:
       optional: true
-  checksum: f21109dd06eff6eb99c60738f8092e05b498e8438232a3112612e2f124e278d541eda4cd58dd8ec139ee443cf7fcd8be0212804be477284ee8013c6d319a1e5a
+  checksum: 8c2ecff3484835e031c8f1aa44119be65a058d195cce7b3ac827ad7ccc8bb5f9bcdd85230e2e3398981d07789bf4d90f3b81d106e67faf3cd26e0b34d73093af
   languageName: node
   linkType: hard
 
@@ -3157,14 +3157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ms@npm:2.1.2":
-  version: 2.1.2
-  resolution: "ms@npm:2.1.2"
-  checksum: 673cdb2c3133eb050c745908d8ce632ed2c02d85640e2edb3ace856a2266a813b30c613569bf3354fdf4ea7d1a1494add3bfa95e2713baa27d0c2c71fc44f58f
-  languageName: node
-  linkType: hard
-
-"ms@npm:^2.1.1":
+"ms@npm:^2.1.1, ms@npm:^2.1.3":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: aa92de608021b242401676e35cfa5aa42dd70cbdc082b916da7fb925c542173e36bce97ea3e804923fe92c0ad991434e4a38327e15a1b5b5f945d66df615ae6d
@@ -3476,13 +3469,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.4.35":
-  version: 8.4.44
-  resolution: "postcss@npm:8.4.44"
+  version: 8.4.45
+  resolution: "postcss@npm:8.4.45"
   dependencies:
     nanoid: ^3.3.7
     picocolors: ^1.0.1
     source-map-js: ^1.2.0
-  checksum: 64d9ce78253696bb64e608a54b362c9ddb537d3b38b58223ebce8260d6110d4e798ef1b3d57d8c28131417d9809187fd51d5c4263113536363444f8635e11bdb
+  checksum: 3223cdad4a9392c0b334ee3ee7e4e8041c631cb6160609cef83c18d2b2580e931dd8068ab13cc6000c1a254d57492ac6c38717efc397c5dcc9756d06bc9c44f3
   languageName: node
   linkType: hard
 
@@ -3934,9 +3927,9 @@ __metadata:
   linkType: hard
 
 "source-map-js@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "source-map-js@npm:1.2.0"
-  checksum: 791a43306d9223792e84293b00458bf102a8946e7188f3db0e4e22d8d530b5f80a4ce468eb5ec0bf585443ad55ebbd630bf379c98db0b1f317fd902500217f97
+  version: 1.2.1
+  resolution: "source-map-js@npm:1.2.1"
+  checksum: 4eb0cd997cdf228bc253bcaff9340afeb706176e64868ecd20efbe6efea931465f43955612346d6b7318789e5265bdc419bc7669c1cebe3db0eb255f57efa76b
   languageName: node
   linkType: hard
 
