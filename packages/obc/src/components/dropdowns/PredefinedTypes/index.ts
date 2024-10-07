@@ -2,7 +2,7 @@ import * as BUI from "@thatopen/ui";
 import * as WEBIFC from "web-ifc";
 import { predefinedTypes as types } from "./src";
 
-export interface PredefinedTypesState {
+interface PredefinedTypesState {
   entity: number;
 }
 
