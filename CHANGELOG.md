@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.3.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.2.0...v2.3.0) (2024-10-07)
+
+
+### Features
+
+* **core:** adds no-indentation on bim-table ([aa916de](https://github.com/ThatOpen/engine_ui-components/commit/aa916de9963b8411cbd192e269f7eba103a5b9c7))
+* **obc:** adds new bim-world component ([e7e4640](https://github.com/ThatOpen/engine_ui-components/commit/e7e46408584ce694918ac34ea9038d145c5690cd))
+* **obc:** display units in ElementProperties ([bbf0c96](https://github.com/ThatOpen/engine_ui-components/commit/bbf0c967d92eab400a9f840e3065fba478762420))
+
+
+### Bug Fixes
+
+* **core:** context menu behavior in buttons ([beddd8d](https://github.com/ThatOpen/engine_ui-components/commit/beddd8d18f0993bc924299ab6f965cb5d888d636))
+* **obc:** correctly implements bim-table on ModelsList ([fce48e9](https://github.com/ThatOpen/engine_ui-components/commit/fce48e9fbbecaccfb0bc250613d85ff05cb29e56))
+* **obc:** IfcLoader button was setting the model name after triggering onFragmentsLoaded ([c8dc488](https://github.com/ThatOpen/engine_ui-components/commit/c8dc488cd947f26be8fe26a1dabbdead85ccb0d4))
+
 ## [2.2.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.1.0...v2.2.0) (2024-08-19)
 
 
