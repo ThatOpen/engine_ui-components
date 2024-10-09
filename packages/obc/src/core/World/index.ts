@@ -82,9 +82,14 @@ export class World extends LitElement {
     postproduction.customEffects.lineColor = 0x17191c;
   }
 
+  private onSlotChange() {
+    const event = new Event("slotchange");
+    this.dispatchEvent(event);
+  }
+
   protected render() {
-    return html`<bim-viewport ${ref(this._viewport)}
-      ><slot></slot
-    ></bim-viewport>`;
+    return html` <bim-viewport ${ref(this._viewport)}>
+      <slot @slotchange=${this.onSlotChange}></slot>
+    </bim-viewport>`;
   }
 }
