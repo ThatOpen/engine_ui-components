@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/ThatOpen/engine_ui-components/compare/v2.3.0...v2.3.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* **obc:** solve missing ElementProperties table when no Name is found ([afccbc1](https://github.com/ThatOpen/engine_ui-components/commit/afccbc17ef980671c32d842c2cad8911b81e1a8d))
+
 ## [2.3.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.2.0...v2.3.0) (2024-10-07)
 
 
