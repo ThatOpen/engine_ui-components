@@ -14,7 +14,7 @@ export const createPsetsRow = async (
   const row: BUI.TableGroupData = { data: { Name: "PropertySets" } };
   for (const pset of psets) {
     const setRow: BUI.TableGroupData = {
-      data: { Name: pset.Name.value },
+      data: { Name: pset.Name?.value },
     };
     if (pset.type !== WEBIFC.IFCPROPERTYSET) continue;
     for (const propHandle of pset.HasProperties) {
@@ -39,7 +39,7 @@ export const createPsetsRow = async (
       }
       const propRow: BUI.TableGroupData = {
         data: {
-          Name: propAttrs.Name.value,
+          Name: propAttrs.Name?.value,
           Value: `${value} ${symbol ?? ""}`,
         },
       };

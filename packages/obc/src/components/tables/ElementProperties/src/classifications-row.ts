@@ -13,7 +13,7 @@ export const createClassificationsRow = async (
     if (!sourceAttrs) continue;
     const classificationRow: BUI.TableGroupData = {
       data: {
-        Name: sourceAttrs.Name.value,
+        Name: sourceAttrs.Name?.value,
       },
       children: [
         {
@@ -27,7 +27,7 @@ export const createClassificationsRow = async (
         {
           data: {
             Name: "Name",
-            Value: classification.Name.value,
+            Value: classification.Name?.value,
           },
         },
       ],

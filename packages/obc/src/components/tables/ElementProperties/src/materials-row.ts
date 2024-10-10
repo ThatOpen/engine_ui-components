@@ -10,7 +10,7 @@ export const createMaterialsRow = async (
   const row: BUI.TableGroupData = { data: { Name: "Materials" } };
   for (const material of materials) {
     if (material.type === WEBIFC.IFCMATERIALLAYERSETUSAGE) {
-      const layerSetID = material.ForLayerSet.value;
+      const layerSetID = material.ForLayerSet?.value;
       const layerSetAttrs = await model.getProperties(layerSetID);
       if (!layerSetAttrs) continue;
       for (const layerHandle of layerSetAttrs.MaterialLayers) {
@@ -18,7 +18,7 @@ export const createMaterialsRow = async (
         const layerAttrs = await model.getProperties(layerID);
         if (!layerAttrs) continue;
         const materialAttrs = await model.getProperties(
-          layerAttrs.Material.value,
+          layerAttrs.Material?.value,
         );
         if (!materialAttrs) continue;
         const layerRow = {
@@ -29,13 +29,13 @@ export const createMaterialsRow = async (
             {
               data: {
                 Name: "Thickness",
-                Value: layerAttrs.LayerThickness.value,
+                Value: layerAttrs.LayerThickness?.value,
               },
             },
             {
               data: {
                 Name: "Material",
-                Value: materialAttrs.Name.value,
+                Value: materialAttrs.Name?.value,
               },
             },
           ],
@@ -52,7 +52,7 @@ export const createMaterialsRow = async (
         const materialRow: BUI.TableGroupData = {
           data: {
             Name: "Name",
-            Value: materialAttrs.Name.value,
+            Value: materialAttrs.Name?.value,
           },
         };
         if (!row.children) row.children = [];
@@ -63,7 +63,7 @@ export const createMaterialsRow = async (
       const materialRow: BUI.TableGroupData = {
         data: {
           Name: "Name",
-          Value: material.Name.value,
+          Value: material.Name?.value,
         },
       };
       if (!row.children) row.children = [];

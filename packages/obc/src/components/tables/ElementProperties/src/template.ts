@@ -290,9 +290,12 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUI) => {
             <bim-label slot="missing-data" style="--bim-icon--c: gold" icon="ic:round-warning">
               Select some elements to display its properties
             </bim-label>
-          `
+            `
           : null
       }
+      <bim-label slot="error-loading" style="--bim-icon--c: #e72e2e" icon="bxs:error-alt">
+        Something went wrong with the properties
+      </bim-label>
     </bim-table>
   `;
 };

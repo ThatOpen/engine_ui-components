@@ -13,7 +13,7 @@ export const createQsetsRow = async (
   const { displayUnits } = uiState;
   const row: BUI.TableGroupData = { data: { Name: "QuantitySets" } };
   for (const qset of qsets) {
-    const setRow: BUI.TableGroupData = { data: { Name: qset.Name.value } };
+    const setRow: BUI.TableGroupData = { data: { Name: qset.Name?.value } };
     if (qset.type !== WEBIFC.IFCELEMENTQUANTITY) continue;
     for (const qtoHandle of qset.Quantities) {
       const { value: propID } = qtoHandle;
@@ -38,7 +38,7 @@ export const createQsetsRow = async (
       }
       const propRow: BUI.TableGroupData = {
         data: {
-          Name: propAttrs.Name.value,
+          Name: propAttrs.Name?.value,
           Value: `${value} ${symbol ?? ""}`,
         },
       };
