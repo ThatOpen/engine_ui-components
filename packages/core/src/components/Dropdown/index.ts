@@ -1,9 +1,11 @@
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
+import { ref, createRef } from "lit/directives/ref.js";
 import { Component } from "../../core/Component";
 import { styles } from "../../core/Manager/src/styles";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
+import { ContextMenu } from "../ContextMenu";
 
 /**
  * A custom dropdown web component for BIM applications.
@@ -142,8 +144,20 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   @property({ type: Boolean, reflect: true })
   set visible(value: boolean) {
-    this._visible = value;
-    if (!value) this.resetVisibleElements();
+    if (value) {
+      const { value: contextMenu } = this._contextMenu;
+      if (!contextMenu) return;
+      for (const element of this.elements) {
+        contextMenu.append(element);
+      }
+      this._visible = true;
+    } else {
+      for (const element of this.elements) {
+        this.append(element);
+      }
+      this._visible = false;
+      this.resetVisibleElements();
+    }
   }
 
   get visible() {
@@ -202,15 +216,12 @@ export class Dropdown extends Component implements HasValue, HasName {
    */
   onValueChange = new Event("change");
 
+  private _contextMenu = createRef<ContextMenu>();
+
   constructor() {
     super();
     this.useObserver = true;
   }
-
-  private onWindowMouseUp = (e: MouseEvent) => {
-    if (!this.visible) return;
-    if (!this.contains(e.target as Node)) this.visible = false;
-  };
 
   private onOptionClick = (e: MouseEvent) => {
     const option = e.target as Option;
@@ -268,16 +279,6 @@ export class Dropdown extends Component implements HasValue, HasName {
     return element;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener("mouseup", this.onWindowMouseUp);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener("mouseup", this.onWindowMouseUp);
-  }
-
   protected render() {
     let inputLabel: string;
     let inputImg: string | undefined;
@@ -319,11 +320,16 @@ export class Dropdown extends Component implements HasValue, HasName {
             <path d="M0 0h24v24H0V0z" fill="none" />
             <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
           </svg>
+          <bim-context-menu
+            ${ref(this._contextMenu)}
+            .visible=${this.visible}
+            @hidden=${() => {
+              if (this.visible) this.visible = false;
+            }}
+          >
+            <slot @slotchange=${this.onSlotChange}></slot>
+          </bim-context-menu>
         </div>
-        <bim-context-menu .visible=${this.visible}>
-          <slot @slotchange=${this.onSlotChange}></slot>
-          ${this.visibleElements.map((option) => option)}
-        </bim-context-menu>
       </bim-input>
     `;
   }

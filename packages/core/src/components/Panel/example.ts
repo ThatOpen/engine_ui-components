@@ -24,9 +24,18 @@ for (const panel of panels) {
   activationButtons.append(activationButton);
 }
 
-// const panelB = document.body.querySelector<BUI.Panel>(
-//   "bim-panel[name='panelB']",
-// )!;
+const panelB = document.body.querySelector<BUI.Panel>(
+  "bim-panel[name='panelB']",
+)!;
+
+panelB.valueTransform = {
+  date: (value: string) => {
+    if (value.trim() === "") return value;
+    return new Date(value);
+  },
+};
+
+console.log(panelB);
 // const { activationButton: panelBBtn } = panelB;
 // panelBBtn.labelHidden = true;
 // activationButtons.append(panelBBtn);

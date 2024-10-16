@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import * as BUI from "../..";
 
 BUI.Manager.init();
@@ -6,6 +7,18 @@ const table = document.body.querySelector<BUI.Table>("bim-table")!;
 table.addEventListener("rowcreated", ({ detail }) => {
   const { row } = detail;
   row.style.borderBottom = "1px solid var(--bim-ui_bg-contrast-20)";
+});
+
+table.addEventListener("rowselected", ({ detail }) => {
+  const { data } = detail;
+  console.log("Selected Data:", data);
+  console.log("All Selected Data:", [...table.selection.values()]);
+});
+
+table.addEventListener("rowdeselected", ({ detail }) => {
+  const { data } = detail;
+  console.log("Deselected Data:", data);
+  console.log("All Selected Data:", [...table.selection.values()]);
 });
 
 table.dataTransform = {
@@ -17,21 +30,41 @@ table.dataTransform = {
   },
 };
 
-const loadBtn = document.getElementById("load-data") as BUI.Button;
-loadBtn.addEventListener("click", async () => {
+const forceError = document.getElementById("force-error") as BUI.Checkbox;
+const loadingErrorElement = document.getElementById(
+  "error-loading-label",
+) as BUI.Label;
+
+table.loadingErrorElement = loadingErrorElement;
+
+table.loadFunction = async () => {
+  if (forceError.checked)
+    throw new Error(
+      "You have forced an error and data couldn't be loaded! Try to disable the 'Force Load Error' checkbox.",
+    );
+
   const jsonData = await fetch(
     "https://thatopen.github.io/engine_ui-components/resources/table-data.json",
   );
 
-  if (!jsonData.ok) {
-    alert("Failed fetching table data from GitHub!");
-    return;
-  }
-  const fetchedData = (await jsonData.json()) as BUI.TableGroupData[];
+  if (!jsonData.ok) throw new Error("Failed fetching data from GitHub!");
 
-  table.data = fetchedData;
-  table.columns = [{ name: "Entity", width: "12rem" }];
-});
+  const data = (await jsonData.json()) as BUI.TableGroupData[];
+  return data.slice(0, 10);
+};
+
+const loadBtn = document.getElementById("load-data") as BUI.Button;
+const tryAgainBtn = document.getElementById("try-again") as BUI.Button;
+const loadData = async () => {
+  const wasLoaded = await table.loadData();
+  if (wasLoaded) {
+    if (table.data[0]) table.selection = new Set([table.data[0].data]);
+    table.columns = [{ name: "Entity", width: "12rem" }];
+  }
+};
+
+loadBtn.addEventListener("click", loadData);
+tryAgainBtn.addEventListener("click", loadData);
 
 const cleanBtn = document.getElementById("clean-data") as BUI.Button;
 cleanBtn.addEventListener("click", () => (table.data = []));

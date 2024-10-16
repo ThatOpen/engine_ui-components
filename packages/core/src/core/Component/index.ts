@@ -106,7 +106,7 @@ export class Component extends LitElement {
   static create<T extends HTMLElement, S extends Record<string, any>>(
     template: StatefullComponent<S>,
     state: S,
-  ): [element: T, update: UpdateFunction<S>];
+  ): [element: T, update: UpdateFunction<S>, currentState: () => S];
 
   /**
    * Creates a new UI component instance based on the provided template and initial state.
@@ -132,7 +132,7 @@ export class Component extends LitElement {
   static create<T extends HTMLElement, S extends Record<string, any>>(
     template: StatefullComponent<S> | StatelessComponent,
     initialState?: S,
-  ): T | [element: T, update: UpdateFunction<S>] {
+  ): T | [element: T, update: UpdateFunction<S>, currentState: () => S] {
     const fragment = document.createDocumentFragment();
 
     if (template.length === 0) {
@@ -157,7 +157,8 @@ export class Component extends LitElement {
     };
 
     update(initialState);
+    const getCurrentState = () => currentState;
     const element = fragment.firstElementChild as unknown as T;
-    return [element, update];
+    return [element, update, getCurrentState];
   }
 }

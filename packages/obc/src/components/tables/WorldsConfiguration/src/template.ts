@@ -186,6 +186,22 @@ export const worldsConfigurationTemplate = (
   const { components } = state;
   const worlds = components.get(OBC.Worlds);
 
+  const onCellCreated = ({
+    detail,
+  }: CustomEvent<BUI.CellCreatedEventDetail>) => {
+    const parent = detail.cell.parentNode;
+    if (!parent) return;
+    const nameCell = parent.querySelector<BUI.TableCell>(
+      "bim-table-cell[column='Name']",
+    );
+    const valueCell = parent.querySelector<BUI.TableCell>(
+      "bim-table-cell[column='Value']",
+    );
+    if (nameCell && !valueCell) {
+      nameCell.style.gridColumn = "1 / -1";
+    }
+  };
+
   const onTableCreated = async (element?: Element) => {
     if (!element) return;
 
@@ -644,20 +660,6 @@ export const worldsConfigurationTemplate = (
       },
     };
 
-    table.addEventListener("cellcreated", ({ detail }) => {
-      const parent = detail.cell.parentNode;
-      if (!parent) return;
-      const nameCell = parent.querySelector<BUI.TableCell>(
-        "bim-table-cell[column='Name']",
-      );
-      const valueCell = parent.querySelector<BUI.TableCell>(
-        "bim-table-cell[column='Value']",
-      );
-      if (nameCell && !valueCell) {
-        nameCell.style.gridColumn = "1 / -1";
-      }
-    });
-
     const rows: BUI.TableGroupData[] = [];
 
     for (const [, world] of worlds.list) {
@@ -679,6 +681,12 @@ export const worldsConfigurationTemplate = (
           },
         };
         if (worldGrid) {
+          const color = worldGrid.material.uniforms.uColor.value;
+          const colorValue = `#${color.getHexString()}`;
+          const sizeValue = JSON.stringify({
+            x: worldGrid.material.uniforms.uSize1.value,
+            y: worldGrid.material.uniforms.uSize2.value,
+          });
           const gridRow: BUI.TableGroupData = {
             data: {
               Name: "Grid",
@@ -690,11 +698,7 @@ export const worldsConfigurationTemplate = (
               {
                 data: {
                   Name: "Color",
-                  get Value() {
-                    const color = worldGrid.material.uniforms.uColor
-                      .value as THREE.Color;
-                    return `#${color.getHexString()}`;
-                  },
+                  Value: colorValue,
                   World: world.uuid,
                   IsGridConfig: true,
                 },
@@ -702,11 +706,7 @@ export const worldsConfigurationTemplate = (
               {
                 data: {
                   Name: "Size",
-                  get Value() {
-                    const x = worldGrid.material.uniforms.uSize1.value;
-                    const y = worldGrid.material.uniforms.uSize2.value;
-                    return JSON.stringify({ x, y });
-                  },
+                  Value: sizeValue,
                   World: world.uuid,
                   IsGridConfig: true,
                 },
@@ -1050,5 +1050,11 @@ export const worldsConfigurationTemplate = (
     ];
     table.data = rows;
   };
-  return BUI.html`<bim-table ${BUI.ref(onTableCreated)} headers-hidden expanded></bim-table>`;
+  return BUI.html`
+    <bim-table @cellcreated=${onCellCreated} ${BUI.ref(onTableCreated)} headers-hidden expanded>
+     <bim-label slot="missing-data" style="--bim-icon--c: gold" icon="ic:round-warning">
+        No worlds to configure
+      </bim-label>
+    </bim-table>
+  `;
 };

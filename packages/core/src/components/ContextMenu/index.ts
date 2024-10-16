@@ -4,12 +4,12 @@ import {
   shift,
   offset,
   inline,
-  detectOverflow,
-  MiddlewareState,
+  Placement,
 } from "@floating-ui/dom";
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
+import { Component } from "../../core";
 
 export class ContextMenu extends LitElement {
   /**
@@ -19,7 +19,7 @@ export class ContextMenu extends LitElement {
     styles.scrollbar,
     css`
       :host {
-        --bim-label--fz: var(--bim-ui_size-xs);
+        pointer-events: auto;
         position: absolute;
         top: 0;
         left: 0;
@@ -31,14 +31,11 @@ export class ContextMenu extends LitElement {
         box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
         padding: 0.5rem;
         border-radius: var(--bim-ui_size-4xs);
+        display: flex;
         background-color: var(
           --bim-context-menu--bgc,
           var(--bim-ui_bg-contrast-20)
         );
-      }
-
-      :host([visible]) {
-        display: flex;
       }
 
       :host(:not([visible])) {
@@ -46,6 +43,50 @@ export class ContextMenu extends LitElement {
       }
     `,
   ];
+
+  private _previousContainer: HTMLElement | null = null;
+  private _placement?: Placement;
+
+  @property({ type: String, reflect: true })
+  get placement() {
+    return this._placement;
+  }
+
+  set placement(value: Placement | undefined) {
+    this._placement = value;
+    this.updatePosition();
+  }
+
+  static dialog = Component.create<HTMLDialogElement>(() => {
+    const onClick = (event: PointerEvent) => {
+      if (event.target === ContextMenu.dialog) ContextMenu.removeMenus();
+    };
+    return html` <dialog
+      @click=${onClick}
+      @cancel=${() => ContextMenu.removeMenus()}
+      data-context-dialog
+      style="
+      width: 0;
+      height: 0;
+      position: relative;
+      padding: 0;
+      border: none;
+      outline: none;
+      margin: none;
+      overflow: visible;
+      background-color: transparent;
+    "
+    ></dialog>`;
+  });
+  static menus: HTMLElement[] = [];
+  static removeMenus() {
+    for (const menu of ContextMenu.menus) {
+      if (!(menu instanceof ContextMenu)) continue;
+      menu.visible = false;
+    }
+    ContextMenu.dialog.close();
+    ContextMenu.dialog.remove();
+  }
 
   private _visible = false;
 
@@ -56,18 +97,22 @@ export class ContextMenu extends LitElement {
 
   set visible(value: boolean) {
     this._visible = value;
-    if (value) this.updatePosition();
+    if (value) {
+      if (!ContextMenu.dialog.parentElement) {
+        document.body.append(ContextMenu.dialog);
+      }
+      this._previousContainer = this.parentElement;
+      ContextMenu.dialog.style.top = `${window.scrollY || document.documentElement.scrollTop}px`;
+      ContextMenu.dialog.append(this);
+      ContextMenu.dialog.showModal();
+      this.updatePosition();
+      this.dispatchEvent(new Event("visible"));
+    } else {
+      this._previousContainer?.append(this);
+      this._previousContainer = null;
+      this.dispatchEvent(new Event("hidden"));
+    }
   }
-
-  private _middleware = {
-    name: "middleware",
-    async fn(state: MiddlewareState) {
-      const { right, top } = await detectOverflow(state);
-      state.x -= Math.sign(right) === 1 ? right + 5 : 0;
-      state.y -= Math.sign(top) === 1 ? top + 5 : 0;
-      return state;
-    },
-  };
 
   /**
    * Asynchronously updates the position of the context menu relative to a target element.
@@ -82,26 +127,21 @@ export class ContextMenu extends LitElement {
    *                          does not explicitly return a value but updates the context menu's style
    *                          properties to position it on the screen.
    */
-  async updatePosition(target?: HTMLElement) {
-    const targetElement = target || (this.parentNode as HTMLElement);
-    if (!targetElement) {
-      this.visible = false;
-      console.warn("No target element found for context-menu.");
-      return;
-    }
-    const position = await computePosition(targetElement, this, {
-      placement: "right",
-      middleware: [
-        offset(10),
-        inline(),
-        flip(),
-        shift({ padding: 5 }),
-        this._middleware,
-      ],
+  async updatePosition() {
+    if (!(this.visible && this._previousContainer)) return;
+    const placement: Placement = this.placement ?? "right";
+    const position = await computePosition(this._previousContainer, this, {
+      placement,
+      middleware: [offset(10), inline(), flip(), shift({ padding: 5 })],
     });
     const { x, y } = position;
     this.style.left = `${x}px`;
     this.style.top = `${y}px`;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    ContextMenu.menus.push(this);
   }
 
   protected render() {

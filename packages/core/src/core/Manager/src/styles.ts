@@ -26,8 +26,10 @@ const globalStyles = css`
     --bim-ui_gray-0: hsl(210 10% 5%);
     --bim-ui_gray-1: hsl(210 10% 10%);
     --bim-ui_gray-2: hsl(210 10% 20%);
+    --bim-ui_gray-3: hsl(210 10% 30%);
     --bim-ui_gray-4: hsl(210 10% 40%);
     --bim-ui_gray-6: hsl(210 10% 60%);
+    --bim-ui_gray-7: hsl(210 10% 70%);
     --bim-ui_gray-8: hsl(210 10% 80%);
     --bim-ui_gray-9: hsl(210 10% 90%);
     --bim-ui_gray-10: hsl(210 10% 95%);
@@ -65,6 +67,7 @@ const globalStyles = css`
       --bim-ui_bg-base: var(--bim-ui_gray-0);
       --bim-ui_bg-contrast-10: var(--bim-ui_gray-1);
       --bim-ui_bg-contrast-20: var(--bim-ui_gray-2);
+      --bim-ui_bg-contrast-30: var(--bim-ui_gray-3);
       --bim-ui_bg-contrast-40: var(--bim-ui_gray-4);
       --bim-ui_bg-contrast-60: var(--bim-ui_gray-6);
       --bim-ui_bg-contrast-80: var(--bim-ui_gray-8);
@@ -77,6 +80,7 @@ const globalStyles = css`
       --bim-ui_bg-base: var(--bim-ui_gray-10);
       --bim-ui_bg-contrast-10: var(--bim-ui_gray-9);
       --bim-ui_bg-contrast-20: var(--bim-ui_gray-8);
+      --bim-ui_bg-contrast-30: var(--bim-ui_gray-7);
       --bim-ui_bg-contrast-40: var(--bim-ui_gray-6);
       --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
       --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
@@ -89,6 +93,7 @@ const globalStyles = css`
     --bim-ui_bg-base: var(--bim-ui_gray-0);
     --bim-ui_bg-contrast-10: var(--bim-ui_gray-1);
     --bim-ui_bg-contrast-20: var(--bim-ui_gray-2);
+    --bim-ui_bg-contrast-30: var(--bim-ui_gray-3);
     --bim-ui_bg-contrast-40: var(--bim-ui_gray-4);
     --bim-ui_bg-contrast-60: var(--bim-ui_gray-6);
     --bim-ui_bg-contrast-80: var(--bim-ui_gray-8);
@@ -99,11 +104,16 @@ const globalStyles = css`
     --bim-ui_bg-base: var(--bim-ui_gray-10);
     --bim-ui_bg-contrast-10: var(--bim-ui_gray-9);
     --bim-ui_bg-contrast-20: var(--bim-ui_gray-8);
+    --bim-ui_bg-contrast-30: var(--bim-ui_gray-7);
     --bim-ui_bg-contrast-40: var(--bim-ui_gray-6);
     --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
     --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
     --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
     --bim-ui_accent-base: #6528d7;
+  }
+
+  [data-context-dialog]::backdrop {
+    background-color: transparent;
   }
 `;
 

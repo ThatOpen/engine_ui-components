@@ -4,17 +4,17 @@ import { TableRowData } from ".";
 
 export class TableCell extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
-      padding: 0.25rem 1rem;
+      padding: 0.375rem;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    :host([data-column-index="0"]:not([data-cell-header])) {
+    :host([data-column-index="0"]) {
       justify-content: normal;
     }
 

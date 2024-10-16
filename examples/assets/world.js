@@ -1,0 +1,1 @@
+import"./lit-html-Cs86_c16.js";import{T as t,C as m}from"./template-DD9ofnYC.js";import{M as i}from"./index-D6c5Gswc.js";import"./state-CGNX_o1p.js";import"./ref-Dfje1KsO.js";t.init();i.init();const o=document.querySelector("bim-world[name='main']"),n=new m;o.components=n;n.init();const{world:r}=o;console.log(r);

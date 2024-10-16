@@ -3,6 +3,7 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import "iconify-icon";
+import { Manager } from "../../core";
 import { ContextMenu } from "../ContextMenu";
 
 /**
@@ -90,8 +91,9 @@ export class Button extends LitElement {
       padding: 0 0.5rem;
     }
 
-    :host([disabled]) .parent {
-      background-color: gray;
+    :host([disabled]) {
+      --bim-label--c: var(--bim-ui_bg-contrast-80) !important;
+      background-color: gray !important;
     }
 
     ::slotted(bim-button) {
@@ -239,9 +241,41 @@ export class Button extends LitElement {
   @property({ type: String, attribute: "tooltip-text", reflect: true })
   tooltipText?: string;
 
+  private _stateBeforeLoading: { disabled: boolean; icon?: string } = {
+    disabled: false,
+    icon: "",
+  };
+
+  private _loading = false;
+
+  /**
+   * Attribute to set the loading state of the button.
+   * When the loading state is set to true, the button is disabled and the icon is changed to a loading spinner.
+   * When the loading state is set to false, the button is reverted to its previous state.
+   */
+  @property({ type: Boolean, reflect: true })
+  set loading(value: boolean) {
+    this._loading = value;
+    if (value) {
+      this._stateBeforeLoading = {
+        disabled: this.disabled,
+        icon: this.icon,
+      };
+      this.disabled = value;
+      this.icon = "eos-icons:loading";
+    } else {
+      const { disabled, icon } = this._stateBeforeLoading;
+      this.disabled = disabled;
+      this.icon = icon;
+    }
+  }
+
+  get loading() {
+    return this._loading;
+  }
+
   private _parent = createRef<HTMLDivElement>();
   private _tooltip = createRef<HTMLDivElement>();
-  private _contextMenu = createRef<ContextMenu>();
   private timeoutID?: number;
 
   private _mouseLeave = false;
@@ -290,43 +324,58 @@ export class Button extends LitElement {
     }, tooltipTime) as unknown as number;
   }
 
-  private onChildrenClick(e: MouseEvent) {
+  private onClick = (e: PointerEvent) => {
     e.stopPropagation();
-    const { value: contextMenu } = this._contextMenu;
-    if (!contextMenu) return;
-    contextMenu.visible = !contextMenu.visible;
-  }
+    if (!this.disabled) this.dispatchEvent(new Event("click"));
+  };
 
-  private onSlotChange(e: any) {
-    const { value: contextMenu } = this._contextMenu;
-    const children = e.target.assignedElements();
-    for (const child of children) {
-      if (!(child instanceof Button)) {
-        child.remove();
-        console.warn(
-          "Only bim-button is allowed inside bim-button. Child has been removed.",
-        );
-        continue;
+  closeNestedContexts() {
+    const groupID = this.getAttribute("data-context-group");
+    if (!groupID) return;
+    for (const menu of ContextMenu.dialog.children) {
+      const menuGroup = menu.getAttribute("data-context-group");
+      if (!(menu instanceof ContextMenu && menuGroup === groupID)) continue;
+      menu.visible = false;
+      menu.removeAttribute("data-context-group");
+      for (const child of menu.children) {
+        if (!(child instanceof Button)) continue;
+        child.closeNestedContexts();
+        child.removeAttribute("data-context-group");
       }
-      child.addEventListener("click", () => contextMenu?.updatePosition());
     }
-    this.requestUpdate();
   }
 
-  private onWindowMouseUp = (e: MouseEvent) => {
-    const { value: contextMenu } = this._contextMenu;
-    if (!this.contains(e.target as Node) && contextMenu)
-      contextMenu.visible = false;
+  click() {
+    if (!this.disabled) super.click();
+  }
+
+  private get _contextMenu() {
+    return this.querySelector("bim-context-menu");
+  }
+
+  private showContextMenu = () => {
+    const contextMenu = this._contextMenu;
+    if (contextMenu) {
+      const id = this.getAttribute("data-context-group");
+      if (id) contextMenu.setAttribute("data-context-group", id);
+      this.closeNestedContexts();
+      const childID = Manager.newRandomId();
+      for (const child of contextMenu.children) {
+        if (!(child instanceof Button)) continue;
+        child.setAttribute("data-context-group", childID);
+      }
+      contextMenu.visible = true;
+    }
   };
 
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener("mouseup", this.onWindowMouseUp);
+    this.addEventListener("click", this.showContextMenu);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener("mouseup", this.onWindowMouseUp);
+    this.removeEventListener("click", this.showContextMenu);
   }
 
   protected render() {
@@ -343,10 +392,19 @@ export class Button extends LitElement {
       </div>
     `;
 
-    const hasChildren = this.children.length > 0;
+    const hasChildrenSVG = html`<svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="1.125rem"
+      viewBox="0 0 24 24"
+      width="1.125rem"
+      style="fill: var(--bim-label--c)"
+    >
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+    </svg>`;
 
     return html`
-      <div ${ref(this._parent)} class="parent">
+      <div ${ref(this._parent)} class="parent" @click=${this.onClick}>
         ${this.label || this.icon
           ? html`
               <div
@@ -358,38 +416,16 @@ export class Button extends LitElement {
                   .icon=${this.icon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
-                  >${this.label}</bim-label
+                  >${this.label}${this.label && this._contextMenu
+                    ? hasChildrenSVG
+                    : null}</bim-label
                 >
               </div>
             `
           : null}
         ${this.tooltipTitle || this.tooltipText ? tooltipTemplate : null}
-        ${hasChildren
-          ? html`
-              <div class="children" @click=${this.onChildrenClick}>
-                <svg
-                  style="flex-shrink: 0; fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100))"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="1.125rem"
-                  viewBox="0 0 24 24"
-                  width="1.125rem"
-                  fill="#9ca3af"
-                >
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path
-                    d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
-                  />
-                </svg>
-              </div>
-            `
-          : null}
-        <bim-context-menu
-          ${ref(this._contextMenu)}
-          style="row-gap: var(--bim-ui_size-4xs)"
-        >
-          <slot @slotchange=${this.onSlotChange}></slot>
-        </bim-context-menu>
       </div>
+      <slot></slot>
     `;
   }
 }

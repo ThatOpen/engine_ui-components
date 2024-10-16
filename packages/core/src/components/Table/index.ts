@@ -8,7 +8,8 @@ import {
   TableRowTemplate,
 } from "./src";
 import { evalCondition, getQuery } from "../../core/utils";
-
+import { loadingSkeleton } from "./src/loading-skeleton";
+import { processingBar } from "./src/processing-bar";
 
 /**
  * Represents a column in the table.
@@ -22,6 +23,8 @@ export interface ColumnData {
 
   /** The width of the column. */
   width: string;
+
+  forceDataTransform?: boolean;
 }
 
 /**
@@ -29,23 +32,27 @@ export interface ColumnData {
  */
 export class Table extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = [
     styles.scrollbar,
     css`
       :host {
-        --bim-button--bgc: transparent;
         position: relative;
         overflow: auto;
         display: block;
         pointer-events: auto;
       }
 
+      :host(:not([data-processing])) .loader {
+        display: none;
+      }
+
       .parent {
         display: grid;
         grid-template:
           "Header" auto
+          "Processing" auto
           "Body" 1fr
           "Footer" auto;
         overflow: auto;
@@ -184,19 +191,21 @@ export class Table extends LitElement {
    * If a simple string is provided, the table will filter rows based on the string's presence in any column.
    * If a complex query is provided, the table will filter rows based on the query's conditions and values.
    *
-   * @example
+   * @example Simple Query
    * ```typescript
    * table.queryString = "example";
    * ```
    *
-   * @example
+   * @example Complex Query
    * ```typescript
    * table.queryString = "column1="Jhon Doe" & column2=20";
    * ```
    */
   set queryString(_value: string | null) {
+    this.toggleAttribute("data-processing", true);
     this._queryString = _value && _value.trim() !== "" ? _value.trim() : null;
     this.updateFilteredData();
+    this.toggleAttribute("data-processing", false);
   }
 
   get queryString() {
@@ -295,9 +304,26 @@ export class Table extends LitElement {
    */
   dataTransform: TableDataTransform = {};
 
+  @property({ type: Boolean, reflect: true, attribute: "selectable-rows" })
+  selectableRows = false;
+
+  @property({ attribute: false })
+  selection: Set<TableRowData> = new Set();
+
+  @property({ type: Boolean, attribute: "no-indentation", reflect: true })
+  noIndentation = false;
+
+  @property({ type: Boolean, reflect: true })
+  loading = false;
+
+  @state()
+  private _errorLoading = false;
+
   private _onColumnsHidden = new Event("columnshidden");
 
   private _hiddenColumns: string[] = [];
+
+  loadingErrorElement: HTMLElement | null = null;
 
   set hiddenColumns(value: string[]) {
     this._hiddenColumns = value;
@@ -430,8 +456,13 @@ export class Table extends LitElement {
     return this.generateText("tab");
   }
 
-  computeRowDeclaration(data: TableRowData) {
+  applyDataTransform(data: TableRowData) {
     const declaration: TableRowTemplate = {};
+    for (const key of Object.keys(this.dataTransform)) {
+      const columnConfig = this.columns.find((column) => column.name === key);
+      if (!(columnConfig && columnConfig.forceDataTransform)) continue;
+      if (!(key in data)) data[key] = "";
+    }
     for (const key in data) {
       const rowDeclaration = this.dataTransform[key];
       if (rowDeclaration) {
@@ -527,6 +558,49 @@ export class Table extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.dispatchEvent(new Event("disconnected"));
+  }
+
+  /**
+   * The function to be executed when loading async data using Table.loadData
+   */
+  loadFunction?: () => Promise<TableGroupData[]>;
+
+  /**
+   * Asynchronously loads data into the table based on Table.loadFunction.
+   * If the data is already available, just set it in Table.data.
+   *
+   * @param force - A boolean indicating whether to force loading even if the table already has data.
+   *
+   * @returns - A promise that resolves to a boolean indicating whether the data loading was successful.
+   * If the promise resolves to `true`, the data loading was successful.
+   * If the promise resolves to `false`, the data loading was not successful.
+   *
+   * @remarks - If the table already has data and `force` is `false`, the function resolves to `false` without making any changes.
+   * If the table already has data and `force` is `true`, the existing data is discarded before loading the new data.
+   * If an error occurs during data loading, the function sets the `errorLoadingMessage` property with the error message and resolves to `false`.
+   */
+  async loadData(force = false) {
+    if (this._filteredData.length !== 0 && !force) return false;
+    if (!this.loadFunction) return false;
+    this.loading = true;
+    try {
+      const data = await this.loadFunction();
+      this.data = data;
+      this.loading = false;
+      this._errorLoading = false;
+      return true;
+    } catch (error: any) {
+      this.loading = false;
+      if (this._filteredData.length !== 0) return false; // Do nothing in case the table already had values
+      if (
+        error instanceof Error &&
+        this.loadingErrorElement &&
+        error.message.trim() !== ""
+      )
+        this.loadingErrorElement.textContent = error.message;
+      this._errorLoading = true;
+      return false;
+    }
   }
 
   /**
@@ -628,7 +702,20 @@ export class Table extends LitElement {
     return results;
   }
 
+  private get _missingDataElement() {
+    return this.querySelector("[slot='missing-data']");
+  }
+
   protected render() {
+    if (this.loading) return loadingSkeleton();
+    if (this._errorLoading) {
+      return html`<slot name="error-loading"></slot>`;
+    }
+
+    if (this._filteredData.length === 0 && this._missingDataElement) {
+      return html`<slot name="missing-data"></slot>`;
+    }
+
     const header = document.createElement("bim-table-row");
     header.table = this;
     header.isHeader = true;
@@ -646,7 +733,7 @@ export class Table extends LitElement {
 
     return html`
       <div class="parent">
-        ${!this.headersHidden ? header : null}
+        ${!this.headersHidden ? header : null} ${processingBar()}
         <div style="overflow-x: hidden; grid-area: Body">${children}</div>
       </div>
     `;

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Menu</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      margin: 0;
+    }
+
+    #context-container {
+      width: 1rem;
+      height: 1rem;
+      background-color: white;
+      position: absolute;
+      top: 10rem;
+      left: 20rem;
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/contextMenu.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/lit-html-Cs86_c16.js">
+  <link rel="modulepreload" crossorigin href="../assets/state-CGNX_o1p.js">
+  <link rel="modulepreload" crossorigin href="../assets/ref-Dfje1KsO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-Cduhzwg5.js">
+</head>
+
+<body>
+  <div id="context-container">
+    <bim-context-menu visible>
+      <bim-button label="Show Elements"></bim-button>
+      <bim-button label="Settings"></bim-button>
+    </bim-context-menu>
+  </div>
+</body>
+
+</html>

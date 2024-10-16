@@ -17,6 +17,29 @@
     <bim-button label="Vertical Button" icon="solar:alarm-play-bold" vertical></bim-button>
     <bim-button label="No icon"></bim-button>
     <bim-button icon="solar:settings-bold"></bim-button>
+    <bim-button loading label="Loading..."></bim-button>
+    <bim-button icon="fe:elipsis-v" style="width: min-content;">
+      <bim-context-menu>
+        <bim-button label="Action A">
+          <bim-context-menu>
+            <bim-button label="Sub Action A">
+              <bim-context-menu>
+                <bim-button label="Hi there"></bim-button>
+              </bim-context-menu>
+            </bim-button>
+            <bim-button label="Sub Action B"></bim-button>
+          </bim-context-menu>
+        </bim-button>
+        <bim-button id="context-btn" label="Action B"></bim-button>
+        <bim-button label="Action C">
+          <bim-context-menu>
+            <bim-button label="Action"></bim-button>
+            <bim-button label="Another Action"></bim-button>
+            <bim-button label="Another Cool Action"></bim-button>
+          </bim-context-menu>
+        </bim-button>
+      </bim-context-menu>
+    </bim-button>
   </div>
   <script type="module" src="./example.ts"></script>
 </body>

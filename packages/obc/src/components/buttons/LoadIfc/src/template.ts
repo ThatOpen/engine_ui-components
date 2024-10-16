@@ -1,7 +1,6 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
-
 /**
  * Interface representing the state of the LoadIfcUI component. It contains a reference to the Components object from the @thatopen/components library.
  */
@@ -26,11 +25,11 @@ export const loadIfcTemplate = (state: LoadIfcUIState) => {
     fileOpener.onchange = async () => {
       if (fileOpener.files === null || fileOpener.files.length === 0) return;
       const file = fileOpener.files[0];
+      const fileName = file.name.replace(".ifc", "");
       fileOpener.remove();
       const buffer = await file.arrayBuffer();
       const data = new Uint8Array(buffer);
-      const model = await ifcLoader.load(data);
-      model.name = file.name.replace(".ifc", "");
+      await ifcLoader.load(data, true, fileName);
     };
     fileOpener.click();
   };

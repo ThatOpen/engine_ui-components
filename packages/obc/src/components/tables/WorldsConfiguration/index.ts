@@ -28,22 +28,11 @@ export const worldsConfiguration = (
   );
 
   if (autoUpdate) {
-    const [table] = element;
-    const updateTable = () => element[1]();
+    const [, updateTable] = element;
     const { components } = state;
     const worlds = components.get(OBC.Worlds);
-    // worlds.onWorldCreated.add(updateTable);
-    worlds.onDisposed.add(table.remove);
-    for (const [, world] of worlds.list) {
-      world.onDisposed.add(updateTable);
-    }
-    table.addEventListener("disconnected", () => {
-      // worlds.onWorldCreated.remove(updateTable);
-      worlds.onDisposed.remove(table.remove);
-      for (const [, world] of worlds.list) {
-        world.onDisposed.remove(updateTable);
-      }
-    });
+    // worlds.list.onItemSet.add(() => updateTable());
+    worlds.list.onItemDeleted.add(() => updateTable());
   }
 
   return element;

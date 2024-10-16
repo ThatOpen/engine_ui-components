@@ -2,7 +2,6 @@ import * as BUI from "@thatopen/ui";
 import * as THREE from "three";
 import { panelSections } from "../panel-sections";
 
-
 /**
  * Interface representing the state of the MaterialsList component. It contains an array of THREE.Material objects.
  */
