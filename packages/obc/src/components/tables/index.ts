@@ -7,7 +7,7 @@ import * as worldsConfiguration from "./WorldsConfiguration";
 import * as topicsList from "./TopicsList";
 import * as topicComments from "./TopicComments";
 import * as viewpointsList from "./ViewpointsList";
-import * as componentsConfig from "./ComponentsConfig";
+import * as configs from "./Configs";
 
 export const tables = {
   ...modelsList,
@@ -19,5 +19,5 @@ export const tables = {
   ...topicsList,
   ...topicComments,
   ...viewpointsList,
-  ...componentsConfig,
+  ...configs,
 };

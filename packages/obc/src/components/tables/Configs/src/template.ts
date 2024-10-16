@@ -2,7 +2,7 @@ import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import * as THREE from "three";
 
-export interface ComponentsConfigUI {
+export interface ConfigsUI {
   components: OBC.Components;
 }
 
@@ -86,7 +86,7 @@ const onCellCreated = ({ detail }: CustomEvent<BUI.CellCreatedEventDetail>) => {
   }
 };
 
-export const componentsConfigTemplate = (state: ComponentsConfigUI) => {
+export const configsTemplate = (state: ConfigsUI) => {
   const { components } = state;
 
   const configs = components.get(OBC.ConfigManager);

@@ -1,5 +1,5 @@
 import * as BUI from "@thatopen/ui";
-import { ComponentsConfigUI, componentsConfigTemplate } from "./src/template";
+import { ConfigsUI, configsTemplate } from "./src/template";
 
 /**
  * Creates an instance of ComponentsConfig component.
@@ -8,9 +8,9 @@ import { ComponentsConfigUI, componentsConfigTemplate } from "./src/template";
  * @returns A new instance of ComponentsConfig component.
  *
  */
-export const componentsConfig = (state: ComponentsConfigUI) => {
-  const element = BUI.Component.create<BUI.Table, ComponentsConfigUI>(
-    componentsConfigTemplate,
+export const configs = (state: ConfigsUI) => {
+  const element = BUI.Component.create<BUI.Table, ConfigsUI>(
+    configsTemplate,
     state,
   );
 
