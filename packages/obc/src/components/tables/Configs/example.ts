@@ -56,7 +56,7 @@ topics.config.author = "juan.hoyos4@gmail.com";
 
 const clipper = components.get(OBC.Clipper);
 
-const [propertiesTable] = CUI.tables.componentsConfig({
+const [propertiesTable] = CUI.tables.configs({
   components,
 });
 
