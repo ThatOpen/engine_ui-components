@@ -6,6 +6,7 @@
   ],
   "scripts": {
     "dev": "vite --host",
+    "build-manifest": "cem analyze",
     "build-core": "npm run build -w @thatopen/ui",
     "build-obc": "npm run build -w @thatopen/ui-obc",
     "build-libraries": "npm run build-core && npm run build-obc",
@@ -13,7 +14,7 @@
     "publish-repo": "yarn workspace @thatopen/ui publish-repo && yarn workspace @thatopen/ui-obc publish-repo",
     "build": "npm run build-libraries && npm run build-examples",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "npm run build-manifest && storybook build"
   },
   "license": "MIT",
   "homepage": "https://github.com/ThatOpen/engine_ui-components#readme",
@@ -28,7 +29,7 @@
     "./packages/*"
   ],
   "devDependencies": {
-    "@chromatic-com/storybook": "1.6.1",
+    "@custom-elements-manifest/analyzer": "^0.10.3",
     "@storybook/addon-essentials": "^8.2.7",
     "@storybook/addon-links": "^8.2.7",
     "@storybook/blocks": "^8.2.7",

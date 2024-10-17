@@ -7,9 +7,10 @@ import { Manager } from "../../core";
 import { ContextMenu } from "../ContextMenu";
 
 /**
- * A custom button web component for BIM applications. HTML tag: bim-button
+ * A custom button component for web applications.
  *
- * @fires click - Fired when the button is clicked.
+ * @element bim-button
+ * @fires click - Triggered when the button has been pressed.
  */
 export class Button extends LitElement {
   /**
@@ -123,7 +124,7 @@ export class Button extends LitElement {
       padding: 0;
     }
 
-    :host(:not([tooltip-visible])) .tooltip {
+    :host(:not([tooltipvisible])) .tooltip {
       display: none;
     }
   `;
@@ -147,7 +148,7 @@ export class Button extends LitElement {
    *          button.label = 'Click me';
    *          button.labelHidden = true;
    */
-  @property({ type: Boolean, attribute: "label-hidden", reflect: true })
+  @property({ type: Boolean, reflect: true })
   labelHidden = false;
 
   /**
@@ -169,7 +170,7 @@ export class Button extends LitElement {
    *          button.label = 'Click me';
    *          button.disabled = true;
    */
-  @property({ type: Boolean, reflect: true, attribute: "disabled" })
+  @property({ type: Boolean, reflect: true })
   disabled = false;
 
   /**
@@ -198,47 +199,47 @@ export class Button extends LitElement {
    * The time (in milliseconds) to wait before showing the tooltip when hovering over the button.
    * @type {number}
    * @default 700
-   * @example <bim-button label="Click me" tooltip-time="1000"></bim-button>
+   * @example <bim-button label="Click me" tooltiptime="1000"></bim-button>
    * @example const button = document.createElement('bim-button');
    *          button.label = 'Click me';
    *          button.tooltipTime = 1000;
    */
-  @property({ type: Number, attribute: "tooltip-time", reflect: true })
+  @property({ type: Number, reflect: true })
   tooltipTime?: number;
 
   /**
    * A boolean attribute which, if present, indicates that the tooltip should be visible.
    * @default false
-   * @example <bim-button label="Click me" tooltip-visible></bim-button>
+   * @example <bim-button label="Click me" tooltipvisible></bim-button>
    * @example const button = document.createElement('bim-button');
    *          button.label = 'Click me';
    *          button.tooltipVisible = true;
    */
-  @property({ type: Boolean, attribute: "tooltip-visible", reflect: true })
+  @property({ type: Boolean, reflect: true })
   tooltipVisible = false;
 
   /**
    * The title of the tooltip to be displayed when hovering over the button.
    * @type {string}
    * @default undefined
-   * @example <bim-button label="Click me" tooltip-title="Button Tooltip"></bim-button>
+   * @example <bim-button label="Click me" tooltiptitle="Button Tooltip"></bim-button>
    * @example const button = document.createElement('bim-button');
    *          button.label = 'Click me';
    *          button.tooltipTitle = 'Button Tooltip';
    */
-  @property({ type: String, attribute: "tooltip-title", reflect: true })
+  @property({ type: String, reflect: true })
   tooltipTitle?: string;
 
   /**
    * The text of the tooltip to be displayed when hovering over the button.
    * @type {string}
    * @default undefined
-   * @example <bim-button label="Click me" tooltip-text="This is a tooltip"></bim-button>
+   * @example <bim-button label="Click me" tooltiptext="This is a tooltip"></bim-button>
    * @example const button = document.createElement('bim-button');
    *          button.label = 'Click me';
    *          button.tooltipText = 'This is a tooltip';
    */
-  @property({ type: String, attribute: "tooltip-text", reflect: true })
+  @property({ type: String, reflect: true })
   tooltipText?: string;
 
   private _stateBeforeLoading: { disabled: boolean; icon?: string } = {
@@ -252,6 +253,8 @@ export class Button extends LitElement {
    * Attribute to set the loading state of the button.
    * When the loading state is set to true, the button is disabled and the icon is changed to a loading spinner.
    * When the loading state is set to false, the button is reverted to its previous state.
+   * @type {boolean}
+   * @default false
    */
   @property({ type: Boolean, reflect: true })
   set loading(value: boolean) {
@@ -276,7 +279,7 @@ export class Button extends LitElement {
 
   private _parent = createRef<HTMLDivElement>();
   private _tooltip = createRef<HTMLDivElement>();
-  private timeoutID?: number;
+  private _timeoutID?: number;
 
   private _mouseLeave = false;
 
@@ -284,7 +287,7 @@ export class Button extends LitElement {
     this._mouseLeave = value;
     if (value) {
       this.tooltipVisible = false;
-      clearTimeout(this.timeoutID);
+      clearTimeout(this._timeoutID);
     }
   }
 
@@ -317,7 +320,7 @@ export class Button extends LitElement {
     if (!(this.tooltipTitle || this.tooltipText)) return;
     this.mouseLeave = false;
     const tooltipTime = this.tooltipTime ?? 700;
-    this.timeoutID = setTimeout(() => {
+    this._timeoutID = setTimeout(() => {
       if (this.mouseLeave) return;
       this.computeTooltipPosition();
       this.tooltipVisible = true;

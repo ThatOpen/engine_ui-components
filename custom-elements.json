@@ -1,0 +1,2831 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Button\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Checkbox\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./ColorInput\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./ContextMenu\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Dropdown\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Grid\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Icon\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Input\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Label\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./NumberInput\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Option\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Panel/src/Panel\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Panel/src/Section\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Selector\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Table\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Tabs\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./TextInput\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Toolbar/src/Toolbar\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Toolbar/src/Group\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Toolbar/src/Section\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Viewport\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Button/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom button component for web applications.",
+          "name": "Button",
+          "members": [
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label to be displayed on the button.",
+              "default": "undefined",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "labelHidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the label should be hidden.",
+              "attribute": "labelHidden",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "active",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the button is active.",
+              "attribute": "active",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the button is disabled.",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "The icon to be displayed on the button.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the button should be displayed vertically.",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "tooltipTime",
+              "type": {
+                "text": "number"
+              },
+              "description": "The time (in milliseconds) to wait before showing the tooltip when hovering over the button.",
+              "default": "700",
+              "attribute": "tooltipTime",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "tooltipVisible",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the tooltip should be visible.",
+              "attribute": "tooltipVisible",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "tooltipTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the tooltip to be displayed when hovering over the button.",
+              "default": "undefined",
+              "attribute": "tooltipTitle",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "tooltipText",
+              "type": {
+                "text": "string"
+              },
+              "description": "The text of the tooltip to be displayed when hovering over the button.",
+              "default": "undefined",
+              "attribute": "tooltipText",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "description": "Attribute to set the loading state of the button.\r\nWhen the loading state is set to true, the button is disabled and the icon is changed to a loading spinner.\r\nWhen the loading state is set to false, the button is reverted to its previous state.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "loading",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "closeNestedContexts"
+            },
+            {
+              "kind": "method",
+              "name": "click"
+            }
+          ],
+          "events": [
+            {
+              "description": "Triggered when the button has been pressed.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label to be displayed on the button.",
+              "default": "undefined",
+              "fieldName": "label"
+            },
+            {
+              "name": "labelHidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the label should be hidden.",
+              "fieldName": "labelHidden"
+            },
+            {
+              "name": "active",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the button is active.",
+              "fieldName": "active"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the button is disabled.",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "The icon to be displayed on the button.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the button should be displayed vertically.",
+              "fieldName": "vertical"
+            },
+            {
+              "name": "tooltipTime",
+              "type": {
+                "text": "number"
+              },
+              "description": "The time (in milliseconds) to wait before showing the tooltip when hovering over the button.",
+              "default": "700",
+              "fieldName": "tooltipTime"
+            },
+            {
+              "name": "tooltipVisible",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the tooltip should be visible.",
+              "fieldName": "tooltipVisible"
+            },
+            {
+              "name": "tooltipTitle",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the tooltip to be displayed when hovering over the button.",
+              "default": "undefined",
+              "fieldName": "tooltipTitle"
+            },
+            {
+              "name": "tooltipText",
+              "type": {
+                "text": "string"
+              },
+              "description": "The text of the tooltip to be displayed when hovering over the button.",
+              "default": "undefined",
+              "fieldName": "tooltipText"
+            },
+            {
+              "name": "loading",
+              "description": "Attribute to set the loading state of the button.\r\nWhen the loading state is set to true, the button is disabled and the icon is changed to a loading spinner.\r\nWhen the loading state is set to false, the button is reverted to its previous state.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "loading"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "bim-button",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Button",
+          "declaration": {
+            "name": "Button",
+            "module": "packages/core/src/components/Button/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Checkbox/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom checkbox component for web applications.",
+          "name": "Checkbox",
+          "members": [
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "Represents the icon associated with the checkbox label. This icon is displayed next to the label text if provided. Changing this property dynamically updates the displayed icon if the label is present. It is used to visually enhance the checkbox by adding an icon.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "description": "The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal \\<input\\> element.",
+              "default": "undefined",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label text associated with the checkbox. This text is displayed next to the checkbox itself. Changing this property dynamically updates the displayed label. If an icon is also specified, it will be displayed alongside this label.",
+              "default": "undefined",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "checked",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the checkbox is checked or not. This property reflects the checked state of the internal \\<input\\> element and can be used to set or get the checkbox's state. Changing this property dynamically updates the checkbox's visual state and its checked attribute.",
+              "attribute": "checked",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "inverted",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the checkbox is displayed with an inverted disposition.",
+              "attribute": "inverted",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "A getter that returns the current checked state of the checkbox. This is useful for retrieving the checkbox's value in form submissions or JavaScript interactions as it provides a consistent `value` property as many other components.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "readonly": true,
+              "default": "new Event(\"change\")",
+              "description": "Event that is dispatched when the checkbox's checked state changes.\r\nThis event can be used to listen for changes to the checkbox's value and perform\r\nnecessary actions when the value changes."
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the checkbox changes.",
+              "name": "change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "Represents the icon associated with the checkbox label. This icon is displayed next to the label text if provided. Changing this property dynamically updates the displayed icon if the label is present. It is used to visually enhance the checkbox by adding an icon.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "description": "The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal \\<input\\> element.",
+              "default": "undefined",
+              "fieldName": "name"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label text associated with the checkbox. This text is displayed next to the checkbox itself. Changing this property dynamically updates the displayed label. If an icon is also specified, it will be displayed alongside this label.",
+              "default": "undefined",
+              "fieldName": "label"
+            },
+            {
+              "name": "checked",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the checkbox is checked or not. This property reflects the checked state of the internal \\<input\\> element and can be used to set or get the checkbox's state. Changing this property dynamically updates the checkbox's visual state and its checked attribute.",
+              "fieldName": "checked"
+            },
+            {
+              "name": "inverted",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the checkbox is displayed with an inverted disposition.",
+              "fieldName": "inverted"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "bim-checkbox",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Checkbox",
+          "declaration": {
+            "name": "Checkbox",
+            "module": "packages/core/src/components/Checkbox/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/ColorInput/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom color input web component for BIM applications. HTML tag: bim-color-input",
+          "name": "ColorInput",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the color input.",
+              "default": "undefined",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label for the color input.",
+              "default": "undefined",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "The icon for the color input.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the color input should be displayed vertically.",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "opacity",
+              "type": {
+                "text": "number"
+              },
+              "description": "The opacity of the color input.",
+              "default": "undefined",
+              "attribute": "opacity",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"#bcf124\"",
+              "description": "The color value of the color input in hexadecimal format.",
+              "attribute": "color",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "default": "new Event(\"input\")"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "Represents both the color and opacity values combined into a single object. This is an instance property, not an HTMLElement attribute.",
+              "type": {
+                "text": "Object"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "description": "Focuses on the color input by programmatically triggering a click event on the underlying color input element.\r\nIf the color input element is not available, the function does nothing."
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the color input changes.",
+              "name": "input"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the color input.",
+              "default": "undefined",
+              "fieldName": "name"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label for the color input.",
+              "default": "undefined",
+              "fieldName": "label"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "The icon for the color input.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean attribute which, if present, indicates that the color input should be displayed vertically.",
+              "fieldName": "vertical"
+            },
+            {
+              "name": "opacity",
+              "type": {
+                "text": "number"
+              },
+              "description": "The opacity of the color input.",
+              "default": "undefined",
+              "fieldName": "opacity"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"#bcf124\"",
+              "description": "The color value of the color input in hexadecimal format.",
+              "fieldName": "color"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ColorInput",
+          "declaration": {
+            "name": "ColorInput",
+            "module": "packages/core/src/components/ColorInput/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Dropdown/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom dropdown web component for BIM applications.",
+          "name": "Dropdown",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the dropdown.",
+              "default": "undefined",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "The icon to be displayed in the dropdown.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label to be displayed in the dropdown.",
+              "default": "undefined",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "multiple",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether multiple options can be selected in the dropdown.",
+              "attribute": "multiple",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether a selection is required in the dropdown.",
+              "attribute": "required",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the dropdown should be displayed vertically.",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "visible",
+              "description": "Indicates whether the dropdown it-self (not the component) is visible.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "visible",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "The selected values in the dropdown.",
+              "type": {
+                "text": "any[]"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "default": "new Event(\"change\")",
+              "description": "Event that is fired when the value of the dropdown changes.\r\nThis event is fired when the user selects or deselects an option."
+            },
+            {
+              "kind": "field",
+              "name": "useObserver",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the dropdown.",
+              "default": "undefined",
+              "fieldName": "name"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "string"
+              },
+              "description": "The icon to be displayed in the dropdown.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "description": "The label to be displayed in the dropdown.",
+              "default": "undefined",
+              "fieldName": "label"
+            },
+            {
+              "name": "multiple",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether multiple options can be selected in the dropdown.",
+              "fieldName": "multiple"
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether a selection is required in the dropdown.",
+              "fieldName": "required"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the dropdown should be displayed vertically.",
+              "fieldName": "vertical"
+            },
+            {
+              "name": "visible",
+              "description": "Indicates whether the dropdown it-self (not the component) is visible.",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "visible"
+            }
+          ],
+          "superclass": {
+            "name": "Component",
+            "module": "/packages/core/src/core/Component"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Dropdown",
+          "declaration": {
+            "name": "Dropdown",
+            "module": "packages/core/src/components/Dropdown/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/ContextMenu/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ContextMenu",
+          "members": [
+            {
+              "kind": "field",
+              "name": "placement",
+              "attribute": "placement",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "dialog",
+              "static": true
+            },
+            {
+              "kind": "field",
+              "name": "menus",
+              "type": {
+                "text": "HTMLElement[]"
+              },
+              "static": true,
+              "default": "[]"
+            },
+            {
+              "kind": "method",
+              "name": "removeMenus",
+              "static": true
+            },
+            {
+              "kind": "field",
+              "name": "visible",
+              "attribute": "visible",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "updatePosition",
+              "description": "Asynchronously updates the position of the context menu relative to a target element.\r\nIf no target element is provided, it attempts to use the parent node as the target.\r\nThe position is calculated using the `computePosition` function from `@floating-ui/dom`,\r\nwhich considers various adjustments like offset, inline positioning, flipping, and shifting\r\nto ensure the context menu is properly placed relative to the target element.",
+              "parameters": [
+                {
+                  "description": "The target element relative to which the context menu should be positioned.\r\n                 If not provided, the parent node is used as the target.",
+                  "name": "target",
+                  "optional": true
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "placement",
+              "fieldName": "placement"
+            },
+            {
+              "name": "visible",
+              "fieldName": "visible"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ContextMenu",
+          "declaration": {
+            "name": "ContextMenu",
+            "module": "packages/core/src/components/ContextMenu/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Grid/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom grid web component for BIM applications. HTML tag: bim-grid",
+          "name": "Grid",
+          "members": [
+            {
+              "kind": "field",
+              "name": "floating",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the grid should be displayed in a floating state. When set to true, the grid and its children may have different styling to indicate a floating state, such as being absolutely positioned and having pointer-events set to none. This property is reflected to an attribute, allowing it to be set directly in HTML.",
+              "attribute": "floating",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the layout configuration of the grid. The layout is defined by a string identifier which corresponds to a predefined grid template in the `layouts` object of the Grid component. Setting this property updates the grid's template and triggers a reconfiguration of the grid's containers based on the new layout. If the specified layout is not defined, a warning is logged, and the layout remains unchanged. This property is reflected to an attribute, allowing it to be set directly in HTML. Changing the layout will dispatch a \"layoutchange\" event, which can be used to react to layout changes.",
+              "default": "undefined",
+              "attribute": "layout",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "layouts",
+              "type": {
+                "text": "Layouts"
+              },
+              "default": "{}",
+              "description": "Represents a collection of predefined grid layouts for the Grid component.\r\nEach layout is defined by a unique name, a grid template string, and a map of area names to HTMLElement instances.\r\nThe grid template string defines the structure of the grid, and the area names correspond to the grid-area property of the HTMLElement instances.\r\nThe HTMLElement instances are used to populate the grid with content."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "floating",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the grid should be displayed in a floating state. When set to true, the grid and its children may have different styling to indicate a floating state, such as being absolutely positioned and having pointer-events set to none. This property is reflected to an attribute, allowing it to be set directly in HTML.",
+              "fieldName": "floating"
+            },
+            {
+              "name": "layout",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the layout configuration of the grid. The layout is defined by a string identifier which corresponds to a predefined grid template in the `layouts` object of the Grid component. Setting this property updates the grid's template and triggers a reconfiguration of the grid's containers based on the new layout. If the specified layout is not defined, a warning is logged, and the layout remains unchanged. This property is reflected to an attribute, allowing it to be set directly in HTML. Changing the layout will dispatch a \"layoutchange\" event, which can be used to react to layout changes.",
+              "default": "undefined",
+              "fieldName": "layout"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Grid",
+          "declaration": {
+            "name": "Grid",
+            "module": "packages/core/src/components/Grid/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Icon/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom icon web component for BIM applications. HTML tag: bim-icon",
+          "name": "Icon",
+          "members": [
+            {
+              "kind": "field",
+              "name": "icon",
+              "privacy": "public",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "icon"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "icon"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Icon",
+          "declaration": {
+            "name": "Icon",
+            "module": "packages/core/src/components/Icon/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Input/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom input web component for BIM applications. HTML tag: bim-input",
+          "name": "Input",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "default": "new Event(\"change\")"
+            },
+            {
+              "kind": "field",
+              "name": "value"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "name"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "label"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "icon"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "vertical"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Input",
+          "declaration": {
+            "name": "Input",
+            "module": "packages/core/src/components/Input/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Label/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom label web component for BIM applications. HTML tag: bim-label",
+          "name": "Label",
+          "members": [
+            {
+              "kind": "field",
+              "name": "img",
+              "type": {
+                "text": "String"
+              },
+              "description": "Specifies the image URL for the component. When set, an `<img>` element is rendered within the component.\r\nChanging this property updates the source of the image. If the property is not set or removed, the image will not be displayed.",
+              "default": "undefined",
+              "attribute": "img",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "labelHidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Controls the visibility of the label text. When `true`, the label text is not rendered to the user.\r\nChanging this property to `true` hides the label text if it was previously visible. Setting it to `false` will show the label text if it is defined.",
+              "attribute": "label-hidden",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "String"
+              },
+              "description": "Specifies the icon to be used in the component. This property is intended for displaying an icon alongside the label or image.\r\nWhen the `icon` property changes, the displayed icon updates accordingly. If the icon is hidden (controlled by `iconHidden`), changing this property will not affect the visibility of the icon.\r\nNote: The actual rendering of the icon is managed by a nested `<bim-icon>` component in the shadow DOM.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "iconHidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Controls the visibility of the icon. When `true`, the icon is not rendered to the user.\r\nChanging this property to `true` hides the icon if it was previously visible. Setting it to `false` will show the icon if it is defined.\r\nNote: This does not affect the visibility of the label or image, only the icon.",
+              "attribute": "icon-hidden",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Determines the orientation of the component. When `true`, the component's contents (label, image, and icon) are stacked vertically.\r\nChanging this property affects the layout of the component, switching between a horizontal and vertical arrangement of its contents.",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "readonly": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "img",
+              "type": {
+                "text": "String"
+              },
+              "description": "Specifies the image URL for the component. When set, an `<img>` element is rendered within the component.\r\nChanging this property updates the source of the image. If the property is not set or removed, the image will not be displayed.",
+              "default": "undefined",
+              "fieldName": "img"
+            },
+            {
+              "name": "label-hidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Controls the visibility of the label text. When `true`, the label text is not rendered to the user.\r\nChanging this property to `true` hides the label text if it was previously visible. Setting it to `false` will show the label text if it is defined.",
+              "fieldName": "labelHidden"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "String"
+              },
+              "description": "Specifies the icon to be used in the component. This property is intended for displaying an icon alongside the label or image.\r\nWhen the `icon` property changes, the displayed icon updates accordingly. If the icon is hidden (controlled by `iconHidden`), changing this property will not affect the visibility of the icon.\r\nNote: The actual rendering of the icon is managed by a nested `<bim-icon>` component in the shadow DOM.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "icon-hidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Controls the visibility of the icon. When `true`, the icon is not rendered to the user.\r\nChanging this property to `true` hides the icon if it was previously visible. Setting it to `false` will show the icon if it is defined.\r\nNote: This does not affect the visibility of the label or image, only the icon.",
+              "fieldName": "iconHidden"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Determines the orientation of the component. When `true`, the component's contents (label, image, and icon) are stacked vertically.\r\nChanging this property affects the layout of the component, switching between a horizontal and vertical arrangement of its contents.",
+              "fieldName": "vertical"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Label",
+          "declaration": {
+            "name": "Label",
+            "module": "packages/core/src/components/Label/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/NumberInput/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom number input web component for BIM applications. HTML tag: bim-number-input",
+          "name": "NumberInput",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `name` property is used to specify the name of the number input component.\r\nThis can be useful for identifying the component in forms or JavaScript.\r\nWhen the property changes, it updates the component's attribute to reflect the new name.",
+              "default": "undefined",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `icon` property allows specifying an icon identifier to be used within the number input component,\r\npotentially for decorative or instructional purposes. Changes to this property may affect the appearance\r\nor layout of the component, depending on how the icon is used within the component's template.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `label` property is used to define a text label associated with the number input component.\r\nThis label can provide context or instructions to the user. When the label property changes,\r\nthe component updates to display the new label text.",
+              "default": "undefined",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "pref",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `pref` property is used to specify a prefix for the value in the number input component.\r\nThis could be a currency symbol, a unit, or any other kind of prefix. The prefix is displayed\r\ninside the input field before the value. When the property changes, the displayed prefix updates accordingly.",
+              "default": "undefined",
+              "attribute": "pref",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "min",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `min` property defines the minimum value that can be entered in the number input component.\r\nIt is used to validate the input and ensure that the value does not go below this minimum.\r\nWhen the property changes, the component enforces the new minimum value.",
+              "default": "undefined",
+              "attribute": "min",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "The `value` property represents the current value of the number input component.\r\nIt is a crucial property that holds the actual number input by the user or set programmatically.\r\nChanges to this property update the displayed value in the component and can trigger validation\r\nagainst the `min` and `max` properties if they are set.",
+              "type": {
+                "text": "Number"
+              },
+              "default": "0",
+              "attribute": "value",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "step",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `step` property determines the amount by which the value should increase or decrease\r\nwhen the user interacts with the component's stepping mechanism. It is used for incremental\r\nchanges to the value. When the property changes, the step size for value changes is updated.",
+              "default": "undefined",
+              "attribute": "step",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "sensitivity",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `sensitivity` property affects how sensitive the slider is to mouse movements when adjusting\r\nthe value. A higher sensitivity means smaller movements are needed to change the value. This property\r\nis particularly relevant when the `slider` property is enabled. Changes to this property adjust how\r\nthe slider responds to input.",
+              "default": "undefined",
+              "attribute": "sensitivity",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "max",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `max` property defines the maximum value that can be entered in the number input component.\r\nIt is used to validate the input and ensure that the value does not exceed this maximum.\r\nWhen the property changes, the component enforces the new maximum value.",
+              "default": "undefined",
+              "attribute": "max",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "suffix",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `suffix` property is used to specify a suffix for the value in the number input component.\r\nSimilar to the `pref` property, but the suffix is displayed after the value. It could be a unit of measure,\r\na percentage symbol, etc. When the property changes, the displayed suffix updates accordingly.",
+              "default": "undefined",
+              "attribute": "suffix",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The `vertical` property indicates whether the slider (if enabled) should be displayed vertically.\r\nThis can affect the layout and behavior of the slider component within the number input.\r\nWhen the property changes, the orientation of the slider adjusts accordingly.",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "slider",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The `slider` property enables a slider interface for the number input component, allowing users\r\nto adjust the value by dragging the slider. When enabled, it changes the component's UI to include\r\na slider. When the property changes, the component toggles between a regular input field and a slider view.",
+              "attribute": "slider",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "readonly": true,
+              "default": "new Event(\"change\")"
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "description": "Sets focus to the input element of the number input component.\r\nThis method is useful for programmatically focusing the input element, for example,\r\nin response to a user action or to emphasize the input in the UI.\r\n\r\nIf the input element reference is not available (not yet rendered or disconnected),\r\nthis method will do nothing."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `name` property is used to specify the name of the number input component.\r\nThis can be useful for identifying the component in forms or JavaScript.\r\nWhen the property changes, it updates the component's attribute to reflect the new name.",
+              "default": "undefined",
+              "fieldName": "name"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `icon` property allows specifying an icon identifier to be used within the number input component,\r\npotentially for decorative or instructional purposes. Changes to this property may affect the appearance\r\nor layout of the component, depending on how the icon is used within the component's template.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `label` property is used to define a text label associated with the number input component.\r\nThis label can provide context or instructions to the user. When the label property changes,\r\nthe component updates to display the new label text.",
+              "default": "undefined",
+              "fieldName": "label"
+            },
+            {
+              "name": "pref",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `pref` property is used to specify a prefix for the value in the number input component.\r\nThis could be a currency symbol, a unit, or any other kind of prefix. The prefix is displayed\r\ninside the input field before the value. When the property changes, the displayed prefix updates accordingly.",
+              "default": "undefined",
+              "fieldName": "pref"
+            },
+            {
+              "name": "min",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `min` property defines the minimum value that can be entered in the number input component.\r\nIt is used to validate the input and ensure that the value does not go below this minimum.\r\nWhen the property changes, the component enforces the new minimum value.",
+              "default": "undefined",
+              "fieldName": "min"
+            },
+            {
+              "name": "value",
+              "description": "The `value` property represents the current value of the number input component.\r\nIt is a crucial property that holds the actual number input by the user or set programmatically.\r\nChanges to this property update the displayed value in the component and can trigger validation\r\nagainst the `min` and `max` properties if they are set.",
+              "type": {
+                "text": "Number"
+              },
+              "default": "0",
+              "fieldName": "value"
+            },
+            {
+              "name": "step",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `step` property determines the amount by which the value should increase or decrease\r\nwhen the user interacts with the component's stepping mechanism. It is used for incremental\r\nchanges to the value. When the property changes, the step size for value changes is updated.",
+              "default": "undefined",
+              "fieldName": "step"
+            },
+            {
+              "name": "sensitivity",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `sensitivity` property affects how sensitive the slider is to mouse movements when adjusting\r\nthe value. A higher sensitivity means smaller movements are needed to change the value. This property\r\nis particularly relevant when the `slider` property is enabled. Changes to this property adjust how\r\nthe slider responds to input.",
+              "default": "undefined",
+              "fieldName": "sensitivity"
+            },
+            {
+              "name": "max",
+              "type": {
+                "text": "Number"
+              },
+              "description": "The `max` property defines the maximum value that can be entered in the number input component.\r\nIt is used to validate the input and ensure that the value does not exceed this maximum.\r\nWhen the property changes, the component enforces the new maximum value.",
+              "default": "undefined",
+              "fieldName": "max"
+            },
+            {
+              "name": "suffix",
+              "type": {
+                "text": "String"
+              },
+              "description": "The `suffix` property is used to specify a suffix for the value in the number input component.\r\nSimilar to the `pref` property, but the suffix is displayed after the value. It could be a unit of measure,\r\na percentage symbol, etc. When the property changes, the displayed suffix updates accordingly.",
+              "default": "undefined",
+              "fieldName": "suffix"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The `vertical` property indicates whether the slider (if enabled) should be displayed vertically.\r\nThis can affect the layout and behavior of the slider component within the number input.\r\nWhen the property changes, the orientation of the slider adjusts accordingly.",
+              "fieldName": "vertical"
+            },
+            {
+              "name": "slider",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The `slider` property enables a slider interface for the number input component, allowing users\r\nto adjust the value by dragging the slider. When enabled, it changes the component's UI to include\r\na slider. When the property changes, the component toggles between a regular input field and a slider view.",
+              "fieldName": "slider"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "NumberInput",
+          "declaration": {
+            "name": "NumberInput",
+            "module": "packages/core/src/components/NumberInput/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Option/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom option web component for BIM applications. HTML tag: bim-option",
+          "name": "Option",
+          "members": [
+            {
+              "kind": "field",
+              "name": "img",
+              "type": {
+                "text": "String"
+              },
+              "description": "Represents the image URL for the component. When set, it displays an image inside the component.\r\nChanging this property dynamically updates the component to show the specified image.\r\nThis property is managed by the `bim-label` component nested within the shadow DOM of this component.",
+              "default": "undefined",
+              "attribute": "img",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "String"
+              },
+              "description": "Specifies the label text for the component. This text is displayed inside the component.\r\nWhen the label property changes, the component updates to display the new label text.\r\nThis property is also passed down to the `bim-label` component nested within the shadow DOM, affecting its display.",
+              "default": "undefined",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "String"
+              },
+              "description": "Defines the icon to be displayed inside the component. The icon is specified by its name or path.\r\nChanging this property will dynamically update the component to display the specified icon.\r\nThis property is utilized by the `bim-label` component nested within the shadow DOM to render the icon.",
+              "default": "undefined",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "checked",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the option is checked. This boolean property can be used to mark the option as selected or not.\r\nWhen toggled, it visually updates the component to reflect the checked state.",
+              "attribute": "checked",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "checkbox",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Determines whether a checkbox is displayed alongside the label. When true, a checkbox is shown.\r\nThis property affects the internal layout and display of the component, specifically adding a `bim-checkbox` element when enabled.",
+              "attribute": "checkbox",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "noMark",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Controls the visibility of the mark or checkbox when the option is checked. If true, the mark or checkbox is not displayed even if the option is checked.\r\nThis property allows for a cleaner look in certain UI designs where the checked state is indicated without a visual mark.",
+              "attribute": "no-mark",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "Represents the dynamic value of the component which can be of different types based on the attribute's value.\r\nThis property is designed to accept various types of inputs: boolean values (true/false as strings), numbers, or any other value as a string.\r\nThe conversion logic in the `converter` method ensures that the attribute value is correctly interpreted and stored in the appropriate data type.\r\nIf you need to use complex data types for the value as arrays or objects, you must do it using the corresponding property in JavaScript\r\nas handling those types of data types using HTML attributes is not recommended.\r\nThe `value` property does not reflect, meaning if you change the value using JavaScript, you won't find the same data in the attributes.\r\nHowever, if you have set the value in the property and then you change the attribute, the `value` will be set at the data from the attribute.\r\nBy default, if no value is set, `value` will return the `label` value in case there is one defined.",
+              "type": {
+                "text": "any"
+              },
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Sets the orientation of the label and icon/image within the component. When true, they are arranged vertically.\r\nThis property influences the internal layout of the component, specifically affecting how the `bim-label` is displayed.",
+              "attribute": "vertical",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "img",
+              "type": {
+                "text": "String"
+              },
+              "description": "Represents the image URL for the component. When set, it displays an image inside the component.\r\nChanging this property dynamically updates the component to show the specified image.\r\nThis property is managed by the `bim-label` component nested within the shadow DOM of this component.",
+              "default": "undefined",
+              "fieldName": "img"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "String"
+              },
+              "description": "Specifies the label text for the component. This text is displayed inside the component.\r\nWhen the label property changes, the component updates to display the new label text.\r\nThis property is also passed down to the `bim-label` component nested within the shadow DOM, affecting its display.",
+              "default": "undefined",
+              "fieldName": "label"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "String"
+              },
+              "description": "Defines the icon to be displayed inside the component. The icon is specified by its name or path.\r\nChanging this property will dynamically update the component to display the specified icon.\r\nThis property is utilized by the `bim-label` component nested within the shadow DOM to render the icon.",
+              "default": "undefined",
+              "fieldName": "icon"
+            },
+            {
+              "name": "checked",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Indicates whether the option is checked. This boolean property can be used to mark the option as selected or not.\r\nWhen toggled, it visually updates the component to reflect the checked state.",
+              "fieldName": "checked"
+            },
+            {
+              "name": "checkbox",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Determines whether a checkbox is displayed alongside the label. When true, a checkbox is shown.\r\nThis property affects the internal layout and display of the component, specifically adding a `bim-checkbox` element when enabled.",
+              "fieldName": "checkbox"
+            },
+            {
+              "name": "no-mark",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Controls the visibility of the mark or checkbox when the option is checked. If true, the mark or checkbox is not displayed even if the option is checked.\r\nThis property allows for a cleaner look in certain UI designs where the checked state is indicated without a visual mark.",
+              "fieldName": "noMark"
+            },
+            {
+              "name": "value",
+              "description": "Represents the dynamic value of the component which can be of different types based on the attribute's value.\r\nThis property is designed to accept various types of inputs: boolean values (true/false as strings), numbers, or any other value as a string.\r\nThe conversion logic in the `converter` method ensures that the attribute value is correctly interpreted and stored in the appropriate data type.\r\nIf you need to use complex data types for the value as arrays or objects, you must do it using the corresponding property in JavaScript\r\nas handling those types of data types using HTML attributes is not recommended.\r\nThe `value` property does not reflect, meaning if you change the value using JavaScript, you won't find the same data in the attributes.\r\nHowever, if you have set the value in the property and then you change the attribute, the `value` will be set at the data from the attribute.\r\nBy default, if no value is set, `value` will return the `label` value in case there is one defined.",
+              "type": {
+                "text": "any"
+              },
+              "fieldName": "value"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Sets the orientation of the label and icon/image within the component. When true, they are arranged vertically.\r\nThis property influences the internal layout of the component, specifically affecting how the `bim-label` is displayed.",
+              "fieldName": "vertical"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Option",
+          "declaration": {
+            "name": "Option",
+            "module": "packages/core/src/components/Option/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Panel/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./src\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Selector/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom selector web component for BIM applications. HTML tag: bim-selector",
+          "name": "Selector",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "readonly": true,
+              "default": "new Event(\"change\")"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "Sets the value of the selector.\r\nIt finds the matching option based on the provided value and sets it as the selected option.\r\nIf no matching option is found, it does nothing.",
+              "parameters": [
+                {
+                  "description": "The value to set for the selector.",
+                  "name": "value"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "name"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "icon"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "label"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "vertical"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Selector",
+          "declaration": {
+            "name": "Selector",
+            "module": "packages/core/src/components/Selector/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Table/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom table web component for BIM applications. HTML tag: bim-table",
+          "name": "Table",
+          "members": [
+            {
+              "kind": "field",
+              "name": "headersHidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean property that determines whether the table headers are hidden.",
+              "attribute": "headers-hidden",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "minColWidth",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"4rem\"",
+              "attribute": "min-col-width",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "columns",
+              "description": "Sets the columns for the table.\r\nThis property allows you to define the columns order for the table.\r\nIf this is not set, it will be computed from the `table.data` object.\r\nThe columns can be provided as an array of strings or objects of type `ColumnData`.\r\nIf the columns are provided as strings, they will be converted to `ColumnData` objects with a default width.",
+              "parameters": [
+                {
+                  "description": "An array of strings or objects of type `ColumnData`.",
+                  "name": "value"
+                }
+              ],
+              "type": {
+                "text": "ColumnData[]"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "Getter for the `value` property.\r\nReturns the filtered data if a search string is provided, otherwise returns the original data.",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "queryString",
+              "description": "Sets the search string for filtering the table data.\r\nThis property allows you to filter the table data based on a search string.\r\nIf a search string is provided, the table will only display rows that match the search criteria.\r\nThe search criteria can be a simple string or a complex query.\r\nIf a simple string is provided, the table will filter rows based on the string's presence in any column.\r\nIf a complex query is provided, the table will filter rows based on the query's conditions and values."
+            },
+            {
+              "kind": "field",
+              "name": "data",
+              "description": "Sets the data for the table.\r\nThis property allows you to define the data that will be displayed in the table.\r\nThe data is expected to be an array of `TableGroupData` objects.\r\nIf the columns are not explicitly set, they will be computed from the `data` object.",
+              "parameters": [
+                {
+                  "description": "An array of `TableGroupData` objects representing the table data.",
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "dataAsync",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "expanded",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean property that determines whether the table is expanded or not.\r\nWhen `true`, the table will be expanded to show all rows.\r\nWhen `false`, the table will be collapsed to show only the top-level rows.",
+              "attribute": "expanded",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "preserveStructureOnFilter",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean property that determines whether the table preserves its structure when filtering.\r\nWhen `true`, the table will preserve its structure, showing only the filtered rows and their parents.\r\nWhen `false`, the table will not preserve its structure, showing only the filtered rows."
+            },
+            {
+              "kind": "field",
+              "name": "indentationInText",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean property that determines whether the table indentation should be included in the exported text."
+            },
+            {
+              "kind": "field",
+              "name": "dataTransform",
+              "type": {
+                "text": "TableDataTransform"
+              },
+              "default": "{}",
+              "description": "A property representing the rules for transforming table data.\r\nThe keys of the object are the column names, and the values are functions that define the transformation logic."
+            },
+            {
+              "kind": "field",
+              "name": "selectableRows",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "selectable-rows",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "selection",
+              "type": {
+                "text": "Set<TableRowData>"
+              },
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "noIndentation",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "no-indentation",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "loading",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "loadingErrorElement",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "hiddenColumns"
+            },
+            {
+              "kind": "field",
+              "name": "csv",
+              "description": "A getter function that generates a CSV (Comma Separated Values) representation of the table data.",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "tsv",
+              "description": "A getter function that generates a Tab Separated Values (TSV) representation of the table data.",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "applyDataTransform",
+              "parameters": [
+                {
+                  "name": "data",
+                  "type": {
+                    "text": "TableRowData"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "downloadData",
+              "parameters": [
+                {
+                  "name": "fileName",
+                  "default": "\"BIM Table Data\"",
+                  "description": "The name of the downloaded file. Default is \"BIM Table Data\"."
+                },
+                {
+                  "name": "format",
+                  "default": "\"json\"",
+                  "type": {
+                    "text": "\"json\" | \"tsv\" | \"csv\""
+                  },
+                  "description": "The format of the downloaded file. Can be \"json\", \"tsv\", or \"csv\". Default is \"json\"."
+                }
+              ],
+              "description": "The `downloadData` method is used to download the table data in different formats.",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getRowIndentation",
+              "return": {
+                "type": {
+                  "text": "number | null"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "target",
+                  "type": {
+                    "text": "TableRowData"
+                  }
+                },
+                {
+                  "name": "tableGroups",
+                  "default": "this.value"
+                },
+                {
+                  "name": "level",
+                  "default": "0"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getGroupIndentation",
+              "return": {
+                "type": {
+                  "text": "number | null"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "target",
+                  "type": {
+                    "text": "TableGroupData"
+                  }
+                },
+                {
+                  "name": "tableGroups",
+                  "default": "this.value"
+                },
+                {
+                  "name": "level",
+                  "default": "0"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "loadFunction",
+              "type": {
+                "text": "() => Promise<TableGroupData[]> | undefined"
+              },
+              "description": "The function to be executed when loading async data using Table.loadData"
+            },
+            {
+              "kind": "method",
+              "name": "loadData",
+              "parameters": [
+                {
+                  "name": "force",
+                  "default": "false",
+                  "description": "A boolean indicating whether to force loading even if the table already has data."
+                }
+              ],
+              "description": "Asynchronously loads data into the table based on Table.loadFunction.\r\nIf the data is already available, just set it in Table.data.",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "filterFunction",
+              "type": {
+                "text": "(queryString: string, data: TableGroupData) => boolean | undefined"
+              },
+              "description": "A function type representing the filter function for the table.\r\nThis function is used to determine whether a given row of data should be included in the filtered results.",
+              "parameters": [
+                {
+                  "description": "The search string used to filter the data.",
+                  "name": "queryString"
+                },
+                {
+                  "description": "The data row to be filtered.",
+                  "name": "data"
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "connected",
+              "type": {
+                "text": "Event"
+              }
+            },
+            {
+              "name": "disconnected",
+              "type": {
+                "text": "Event"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "headers-hidden",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean property that determines whether the table headers are hidden.",
+              "fieldName": "headersHidden"
+            },
+            {
+              "name": "min-col-width",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"4rem\"",
+              "fieldName": "minColWidth"
+            },
+            {
+              "name": "expanded",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "A boolean property that determines whether the table is expanded or not.\r\nWhen `true`, the table will be expanded to show all rows.\r\nWhen `false`, the table will be collapsed to show only the top-level rows.",
+              "fieldName": "expanded"
+            },
+            {
+              "name": "selectable-rows",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "selectableRows"
+            },
+            {
+              "name": "no-indentation",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "noIndentation"
+            },
+            {
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "loading"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Table",
+          "declaration": {
+            "name": "Table",
+            "module": "packages/core/src/components/Table/index.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./src\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Tabs/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./src\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/TextInput/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom text input web component for BIM applications. HTML tag: bim-text-input",
+          "name": "TextInput",
+          "members": [
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the icon property of the TextInput component.\r\nThis property is used to display an icon next to the input field.",
+              "attribute": "icon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the label property of the TextInput component.\r\nThis property is used to display a label above or next to the input field.",
+              "attribute": "label",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the name property of the TextInput component.\r\nThis property is used to uniquely identify the input field within a form or group of inputs.",
+              "attribute": "name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the placeholder property of the TextInput component.\r\nThis property is used to display a hint or a placeholder text inside the input field.\r\nThe placeholder text is displayed when the input field is empty and loses focus.",
+              "attribute": "placeholder",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Represents the value property of the TextInput component.\r\nThis property is used to get or set the current value of the input field.",
+              "attribute": "value",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Represents the vertical property of the TextInput component.\r\nThis property is used to control the layout of the input field.\r\nWhen set to `true`, the input field will be displayed vertically.",
+              "attribute": "vertical",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "debounce",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Represents the debounce property of the TextInput component.\r\nThis property is used to control the delay in milliseconds before the `input` event is fired.\r\nThe `input` event is debounced to prevent excessive event firing when the user types rapidly.",
+              "default": "undefined",
+              "attribute": "debounce",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "rows",
+              "type": {
+                "text": "number | undefined"
+              },
+              "attribute": "rows",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "description": "Sets the type of the input field.\r\nThe type property determines the behavior of the input field.\r\nIt can be any of the following: \"date\", \"datetime-local\", \"email\", \"month\", \"password\", \"search\", \"tel\", \"text\", \"time\", \"url\", \"week\".\r\nIf an invalid type is provided, the type will not be changed.",
+              "attribute": "type",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "query",
+              "description": "Gets the query value derived from the current input value.\r\nThe `getQuery` function is assumed to be a utility function that takes a string as input\r\nand returns a processed query value based on the input.",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "onValueChange",
+              "default": "new Event(\"input\")"
+            },
+            {
+              "kind": "method",
+              "name": "focus"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "icon",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the icon property of the TextInput component.\r\nThis property is used to display an icon next to the input field.",
+              "fieldName": "icon"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the label property of the TextInput component.\r\nThis property is used to display a label above or next to the input field.",
+              "fieldName": "label"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the name property of the TextInput component.\r\nThis property is used to uniquely identify the input field within a form or group of inputs.",
+              "fieldName": "name"
+            },
+            {
+              "name": "placeholder",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Represents the placeholder property of the TextInput component.\r\nThis property is used to display a hint or a placeholder text inside the input field.\r\nThe placeholder text is displayed when the input field is empty and loses focus.",
+              "fieldName": "placeholder"
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Represents the value property of the TextInput component.\r\nThis property is used to get or set the current value of the input field.",
+              "fieldName": "value"
+            },
+            {
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Represents the vertical property of the TextInput component.\r\nThis property is used to control the layout of the input field.\r\nWhen set to `true`, the input field will be displayed vertically.",
+              "fieldName": "vertical"
+            },
+            {
+              "name": "debounce",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Represents the debounce property of the TextInput component.\r\nThis property is used to control the delay in milliseconds before the `input` event is fired.\r\nThe `input` event is debounced to prevent excessive event firing when the user types rapidly.",
+              "default": "undefined",
+              "fieldName": "debounce"
+            },
+            {
+              "name": "rows",
+              "type": {
+                "text": "number | undefined"
+              },
+              "fieldName": "rows"
+            },
+            {
+              "name": "type",
+              "description": "Sets the type of the input field.\r\nThe type property determines the behavior of the input field.\r\nIt can be any of the following: \"date\", \"datetime-local\", \"email\", \"month\", \"password\", \"search\", \"tel\", \"text\", \"time\", \"url\", \"week\".\r\nIf an invalid type is provided, the type will not be changed.",
+              "fieldName": "type"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TextInput",
+          "declaration": {
+            "name": "TextInput",
+            "module": "packages/core/src/components/TextInput/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Toolbar/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./src\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Viewport/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A custom viewport web component for BIM applications. HTML tag: bim-viewport",
+          "name": "Viewport",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "attribute": "name",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "name"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Viewport",
+          "declaration": {
+            "name": "Viewport",
+            "module": "packages/core/src/components/Viewport/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Panel/src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Panel\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Section\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Table/src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./TableCell\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./TableChildren\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./TableGroup\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./TableRow\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./types\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Tabs/src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Tab\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Tabs\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "packages/core/src/components/Toolbar/src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Group\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Section\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./Toolbar\""
+          }
+        }
+      ]
+    }
+  ]
+}

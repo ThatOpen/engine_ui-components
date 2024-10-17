@@ -1,78 +1,111 @@
+// import { InputType } from "storybook/internal/types";
 import type { Meta, StoryObj } from "@storybook/web-components";
-import { html } from "lit";
+import { html, HTMLTemplateResult } from "lit";
 import * as BUI from "../..";
-import { Button } from "..";
 import "./example.css";
 
 BUI.Manager.init();
 
-const classStyles = {
-  "btn-1": `
-    .btn-1 {
-      --bim-label--c: rgb(255 97 97);
-      background-color: rgb(182 19 19 / 40%);
-      border-radius: 100px;
-    }
-
-    .btn-1:hover {
-      --bim-label--c: rgb(239, 75, 75);
-      background-color: rgb(182 19 19 / 50%);
-      outline: 1px solid rgb(239, 75, 75);
-    }
-  `,
-  "btn-2": `
-    .btn-2 {
-      background-color: transparent;
-    }
-
-    .btn-2:hover {
-      --bim-label--c: var(--bim-ui_accent-base);
-    }
-  `,
+const styles = {
+  Default: {
+    base: {},
+    hover: {},
+  },
+  one: {
+    base: {
+      "--bim-label--c": "rgb(255 97 97)",
+      "background-color": "rgb(182 19 19 / 40%)",
+      "border-radius": "100px",
+    },
+    hover: {
+      "--bim-label--c": "rgb(239, 75, 75)",
+      "background-color": "rgb(182 19 19 / 50%)",
+      outline: "1px solid rgb(239, 75, 75)",
+    },
+  },
+  two: {
+    base: {
+      "background-color": "transparent",
+      width: "min-content",
+    },
+    hover: {
+      "--bim-label--c": "var(--bim-ui_accent-base)",
+    },
+  },
 };
 
-const meta: Meta<typeof Button> = {
+const meta: Meta = {
+  title: "Components/Button",
   component: "bim-button",
   tags: ["autodocs"],
-};
-
-export default meta;
-
-export const Primary: StoryObj = {
   args: {
     label: "My button!",
-    vertical: false,
     icon: "solar:settings-bold",
-    labelHidden: false,
-    active: false,
-    disabled: false,
-    tooltipTime: 700,
-    tooltipTitle: "Hi there!",
-    tooltipText: "This is the tooltip description",
-    color: "#ffffff",
   },
   argTypes: {
-    "Style Example": {
-      type: "string",
-      control: { type: "select" },
-      options: ["Default", "btn-1", "btn-2"],
+    style: {
+      control: false,
+      table: { disable: true },
+    },
+    rules: {
+      description: "Use this as a playground to give styling to the button.",
+      table: { category: "Styling" },
+      control: "object",
+    },
+    click: {
+      control: false,
     },
   },
   decorators: [
     (story, context) => {
+      const { rules, icon, style } = context.args;
       const btn = story() as BUI.Button;
-      // @ts-ignore
-      const styleCode = classStyles[context.args["Style Example"]];
-      btn.className = context.args["Style Example"];
-      return html`
-        <div>
-          ${btn}
-          <pre style="background: #f8f8f8; padding: 10px; border-radius: 4px;">
-            <code>${styleCode}</code>
-          </pre
-          >
-        </div>
-      `;
+      btn.icon = icon; // Had to set it manually for some reason
+      let styleTag: HTMLTemplateResult | undefined;
+      if (rules) {
+        btn.className = style;
+        const baseStyle = Object.entries(rules.base)
+          .map(([key, value]) => `${key}: ${value};`)
+          .join(" ");
+
+        const hoverStyle = Object.entries(rules.hover)
+          .map(([key, value]) => `${key}: ${value};`)
+          .join(" ");
+
+        styleTag = html`
+          <style>
+            .${style} {
+              ${baseStyle}
+            }
+            .${style}:hover {
+              ${hoverStyle}
+            }
+          </style>
+        `;
+      }
+      return html` <div>${styleTag} ${btn}</div> `;
     },
   ],
+};
+
+export default meta;
+
+export const Default: StoryObj = {
+  args: {
+    rules: styles.Default,
+  },
+};
+
+export const CustomStylingA: StoryObj = {
+  args: {
+    style: "one",
+    rules: styles.one,
+  },
+};
+
+export const CustomStylingB: StoryObj = {
+  args: {
+    style: "two",
+    rules: styles.two,
+  },
 };
