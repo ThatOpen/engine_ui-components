@@ -8,29 +8,26 @@ BUI.Manager.init();
 const styles = {
   Default: {
     base: {},
-    hover: {},
+    visible: {},
   },
   one: {
     base: {
-      "--bim-label--c": "rgb(255 97 97)",
-      "background-color": "rgb(182 19 19 / 40%)",
-      "border-radius": "100px",
+      "--bim-dropdown--c": "rgb(239, 75, 75)",
+      "--bim-input--bgc": "rgb(182 19 19 / 50%)",
+      "--bim-input--bdrs": "100px",
     },
-    hover: {
-      "--bim-label--c": "rgb(239, 75, 75)",
-      "background-color": "rgb(182 19 19 / 50%)",
-      outline: "1px solid rgb(239, 75, 75)",
+    visible: {
+      "--bim-input--olc": "rgb(239, 75, 75)",
     },
   },
 };
 
 const meta: Meta = {
-  title: "Components/Button",
-  component: "bim-button",
+  title: "Components/Dropdown",
+  component: "bim-dropdown",
   tags: ["autodocs"],
   args: {
-    label: "My button!",
-    icon: "solar:settings-bold",
+    label: "Which BIM format do you prefer?",
   },
   argTypes: {
     style: {
@@ -42,15 +39,26 @@ const meta: Meta = {
       table: { category: "Styling" },
       control: "object",
     },
-    click: {
+    change: {
+      control: false,
+    },
+    value: {
+      control: false,
+    },
+    useObserver: {
       control: false,
     },
   },
   decorators: [
     (story, context) => {
-      const { rules, icon, style } = context.args;
-      const el = story() as BUI.Button;
-      el.icon = icon; // Had to set it manually for some reason
+      const { rules, style } = context.args;
+      const el = story() as BUI.Dropdown;
+      const options = ["IFC", "RVT"];
+      for (const option of options) {
+        const optionElement = document.createElement("bim-option");
+        optionElement.label = option;
+        el.append(optionElement);
+      }
       let styleTag: HTMLTemplateResult | undefined;
       if (rules) {
         el.className = style;
@@ -58,7 +66,7 @@ const meta: Meta = {
           .map(([key, value]) => `${key}: ${value};`)
           .join(" ");
 
-        const hoverStyle = Object.entries(rules.hover)
+        const visibleStyle = Object.entries(rules.visible)
           .map(([key, value]) => `${key}: ${value};`)
           .join(" ");
 
@@ -67,8 +75,8 @@ const meta: Meta = {
             .${style} {
               ${baseStyle}
             }
-            .${style}:hover {
-              ${hoverStyle}
+            .${style}[visible] {
+              ${visibleStyle}
             }
           </style>
         `;

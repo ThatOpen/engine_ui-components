@@ -3,7 +3,7 @@
  */
 export interface HasValue {
   value: any;
-  onValueChange: Event;
+  // onValueChange: Event;
 }
 
 /**
@@ -57,7 +57,7 @@ export type ConditionFunctions = {
   ) => boolean;
 };
 
-//... rest of the code
+// ... rest of the code
 
 /**
  * Represents a query for all IfcWallStandardCase at Nivel 1.

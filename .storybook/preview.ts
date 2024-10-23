@@ -1,8 +1,8 @@
 import type { Preview } from "@storybook/web-components";
 import { setCustomElementsManifest } from "@storybook/web-components";
 import customElements from '../custom-elements.json';
-import DocumentationTemplate from './DocumentationTemplate.mdx';
-import { Meta, Title, Primary, Controls, Stories } from '@storybook/blocks';
+import DocTemplate from "./DocumentationTemplate.mdx"
+import * as Docs from "@storybook/blocks"
 
 setCustomElementsManifest(customElements)
 
@@ -15,8 +15,8 @@ const preview: Preview = {
       },
     },
     docs: {
-      // page: DocumentationTemplate,
-      toc: true,
+      page: DocTemplate,
+      // toc: true,
     },
   },
 };

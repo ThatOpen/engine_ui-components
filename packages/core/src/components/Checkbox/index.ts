@@ -3,9 +3,10 @@ import { property } from "lit/decorators.js";
 import { HasValue } from "../../core/types";
 
 /**
- * A custom checkbox web component for BIM applications. HTML tag: bim-checkbox
+ * A custom checkbox component for web applications.
  *
- * @fires change - Fired when the checkbox changes.
+ * @element bim-checkbox
+ * @fires change - Fired when the input changes.
  */
 export class Checkbox extends LitElement implements HasValue {
   /**
@@ -61,7 +62,7 @@ export class Checkbox extends LitElement implements HasValue {
   icon?: string;
 
   /**
-   * The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal \<input\> element.
+   * The name attribute of the input. Usefull to identify the value when submitting a form.
    * @type {string}
    * @default undefined
    * @example <bim-checkbox name="agreement"></bim-checkbox>
@@ -125,23 +126,10 @@ export class Checkbox extends LitElement implements HasValue {
     return this.checked;
   }
 
-  /**
-   * Event that is dispatched when the checkbox's checked state changes.
-   * This event can be used to listen for changes to the checkbox's value and perform
-   * necessary actions when the value changes.
-   *
-   * @event change
-   * @example
-   * checkbox.addEventListener('change', (event) => {
-   *   console.log('Checkbox value changed:', event.target.checked);
-   * });
-   */
-  readonly onValueChange = new Event("change");
-
   private onChange(e: Event) {
     e.stopPropagation();
     this.checked = (e.target as HTMLInputElement).checked;
-    this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(new Event("change"));
   }
 
   protected render() {

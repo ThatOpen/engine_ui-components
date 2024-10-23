@@ -5,12 +5,13 @@ import { HasName, HasValue } from "../../core/types";
 import { NumberInput } from "../NumberInput";
 
 /**
- * A custom color input web component for BIM applications. HTML tag: bim-color-input
+ * A custom color input component for web applications.
  *
- * @fires input - Fired when the color input changes.
+ * @element bim-color-input
+ * @fires input - Fired when the input is actively set.
  */
 export class ColorInput extends LitElement implements HasValue, HasName {
-    /**
+  /**
    * CSS styles for the component.
    */
   static styles = css`
@@ -76,7 +77,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
   `;
 
   /**
-   * The name of the color input.
+   * The name attribute of the input. Usefull to identify the value when submitting a form.
    * @type {string}
    * @default undefined
    * @example
@@ -153,10 +154,10 @@ export class ColorInput extends LitElement implements HasValue, HasName {
 
   private _colorInput = createRef<HTMLInputElement>();
   private _textInput = createRef<HTMLInputElement>();
-  onValueChange = new Event("input");
+  // onValueChange = new Event("input");
 
   /**
-   * Represents both the color and opacity values combined into a single object. This is an instance property, not an HTMLElement attribute.
+   * Represents both the color and opacity values combined into a single object.
    * @type {Object}
    * @example
    * const colorInput = document.createElement('bim-color-input');
@@ -182,7 +183,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
     const { value: colorInput } = this._colorInput;
     if (!colorInput) return;
     this.color = colorInput.value;
-    this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(new Event("input"));
   }
 
   private onTextInput(e: Event) {
@@ -195,14 +196,14 @@ export class ColorInput extends LitElement implements HasValue, HasName {
     textInput.value = value.slice(0, 7);
     if (textInput.value.length === 7) {
       this.color = textInput.value;
-      this.dispatchEvent(this.onValueChange);
+      this.dispatchEvent(new Event("input"));
     }
   }
 
   private onOpacityInput = (e: Event) => {
     const input = e.target as NumberInput;
     this.opacity = input.value;
-    this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(new Event("input"));
   };
 
   /**

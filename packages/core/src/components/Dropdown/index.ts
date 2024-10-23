@@ -8,7 +8,9 @@ import { HasName, HasValue } from "../../core/types";
 import { ContextMenu } from "../ContextMenu";
 
 /**
- * A custom dropdown web component for BIM applications.
+ * A custom dropdown component for web applications.
+ * @element bim-dropdown
+ * @fires change - Fired when the input changes.
  */
 export class Dropdown extends Component implements HasValue, HasName {
   /**
@@ -174,7 +176,6 @@ export class Dropdown extends Component implements HasValue, HasName {
    * const dropdown = document.createElement('bim-dropdown');
    * dropdown.value = ['option1', 'option2'];
    */
-
   set value(value: any[]) {
     if (this.required && Object.keys(value).length === 0) return;
     const _value: Set<Option> = new Set();
@@ -186,7 +187,7 @@ export class Dropdown extends Component implements HasValue, HasName {
     }
     this._value = _value;
     this.updateOptionsState();
-    this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(new Event("change"));
   }
 
   get value() {
@@ -203,18 +204,6 @@ export class Dropdown extends Component implements HasValue, HasName {
     }
     return [...options];
   }
-
-  /**
-   * Event that is fired when the value of the dropdown changes.
-   * This event is fired when the user selects or deselects an option.
-   *
-   * @event change
-   * @example
-   * dropdown.addEventListener('change', (event) => {
-   *   console.log('Dropdown value changed:', event.target.value);
-   * });
-   */
-  onValueChange = new Event("change");
 
   private _contextMenu = createRef<ContextMenu>();
 
@@ -245,7 +234,7 @@ export class Dropdown extends Component implements HasValue, HasName {
       if (rest.size !== 0) this._value = rest;
     }
     this.updateOptionsState();
-    this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(new Event("change"));
   };
 
   private onSlotChange(e: any) {

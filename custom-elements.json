@@ -468,7 +468,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal \\<input\\> element.",
+              "description": "The name attribute of the input. Usefull to identify the value when submitting a form.",
               "default": "undefined",
               "attribute": "name",
               "reflects": true
@@ -515,19 +515,15 @@
               },
               "default": "false",
               "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "onValueChange",
-              "readonly": true,
-              "default": "new Event(\"change\")",
-              "description": "Event that is dispatched when the checkbox's checked state changes.\r\nThis event can be used to listen for changes to the checkbox's value and perform\r\nnecessary actions when the value changes."
             }
           ],
           "events": [
             {
-              "description": "Fired when the checkbox changes.",
-              "name": "change"
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "Fired when the input changes."
             }
           ],
           "attributes": [
@@ -545,7 +541,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The name attribute of the checkbox. It can be used to identify the checkbox when submitting a form or to reference the checkbox in JavaScript. Changing this property dynamically updates the name attribute of the internal \\<input\\> element.",
+              "description": "The name attribute of the input. Usefull to identify the value when submitting a form.",
               "default": "undefined",
               "fieldName": "name"
             },
@@ -602,7 +598,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A custom color input web component for BIM applications. HTML tag: bim-color-input",
+          "description": "A custom color input component for web applications.",
           "name": "ColorInput",
           "members": [
             {
@@ -611,7 +607,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The name of the color input.",
+              "description": "The name attribute of the input. Usefull to identify the value when submitting a form.",
               "default": "undefined",
               "attribute": "name",
               "reflects": true
@@ -673,13 +669,8 @@
             },
             {
               "kind": "field",
-              "name": "onValueChange",
-              "default": "new Event(\"input\")"
-            },
-            {
-              "kind": "field",
               "name": "value",
-              "description": "Represents both the color and opacity values combined into a single object. This is an instance property, not an HTMLElement attribute.",
+              "description": "Represents both the color and opacity values combined into a single object.",
               "type": {
                 "text": "Object"
               }
@@ -692,8 +683,11 @@
           ],
           "events": [
             {
-              "description": "Fired when the color input changes.",
-              "name": "input"
+              "name": "input",
+              "type": {
+                "text": "Event"
+              },
+              "description": "Fired when the input is actively set."
             }
           ],
           "attributes": [
@@ -702,7 +696,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The name of the color input.",
+              "description": "The name attribute of the input. Usefull to identify the value when submitting a form.",
               "default": "undefined",
               "fieldName": "name"
             },
@@ -756,6 +750,7 @@
             "name": "LitElement",
             "package": "lit"
           },
+          "tagName": "bim-color-input",
           "customElement": true
         }
       ],
@@ -772,11 +767,97 @@
     },
     {
       "kind": "javascript-module",
+      "path": "packages/core/src/components/ContextMenu/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ContextMenu",
+          "members": [
+            {
+              "kind": "field",
+              "name": "placement",
+              "attribute": "placement",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "dialog",
+              "static": true
+            },
+            {
+              "kind": "field",
+              "name": "menus",
+              "type": {
+                "text": "HTMLElement[]"
+              },
+              "static": true,
+              "default": "[]"
+            },
+            {
+              "kind": "method",
+              "name": "removeMenus",
+              "static": true
+            },
+            {
+              "kind": "field",
+              "name": "visible",
+              "attribute": "visible",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "updatePosition",
+              "description": "Asynchronously updates the position of the context menu relative to a target element.\r\nIf no target element is provided, it attempts to use the parent node as the target.\r\nThe position is calculated using the `computePosition` function from `@floating-ui/dom`,\r\nwhich considers various adjustments like offset, inline positioning, flipping, and shifting\r\nto ensure the context menu is properly placed relative to the target element.",
+              "parameters": [
+                {
+                  "description": "The target element relative to which the context menu should be positioned.\r\n                 If not provided, the parent node is used as the target.",
+                  "name": "target",
+                  "optional": true
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "placement",
+              "fieldName": "placement"
+            },
+            {
+              "name": "visible",
+              "fieldName": "visible"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ContextMenu",
+          "declaration": {
+            "name": "ContextMenu",
+            "module": "packages/core/src/components/ContextMenu/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "packages/core/src/components/Dropdown/index.ts",
       "declarations": [
         {
           "kind": "class",
-          "description": "A custom dropdown web component for BIM applications.",
+          "description": "A custom dropdown component for web applications.",
           "name": "Dropdown",
           "members": [
             {
@@ -866,17 +947,17 @@
             },
             {
               "kind": "field",
-              "name": "onValueChange",
-              "default": "new Event(\"change\")",
-              "description": "Event that is fired when the value of the dropdown changes.\r\nThis event is fired when the user selects or deselects an option."
-            },
-            {
-              "kind": "field",
               "name": "useObserver",
               "type": {
                 "text": "boolean"
               },
               "default": "true"
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the input changes.",
+              "name": "change"
             }
           ],
           "attributes": [
@@ -947,7 +1028,9 @@
           "superclass": {
             "name": "Component",
             "module": "/packages/core/src/core/Component"
-          }
+          },
+          "tagName": "bim-dropdown",
+          "customElement": true
         }
       ],
       "exports": [
@@ -957,92 +1040,6 @@
           "declaration": {
             "name": "Dropdown",
             "module": "packages/core/src/components/Dropdown/index.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "packages/core/src/components/ContextMenu/index.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "ContextMenu",
-          "members": [
-            {
-              "kind": "field",
-              "name": "placement",
-              "attribute": "placement",
-              "reflects": true
-            },
-            {
-              "kind": "field",
-              "name": "dialog",
-              "static": true
-            },
-            {
-              "kind": "field",
-              "name": "menus",
-              "type": {
-                "text": "HTMLElement[]"
-              },
-              "static": true,
-              "default": "[]"
-            },
-            {
-              "kind": "method",
-              "name": "removeMenus",
-              "static": true
-            },
-            {
-              "kind": "field",
-              "name": "visible",
-              "attribute": "visible",
-              "reflects": true
-            },
-            {
-              "kind": "method",
-              "name": "updatePosition",
-              "description": "Asynchronously updates the position of the context menu relative to a target element.\r\nIf no target element is provided, it attempts to use the parent node as the target.\r\nThe position is calculated using the `computePosition` function from `@floating-ui/dom`,\r\nwhich considers various adjustments like offset, inline positioning, flipping, and shifting\r\nto ensure the context menu is properly placed relative to the target element.",
-              "parameters": [
-                {
-                  "description": "The target element relative to which the context menu should be positioned.\r\n                 If not provided, the parent node is used as the target.",
-                  "name": "target",
-                  "optional": true
-                }
-              ],
-              "return": {
-                "type": {
-                  "text": ""
-                }
-              }
-            }
-          ],
-          "attributes": [
-            {
-              "name": "placement",
-              "fieldName": "placement"
-            },
-            {
-              "name": "visible",
-              "fieldName": "visible"
-            }
-          ],
-          "superclass": {
-            "name": "LitElement",
-            "package": "lit"
-          },
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "ContextMenu",
-          "declaration": {
-            "name": "ContextMenu",
-            "module": "packages/core/src/components/ContextMenu/index.ts"
           }
         }
       ]

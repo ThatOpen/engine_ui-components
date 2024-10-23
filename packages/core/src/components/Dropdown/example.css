@@ -1,0 +1,7 @@
+html {
+  font-family: sans-serif;
+}
+
+body {
+  background-color: var(--bim-ui_bg-base);
+}
