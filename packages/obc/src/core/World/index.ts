@@ -7,7 +7,8 @@ import { createRef, ref } from "lit/directives/ref.js";
 import { property } from "lit/decorators.js";
 
 /**
- * A world for BIM Apps. HTML tag: bim-viewer
+ * A world for BIM Apps.
+ * @element bim-world
  */
 export class World extends LitElement {
   static styles = css``;
@@ -48,6 +49,11 @@ export class World extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     if (this.world) this.world.enabled = false;
+  }
+
+  dispose() {
+    this.components = null;
+    this.remove();
   }
 
   firstUpdated() {
