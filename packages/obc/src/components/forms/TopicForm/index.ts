@@ -1,5 +1,6 @@
 import * as BUI from "@thatopen/ui";
-import { TopicFormUI, createTopicTemplate } from "./src/template";
+import { formTemplate } from "./src/template";
+import { TopicFormUI } from "../../../utils/topics";
 
 /**
  * Creates a Topic Form component with the given UI state.
@@ -8,9 +9,9 @@ import { TopicFormUI, createTopicTemplate } from "./src/template";
  *
  * @returns A tuple containing the created Topic Form component and a function to update it.
  */
-export const createTopic = (state: TopicFormUI) => {
+export const topic = (state: TopicFormUI) => {
   const element = BUI.Component.create<BUI.Panel, TopicFormUI>(
-    createTopicTemplate,
+    formTemplate,
     state,
   );
 

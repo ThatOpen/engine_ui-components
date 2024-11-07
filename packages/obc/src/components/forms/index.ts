@@ -1,5 +1,5 @@
-import * as createTopic from "./TopicForm";
+import * as topic from "./TopicForm";
 
 export const forms = {
-  ...createTopic,
+  ...topic,
 };

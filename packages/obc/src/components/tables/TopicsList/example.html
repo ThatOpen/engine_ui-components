@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BCF Topics List</title>
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      height: 100vh;
+      width: 100vw;
+    }
+
+    bim-panel {
+      border-radius: 0;
+    }
+
+    dialog {
+      background-color: transparent;
+      border: none;
+      margin: auto;
+    }
+
+    dialog::backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+    }
+  </style>
+</head>
+
+<body>
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>

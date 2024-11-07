@@ -5,7 +5,7 @@ import * as CUI from "../..";
 BUI.Manager.init();
 
 const components = new OBC.Components();
-const [newFormTopic] = CUI.forms.createTopic({
+const [newFormTopic] = CUI.forms.topic({
   components,
   onSubmit: (topic) => console.log(topic),
 });

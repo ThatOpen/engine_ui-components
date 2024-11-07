@@ -1,7 +1,7 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 
-interface ViewpointUIActions {
+export interface ViewpointUIActions {
   selectComponents: boolean;
   colorizeComponent: boolean;
   resetColors: boolean;
@@ -18,7 +18,7 @@ export interface ViewpointsUI {
 }
 
 export const viewpointsListTemplate = (state: ViewpointsUI) => {
-  const { components, topic, actions: _actions } = state;
+  const { components, topic } = state;
   const actions: ViewpointUIActions = {
     selectComponents: true,
     colorizeComponent: true,
@@ -26,8 +26,9 @@ export const viewpointsListTemplate = (state: ViewpointsUI) => {
     updateCamera: true,
     delete: true,
     unlink: !!topic,
-    ..._actions,
+    ...state.actions,
   };
+
   const manager = components.get(OBC.Viewpoints);
   const viewpointIDs = state.topic?.viewpoints ?? manager.list.keys();
   const viewpoints: OBC.Viewpoint[] = [];
@@ -35,6 +36,7 @@ export const viewpointsListTemplate = (state: ViewpointsUI) => {
     const viewpoint = manager.list.get(viewpointID);
     if (viewpoint) viewpoints.push(viewpoint);
   }
+
   const onTableCreated = (e?: Element) => {
     if (!e) return;
     const table = e as BUI.Table;
@@ -59,7 +61,7 @@ export const viewpointsListTemplate = (state: ViewpointsUI) => {
                 <bim-button icon="prime:ellipsis-v">
                   <bim-context-menu>
                     ${actions.selectComponents ? BUI.html`<bim-button label="Select Components" @click=${() => console.log(viewpoint.selection)}></bim-button> ` : null}
-                    ${actions.colorizeComponent ? BUI.html`<bim-button label="Colorize Components" @click=${() => viewpoint.colorize()}></bim-button> ` : null}
+                    ${actions.colorizeComponent ? BUI.html`<bim-button label="Colorize Components" @click=${() => viewpoint.applyColors()}></bim-button> ` : null}
                     ${actions.resetColors ? BUI.html`<bim-button label="Reset Colors" @click=${() => viewpoint.resetColors()}></bim-button> ` : null}
                     ${actions.updateCamera ? BUI.html`<bim-button label="Update Camera" @click=${() => viewpoint.updateCamera()}></bim-button> ` : null}
                     ${actions.unlink ? BUI.html`<bim-button .disabled=${!topic} label="Unlink" @click=${() => topic?.viewpoints.delete(viewpoint.guid)}></bim-button> ` : null}
@@ -85,7 +87,7 @@ export const viewpointsListTemplate = (state: ViewpointsUI) => {
   };
 
   return BUI.html`
-    <bim-table ${BUI.ref(onTableCreated)}>
+    <bim-table no-indentation ${BUI.ref(onTableCreated)}>
       <bim-label slot="missing-data" icon="ph:warning-fill" style="--bim-icon--c: gold;">No viewpoints to show</bim-label>
     </bim-table>
   `;
