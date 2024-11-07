@@ -1,12 +1,12 @@
-import{x as t}from"./lit-html-Cs86_c16.js";import{M as c,C as n}from"./index-Cduhzwg5.js";import"./state-CGNX_o1p.js";import"./ref-Dfje1KsO.js";c.init();const b=n.create(()=>t`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-7yQHQhIz.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-BHy2zXYh.js";c.init();const b=t.create(()=>n`
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
     </bim-panel-section>
-  `),[s,o]=n.create(e=>{const{label:l,counter:a}=e,i=`This panel section has been updated ${a} ${a===1?"time":"times"}`;return t`
+  `),[s,o]=t.create(e=>{const{label:l,counter:a}=e,i=`This panel section has been updated ${a} ${a===1?"time":"times"}`;return n`
       <bim-panel-section label=${l}>
         <bim-label>${i}</bim-label>
       </bim-panel-section>
-    `},{label:"Statefull Panel Section",counter:0}),m=n.create(()=>{let e=0;return t`
+    `},{label:"Statefull Panel Section",counter:0}),m=t.create(()=>{let e=0;return n`
     <bim-panel label="My Panel">
       <bim-panel-section label="Update Functions">
         <bim-button @click=${()=>{e++,e>=5?o({label:"Powered Statefull Panel Section 💪",counter:e}):o({counter:e})}} label="Update Statefull Section"></bim-button>
