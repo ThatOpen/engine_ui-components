@@ -1,3 +1,8 @@
+/* MD
+  ### Displaying Complex Data Correctly
+  ---
+  Hi there!
+  */
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
@@ -110,3 +115,7 @@ table.preserveStructureOnFilter = preserveStructure.checked;
 preserveStructure.addEventListener("change", () => {
   table.preserveStructureOnFilter = preserveStructure.checked;
 });
+
+/* MD
+  Congrats.
+  */
