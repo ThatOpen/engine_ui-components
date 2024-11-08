@@ -8,20 +8,24 @@ import { LitElement, TemplateResult, render } from "lit";
  */
 export type StatelessComponent = () => TemplateResult;
 
+export type UpdateFunction<S extends Record<string, any>> = (
+  state?: Partial<S>,
+) => S;
+
 /**
  * Represents a function that returns a TemplateResult for a stateful component.
  *
  * @template S - The type of the component state.
  *
  * @param state - The current state of the component.
+ * @param update - An update function you can call inside the template.
+ * WARNING! It can cause infinite loops if not used properly.
  *
  * @returns A TemplateResult that represents the UI of the component based on the current state.
  */
-export type StatefullComponent<S extends Record<string, any>> = (
-  state: S,
-) => TemplateResult;
-
-type UpdateFunction<S extends Record<string, any>> = (state?: Partial<S>) => S;
+export type StatefullComponent<
+  S extends Record<string, any> = Record<string, any>,
+> = (state: S, update: UpdateFunction<S>) => TemplateResult;
 
 /**
  * A base class for UI components that utilizes the LitElement library. Provides functionality for rendering stateless and stateful components, as well as lazy loading of elements using Intersection Observer.
@@ -150,9 +154,9 @@ export class Component extends LitElement {
     let currentState = initialState;
 
     const statefullTemplate = template as StatefullComponent<S>;
-    const update = (state?: Partial<S>) => {
+    const update: UpdateFunction<S> = (state?: Partial<S>) => {
       currentState = { ...currentState, ...state };
-      render(statefullTemplate(currentState), fragment);
+      render(statefullTemplate(currentState, update), fragment);
       return currentState;
     };
 
