@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Data Transform</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+  </style>
+  <script type="module" crossorigin src="../../assets/dataTransform.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/modulepreload-polyfill-B5Qt9EMX.js">
+</head>
+
+<body>
+  <div style="display: flex; flex-direction: column; gap: 0.75rem; height: 100%;">
+    <bim-table style="border-radius: 0.25rem;" expanded selectable-rows>
+      <div slot="missing-data"
+        style="display: flex; flex-direction: column; align-items: center; width: 8rem; margin: auto;">
+        <bim-label>No data to load!</bim-label>
+        <bim-button id="load-data" label="Load Data" style="width: 100%;"></bim-button>
+      </div>
+      <div slot="error-loading"
+        style="display: flex; flex-direction: column; align-items: center; width: 8rem; margin: auto;">
+        <bim-label id="error-loading-label">Data failed to load!</bim-label>
+        <bim-button id="try-again" label="Try Again" style="width: 100%;"></bim-button>
+      </div>
+    </bim-table>
+  </div>
+</body>
+
+</html>
