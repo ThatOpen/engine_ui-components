@@ -1,7 +1,20 @@
+/* MD 
+  ## Showing BCF Topics the Easy Way ✨
+  ---
+  Integration with BIM Collaboration Format is probably one of those features you want to have in your app sooner than later. Problem is, many UIs are needed (one to display the topics, another to create them, another to edit everything, etc). Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish a fully working user interface for your next BCF integration!
+
+  ### 🏗 Scaffolding the Application
+  First of all, let's import the dependencies we need to get this working:
+  */
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as CUI from "@thatopen/ui-obc";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
+
+/* MD 
+  Next, it's always necessary to initialize the core UI library no matter if you're using functional components from `@thatopen/ui-obc`. Also, let's setup `@thatopen/components` with the minimum things to get a [World](/Tutorials/Components/Core/Worlds) up and running to load models.
+  */
 
 BUI.Manager.init();
 
@@ -34,12 +47,8 @@ const grids = components.get(OBC.Grids);
 grids.create(world);
 
 /* MD 
-  ## Showing BCF topics the easy way ☪☪
-  ---
-  Integration with BIM Collaboration Format is probably one of those features you want to have in your app sooner than later. Problem is, many UIs are needed (one to display the topics, another to create them, another to edit everything, etc). Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish a fully working user interface for your next BCF integration!
-
-  ### Loading a model and setting up the topics component
-  First things first... let's load a model 👇
+  ### 🏦 Loading a Model and Setting the BCFTopics
+  Just after setting up the world, let's programatically load a model 👇
   */
 
 const ifcLoader = components.get(OBC.IfcLoader);
@@ -100,17 +109,31 @@ topics.list.onItemSet.add(({ value: topic }) => {
 /* MD
   Once the BCFTopics component has been initialized, let's see how to setup a plug-n-play UI for it! The BIM Components UI package (@thatopen/ui-obc) comes with some UIs to support the usage of the BCFTopics component. Among the components you got:
   
+
   👉 TopicsList: a table to display the topics created with the component (or the ones you choose to see).
+
+
   👉 TopicForm: a form to create new or update existing topics.
+
+
   👉 TopicComments: a table to display the list of comments for a single topic.
+
+
   👉 TopicCommentsSection: an element to display the comments for a single topic and also a text area to add them.
+
+
   👉 TopicInformationSection: an element to display the topic markup information and a button with the form included to update it.
+  
+  
   👉 TopicRelationsSection: an element to display the topics related with another and the functionality to link them.
+  
+  
   👉 TopicViewpointsSection: an element to display the topics viewpoints with the functionality create new or link existing viewpoints.
+
 
   Is entirely up to you what to use, but using them together gives you a ready to go UI with everything you need to have a production ready BCF integration in your BIM app! Let's start with the topics list table.
 
-  ### Topics List
+  ### 🔨 Displaying the Topics List in a Table
   The topics list table is the easiest way to display all topics created in the app using the BCFTopics component. Creating it is really simple, as you just need to write the following:
   */
 
@@ -125,7 +148,7 @@ topicsList.selectableRows = true;
 /* MD
   That's it. You don't need anything else other than creating an instance of the UI component and place it anywhere you want in the app. The table updates by it-self anytime a new topic has been created or modified! 
   
-  ### Topic Form
+  ### 📃 Using the Topics Form UI
   Let's now define a topic form so creating them is easier than ever:
  */
 
@@ -178,7 +201,7 @@ updateTopicForm({
 /* MD
   Awesome! Topic form setup correctly 😎
   
-  ### Creating a Custom Topic Panel
+  ### 🎫 Creating a Custom Topic Panel
   With the form set up, what if we use the topic panel to see it's full information? Typically, you will display the full information for one topic at the same time; in such case, you only need to create one topic panel component. However, you can create as many panels as you need. In this tutorial we will create one as follows:
   */
 
@@ -308,7 +331,7 @@ updateTopicsList({
 });
 
 /* MD
-  ### Creating a Button to Download BCFs
+  ### ⏬ Creating a Button to Download BCFs
   To complete our BCF integration, let's create a button to download the topics created using the BCFTopics component:
   */
 
@@ -341,7 +364,7 @@ const downloadBtn = BUI.Component.create(() => {
 });
 
 /* MD
-  ### Creating a Panel to Append the Table
+  ### 🥅 Creating a Panel to Hold the Table
   Let's now create a BIM Panel to hold the topics list while also adding the corresponding buttons to trigger the functionalities like showing the form and downloading the BCF file:
   */
 
