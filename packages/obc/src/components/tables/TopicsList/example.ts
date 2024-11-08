@@ -68,7 +68,7 @@ world.scene.three.add(model);
 
   :::
 
-  Before creating the table to display topics to the user, let's do some initial setup of the BCFTopics component. If you're unsure about the basics of working with the BCFTopics component, first check the [tutorial](/Tutorials/Components/Core/BCFTopics).
+  Before creating the table to display topics to the user, let's do some initial setup of the BCFTopics component. If you're unsure about the basics of working with the BCFTopics component, first check the corresponding tutorial.
   */
 
 const users: CUI.TopicUserStyles = {
