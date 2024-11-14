@@ -1,5 +1,5 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as P,R as s,T as g,k as r,a0 as F,a1 as z,j as H,C as N}from"./index-CSvFTziO.js";import"./lit-html-paDGiEfB.js";import{e as _}from"./ref-BHy2zXYh.js";const U={dueDate:t=>{if(typeof t=="string"&&t.trim()!=="")return new Date(t)},status:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},type:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},priority:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},stage:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},assignedTo:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},labels:t=>{if(Array.isArray(t))return new Set(t)}},E=t=>{const{components:$,topic:e,value:n,onCancel:j,onSubmit:B,styles:d}=t,w=B??(()=>{}),a=$.get(P),C=(n==null?void 0:n.title)??(e==null?void 0:e.title)??s.default.title,m=(n==null?void 0:n.status)??(e==null?void 0:e.status)??s.default.status,p=(n==null?void 0:n.type)??(e==null?void 0:e.type)??s.default.type,b=(n==null?void 0:n.priority)??(e==null?void 0:e.priority)??s.default.priority,u=(n==null?void 0:n.assignedTo)??(e==null?void 0:e.assignedTo)??s.default.assignedTo,c=(n==null?void 0:n.labels)??(e==null?void 0:e.labels)??s.default.labels,f=(n==null?void 0:n.stage)??(e==null?void 0:e.stage)??s.default.stage,R=(n==null?void 0:n.description)??(e==null?void 0:e.description)??s.default.description,L=e!=null&&e.dueDate?e.dueDate.toISOString().split("T")[0]:null,T=new Set([...a.config.statuses]);m&&T.add(m);const S=new Set([...a.config.types]);p&&S.add(p);const x=new Set([...a.config.priorities]);b&&x.add(b);const h=new Set([...a.config.users]);u&&h.add(u);const A=new Set([...a.config.labels]);if(c)for(const i of c)A.add(i);const D=new Set([...a.config.stages]);f&&D.add(f);const k=_(),O=async()=>{const{value:i}=k;if(!i)return;const o=z(i,U);if(e)e.set(o),await w(e);else{const l=a.create(o);await w(l)}},v=_(),q=i=>{const{value:o}=v;if(!o)return;const l=i.target;o.disabled=l.value.trim()===""},I=`btn-${g.newRandomId()}`,y=`btn-${g.newRandomId()}`;return r`
-    <div ${F(k)} style="display: flex; flex-direction: column; gap: 0.75rem;">
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{l as M,R as s,T as g,j as r,a0 as F,a1 as P,z as H,C as N}from"./index-b5UjG9AG.js";import"./lit-html-paDGiEfB.js";import{e as _}from"./ref-CInB0H-f.js";const U={dueDate:t=>{if(typeof t=="string"&&t.trim()!=="")return new Date(t)},status:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},type:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},priority:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},stage:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},assignedTo:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},labels:t=>{if(Array.isArray(t))return new Set(t)}},E=t=>{const{components:$,topic:e,value:n,onCancel:j,onSubmit:B,styles:d}=t,w=B??(()=>{}),a=$.get(M),C=(n==null?void 0:n.title)??(e==null?void 0:e.title)??s.default.title,m=(n==null?void 0:n.status)??(e==null?void 0:e.status)??s.default.status,p=(n==null?void 0:n.type)??(e==null?void 0:e.type)??s.default.type,b=(n==null?void 0:n.priority)??(e==null?void 0:e.priority)??s.default.priority,u=(n==null?void 0:n.assignedTo)??(e==null?void 0:e.assignedTo)??s.default.assignedTo,c=(n==null?void 0:n.labels)??(e==null?void 0:e.labels)??s.default.labels,f=(n==null?void 0:n.stage)??(e==null?void 0:e.stage)??s.default.stage,R=(n==null?void 0:n.description)??(e==null?void 0:e.description)??s.default.description,z=e!=null&&e.dueDate?e.dueDate.toISOString().split("T")[0]:null,T=new Set([...a.config.statuses]);m&&T.add(m);const S=new Set([...a.config.types]);p&&S.add(p);const x=new Set([...a.config.priorities]);b&&x.add(b);const h=new Set([...a.config.users]);u&&h.add(u);const A=new Set([...a.config.labels]);if(c)for(const i of c)A.add(i);const D=new Set([...a.config.stages]);f&&D.add(f);const v=_(),O=async()=>{const{value:i}=v;if(!i)return;const o=P(i,U);if(e)e.set(o),await w(e);else{const l=a.create(o);await w(l)}},k=_(),q=i=>{const{value:o}=k;if(!o)return;const l=i.target;o.disabled=l.value.trim()===""},I=`btn-${g.newRandomId()}`,y=`btn-${g.newRandomId()}`;return r`
+    <div ${F(v)} style="display: flex; flex-direction: column; gap: 0.75rem;">
       <div style="display: flex; gap: 0.375rem">
         <bim-text-input @input=${q} vertical label="Title" name="title" .value=${C}></bim-text-input>
         ${e?r`
@@ -20,11 +20,11 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as P,R as s,T as g,k as r,
           ${[...A].map(i=>r`<bim-option label=${i} .checked=${c?[...c].includes(i):!1}></bim-option>`)}
         </bim-dropdown>
         <bim-dropdown vertical label="Assignee" name="assignedTo">
-          ${[...h].map(i=>{const o=d!=null&&d.users?d.users[i]:null,l=o?o.name:i,M=o==null?void 0:o.picture;return r`<bim-option label=${l} value=${i} .img=${M} .checked=${u===i}></bim-option>`})}
+          ${[...h].map(i=>{const o=d!=null&&d.users?d.users[i]:null,l=o?o.name:i,L=o==null?void 0:o.picture;return r`<bim-option label=${l} value=${i} .img=${L} .checked=${u===i}></bim-option>`})}
         </bim-dropdown>
       </div>
       <div style="display: flex; gap: 0.375rem">
-        <bim-text-input vertical type="date" label="Due Date" name="dueDate" .value=${L}></bim-text-input> 
+        <bim-text-input vertical type="date" label="Due Date" name="dueDate" .value=${z}></bim-text-input> 
         <bim-dropdown vertical label="Stage" name="stage">
           ${[...D].map(i=>r`<bim-option label=${i} .checked=${f===i}></bim-option>`)}
         </bim-dropdown>
@@ -45,7 +45,7 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{p as P,R as s,T as g,k as r,
           }
         </style>
         <bim-button id=${y} style="flex: 0" @click=${j} label="Cancel"></bim-button>
-        <bim-button id=${I} style="flex: 0" @click=${O} ${F(v)} label=${e?"Update Topic":"Add Topic"} icon=${e?"tabler:refresh":"mi:add"}></bim-button>
+        <bim-button id=${I} style="flex: 0" @click=${O} ${F(k)} label=${e?"Update Topic":"Add Topic"} icon=${e?"tabler:refresh":"mi:add"}></bim-button>
       </div>
     </div>
   `},G=t=>r`

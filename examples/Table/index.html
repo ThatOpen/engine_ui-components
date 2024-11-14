@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="bim-ui-light">
+<html lang="en" class="bim-ui-dark">
 
 <head>
   <meta charset="UTF-8">
@@ -25,37 +25,11 @@
   <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="../assets/lit-html-paDGiEfB.js">
   <link rel="modulepreload" crossorigin href="../assets/state-DYefyXr3.js">
-  <link rel="modulepreload" crossorigin href="../assets/ref-BHy2zXYh.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-7yQHQhIz.js">
+  <link rel="modulepreload" crossorigin href="../assets/ref-CInB0H-f.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-DF44z90o.js">
 </head>
 
-<body>
-  <div style="display: flex; flex-direction: column; gap: 0.75rem; height: 100%;">
-    <div style="display: flex; gap: 0.375rem; width: 10rem;">
-      <bim-checkbox id="force-error" label="Force Load Error" inverted></bim-checkbox>
-      <bim-button id="clean-data" label="Clean Data"></bim-button>
-      <bim-button id="print-data" label="Print Table Data"></bim-button>
-      <bim-button id="copy-csv" label="Copy As CSV"></bim-button>
-      <bim-button id="copy-tsv" label="Copy As TSV"></bim-button>
-      <bim-button id="download-data" label="Download Table Data"></bim-button>
-    </div>
-    <div style="display: flex; gap: 0.75rem;">
-      <bim-text-input id="search-box" placeholder="Search..." debounce="250"></bim-text-input>
-      <bim-checkbox id="preserve-structure" label="Preserve Structure" checked inverted></bim-checkbox>
-    </div>
-    <bim-table style="border-radius: 0.25rem;" expanded selectable-rows>
-      <div slot="missing-data"
-        style="display: flex; flex-direction: column; align-items: center; width: 8rem; margin: auto;">
-        <bim-label>No data to load!</bim-label>
-        <bim-button id="load-data" label="Load Data" style="width: 100%;"></bim-button>
-      </div>
-      <div slot="error-loading"
-        style="display: flex; flex-direction: column; align-items: center; width: 8rem; margin: auto;">
-        <bim-label id="error-loading-label">Data failed to load!</bim-label>
-        <bim-button id="try-again" label="Try Again" style="width: 100%;"></bim-button>
-      </div>
-    </bim-table>
-  </div>
+<body>
 </body>
 
 </html>
