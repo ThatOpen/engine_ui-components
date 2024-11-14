@@ -5,7 +5,7 @@ BUI.Manager.init();
 
 const leftPanel = BUI.Component.create<BUI.Panel>(() => {
   const onBtnClick = () => {
-    alert("asdasd");
+    alert("You clicked me!");
   };
   return BUI.html`
     <bim-panel label="My Panel!">
@@ -241,7 +241,12 @@ const rightPanel = BUI.Component.create<BUI.Panel>(() => {
 
 const viewport = document.createElement("bim-viewport");
 
-const grid = document.body.querySelector<BUI.Grid>("bim-grid")!;
+type LayoutElements = {
+  main: ["header", "sidebar", "content"];
+  app: ["ribbon", "leftPanel", "viewport", "rightPanel", "bottomPanel"];
+};
+
+const grid = document.body.querySelector<BUI.Grid<LayoutElements>>("bim-grid")!;
 
 grid.layouts = {
   main: {

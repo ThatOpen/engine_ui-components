@@ -1,33 +1,20 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
+import { Component, StatefullComponent, StatelessComponent } from "../../core";
+import {
+  GridLayoutComponents,
+  GridLayoutsDefinition,
+  UpdateGridLayoutElements,
+} from "./src";
 
 /**
- * Represents a collection of predefined grid layouts for the Grid component. Each layout is defined by a unique name, a grid template string, and a map of area names to HTMLElement instances. The grid template string defines the structure of the grid, and the area names correspond to the grid-area property of the HTMLElement instances. The HTMLElement instances are used to populate the grid with content.
+ * A custom grid component for web applications.
+ * @element bim-grid
  */
-export interface Layouts {
+export class Grid<T extends GridLayoutComponents = {}> extends LitElement {
   /**
-   * The unique name of the layout.
+   * CSS styles for the component.
    */
-  [name: string]: {
-    /**
-     * The grid template string defining the structure of the grid.
-     */
-    template: string;
-    /**
-     * A map of area names to HTMLElement instances.
-     * The area names correspond to the grid-area property of the HTMLElement instances.
-     */
-    elements: { [areaName: string]: HTMLElement };
-  };
-}
-
-/**
- * A custom grid web component for BIM applications. HTML tag: bim-grid
- */
-export class Grid extends LitElement {
-  /**
-  * CSS styles for the component.
-  */
   static styles = css`
     :host {
       display: grid;
@@ -85,13 +72,43 @@ export class Grid extends LitElement {
   @property({ type: String, reflect: true })
   layout?: string;
 
+  private _layouts: GridLayoutsDefinition<T> = {} as GridLayoutsDefinition<T>;
+
   /**
    * Represents a collection of predefined grid layouts for the Grid component.
-   * Each layout is defined by a unique name, a grid template string, and a map of area names to HTMLElement instances.
+   * Each layout is defined by a unique name, a grid template string, and a map of area names to HTMLElement instances or
+   * Statefull/Stateless component definitions.
    * The grid template string defines the structure of the grid, and the area names correspond to the grid-area property of the HTMLElement instances.
    * The HTMLElement instances are used to populate the grid with content.
+   * @remarks Once defined, the layout is meant to be immutable.
    */
-  layouts: Layouts = {};
+  set layouts(value: GridLayoutsDefinition<T>) {
+    this._layouts = value;
+    const result: {
+      [layout: string]: {
+        [area: string]: (state?: Record<string, any>) => void;
+      };
+    } = {};
+
+    for (const [layoutName, layout] of Object.entries(value)) {
+      for (const name in layout.elements) {
+        if (!result[layoutName]) result[layoutName] = {};
+        result[layoutName][name] = (state: any) => {
+          const layoutFunctions = this._updateFunctions[layoutName];
+          if (!layoutFunctions) return;
+          const fn = layoutFunctions[name];
+          if (!fn) return;
+          fn(state);
+        };
+      }
+    }
+
+    this.updateComponent = result as UpdateGridLayoutElements<T>;
+  }
+
+  get layouts() {
+    return this._layouts;
+  }
 
   // private isVerticalArea(area: string) {
   //   const { rows } = this;
@@ -107,7 +124,8 @@ export class Grid extends LitElement {
   //   return abovePanel || belowPanel;
   // }
 
-  private getUniqueAreasFromTemplate(template: string) {
+  private getLayoutAreas(layout: { template: string }) {
+    const { template } = layout;
     const rows = template.split("\n").map((row) => row.trim());
     const areas = rows
       .map((row) => row.split('"')[1])
@@ -123,24 +141,61 @@ export class Grid extends LitElement {
     this._onLayoutChange = new Event("layoutchange");
   }
 
+  private _updateFunctions: {
+    [layout: string]: { [area: string]: (state?: Record<string, any>) => void };
+  } = {};
+
+  updateComponent?: UpdateGridLayoutElements<T>;
+
   protected render() {
     if (this.layout) {
+      this._updateFunctions = {};
       if (this.layouts[this.layout]) {
         this.innerHTML = "";
+        this._updateFunctions[this.layout] = {};
+        const layoutUpdateFunctions = this._updateFunctions[this.layout];
         const layout = this.layouts[this.layout];
-        const areas = this.getUniqueAreasFromTemplate(layout.template);
+        const areas = this.getLayoutAreas(layout);
         const elements = areas
-          .map((area) => {
-            const element = layout.elements[area];
-            if (element) element.style.gridArea = area;
-            return element;
+          .map((area: string) => {
+            const element = (layout.elements as any)[area] as
+              | HTMLElement
+              | StatelessComponent
+              | {
+                  template: StatefullComponent<any>;
+                  initialState: Record<string, any>;
+                };
+
+            if (!element) return null;
+
+            if (element instanceof HTMLElement) {
+              element.style.gridArea = area;
+              return element;
+            }
+
+            if ("template" in element) {
+              const { template, initialState } = element;
+              const [component, updateComponent] = Component.create<
+                HTMLElement,
+                {}
+              >(template, initialState);
+
+              component.style.gridArea = area;
+              layoutUpdateFunctions[area] = updateComponent;
+              return component;
+            }
+
+            const component = Component.create(element);
+            return component;
           })
-          .filter((element) => !!element);
+          .filter((element) => !!element) as HTMLElement[];
+
         this.style.gridTemplate = layout.template;
-        if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
         this.append(...elements);
+        if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
       }
     } else {
+      this._updateFunctions = {};
       this.innerHTML = "";
       this.style.gridTemplate = "";
       if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
@@ -148,3 +203,5 @@ export class Grid extends LitElement {
     return html`<slot></slot>`;
   }
 }
+
+export * from "./src";
