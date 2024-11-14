@@ -1,15 +1,17 @@
 import { LitElement, css, html, render } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Table, ColumnData } from "../index";
+import { Table } from "../index";
+import { TableCell } from "./TableCell";
 import {
   TableRowData,
   CellCreatedEventDetail,
   RowSelectedEventDetail,
   RowDeselectedEventDetail,
+  ColumnData,
 } from "./types";
 import { Checkbox } from "../../Checkbox";
 
-export class TableRow extends LitElement {
+export class TableRow<T extends TableRowData> extends LitElement {
   /**
    * CSS styles for the component.
    */
@@ -40,20 +42,20 @@ export class TableRow extends LitElement {
   selected = false;
 
   @property({ attribute: false })
-  columns: ColumnData[] = [];
+  columns: ColumnData<T>[] = [];
 
   @property({ attribute: false })
   hiddenColumns: string[] = [];
 
   @property({ attribute: false })
-  data: TableRowData = {};
+  data: Partial<T> = {};
 
   @property({ type: Boolean, attribute: "is-header", reflect: true })
   isHeader = false;
 
   private get _columnNames() {
     const columns = this.columns.filter(
-      (column) => !this.hiddenColumns.includes(column.name),
+      (column) => !this.hiddenColumns.includes(column.name as string),
     );
     const names = columns.map((column) => column.name);
     return names;
@@ -61,13 +63,13 @@ export class TableRow extends LitElement {
 
   private get _columnWidths() {
     const columns = this.columns.filter(
-      (column) => !this.hiddenColumns.includes(column.name),
+      (column) => !this.hiddenColumns.includes(column.name as string),
     );
     const widths = columns.map((column) => column.width);
     return widths;
   }
 
-  table = this.closest<Table>("bim-table");
+  table = this.closest<Table<T>>("bim-table");
 
   private onTableColumnsChange = () => {
     if (!this.table) return;
@@ -100,7 +102,7 @@ export class TableRow extends LitElement {
     if (target.value) {
       this.table.selection.add(this.data);
       this.table.dispatchEvent(
-        new CustomEvent<RowSelectedEventDetail>("rowselected", {
+        new CustomEvent<RowSelectedEventDetail<T>>("rowselected", {
           detail: {
             data: this.data,
           },
@@ -109,7 +111,7 @@ export class TableRow extends LitElement {
     } else {
       this.table.selection.delete(this.data);
       this.table.dispatchEvent(
-        new CustomEvent<RowDeselectedEventDetail>("rowdeselected", {
+        new CustomEvent<RowDeselectedEventDetail<T>>("rowdeselected", {
           detail: {
             data: this.data,
           },
@@ -168,7 +170,7 @@ export class TableRow extends LitElement {
 
       if (!content) continue;
 
-      const cell = document.createElement("bim-table-cell");
+      const cell = document.createElement("bim-table-cell") as TableCell<T>;
       cell.append(content);
       cell.column = column;
       if (this._columnNames.indexOf(column) === 0)
@@ -182,7 +184,7 @@ export class TableRow extends LitElement {
       cell.toggleAttribute("data-cell-header", this.isHeader);
       cell.rowData = this.data;
       this.table.dispatchEvent(
-        new CustomEvent<CellCreatedEventDetail>("cellcreated", {
+        new CustomEvent<CellCreatedEventDetail<T>>("cellcreated", {
           detail: { cell },
         }),
       );

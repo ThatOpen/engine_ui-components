@@ -1,8 +1,8 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { TableRowData } from ".";
+import { TableRowData } from "./types";
 
-export class TableCell extends LitElement {
+export class TableCell<T extends TableRowData> extends LitElement {
   /**
    * CSS styles for the component.
    */
@@ -40,11 +40,11 @@ export class TableCell extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  column = "";
+  column: keyof T = "";
 
   columnIndex = 0;
 
-  rowData: TableRowData = {};
+  rowData: Partial<T> = {};
 
   get data() {
     if (this.column) return this.rowData[this.column];

@@ -2,35 +2,23 @@ import { LitElement, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import {
+  TableChildren,
   TableDataTransform,
   TableGroupData,
+  TableLoadFunction,
+  TableRow,
   TableRowData,
   TableRowTemplate,
+  ColumnData,
 } from "./src";
 import { evalCondition, getQuery } from "../../core/utils";
 import { loadingSkeleton } from "./src/loading-skeleton";
 import { processingBar } from "./src/processing-bar";
 
 /**
- * Represents a column in the table.
- *
- * @property name - The name of the column.
- * @property width - The width of the column.
- */
-export interface ColumnData {
-  /** The name of the column. */
-  name: string;
-
-  /** The width of the column. */
-  width: string;
-
-  forceDataTransform?: boolean;
-}
-
-/**
  * A custom table web component for BIM applications. HTML tag: bim-table
  */
-export class Table extends LitElement {
+export class Table<T extends TableRowData = TableRowData> extends LitElement {
   /**
    * CSS styles for the component.
    */
@@ -76,10 +64,8 @@ export class Table extends LitElement {
     `,
   ];
 
-  private _columnsChange = new Event("columnschange");
-
   @state()
-  private _filteredData: TableGroupData[] = [];
+  private _filteredData: TableGroupData<T>[] = [];
 
   /**
    * A boolean property that determines whether the table headers are hidden.
@@ -108,7 +94,7 @@ export class Table extends LitElement {
   @property({ type: String, attribute: "min-col-width", reflect: true })
   minColWidth = "4rem";
 
-  private _columns: ColumnData[] = [];
+  private _columns: ColumnData<T>[] = [];
 
   /**
    * Sets the columns for the table.
@@ -130,33 +116,33 @@ export class Table extends LitElement {
    * ```
    */
   @property({ type: Array, attribute: false })
-  set columns(value: (string | ColumnData)[]) {
-    const columns: ColumnData[] = [];
+  set columns(value: (keyof T | ColumnData<T>)[]) {
+    const columns: ColumnData<T>[] = [];
     for (const header of value) {
       const column =
         typeof header === "string"
           ? { name: header, width: `minmax(${this.minColWidth}, 1fr)` }
-          : header;
+          : (header as ColumnData<T>);
       columns.push(column);
     }
     this._columns = columns;
     this.computeMissingColumns(this.data);
-    this.dispatchEvent(this._columnsChange);
+    this.dispatchEvent(new Event("columnschange"));
   }
 
-  get columns(): ColumnData[] {
+  get columns(): ColumnData<T>[] {
     return this._columns;
   }
 
   private get _headerRowData() {
-    const data: TableRowData = {};
+    const data: Partial<T> = {};
     for (const column of this.columns) {
-      if (typeof column === "string") {
-        data[column] = column;
-      } else {
-        const { name } = column;
-        data[name] = name;
-      }
+      // if (typeof column === "string") {
+      //   data[column] = column;
+      // } else {
+      const { name } = column;
+      (data[name] as any) = String(name);
+      // }
     }
     return data;
   }
@@ -212,7 +198,7 @@ export class Table extends LitElement {
     return this._queryString;
   }
 
-  private _data: TableGroupData[] = [];
+  private _data: TableGroupData<T>[] = [];
 
   /**
    * Sets the data for the table.
@@ -232,7 +218,7 @@ export class Table extends LitElement {
    * ```
    */
   @property({ type: Array, attribute: false })
-  set data(value: TableGroupData[]) {
+  set data(value: TableGroupData<T>[]) {
     this._data = value;
     this.updateFilteredData();
     const computed = this.computeMissingColumns(value);
@@ -302,13 +288,13 @@ export class Table extends LitElement {
    *
    * @defaultValue An empty object.
    */
-  dataTransform: TableDataTransform = {};
+  dataTransform: TableDataTransform<T> = {};
 
   @property({ type: Boolean, reflect: true, attribute: "selectable-rows" })
   selectableRows = false;
 
   @property({ attribute: false })
-  selection: Set<TableRowData> = new Set();
+  selection: Set<Partial<T>> = new Set();
 
   @property({ type: Boolean, attribute: "no-indentation", reflect: true })
   noIndentation = false;
@@ -322,8 +308,6 @@ export class Table extends LitElement {
   private _onColumnsHidden = new Event("columnshidden");
 
   private _hiddenColumns: string[] = [];
-
-  loadingErrorElement: HTMLElement | null = null;
 
   set hiddenColumns(value: string[]) {
     this._hiddenColumns = value;
@@ -364,7 +348,7 @@ export class Table extends LitElement {
     }
   }
 
-  private computeMissingColumns(row: TableGroupData[]): boolean {
+  private computeMissingColumns(row: TableGroupData<T>[]): boolean {
     let computed = false;
     for (const data of row) {
       const { children, data: rowData } = data;
@@ -456,17 +440,19 @@ export class Table extends LitElement {
     return this.generateText("tab");
   }
 
-  applyDataTransform(data: TableRowData) {
-    const declaration: TableRowTemplate = {};
+  applyDataTransform(data: Partial<T>) {
+    const declaration: TableRowTemplate<T> = {};
     for (const key of Object.keys(this.dataTransform)) {
       const columnConfig = this.columns.find((column) => column.name === key);
       if (!(columnConfig && columnConfig.forceDataTransform)) continue;
-      if (!(key in data)) data[key] = "";
+      // TODO: Review data[key] as any. Is weird.
+      if (!(key in data)) (data[key] as any) = "";
     }
-    for (const key in data) {
+    const _data = data as T;
+    for (const key in _data) {
       const rowDeclaration = this.dataTransform[key];
       if (rowDeclaration) {
-        declaration[key] = rowDeclaration(data[key], data);
+        declaration[key] = rowDeclaration(_data[key], data);
       } else {
         declaration[key] = data[key];
       }
@@ -513,7 +499,7 @@ export class Table extends LitElement {
   }
 
   getRowIndentation(
-    target: TableRowData,
+    target: Partial<T>,
     tableGroups = this.value,
     level = 0,
   ): number | null {
@@ -532,7 +518,7 @@ export class Table extends LitElement {
   }
 
   getGroupIndentation(
-    target: TableGroupData,
+    target: TableGroupData<T>,
     tableGroups = this.value,
     level = 0,
   ): number | null {
@@ -563,7 +549,7 @@ export class Table extends LitElement {
   /**
    * The function to be executed when loading async data using Table.loadData
    */
-  loadFunction?: () => Promise<TableGroupData[]>;
+  loadFunction?: TableLoadFunction<T>;
 
   /**
    * Asynchronously loads data into the table based on Table.loadFunction.
@@ -592,12 +578,17 @@ export class Table extends LitElement {
     } catch (error: any) {
       this.loading = false;
       if (this._filteredData.length !== 0) return false; // Do nothing in case the table already had values
+      const errorSlot = this.querySelector("[slot='error-loading']");
+      const errorMessageElement = errorSlot?.querySelector(
+        "[data-table-element='error-message']",
+      );
       if (
         error instanceof Error &&
-        this.loadingErrorElement &&
+        errorMessageElement &&
         error.message.trim() !== ""
-      )
-        this.loadingErrorElement.textContent = error.message;
+      ) {
+        errorMessageElement.textContent = error.message;
+      }
       this._errorLoading = true;
       return false;
     }
@@ -614,11 +605,11 @@ export class Table extends LitElement {
    * If the function returns `true`, the data row will be included in the filtered results.
    * If the function returns `false`, the data row will be excluded from the filtered results.
    */
-  filterFunction?: (queryString: string, data: TableGroupData) => boolean;
+  filterFunction?: (queryString: string, data: TableGroupData<T>) => boolean;
 
   private _stringFilterFunction = (
     queryString: string,
-    data: TableGroupData,
+    data: TableGroupData<T>,
   ) => {
     const valueMatch = Object.values(data.data).some((val) => {
       return String(val).toLowerCase().includes(queryString.toLowerCase());
@@ -626,7 +617,10 @@ export class Table extends LitElement {
     return valueMatch;
   };
 
-  private _queryFilterFunction = (queryString: string, row: TableGroupData) => {
+  private _queryFilterFunction = (
+    queryString: string,
+    row: TableGroupData<T>,
+  ) => {
     let valueFoundInData = false;
     const query = getQuery(queryString) ?? [];
     for (const search of query) {
@@ -641,11 +635,11 @@ export class Table extends LitElement {
         key = _key;
         const keys = Object.keys(row.data).filter((key) => key.includes(_key));
         const tests = keys.map((key) =>
-          evalCondition(row.data[key], condition, value),
+          evalCondition(row.data[key]!, condition, value),
         );
         valueFoundInData = tests.some((test) => test);
       } else {
-        valueFoundInData = evalCondition(row.data[key], condition, value);
+        valueFoundInData = evalCondition(row.data[key]!, condition, value);
       }
       if (!valueFoundInData) break;
     }
@@ -656,13 +650,13 @@ export class Table extends LitElement {
     queryString: string,
     filterFunction = this.filterFunction ?? this._stringFilterFunction,
     data = this.data,
-  ): TableGroupData[] {
-    const results: TableGroupData[] = [];
+  ): TableGroupData<T>[] {
+    const results: TableGroupData<T>[] = [];
     for (const row of data) {
       const valueMatch = filterFunction(queryString, row);
       if (valueMatch) {
         if (this.preserveStructureOnFilter) {
-          const rowToAdd: TableGroupData = { data: row.data };
+          const rowToAdd: TableGroupData<T> = { data: row.data };
           if (row.children) {
             const childResults = this.filter(
               queryString,
@@ -716,7 +710,8 @@ export class Table extends LitElement {
       return html`<slot name="missing-data"></slot>`;
     }
 
-    const header = document.createElement("bim-table-row");
+    // @ts-ignore
+    const header = document.createElement("bim-table-row") as TableRow<T>;
     header.table = this;
     header.isHeader = true;
     header.data = this._headerRowData;
@@ -725,7 +720,10 @@ export class Table extends LitElement {
     header.style.top = "0";
     header.style.zIndex = "5";
 
-    const children = document.createElement("bim-table-children");
+    // @ts-ignore
+    const children = document.createElement(
+      "bim-table-children",
+    ) as TableChildren<T>;
     children.table = this;
     children.data = this.value;
     children.style.gridArea = "Body";

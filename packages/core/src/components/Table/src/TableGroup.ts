@@ -1,10 +1,11 @@
 import { LitElement, css, html, render } from "lit";
 import { property } from "lit/decorators.js";
 import { Table } from "../index";
-import { RowCreatedEventDetail, TableGroupData } from "./types";
+import { TableRow } from "./TableRow";
+import { RowCreatedEventDetail, TableGroupData, TableRowData } from "./types";
 import { TableChildren } from "./TableChildren";
 
-export class TableGroup extends LitElement {
+export class TableGroup<T extends TableRowData> extends LitElement {
   /**
    * CSS styles for the component.
    */
@@ -51,14 +52,14 @@ export class TableGroup extends LitElement {
     }
   `;
 
-  private _children?: TableChildren;
+  private _children?: TableChildren<T>;
 
-  data: TableGroupData = { data: {} };
+  data: TableGroupData<T> = { data: {} };
 
   @property({ type: Boolean, attribute: "children-hidden", reflect: true })
   childrenHidden = true;
 
-  table = this.closest<Table>("bim-table");
+  table = this.closest<Table<T>>("bim-table");
 
   connectedCallback() {
     super.connectedCallback();
@@ -163,13 +164,16 @@ export class TableGroup extends LitElement {
       }
     }
 
-    const row = document.createElement("bim-table-row");
+    // @ts-ignore
+    const row = document.createElement("bim-table-row") as TableRow<T>;
     if (this.data.children && !this.childrenHidden)
       row.append(verticalBranchRow);
     row.table = this.table;
     row.data = this.data.data;
     this.table.dispatchEvent(
-      new CustomEvent<RowCreatedEventDetail>("rowcreated", { detail: { row } }),
+      new CustomEvent<RowCreatedEventDetail<T>>("rowcreated", {
+        detail: { row },
+      }),
     );
 
     if (caret && this.data.children) row.append(caret);
@@ -180,9 +184,12 @@ export class TableGroup extends LitElement {
     )
       row.append(horizontalBranch);
 
-    let children: TableChildren | undefined;
+    let children: TableChildren<T> | undefined;
     if (this.data.children) {
-      children = document.createElement("bim-table-children");
+      // @ts-ignore
+      children = document.createElement(
+        "bim-table-children",
+      ) as TableChildren<T>;
       this._children = children;
       children.table = this.table;
       children.data = this.data.children;

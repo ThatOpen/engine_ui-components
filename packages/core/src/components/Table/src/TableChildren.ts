@@ -2,9 +2,9 @@ import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { Table } from "../index";
 import { TableGroup } from "./TableGroup";
-import { TableGroupData } from "./types";
+import { TableGroupData, TableRowData } from "./types";
 
-export class TableChildren extends LitElement {
+export class TableChildren<T extends TableRowData> extends LitElement {
   /**
    * CSS styles for the component.
    */
@@ -25,12 +25,12 @@ export class TableChildren extends LitElement {
     }
   `;
 
-  private _groups: TableGroup[] = [];
+  private _groups: TableGroup<T>[] = [];
 
   @property({ type: Array, attribute: false })
-  data: TableGroupData[] = [];
+  data: TableGroupData<T>[] = [];
 
-  table = this.closest<Table>("bim-table");
+  table = this.closest<Table<T>>("bim-table");
 
   toggleGroups(force?: boolean, recursive = false) {
     for (const group of this._groups) {
@@ -45,9 +45,10 @@ export class TableChildren extends LitElement {
     return html`
       <slot></slot>
       ${this.data.map((group) => {
+        // @ts-ignore
         const tableGroup = document.createElement(
           "bim-table-group",
-        ) as TableGroup;
+        ) as TableGroup<T>;
         this._groups.push(tableGroup);
         tableGroup.table = this.table;
         tableGroup.data = group;

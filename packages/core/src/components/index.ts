@@ -21,6 +21,7 @@ import {
   RowCreatedEventDetail,
   RowSelectedEventDetail,
   RowDeselectedEventDetail,
+  TableRowData,
 } from "./Table";
 import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
@@ -50,10 +51,10 @@ declare global {
     "bim-table": Table;
     "bim-tabs": Tabs;
     "bim-tab": Tab;
-    "bim-table-cell": TableCell;
-    "bim-table-children": TableChildren;
-    "bim-table-group": TableGroup;
-    "bim-table-row": TableRow;
+    "bim-table-cell": TableCell<TableRowData>;
+    "bim-table-children": TableChildren<TableRowData>;
+    "bim-table-group": TableGroup<TableRowData>;
+    "bim-table-row": TableRow<TableRowData>;
     "bim-text-input": TextInput;
     "bim-toolbar": Toolbar;
     "bim-toolbar-group": ToolbarGroup;
