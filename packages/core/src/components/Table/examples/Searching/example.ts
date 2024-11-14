@@ -13,6 +13,10 @@ import * as BUI from "../../../..";
 
 BUI.Manager.init();
 
+/* MD
+  Once you have initialized the library, you can create a new table or get an existing from your HTML document. For simplicity purposes, let's create one programatically:
+  */
+
 type TableData = {
   Name: string;
   Age: number;
