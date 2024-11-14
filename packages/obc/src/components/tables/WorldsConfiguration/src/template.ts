@@ -191,10 +191,10 @@ export const worldsConfigurationTemplate = (
   }: CustomEvent<BUI.CellCreatedEventDetail>) => {
     const parent = detail.cell.parentNode;
     if (!parent) return;
-    const nameCell = parent.querySelector<BUI.TableCell>(
+    const nameCell = parent.querySelector<BUI.TableCell<{}>>(
       "bim-table-cell[column='Name']",
     );
-    const valueCell = parent.querySelector<BUI.TableCell>(
+    const valueCell = parent.querySelector<BUI.TableCell<{}>>(
       "bim-table-cell[column='Value']",
     );
     if (nameCell && !valueCell) {

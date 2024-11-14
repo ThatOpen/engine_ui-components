@@ -50,7 +50,7 @@ export const viewpointsListTemplate = (state: ViewpointsUI) => {
     table.dataTransform = {
       Actions: (_, rowData) => {
         const { Guid } = rowData;
-        if (!(Guid && typeof Guid === "string")) return Guid;
+        if (!(Guid && typeof Guid === "string")) return Guid || "";
         const viewpoint = manager.list.get(Guid);
         if (!viewpoint) return Guid;
         return BUI.html`

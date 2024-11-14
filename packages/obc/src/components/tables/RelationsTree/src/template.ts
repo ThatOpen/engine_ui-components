@@ -135,9 +135,9 @@ const computeRowData = async (
 
 let table: BUI.Table;
 
-const getRowFragmentIdMap = (components: OBC.Components, row: BUI.TableRow) => {
+const getRowFragmentIdMap = (components: OBC.Components, rowData: any) => {
   const fragments = components.get(OBC.FragmentsManager);
-  const { modelID, expressID, relations } = row.data as {
+  const { modelID, expressID, relations } = rowData as {
     modelID: string;
     expressID: number;
     relations: string;
@@ -176,7 +176,7 @@ export const relationsTreeTemplate = (state: RelationsTreeUIState) => {
     e.stopImmediatePropagation();
     const { row } = e.detail;
     const highlighter = components.get(OBF.Highlighter);
-    const fragmentIDMap = getRowFragmentIdMap(components, row);
+    const fragmentIDMap = getRowFragmentIdMap(components, row.data);
     if (!(fragmentIDMap && Object.keys(fragmentIDMap).length !== 0)) return;
     row.onmouseover = () => {
       if (!hoverHighlighterName) return;
