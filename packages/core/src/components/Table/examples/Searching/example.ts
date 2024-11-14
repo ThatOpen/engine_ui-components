@@ -156,15 +156,15 @@ const preserveStructure = BUI.Component.create(() => {
 
   :::info
 
-  In order to define a query, you need to specify the column to search through, then some condition, and finally the value to look at; in other words, the structure is {column}{condition}{value}. Optionally, you can concatenate multiple queries by using the `&` operator. Currently, the available conditionals are:
+  In order to define a query, you need to specify the column to search through, then some condition, and finally the value to look at; in other words, the structure is [column][condition][value]. Optionally, you can concatenate multiple queries by using the `&` operator. Currently, the available conditionals are:
 
-  - Equals (=)
-  - Includes (?)
-  - Less Than (<)
-  - Less Than or Equals to (<=)
-  - Greater Than (>)
-  - Greater Than or Equals to (>=)
-  - Starts With (/)
+  - Equals ({"="})
+  - Includes ({"?"})
+  - Less Than ({"<"})
+  - Less Than or Equals to ({"<="})
+  - Greater Than ({">"})
+  - Greater Than or Equals to ({">="})
+  - Starts With ({"/"})
 
   :::
 
