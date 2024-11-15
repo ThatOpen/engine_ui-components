@@ -11,11 +11,18 @@ export const predefinedTypes = () => {
     (state: PredefinedTypesState) => {
       const { entity } = state;
       const entityTypes = types[entity];
+      const onCreated = (e?: Element) => {
+        if (!e) return;
+        const dropdown = e as BUI.Dropdown;
+        for (const type of entityTypes ?? []) {
+          const option = document.createElement("bim-option");
+          option.label = type;
+          dropdown.append(option);
+        }
+      };
       return BUI.html`
-      <bim-dropdown label="PredefinedType">
-        ${entityTypes.map((predefinedType) => BUI.html`<bim-option label=${predefinedType}></bim-option>`)}
-      </bim-dropdown>
-    `;
+        <bim-dropdown ${BUI.ref(onCreated)} label="Predefined Type"></bim-dropdown>
+      `;
     },
     { entity: WEBIFC.IFCWALL },
   );
