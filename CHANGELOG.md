@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.3.0...v2.4.0) (2024-11-28)
+
+
+### Features
+
+* **core:** adds better typing support for bim-table ([51a8587](https://github.com/ThatOpen/engine_ui-components/commit/51a858722a19e2c7650a80cc93fd768af5d13d32))
+* **core:** adds the posibility to update a statefull component inside it-self ([2fdc271](https://github.com/ThatOpen/engine_ui-components/commit/2fdc2710570e2813c3c8125947d933f8e701351c))
+* **core:** improves the bim-grid component ([5f97e85](https://github.com/ThatOpen/engine_ui-components/commit/5f97e85897378db9478ff94b2935e5aee1263f64))
+* **obc:** adds dispose to bim-world ([a6e9ae1](https://github.com/ThatOpen/engine_ui-components/commit/a6e9ae19207e8c8e07ccd6d7459cf652dc6deab2))
+* **obc:** improves the set of BCFTopics UIs and creates a full tutorial to use them ([39faace](https://github.com/ThatOpen/engine_ui-components/commit/39faace28329ca24ccd7a66d37207b2fba4ee6f7))
+
+
+### Bug Fixes
+
+* **obc:** solve missing ElementProperties table when no Name is found ([afccbc1](https://github.com/ThatOpen/engine_ui-components/commit/afccbc17ef980671c32d842c2cad8911b81e1a8d))
+
 ## [2.3.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.2.0...v2.3.0) (2024-10-07)
 
 
