@@ -1,13 +1,14 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
+import { Tabs } from "./Tabs";
 
 /**
  * A custom tab web component for BIM applications. HTML tag: bim-tab
  */
 export class Tab extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       display: block;
@@ -27,11 +28,22 @@ export class Tab extends LitElement {
   @property({ type: String, reflect: true })
   name = this._defaultName;
 
+  private _label?: string;
+
   /**
    * The label of the tab. This property is optional and can be used to display a custom label instead of the tab's name.
    */
   @property({ type: String, reflect: true })
-  label?: string;
+  set label(value: string | undefined) {
+    this._label = value;
+    const parent = this.parentElement;
+    if (!(parent instanceof Tabs)) return;
+    parent.updateSwitchers();
+  }
+
+  get label() {
+    return this._label;
+  }
 
   /**
    * The icon of the tab. This property is optional and can be used to display an icon next to the tab's label or name.

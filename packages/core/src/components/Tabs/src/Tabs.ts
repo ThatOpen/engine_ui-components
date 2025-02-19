@@ -228,10 +228,24 @@ export class Tabs extends LitElement {
       element.setAttribute("data-name", child.name);
       element.className = "switcher";
       const label = document.createElement("bim-label");
-      label.textContent = child.label ?? "";
+      label.textContent = child.label ?? null;
       label.icon = child.icon;
       element.append(label);
       this._switchers.push(element);
+    }
+  }
+
+  updateSwitchers() {
+    for (const child of this.children) {
+      if (!(child instanceof Tab)) continue;
+      const switcher = this._switchers.find(
+        (el) => el.getAttribute("data-name") === child.name,
+      );
+      if (!switcher) continue;
+      const label = switcher.querySelector("bim-label");
+      if (!label) continue;
+      label.textContent = child.label ?? null;
+      label.icon = child.icon;
     }
   }
 
