@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{T as u,C as g,a as b,e as w,m as f,x as h,y,i as T,t as v,b as S,k as x,z,j as C}from"./index-b5UjG9AG.js";import{b as L}from"./index-cxW_AbrR.js";import{t as E}from"./index-CagUo1tF.js";import"./lit-html-paDGiEfB.js";u.init();const e=new g,F=e.get(b),t=F.create(),o=new w(e);o.setup();t.scene=o;const s=document.createElement("bim-viewport"),r=new f(e,s);t.renderer=r;const i=new h(e);t.camera=i;s.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const I=e.get(y);I.create(t);e.init();const $=e.get(T);await $.setup();const c=e.get(v);c.setup({world:t});c.zoomToSelection=!0;const m=e.get(S);m.onFragmentsLoaded.add(async n=>{t.scene&&t.scene.three.add(n)});const B=e.get(x);m.onFragmentsLoaded.add(async n=>{n.hasProperties&&await B.process(n)});const[a]=E.relationsTree({components:e,models:[]});a.preserveStructureOnFilter=!0;const G=z.create(()=>{const[n]=L.loadIfc({components:e});return C`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{T as u,C as g,W as b,S as f,a as w,b as S,G as h,I as v,u as I,F as T,p as y,l as C,m as L}from"./index-Dx9lktJI.js";import{b as F}from"./index-C2KxDUjA.js";import{t as x}from"./index-CKLQOFY_.js";import"./lit-html-paDGiEfB.js";u.init();const e=new g,z=e.get(b),t=z.create(),o=new f(e);o.setup();t.scene=o;const r=document.createElement("bim-viewport"),s=new w(e,r);t.renderer=s;const i=new S(e);t.camera=i;r.addEventListener("resize",()=>{s.resize(),i.updateAspect()});const E=e.get(h);E.create(t);e.init();const G=e.get(v);await G.setup();const c=e.get(I);c.setup({world:t});c.zoomToSelection=!0;const p=e.get(T);p.onFragmentsLoaded.add(async n=>{t.scene&&t.scene.three.add(n)});const M=e.get(y);p.onFragmentsLoaded.add(async n=>{n.hasProperties&&await M.process(n)});const[a]=x.relationsTree({components:e,models:[]});a.preserveStructureOnFilter=!0;const R=C.create(()=>{const[n]=F.loadIfc({components:e});return L`
    <bim-panel label="Relations Tree">
     <bim-panel-section label="Model Tree">
       ${n}
@@ -6,7 +6,7 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{T as u,C as g,a as b,e as w,
       ${a}
     </bim-panel-section>
    </bim-panel> 
-  `}),p=document.getElementById("app");p.layouts={main:{template:`
+  `}),m=document.getElementById("app");m.layouts={main:{template:`
       "panel viewport"
       / 30rem 1fr
-    `,elements:{panel:G,viewport:s}}};p.layout="main";
+    `,elements:{panel:R,viewport:r}}};m.layout="main";
