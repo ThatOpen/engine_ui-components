@@ -108,11 +108,12 @@ const processAssociateRelations = async (
         classifications.push(attrs);
       }
       if (
-        attrs.type === WEBIFC.IFCMATERIALLAYERSETUSAGE ||
-        attrs.type === WEBIFC.IFCMATERIALLAYERSET ||
-        attrs.type === WEBIFC.IFCMATERIALLAYER ||
-        attrs.type === WEBIFC.IFCMATERIAL ||
-        attrs.type === WEBIFC.IFCMATERIALLIST
+        [
+          WEBIFC.IFCMATERIALLAYERSETUSAGE,
+          WEBIFC.IFCMATERIAL,
+          WEBIFC.IFCMATERIALLIST,
+          WEBIFC.IFCMATERIALPROFILESETUSAGE,
+        ].includes(attrs.type)
       ) {
         materials.push(attrs);
       }
