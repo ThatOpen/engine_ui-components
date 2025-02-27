@@ -1,7 +1,3 @@
-import * as BUI from "../..";
-
-BUI.Manager.init();
-
 /* MD
   ## Leveling up your app with custom components! 🔌
   ---
@@ -14,7 +10,27 @@ BUI.Manager.init();
   Despite the `Component` is a class that can be instantiated or extended, from a developer perspective using the library is most likely it will only use the create method.
 
   :::
-  
+
+  ### Importing the libraries:
+  In this tutorial, we will import:
+
+  - @thatopen/ui to add some simple and cool UI menus.
+*/
+
+// You have to import from "@thatopen/ui"
+import * as BUI from "../..";
+
+/* MD
+  ### 📋 Initialising the UI
+  ---
+
+  We will use the `@thatopen/ui` library to add some simple and cool UI elements to our app. For that, we need to call the `init` method of the `BUI.Manager` class to initialize the library:
+
+*/
+
+BUI.Manager.init();
+
+/* MD
   ### Creating an stateless component
   To start learning how to create custom components, let's create a custom component that uses the panel section:
 */

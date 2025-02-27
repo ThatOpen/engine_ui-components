@@ -5,10 +5,14 @@
 
   ### 🏗 Scaffolding the Application
   First of all, let's import the dependencies we need to get this working:
+
+  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
+  - @thatopen/ui to add some simple and cool UI menus.
+  - @thatopen/components to set up the barebone of our app.
   */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import * as CUI from "@thatopen/ui-obc";
+import * as BUIC from "@thatopen/ui-obc";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 
@@ -71,7 +75,7 @@ world.scene.three.add(model);
   Before creating the table to display topics to the user, let's do some initial setup of the BCFTopics component. If you're unsure about the basics of working with the BCFTopics component, first check the corresponding tutorial.
   */
 
-const users: CUI.TopicUserStyles = {
+const users: BUIC.TopicUserStyles = {
   "jhon.doe@example.com": {
     name: "Jhon Doe",
     picture:
@@ -137,7 +141,7 @@ topics.list.onItemSet.add(({ value: topic }) => {
   The topics list table is the easiest way to display all topics created in the app using the BCFTopics component. Creating it is really simple, as you just need to write the following:
   */
 
-const [topicsList, updateTopicsList] = CUI.tables.topicsList({
+const [topicsList, updateTopicsList] = BUIC.tables.topicsList({
   components,
   dataStyles: { users },
 });
@@ -152,7 +156,7 @@ topicsList.selectableRows = true;
   Let's now define a topic form so creating them is easier than ever:
  */
 
-const [topicForm, updateTopicForm] = CUI.forms.topic({
+const [topicForm, updateTopicForm] = BUIC.forms.topic({
   components,
   styles: { users },
 });
@@ -209,16 +213,16 @@ updateTopicForm({
 // This interface allows you to update the actions in each functional section of the topics UI.
 // This is great when you have an app with user permission settings.
 interface TopicPanelActions {
-  information: Partial<CUI.TopicInformationSectionActions>;
-  viewpoints: Partial<CUI.TopicViewpointsSectionActions>;
-  relatedTopics: Partial<CUI.TopicRelationsSectionActions>;
-  comments: Partial<CUI.TopicCommentsSectionActions>;
+  information: Partial<BUIC.TopicInformationSectionActions>;
+  viewpoints: Partial<BUIC.TopicViewpointsSectionActions>;
+  relatedTopics: Partial<BUIC.TopicRelationsSectionActions>;
+  comments: Partial<BUIC.TopicCommentsSectionActions>;
 }
 
 interface TopicPanelUI {
   components: OBC.Components;
   topic?: OBC.Topic;
-  styles?: Partial<CUI.TopicStyles>;
+  styles?: Partial<BUIC.TopicStyles>;
   actions?: Partial<TopicPanelActions>;
   world?: OBC.World;
 }
@@ -232,27 +236,27 @@ const [topicPanel, updateTopicPanel] = BUI.Component.create(
     let missingTopicSection: BUI.TemplateResult | undefined;
 
     if (topic) {
-      const [information] = CUI.sections.topicInformation({
+      const [information] = BUIC.sections.topicInformation({
         components,
         topic,
         actions: actions?.information,
         styles,
       });
 
-      const [viewpoints] = CUI.sections.topicViewpoints({
+      const [viewpoints] = BUIC.sections.topicViewpoints({
         components,
         topic,
         world,
         actions: actions?.viewpoints,
       });
 
-      const [relatedTopics] = CUI.sections.topicRelations({
+      const [relatedTopics] = BUIC.sections.topicRelations({
         components,
         topic,
         actions: actions?.relatedTopics,
       });
 
-      const [comments] = CUI.sections.topicComments({
+      const [comments] = BUIC.sections.topicComments({
         topic,
         actions: actions?.comments,
         styles: styles?.users,
