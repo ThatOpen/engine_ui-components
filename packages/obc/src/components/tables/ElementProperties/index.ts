@@ -1,8 +1,5 @@
 import * as BUI from "@thatopen/ui";
-import {
-  ElementPropertiesUI,
-  elementPropertiesTemplate,
-} from "./src/template";
+import { ElementPropertiesUI, elementPropertiesTemplate } from "./src/template";
 
 /**
  * Creates an instance of ElementProperties component.
