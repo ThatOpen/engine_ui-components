@@ -39,8 +39,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@thatopen/ui": "~2.4.0",
-    "lit": "3.1.2"
+    "@thatopen/ui": "~2.4.0"
   },
   "devDependencies": {
     "@thatopen/components": "~2.4.0",
@@ -48,12 +47,14 @@
     "@thatopen/fragments": "~2.4.0",
     "@types/three": "0.160.0",
     "three": "0.160.1",
-    "web-ifc": ">=0.0.66"
+    "web-ifc": ">=0.0.66",
+    "lit": "3.1.2"
   },
   "peerDependencies": {
     "@thatopen/components": "~2.4.0",
     "@thatopen/components-front": "~2.4.0",
     "three": "0.160.1",
-    "web-ifc": ">=0.0.66"
+    "web-ifc": ">=0.0.66",
+    "lit": "3.1.2"
   }
 }

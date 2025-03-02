@@ -17,7 +17,7 @@ export class Label extends LitElement {
       overflow: hidden;
       display: block;
       white-space: nowrap;
-      line-height: 1.1rem;
+      line-height: 1.1em;
       transition: all 0.15s;
     }
 
@@ -26,7 +26,7 @@ export class Label extends LitElement {
       align-items: center;
       column-gap: 0.25rem;
       row-gap: 0.125rem;
-      user-select: none;
+      user-select: text;
       height: 100%;
     }
 
