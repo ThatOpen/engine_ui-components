@@ -1,7 +1,7 @@
-import{x as r}from"./lit-element-CToom8Wf.js";import{m as z,y as s,P as g,$ as F,a0 as M,T as N,C as U}from"./index-BJ_2_yvW.js";import{e as C}from"./ref-CyNRy2Tn.js";const E={dueDate:t=>{if(typeof t=="string"&&t.trim()!=="")return new Date(t)},status:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},type:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},priority:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},stage:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},assignedTo:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},labels:t=>{if(Array.isArray(t))return new Set(t)}},G=t=>{const{components:$,topic:e,value:n,onCancel:I,onSubmit:_,styles:d}=t,w=_??(()=>{}),a=$.get(z),P=(n==null?void 0:n.title)??(e==null?void 0:e.title)??s.default.title,m=(n==null?void 0:n.status)??(e==null?void 0:e.status)??s.default.status,p=(n==null?void 0:n.type)??(e==null?void 0:e.type)??s.default.type,b=(n==null?void 0:n.priority)??(e==null?void 0:e.priority)??s.default.priority,u=(n==null?void 0:n.assignedTo)??(e==null?void 0:e.assignedTo)??s.default.assignedTo,c=(n==null?void 0:n.labels)??(e==null?void 0:e.labels)??s.default.labels,f=(n==null?void 0:n.stage)??(e==null?void 0:e.stage)??s.default.stage,j=(n==null?void 0:n.description)??(e==null?void 0:e.description)??s.default.description,L=e!=null&&e.dueDate?e.dueDate.toISOString().split("T")[0]:null,T=new Set([...a.config.statuses]);m&&T.add(m);const x=new Set([...a.config.types]);p&&x.add(p);const S=new Set([...a.config.priorities]);b&&S.add(b);const h=new Set([...a.config.users]);u&&h.add(u);const A=new Set([...a.config.labels]);if(c)for(const i of c)A.add(i);const D=new Set([...a.config.stages]);f&&D.add(f);const v=C(),O=async()=>{const{value:i}=v;if(!i)return;const o=M(i,E);if(e)e.set(o),await w(e);else{const l=a.create(o);await w(l)}},k=C(),q=i=>{const{value:o}=k;if(!o)return;const l=i.target;o.disabled=l.value.trim()===""},B=`btn-${g.newRandomId()}`,y=`btn-${g.newRandomId()}`;return r`
+import{x as r}from"./lit-element-BOuWA2QR.js";import{l as z,w as s,P as g,$ as F,a0 as M,T as N,C as U}from"./index-B5YK6SKw.js";import{e as I}from"./ref-BUnwESOR.js";const E={dueDate:t=>{if(typeof t=="string"&&t.trim()!=="")return new Date(t)},status:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},type:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},priority:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},stage:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},assignedTo:t=>{if(Array.isArray(t)&&t.length!==0)return t[0]},labels:t=>{if(Array.isArray(t))return new Set(t)}},G=t=>{const{components:$,topic:e,value:n,onCancel:C,onSubmit:_,styles:d}=t,w=_??(()=>{}),a=$.get(z),P=(n==null?void 0:n.title)??(e==null?void 0:e.title)??s.default.title,m=(n==null?void 0:n.status)??(e==null?void 0:e.status)??s.default.status,p=(n==null?void 0:n.type)??(e==null?void 0:e.type)??s.default.type,b=(n==null?void 0:n.priority)??(e==null?void 0:e.priority)??s.default.priority,u=(n==null?void 0:n.assignedTo)??(e==null?void 0:e.assignedTo)??s.default.assignedTo,c=(n==null?void 0:n.labels)??(e==null?void 0:e.labels)??s.default.labels,f=(n==null?void 0:n.stage)??(e==null?void 0:e.stage)??s.default.stage,j=(n==null?void 0:n.description)??(e==null?void 0:e.description)??s.default.description,O=e!=null&&e.dueDate?e.dueDate.toISOString().split("T")[0]:null,T=new Set([...a.config.statuses]);m&&T.add(m);const x=new Set([...a.config.types]);p&&x.add(p);const S=new Set([...a.config.priorities]);b&&S.add(b);const h=new Set([...a.config.users]);u&&h.add(u);const A=new Set([...a.config.labels]);if(c)for(const i of c)A.add(i);const D=new Set([...a.config.stages]);f&&D.add(f);const v=I(),q=async()=>{const{value:i}=v;if(!i)return;const o=M(i,E);if(e)e.set(o),await w(e);else{const l=a.create(o);await w(l)}},k=I(),L=i=>{const{value:o}=k;if(!o)return;const l=i.target;o.disabled=l.value.trim()===""},B=`btn-${g.newRandomId()}`,y=`btn-${g.newRandomId()}`;return r`
     <div ${F(v)} style="display: flex; flex-direction: column; gap: 0.75rem;">
       <div style="display: flex; gap: 0.375rem">
-        <bim-text-input @input=${q} vertical label="Title" name="title" .value=${P}></bim-text-input>
+        <bim-text-input @input=${L} vertical label="Title" name="title" .value=${P}></bim-text-input>
         ${e?r`
             <bim-dropdown vertical label="Status" name="status" required>
               ${[...T].map(i=>r`<bim-option label=${i} .checked=${m===i}></bim-option>`)}
@@ -24,7 +24,7 @@ import{x as r}from"./lit-element-CToom8Wf.js";import{m as z,y as s,P as g,$ as F
         </bim-dropdown>
       </div>
       <div style="display: flex; gap: 0.375rem">
-        <bim-text-input vertical type="date" label="Due Date" name="dueDate" .value=${L}></bim-text-input> 
+        <bim-text-input vertical type="date" label="Due Date" name="dueDate" .value=${O}></bim-text-input> 
         <bim-dropdown vertical label="Stage" name="stage">
           ${[...D].map(i=>r`<bim-option label=${i} .checked=${f===i}></bim-option>`)}
         </bim-dropdown>
@@ -44,8 +44,8 @@ import{x as r}from"./lit-element-CToom8Wf.js";import{m as z,y as s,P as g,$ as F
             background-color: #329936;
           }
         </style>
-        <bim-button id=${y} style="flex: 0" @click=${I} label="Cancel"></bim-button>
-        <bim-button id=${B} style="flex: 0" @click=${O} ${F(k)} label=${e?"Update Topic":"Add Topic"} icon=${e?"tabler:refresh":"mi:add"}></bim-button>
+        <bim-button id=${y} style="flex: 0" @click=${C} label="Cancel"></bim-button>
+        <bim-button id=${B} style="flex: 0" @click=${q} ${F(k)} label=${e?"Update Topic":"Add Topic"} icon=${e?"tabler:refresh":"mi:add"}></bim-button>
       </div>
     </div>
   `},H=t=>r`

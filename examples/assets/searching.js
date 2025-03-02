@@ -1,4 +1,4 @@
-import{x as t}from"./lit-element-CToom8Wf.js";import{M as s,C as n,T as l,a as c}from"./index-BCngLrVF.js";import"./state-H9kisBvQ.js";import"./ref-CyNRy2Tn.js";s.init();const a=n.create(()=>t`
+import{x as t}from"./lit-element-BOuWA2QR.js";import{M as s,C as n,T as l,a as c}from"./index-Cv4t0K6z.js";import"./state-BGH1zGw6.js";import"./ref-BUnwESOR.js";s.init();const a=n.create(()=>t`
     <bim-table expanded>
       <div slot="missing-data" style="display: flex; flex-direction: column; align-items: center; width: 8rem; margin: auto;">
         <bim-label>No data to display!</bim-label>
