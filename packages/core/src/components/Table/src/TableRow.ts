@@ -142,6 +142,37 @@ export class TableRow<T extends TableRowData> extends LitElement {
     this.toggleAttribute("selected", false);
   }
 
+  private toggleAll(checked: boolean) {
+    if (!this.table) return;
+
+    // Find all `bim-table-group` elements inside `bim-table-children`
+    const groups = this.table?.shadowRoot
+      ?.querySelector("bim-table-children")
+      ?.shadowRoot?.querySelectorAll("bim-table-group");
+
+    if (!groups || groups.length === 0) {
+      console.warn("No table groups found!");
+      return;
+    }
+
+    groups.forEach((group) => {
+      // Find all `bim-table-row` elements inside each `bim-table-group`
+      const rows = group.shadowRoot?.querySelectorAll("bim-table-row");
+
+      rows?.forEach((row) => {
+        // Find the `bim-checkbox` inside each row
+        const checkbox = row.shadowRoot
+          ?.querySelector("bim-checkbox")
+          ?.shadowRoot?.querySelector("input"); // Get the actual <input>
+
+        if (checkbox) {
+          (checkbox as HTMLInputElement).checked = checked;
+          checkbox.dispatchEvent(new Event("change"));
+        }
+      });
+    });
+  }
+
   compute() {
     if (!this.table) throw new Error("TableRow: parent table wasn't found!");
 
@@ -194,6 +225,11 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
     this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
     this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+    this.table.selectableRows = true;
+
+    if (this.isHeader) {
+      this.toggleAll(!!this._isSelected);
+    }
 
     return html`
       ${this.table.selectableRows

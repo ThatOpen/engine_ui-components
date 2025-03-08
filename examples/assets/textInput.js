@@ -1,1 +1,1 @@
-import"./lit-element-BOuWA2QR.js";import{M as e}from"./index-CfSpVUjF.js";import"./state-BGH1zGw6.js";import"./ref-BUnwESOR.js";e.init();const t=document.querySelector("bim-text-input[name='name']");t.addEventListener("input",()=>{console.log(t.value)});
+import"./lit-element-BOuWA2QR.js";import{M as e}from"./index-C7jubDp1.js";import"./state-BGH1zGw6.js";import"./ref-BUnwESOR.js";e.init();const t=document.querySelector("bim-text-input[name='name']");t.addEventListener("input",()=>{console.log(t.value)});
