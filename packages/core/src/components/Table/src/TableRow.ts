@@ -196,7 +196,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
     this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
 
     return html`
-      ${!this.isHeader && this.table.selectableRows
+      ${this.table.selectableRows
         ? html`<bim-checkbox
             @change=${this.onSelectionChange}
             .checked=${this._isSelected}
