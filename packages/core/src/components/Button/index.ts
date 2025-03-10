@@ -108,9 +108,12 @@ export class Button extends LitElement {
       animation: hoverReveal 0.4s cubic-bezier(0, 0, 0, 0.98);
     }
 
-    :host(:hover),
-    :host([active]) {
+    :host(:hover) {
       --bim-label--c: var(--bim-ui_main-contrast);
+    }
+
+    :host([active]) {
+      background-color: var(--bim-ui_main-base);
     }
 
     :host(:active) {
@@ -467,7 +470,6 @@ export class Button extends LitElement {
                   .icon=${this.icon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
-                  .animate="true"
                   >${this.label}${this.label && this._contextMenu
                     ? hasChildrenSVG
                     : null}</bim-label

@@ -8,8 +8,8 @@ import { HasName } from "../../../core/types";
  */
 export class ToolbarSection extends LitElement implements HasName {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);
