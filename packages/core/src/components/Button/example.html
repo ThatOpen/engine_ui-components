@@ -26,12 +26,22 @@
       outline: 1px solid rgb(239, 75, 75);
     }
 
+    .btn-1::before,
+    .btn-1::after {
+      background-color: transparent;
+    }
+
     .btn-2 {
       background-color: transparent;
     }
 
     .btn-2:hover {
       --bim-label--c: var(--bim-ui_accent-base);
+    }
+
+    .btn-2::before,
+    .btn-2::after {
+      background-color: rgb(75, 141, 239);
     }
   </style>
 </head>

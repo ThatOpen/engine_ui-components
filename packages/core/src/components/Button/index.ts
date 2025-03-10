@@ -18,12 +18,37 @@ export class Button extends LitElement {
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100, white);
+      position: relative;
       display: block;
       flex: 1;
       pointer-events: none;
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-4xs);
+      overflow: hidden;
       transition: all 0.15s;
+    }
+
+    :host::before,
+    :host::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      box-sizing: border-box;
+    }
+
+    :host(:not([disabled]))::before {
+      content: "";
+      background-color: var(--bim-ui_main-base);
+      border-radius: 50%;
+      top: 150%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition:
+        top 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93),
+        transform 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93);
     }
 
     :host(:not([disabled]):hover) {
@@ -32,6 +57,7 @@ export class Button extends LitElement {
 
     bim-label {
       pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
     }
 
     .parent {
@@ -73,10 +99,22 @@ export class Button extends LitElement {
       justify-content: var(--bim-button--jc, center);
     }
 
+    :host(:hover)::before {
+      top: 50%;
+      transform: translate(-50%, -50%) scale(200%);
+    }
+
+    :host(:not([disabled]):hover) bim-label {
+      animation: hoverReveal 0.4s cubic-bezier(0, 0, 0, 0.98);
+    }
+
     :host(:hover),
     :host([active]) {
       --bim-label--c: var(--bim-ui_main-contrast);
-      background-color: var(--bim-ui_main-base);
+    }
+
+    :host(:active) {
+      transform: scale(0.98);
     }
 
     :host(:not([label]):not([icon])) .children {
@@ -125,6 +163,19 @@ export class Button extends LitElement {
 
     :host(:not([tooltip-visible])) .tooltip {
       display: none;
+    }
+
+    @keyframes hoverReveal {
+      0%,
+      100% {
+        transform: translate(0, 0) scaleY(1);
+      }
+      49% {
+        transform: translate(0, -150%) scaleY(2);
+      }
+      50% {
+        transform: translate(0, 150%) scaleY(2);
+      }
     }
   `;
 
@@ -416,6 +467,7 @@ export class Button extends LitElement {
                   .icon=${this.icon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
+                  .animate="true"
                   >${this.label}${this.label && this._contextMenu
                     ? hasChildrenSVG
                     : null}</bim-label
