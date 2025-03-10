@@ -25,6 +25,8 @@ export class Button extends LitElement {
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-4xs);
       overflow: hidden;
+      min-height: min-content;
+      min-width: min-content;
       transition: all 0.15s;
     }
 
