@@ -45,7 +45,7 @@ export class Button extends LitElement {
       content: "";
       background-color: var(--bim-ui_main-base);
       border-radius: 50%;
-      top: 150%;
+      top: 152%;
       left: 50%;
       transform: translate(-50%, -50%);
       transition:
@@ -59,7 +59,6 @@ export class Button extends LitElement {
 
     bim-label {
       pointer-events: none;
-      transition: transform 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
     }
 
     .parent {
@@ -106,10 +105,6 @@ export class Button extends LitElement {
       transform: translate(-50%, -50%) scale(200%);
     }
 
-    :host(:not([disabled]):hover) bim-label {
-      animation: hoverReveal 0.4s cubic-bezier(0, 0, 0, 0.98);
-    }
-
     :host(:hover) {
       --bim-label--c: var(--bim-ui_main-contrast);
     }
@@ -118,7 +113,7 @@ export class Button extends LitElement {
       background-color: var(--bim-ui_main-base);
     }
 
-    :host(:active) {
+    :host(:not([disabled]):active) {
       transform: scale(0.98);
     }
 
@@ -168,19 +163,6 @@ export class Button extends LitElement {
 
     :host(:not([tooltip-visible])) .tooltip {
       display: none;
-    }
-
-    @keyframes hoverReveal {
-      0%,
-      100% {
-        transform: translate(0, 0) scaleY(1);
-      }
-      49% {
-        transform: translate(0, -150%) scaleY(2);
-      }
-      50% {
-        transform: translate(0, 150%) scaleY(2);
-      }
     }
   `;
 
