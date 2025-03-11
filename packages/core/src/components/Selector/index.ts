@@ -8,8 +8,8 @@ import { HasName, HasValue } from "../../core/types";
  */
 export class Selector extends LitElement implements HasValue, HasName {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-input--bgc: var(--bim-ui_bg-contrast-20);
@@ -20,12 +20,51 @@ export class Selector extends LitElement implements HasValue, HasName {
     }
 
     ::slotted(bim-option) {
+      position: relative;
       border-radius: 0;
+      overflow: hidden;
+      min-width: min-content;
+      min-height: min-content;
+    }
+
+    ::slotted(bim-option)::before,
+    ::slotted(bim-option)::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background-color: var(--bim-ui_main-base);
+      box-sizing: border-box;
+      transition:
+        left 0.3s,
+        background-color 0.1s;
+    }
+
+    ::slotted(bim-option)::before {
+      left: 100%;
+    }
+
+    ::slotted(bim-option)::after {
+      left: -100%;
+    }
+
+    ::slotted(bim-option[checked]:not([animate-to-left]))::before {
+      left: 0;
+    }
+
+    ::slotted(bim-option[animate-to-left][checked])::after {
+      left: 0;
     }
 
     ::slotted(bim-option[checked]) {
       --bim-label--c: var(--bim-ui_main-contrast);
-      background-color: var(--bim-ui_main-base);
+    }
+
+    ::slotted(bim-option:hover) {
+      background-color: #0003;
     }
   `;
 
@@ -43,6 +82,7 @@ export class Selector extends LitElement implements HasValue, HasName {
 
   readonly onValueChange = new Event("change");
   private _canEmitEvents = false;
+  private _lastClickedElement: HTMLElement | null = null;
 
   private get _options() {
     const options = this.querySelectorAll("bim-option");
@@ -101,6 +141,38 @@ export class Selector extends LitElement implements HasValue, HasName {
     return element;
   }
 
+  private checkLastElement(e: PointerEvent) {
+    e.stopPropagation();
+    const currentElement = e.target as HTMLDivElement;
+
+    if (this._lastClickedElement) {
+      this.animateFromTo(this._lastClickedElement, currentElement);
+    } else if (currentElement.parentNode) {
+      for (const child of currentElement.parentNode.childNodes) {
+        if (
+          child.nodeName !== "#text" &&
+          (child as HTMLElement).hasAttribute("checked")
+        ) {
+          const checkedElement = child as HTMLElement;
+
+          this.animateFromTo(checkedElement, currentElement);
+        }
+      }
+    }
+
+    this._lastClickedElement = currentElement;
+  }
+
+  private animateFromTo(from: HTMLElement, to: HTMLElement) {
+    if (from.offsetLeft < to.offsetLeft) {
+      from.removeAttribute("animate-to-left");
+      to.setAttribute("animate-to-left", "");
+    } else {
+      to.removeAttribute("animate-to-left");
+      from.setAttribute("animate-to-left", "");
+    }
+  }
+
   protected firstUpdated() {
     const option = [...this.children].find(
       (child) => child instanceof Option && child.checked,
@@ -114,6 +186,8 @@ export class Selector extends LitElement implements HasValue, HasName {
         .vertical=${this.vertical}
         .label=${this.label}
         .icon=${this.icon}
+        @mousedown=${this.checkLastElement}
+        @touchstart=${this.checkLastElement}
       >
         <slot @slotchange=${this.onSlotChange}></slot>
       </bim-input>

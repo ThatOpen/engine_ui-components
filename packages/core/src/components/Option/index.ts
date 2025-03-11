@@ -64,6 +64,7 @@ export class Option extends LitElement {
 
     bim-label {
       pointer-events: none;
+      z-index: 1;
     }
   `;
 
