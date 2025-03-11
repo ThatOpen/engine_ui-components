@@ -186,8 +186,7 @@ export class Selector extends LitElement implements HasValue, HasName {
         .vertical=${this.vertical}
         .label=${this.label}
         .icon=${this.icon}
-        @mousedown=${this.checkLastElement}
-        @touchstart=${this.checkLastElement}
+        @pointerdown=${this.checkLastElement}
       >
         <slot @slotchange=${this.onSlotChange}></slot>
       </bim-input>
