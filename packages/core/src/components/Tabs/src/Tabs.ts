@@ -43,22 +43,49 @@ export class Tabs extends LitElement {
       .switcher {
         --bim-label--c: var(--bim-ui_bg-contrast-80);
         background-color: var(--bim-ui_bg-base);
+        position: relative;
         cursor: pointer;
         pointer-events: auto;
         padding: 0rem 0.75rem;
         display: flex;
+        overflow: hidden;
         justify-content: center;
+        z-index: 2;
         transition: all 0.15s;
+      }
+
+      .switcher::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background-color: var(--bim-ui_main-base);
+        clip-path: circle(0 at center bottom);
+        box-sizing: border-box;
+        z-index: -1;
+        transition:
+          filter 0.1s cubic-bezier(0.72, 0.1, 0.43, 0.93),
+          clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
+      }
+
+      .switcher:not([data-active]):hover::before {
+        clip-path: circle(120% at center bottom);
+        filter: brightness(70%);
       }
 
       :host([switchers-full]) .switcher {
         flex: 1;
       }
 
-      .switcher:hover,
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_main-contrast);
-        background-color: var(--bim-ui_main-base);
+      }
+
+      .switcher[data-active]::before {
+        clip-path: circle(120% at center bottom);
       }
 
       .switchers bim-label {
