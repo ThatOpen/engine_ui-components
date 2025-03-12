@@ -54,16 +54,14 @@ export class Checkbox extends LitElement implements HasValue {
       position: absolute;
       width: 100%;
       height: 100%;
-      top: 152%;
-      left: 50%;
-      border-radius: 50%;
+      top: 0;
+      left: 0;
+      border-radius: inherit;
       background-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
-      transform: translate(-50%, -50%);
+      clip-path: circle(0 at center bottom);
       filter: brightness(150%);
       box-sizing: border-box;
-      transition:
-        top 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93),
-        transform 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93);
+      transition: clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
     }
 
     .checkmark {
@@ -95,8 +93,7 @@ export class Checkbox extends LitElement implements HasValue {
     }
 
     .parent-label:hover .checkmark::before {
-      top: 50%;
-      transform: translate(-50%, -50%) scale(200%);
+      clip-path: circle(120% at center bottom);
     }
 
     :host([checked]) .checkmark {

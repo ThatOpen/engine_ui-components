@@ -30,27 +30,18 @@ export class Button extends LitElement {
       transition: all 0.15s;
     }
 
-    :host::before,
-    :host::after {
+    :host(:not([disabled]))::before {
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       border-radius: inherit;
-      box-sizing: border-box;
-    }
-
-    :host(:not([disabled]))::before {
-      content: "";
       background-color: var(--bim-ui_main-base);
-      border-radius: 50%;
-      top: 152%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      transition:
-        top 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93),
-        transform 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93);
+      clip-path: ellipse(0 0 at center bottom);
+      box-sizing: border-box;
+      transition: clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
     }
 
     :host(:not([disabled]):hover) {
@@ -101,8 +92,7 @@ export class Button extends LitElement {
     }
 
     :host(:hover)::before {
-      top: 50%;
-      transform: translate(-50%, -50%) scale(200%);
+      clip-path: ellipse(120% 120% at center bottom);
     }
 
     :host(:hover) {
