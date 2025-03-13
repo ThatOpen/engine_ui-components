@@ -72,9 +72,6 @@ export class Checkbox extends LitElement implements HasValue {
       transform: translateY(-50%);
       width: 1rem;
       height: 1rem;
-      min-width: min-content;
-      min-height: min-content;
-      overflow: hidden;
       background: white;
       border-radius: 0.25rem;
     }

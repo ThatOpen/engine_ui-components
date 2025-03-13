@@ -24,9 +24,6 @@ export class Button extends LitElement {
       pointer-events: none;
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-4xs);
-      overflow: hidden;
-      min-height: min-content;
-      min-width: min-content;
       transition: all 0.15s;
     }
 
@@ -144,6 +141,12 @@ export class Button extends LitElement {
       border-radius: var(--bim-ui_size-4xs);
       background-color: var(--bim-ui_bg-contrast-20);
       color: var(--bim-ui_bg-contrast-100);
+      transform-origin: top left;
+      transform: scale(1);
+      clip-path: circle(150% at top left);
+      transition:
+        clip-path 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93),
+        transform 0.3s cubic-bezier(0.72, 0.1, 0.45, 2.35);
     }
 
     .tooltip p {
@@ -152,7 +155,8 @@ export class Button extends LitElement {
     }
 
     :host(:not([tooltip-visible])) .tooltip {
-      display: none;
+      clip-path: circle(0 at top left);
+      transform: scale(0.8);
     }
   `;
 
