@@ -41,8 +41,13 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         padding: 0.75rem 1rem;
       }
 
-      .header svg {
+      .expand-icon {
         fill: var(--bim-ui_bg-contrast-80);
+        transition: transform 0.2s;
+      }
+
+      :host([collapsed]) .expand-icon {
+        transform: rotateZ(-180deg);
       }
 
       .title {
@@ -58,17 +63,35 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       .components {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         row-gap: 0.75rem;
         padding: 0.125rem 1rem 1rem;
+        box-sizing: border-box;
+        transition:
+          height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+          padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       :host(:not([fixed])[collapsed]) .components {
-        display: none;
+        padding: 0 1rem 0;
         height: 0px;
       }
 
       bim-label {
         pointer-events: none;
+      }
+
+      ::slotted(*) {
+        position: relative;
+        top: 0;
+        left: 0;
+        opacity: 1;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      :host(:not([fixed])[collapsed]) ::slotted(*) {
+        left: -20%;
+        opacity: 0;
       }
     `,
   ];
@@ -197,35 +220,89 @@ export class PanelSection extends LitElement implements HasName, HasValue {
    */
   valueTransform: Record<string, (value: any) => any> = {};
 
+  private componentHeight = -1;
+
+  private animateHeader() {
+    const componentsElement = this.shadowRoot?.querySelector(
+      ".components",
+    ) as HTMLElement;
+
+    // Save the component"s maximum height
+    if (this.componentHeight < 0) {
+      if (!this.collapsed) {
+        componentsElement.style.setProperty("transition", "none");
+        componentsElement.style.setProperty("height", "auto");
+        componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
+
+        this.componentHeight = componentsElement.clientHeight;
+
+        requestAnimationFrame(() => {
+          componentsElement.style.setProperty("height", "0px");
+          componentsElement.style.setProperty("padding", "0 1rem 0");
+          componentsElement.style.setProperty(
+            "transition",
+            "height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+          );
+        });
+      } else {
+        this.componentHeight = componentsElement.clientHeight;
+      }
+    }
+
+    // Animate the component
+    if (this.collapsed) {
+      componentsElement.style.setProperty(
+        "height",
+        `${this.componentHeight}px`,
+      );
+      requestAnimationFrame(() => {
+        componentsElement.style.setProperty("height", "0px");
+        componentsElement.style.setProperty("padding", "0 1rem 0");
+      });
+    } else {
+      componentsElement.style.setProperty("height", "0px");
+      componentsElement.style.setProperty("padding", "0 1rem 0");
+      requestAnimationFrame(() => {
+        componentsElement.style.setProperty(
+          "height",
+          `${this.componentHeight}px`,
+        );
+        componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
+      });
+    }
+  }
+
   private onHeaderClick() {
     if (this.fixed) return;
     this.collapsed = !this.collapsed;
+    this.animateHeader();
+  }
+
+  private handelSlotChange(e: Event) {
+    const slots = e.target as HTMLSlotElement;
+    const childNodes = slots.assignedElements({ flatten: true });
+
+    // Apply stagger effect to slotted elements
+    childNodes.forEach((element, index) => {
+      const delay = index * 0.05;
+      const child = element as HTMLElement;
+      child.style.setProperty("transition-delay", `${delay}s`);
+    });
   }
 
   protected render() {
     const header = this.label || this.icon || this.name || this.fixed;
 
-    const expandLessSVG = html`<svg
+    const expandIcon = html`<svg
       xmlns="http://www.w3.org/2000/svg"
       height="1.125rem"
       viewBox="0 0 24 24"
       width="1.125rem"
-    >
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-    </svg>`;
-
-    const expandMoreSVG = html`<svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="1.125rem"
-      viewBox="0 0 24 24"
-      width="1.125rem"
+      class="expand-icon"
     >
       <path d="M0 0h24v24H0z" fill="none" />
       <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
     </svg>`;
-
-    const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG;
 
     const headerTemplate = html`
       <div
@@ -244,7 +321,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       <div class="parent">
         ${header ? headerTemplate : null}
         <div class="components">
-          <slot></slot>
+          <slot @slotchange=${this.handelSlotChange}></slot>
         </div>
       </div>
     `;
