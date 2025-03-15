@@ -38,7 +38,9 @@ export class Button extends LitElement {
       background-color: var(--bim-ui_main-base);
       clip-path: ellipse(0 0 at center bottom);
       box-sizing: border-box;
-      transition: clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
+      transition:
+        clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93),
+        transform 0.15s;
     }
 
     :host(:not([disabled]):hover) {
@@ -82,6 +84,7 @@ export class Button extends LitElement {
 
     .button {
       flex-grow: 1;
+      transition: transform 0.15s;
     }
 
     :host(:not([label-hidden])[label]) .button {
@@ -94,6 +97,7 @@ export class Button extends LitElement {
 
     :host(:hover) {
       --bim-label--c: var(--bim-ui_main-contrast);
+      z-index: 2;
     }
 
     :host([active]) {
@@ -101,6 +105,11 @@ export class Button extends LitElement {
     }
 
     :host(:not([disabled]):active) {
+      background: transparent;
+    }
+
+    :host(:not([disabled]):active) .button,
+    :host(:not([disabled]):active)::before {
       transform: scale(0.98);
     }
 

@@ -16,8 +16,11 @@ export class Label extends LitElement {
       font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
       display: block;
       white-space: nowrap;
-      line-height: 1.1rem;
       transition: all 0.15s;
+    }
+
+    :host([icon]) {
+      line-height: 1.1rem;
     }
 
     .parent {
