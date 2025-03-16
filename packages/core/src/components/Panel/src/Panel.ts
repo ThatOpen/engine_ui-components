@@ -20,10 +20,16 @@ export class Panel extends LitElement implements HasName, HasValue {
         border-radius: var(--bim-ui_size-base);
         background-color: var(--bim-ui_bg-base);
         overflow: auto;
+        transition:
+          transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       :host([hidden]) {
-        display: none;
+        height: 0;
+        transform: translateX(-10%);
+        opacity: 0;
       }
 
       .parent {
@@ -219,7 +225,10 @@ export class Panel extends LitElement implements HasName, HasValue {
   connectedCallback() {
     super.connectedCallback();
     this.activationButton.active = !this.hidden;
-    this.activationButton.onclick = () => (this.hidden = !this.hidden);
+    this.activationButton.onclick = () => {
+      this.hidden = !this.hidden;
+      this.animatePanel();
+    };
   }
 
   disconnectedCallback() {
@@ -247,6 +256,55 @@ export class Panel extends LitElement implements HasName, HasValue {
   expandSections() {
     const sections = this.querySelectorAll("bim-panel-section");
     for (const section of sections) section.collapsed = false;
+  }
+
+  protected firstUpdated() {
+    requestAnimationFrame(() => {
+      this.animatePanel();
+    });
+  }
+
+  private panelHeight = -1;
+
+  private calculateHeight(recalc: boolean = false) {
+    // Save the component"s maximum height
+    if (this.panelHeight <= 0 || recalc) {
+      if (!this.hidden) {
+        this.style.setProperty("height", "auto");
+
+        this.panelHeight = this.clientHeight;
+
+        requestAnimationFrame(() => {
+          this.style.setProperty("height", "0px");
+        });
+      } else {
+        this.style.setProperty("height", "auto");
+        this.panelHeight = this.clientHeight;
+      }
+    }
+  }
+
+  private animatePanel() {
+    this.calculateHeight();
+
+    // Animate the component
+    if (this.hidden) {
+      this.calculateHeight(true);
+      this.style.setProperty("height", `${this.panelHeight}px`);
+      this.style.setProperty("opacity", "0");
+      this.style.setProperty("transform", "translateX(-10%)");
+
+      setTimeout(() => {
+        this.style.setProperty("height", "0px");
+      }, 300);
+    } else {
+      // this.style.setProperty("height", "0px");
+      requestAnimationFrame(() => {
+        this.style.setProperty("opacity", "1");
+        this.style.setProperty("transform", "translateX(0)");
+        this.style.setProperty("height", "auto");
+      });
+    }
   }
 
   protected render() {
