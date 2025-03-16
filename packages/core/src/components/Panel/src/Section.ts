@@ -26,7 +26,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         cursor: pointer;
       }
 
-      :host(:not([fixed])) .header:hover svg {
+      :host(:not([fixed])) .header:hover .expand-icon {
         fill: var(--bim-ui_accent-base);
       }
 
@@ -82,16 +82,46 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       ::slotted(*) {
-        position: relative;
-        top: 0;
-        left: 0;
-        opacity: 1;
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transition:
+          transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       :host(:not([fixed])[collapsed]) ::slotted(*) {
-        left: -20%;
+        transform: translateX(-20%);
         opacity: 0;
+      }
+
+      @keyframes expandAnim {
+        0%,
+        100% {
+          transform: translateY(0%);
+        }
+        25% {
+          transform: translateY(-30%);
+        }
+        50% {
+          transform: translateY(10%);
+        }
+        75% {
+          transform: translateY(-30%);
+        }
+      }
+
+      @keyframes collapseAnim {
+        0%,
+        100% {
+          transform: translateY(0%) rotateZ(-180deg);
+        }
+        25% {
+          transform: translateY(30%) rotateZ(-180deg);
+        }
+        50% {
+          transform: translateY(-10%) rotateZ(-180deg);
+        }
+        75% {
+          transform: translateY(30%) rotateZ(-180deg);
+        }
       }
     `,
   ];
@@ -290,6 +320,18 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     });
   }
 
+  private handlePointerEnter() {
+    const icon = this.renderRoot.querySelector(".expand-icon") as HTMLElement;
+    if (this.collapsed)
+      icon?.style.setProperty("animation", "collapseAnim 0.5s");
+    else icon?.style.setProperty("animation", "expandAnim 0.5s");
+  }
+
+  private handlePointerLeave() {
+    const icon = this.renderRoot.querySelector(".expand-icon") as HTMLElement;
+    icon?.style.setProperty("animation", "none");
+  }
+
   protected render() {
     const header = this.label || this.icon || this.name || this.fixed;
 
@@ -308,6 +350,8 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       <div
         class="header"
         title=${this.label ?? ""}
+        @pointerenter=${this.handlePointerEnter}
+        @pointerleave=${this.handlePointerLeave}
         @click=${this.onHeaderClick}
       >
         ${this.label || this.icon || this.name
