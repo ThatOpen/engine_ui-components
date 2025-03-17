@@ -16,14 +16,11 @@ export class Checkbox extends LitElement implements HasValue {
       display: block;
     }
 
-    .parent {
-      width: 100%;
-      position: relative;
-      display: block;
-      transition: all 0.15s;
-    }
-
     .parent-label {
+      --background: #fff;
+      --border: #dfdfe6;
+      --border-hover: #bbc1e1;
+      --border-active: var(--bim-ui_main-base);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -31,6 +28,8 @@ export class Checkbox extends LitElement implements HasValue {
       width: 100%;
       height: 1.75rem;
       column-gap: 0.25rem;
+      position: relative;
+      cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -42,69 +41,58 @@ export class Checkbox extends LitElement implements HasValue {
       justify-content: start;
     }
 
+    input,
+    svg {
+      width: 1rem;
+      height: 1rem;
+      display: block;
+    }
+
     input {
-      height: 1rem;
-      width: 1rem;
-      opacity: 0;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      position: relative;
+      outline: none;
+      background: var(--background);
+      border: none;
+      margin: 0;
+      padding: 0;
       cursor: pointer;
+      border-radius: 4px;
+      transition: box-shadow 0.3s;
+      box-shadow: inset 0 0 0 var(--s, 1px) var(--b, var(--border));
     }
 
-    .checkmark::before {
-      content: "";
+    svg {
+      pointer-events: none;
+      fill: none;
+      stroke-width: 2.2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke: var(--stroke, var(--border-active));
+      transform: scale(var(--scale, 1)) translateY(-100%);
       position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      border-radius: inherit;
-      background-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
-      clip-path: circle(0 at center bottom);
-      filter: brightness(150%);
-      box-sizing: border-box;
-      transition: clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93);
+      stroke-dasharray: var(--a, 86.12);
+      stroke-dashoffset: var(--o, 86.12);
+      transition:
+        stroke-dasharray 0.6s,
+        stroke-dashoffset 0.6s;
     }
 
-    .checkmark {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      margin-inline-end: 0.1rem;
-      transform: translateY(-50%);
-      width: 1rem;
-      height: 1rem;
-      background: white;
-      border-radius: 0.25rem;
+    input:hover {
+      --s: 1.7px;
+      --b: var(--border-hover);
     }
 
-    .checkmark::after {
-      content: "";
-      position: absolute;
-      width: 0.3rem;
-      height: 0.6rem;
-      left: 0.2rem;
-      border: solid white;
-      border-width: 0 3px 3px 0;
-      transform: rotate(45deg) scale(0.7);
-      clip-path: circle(0% at 100% 100%);
-      transition: clip-path 0.2s;
+    input:checked {
+      --s: 2px;
+      transition-delay: 0.3s;
+      --b: var(--border-active);
     }
 
-    .parent-label:hover .checkmark::before {
-      clip-path: circle(120% at center bottom);
-    }
-
-    :host([checked]) .checkmark {
-      background-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
-    }
-
-    :host([checked]) .checkmark::after {
-      left: 0.25rem;
-      clip-path: circle(150% at 100% 100%);
-    }
-
-    :host([inverted]) .checkmark {
-      left: 0;
-      margin-inline-start: 0.3rem;
+    input:checked + svg {
+      --a: 16.1 86.12;
+      --o: 102.22;
     }
   `;
 
@@ -206,19 +194,29 @@ export class Checkbox extends LitElement implements HasValue {
   }
 
   protected render() {
+    const checkboxIcon = html`
+      <svg viewBox="0 0 21 21">
+        <path
+          d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"
+        ></path>
+      </svg>
+    `;
+
     return html`
       <div class="parent">
         <label class="parent-label">
           ${this.label
             ? html`<bim-label .icon="${this.icon}">${this.label}</bim-label> `
             : null}
-          <input
-            type="checkbox"
-            aria-label=${this.label || this.name || "Checkbox Input"}
-            @change="${this.onChange}"
-            .checked="${this.checked}"
-          />
-          <span class="checkmark"></span>
+          <div class="input-container">
+            <input
+              type="checkbox"
+              aria-label=${this.label || this.name || "Checkbox Input"}
+              @change="${this.onChange}"
+              .checked="${this.checked}"
+            />
+            ${checkboxIcon}
+          </div>
         </label>
       </div>
     `;
