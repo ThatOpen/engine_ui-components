@@ -23,11 +23,6 @@ export class Option extends LitElement {
 
     :host(:hover) {
       cursor: pointer;
-      background-color: color-mix(
-        in lab,
-        var(--bim-selector--bgc, var(--bim-ui_bg-contrast-20)),
-        var(--bim-ui_main-base) 10%
-      );
     }
 
     :host([checked]) {
