@@ -76,8 +76,17 @@ export class Tabs extends LitElement {
       }
 
       .content {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
         grid-area: content;
+        max-height: 100vh;
         overflow: auto;
+        transition: max-height 0.3s;
+      }
+
+      :host([tab="hidden"]) .content {
+        max-height: 0;
       }
 
       .animated-background {
@@ -199,6 +208,10 @@ export class Tabs extends LitElement {
       if (!switcher) continue;
       switcher.toggleAttribute("data-active", !child.hidden);
     }
+    if (!matchingTab) {
+      this._tab = "hidden";
+      this.setAttribute("tab", "hidden");
+    }
   }
 
   get tab() {
@@ -318,10 +331,16 @@ export class Tabs extends LitElement {
       if (checkedElement) {
         bgElement?.style.setProperty("width", `${properties.width}px`);
         bgElement?.style.setProperty("height", `${properties.height}px`);
-        bgElement?.style.setProperty("top", `${properties.top}px`);
         bgElement?.style.setProperty("left", `${properties.left}px`);
       } else {
         bgElement?.style.setProperty("width", "0");
+      }
+
+      if (this.bottom) {
+        bgElement?.style.setProperty("top", "100%");
+        bgElement?.style.setProperty("transform", "translateY(-100%)");
+      } else {
+        bgElement?.style.setProperty("top", `${properties.top}px`);
       }
     });
 
@@ -340,7 +359,6 @@ export class Tabs extends LitElement {
   protected firstUpdated() {
     requestAnimationFrame(() => {
       this.setAnimatedBackgound(true);
-      console.log(this);
     });
 
     window.addEventListener("resize", () => {
