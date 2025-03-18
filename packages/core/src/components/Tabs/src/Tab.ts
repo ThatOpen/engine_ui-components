@@ -13,6 +13,7 @@ export class Tab extends LitElement {
     :host {
       display: block;
       height: 100%;
+      overflow: hidden;
     }
 
     :host([hidden]) {

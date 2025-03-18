@@ -25,6 +25,8 @@ export class Tabs extends LitElement {
 
       .parent {
         display: grid;
+        overflow: hidden;
+        position: relative;
         grid-template: "switchers" auto "content" 1fr;
         height: 100%;
       }
@@ -97,10 +99,6 @@ export class Tabs extends LitElement {
 
       :host(:not([tab])) .content {
         display: none;
-      }
-
-      :host([floating]) {
-        background-color: transparent;
       }
 
       :host([floating]) .switchers {
@@ -317,10 +315,14 @@ export class Tabs extends LitElement {
           ((parentNode as HTMLElement)?.offsetLeft ?? 0),
       };
 
-      bgElement?.style.setProperty("width", `${properties.width}px`);
-      bgElement?.style.setProperty("height", `${properties.height}px`);
-      bgElement?.style.setProperty("top", `${properties.top}px`);
-      bgElement?.style.setProperty("left", `${properties.left}px`);
+      if (checkedElement) {
+        bgElement?.style.setProperty("width", `${properties.width}px`);
+        bgElement?.style.setProperty("height", `${properties.height}px`);
+        bgElement?.style.setProperty("top", `${properties.top}px`);
+        bgElement?.style.setProperty("left", `${properties.left}px`);
+      } else {
+        bgElement?.style.setProperty("width", "0");
+      }
     });
 
     if (resetTransition) {
@@ -338,6 +340,11 @@ export class Tabs extends LitElement {
   protected firstUpdated() {
     requestAnimationFrame(() => {
       this.setAnimatedBackgound(true);
+      console.log(this);
+    });
+
+    window.addEventListener("resize", () => {
+      this.setAnimatedBackgound();
     });
   }
 
