@@ -142,6 +142,48 @@ export class TableRow<T extends TableRowData> extends LitElement {
     this.toggleAttribute("selected", false);
   }
 
+  private findAllCheckboxes(
+    root: Document | ShadowRoot | HTMLElement,
+    checkboxes: HTMLInputElement[] = [],
+  ): HTMLInputElement[] {
+    if (!root) return checkboxes;
+
+    // Find checkboxes in the current shadow root
+    const foundCheckboxes = root.querySelectorAll("bim-checkbox");
+    foundCheckboxes.forEach((bimCheckbox) => {
+      const input = bimCheckbox.shadowRoot?.querySelector(
+        'input[type="checkbox"]',
+      ) as HTMLInputElement | null;
+      if (input) checkboxes.push(input);
+    });
+
+    // Recursively check child elements for shadow roots
+    root.querySelectorAll("*").forEach((el) => {
+      if ((el as HTMLElement).shadowRoot) {
+        this.findAllCheckboxes((el as HTMLElement).shadowRoot!, checkboxes);
+      }
+    });
+
+    return checkboxes;
+  }
+
+  private toggleAll(checked: boolean): void {
+    if (!this.table) return;
+
+    // Get all checkboxes from nested shadow roots
+    const allCheckboxes = this.findAllCheckboxes(this.table.shadowRoot!);
+
+    if (allCheckboxes.length === 0) {
+      return;
+    }
+
+    // Toggle all checkboxes
+    allCheckboxes.forEach((checkbox) => {
+      (checkbox as HTMLInputElement).checked = checked;
+      checkbox.dispatchEvent(new Event("change"));
+    });
+  }
+
   compute() {
     if (!this.table) throw new Error("TableRow: parent table wasn't found!");
 
@@ -194,9 +236,14 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
     this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
     this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+    this.table.selectableRows = true;
+
+    if (this.isHeader) {
+      this.toggleAll(!!this._isSelected);
+    }
 
     return html`
-      ${!this.isHeader && this.table.selectableRows
+      ${this.table.selectableRows
         ? html`<bim-checkbox
             @change=${this.onSelectionChange}
             .checked=${this._isSelected}
