@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-B3NrQJQx.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";c.init();const b=t.create(()=>n`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-W5V5HNuJ.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";c.init();const b=t.create(()=>n`
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
     </bim-panel-section>
