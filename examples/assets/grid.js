@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-import{T as u,x as l}from"./lit-element-CToom8Wf.js";import{M as d,C as b}from"./index-BElw8vV7.js";import{a as p,i as g,t as h,n as f}from"./ref-CyNRy2Tn.js";import"./state-H9kisBvQ.js";/**
-=======
 import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as u,C as b}from"./index-BSjm71QS.js";import"./state-DYefyXr3.js";import{T as d,x as l}from"./lit-html-paDGiEfB.js";import{a as p,i as g,t as h,n as f}from"./ref-CInB0H-f.js";/**
->>>>>>> origin/HEAD
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const c="important",k=" !"+c,s=p(class extends g{constructor(e){var i;if(super(e),e.type!==h.ATTRIBUTE||e.name!=="style"||((i=e.strings)==null?void 0:i.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((i,n)=>{const o=e[n];return o==null?i:i+`${n=n.includes("-")?n:n.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${o};`},"")}update(e,[i]){const{style:n}=e.element;if(this.ft===void 0)return this.ft=new Set(Object.keys(i)),this.render(i);for(const o of this.ft)i[o]==null&&(this.ft.delete(o),o.includes("-")?n.removeProperty(o):n[o]=null);for(const o in i){const t=i[o];if(t!=null){this.ft.add(o);const a=typeof t=="string"&&t.endsWith(k);o.includes("-")||a?n.setProperty(o,a?t.slice(0,-11):t,a?c:""):n[o]=t}}return u}});d.init();const y=b.create(()=>l`
+ */const c="important",k=" !"+c,s=p(class extends g{constructor(e){var i;if(super(e),e.type!==h.ATTRIBUTE||e.name!=="style"||((i=e.strings)==null?void 0:i.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((i,n)=>{const o=e[n];return o==null?i:i+`${n=n.includes("-")?n:n.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${o};`},"")}update(e,[i]){const{style:n}=e.element;if(this.ft===void 0)return this.ft=new Set(Object.keys(i)),this.render(i);for(const o of this.ft)i[o]==null&&(this.ft.delete(o),o.includes("-")?n.removeProperty(o):n[o]=null);for(const o in i){const t=i[o];if(t!=null){this.ft.add(o);const a=typeof t=="string"&&t.endsWith(k);o.includes("-")||a?n.setProperty(o,a?t.slice(0,-11):t,a?c:""):n[o]=t}}return d}});u.init();const y=b.create(()=>l`
     <bim-panel label="My Panel!">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-label>This is just a panel section... cool, right?</bim-label>
