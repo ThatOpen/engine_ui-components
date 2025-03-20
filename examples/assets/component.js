@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import{x as t}from"./lit-element-CToom8Wf.js";import{M as c,C as n}from"./index-BElw8vV7.js";import"./state-H9kisBvQ.js";import"./ref-CyNRy2Tn.js";c.init();const b=n.create(()=>t`
+=======
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as c,C as t}from"./index-BSjm71QS.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";c.init();const b=t.create(()=>n`
+>>>>>>> origin/HEAD
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
     </bim-panel-section>

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import{x as e}from"./lit-element-CToom8Wf.js";import{M as n,C as a}from"./index-BElw8vV7.js";import"./state-H9kisBvQ.js";import"./ref-CyNRy2Tn.js";n.init();const t=document.createElement("bim-table"),r=a.create(()=>e`
+=======
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as n,C as e}from"./index-BSjm71QS.js";import"./state-DYefyXr3.js";import{x as a}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";n.init();const t=document.createElement("bim-table"),r=e.create(()=>a`
+>>>>>>> origin/HEAD
     <!-- The most important thing is to have the slot attribute set as missing-data -->
     <!-- Other than that, the element can hold anything inside -->
     <!-- Be aware you can use this missing-data slot no matter if you are not loading data asynchronously -->

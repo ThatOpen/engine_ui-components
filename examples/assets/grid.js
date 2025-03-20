@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import{T as u,x as l}from"./lit-element-CToom8Wf.js";import{M as d,C as b}from"./index-BElw8vV7.js";import{a as p,i as g,t as h,n as f}from"./ref-CyNRy2Tn.js";import"./state-H9kisBvQ.js";/**
+=======
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as u,C as b}from"./index-BSjm71QS.js";import"./state-DYefyXr3.js";import{T as d,x as l}from"./lit-html-paDGiEfB.js";import{a as p,i as g,t as h,n as f}from"./ref-CInB0H-f.js";/**
+>>>>>>> origin/HEAD
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
