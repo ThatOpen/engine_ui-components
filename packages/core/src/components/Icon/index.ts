@@ -19,6 +19,7 @@ export class Icon extends LitElement {
       width: var(--bim-icon--fz, var(--bim-ui_size-sm));
       color: var(--bim-icon--c);
       transition: all 0.15s;
+      display: flex;
     }
   `;
 
