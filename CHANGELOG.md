@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.4.1](https://github.com/ThatOpen/engine_ui-components/compare/v2.4.0...v2.4.1) (2025-03-21)
+
+
+### Bug Fixes
+
+* **core:** bim-tab was not updating the label in the UI ([ed10e91](https://github.com/ThatOpen/engine_ui-components/commit/ed10e910aecc12b9caabae750172a73eb707e1de))
+* Documentation Updates engine_ui-components [#459](https://github.com/ThatOpen/engine_ui-components/issues/459) ([#59](https://github.com/ThatOpen/engine_ui-components/issues/59)) ([bfdb5e8](https://github.com/ThatOpen/engine_ui-components/commit/bfdb5e8912348eb6f58a66f46c4ac9e3ca300499))
+* make elementProperties values selectable [#57](https://github.com/ThatOpen/engine_ui-components/issues/57) ([#62](https://github.com/ThatOpen/engine_ui-components/issues/62)) ([6e5a11c](https://github.com/ThatOpen/engine_ui-components/commit/6e5a11c8aaa930edb6dc244a1eeb9a2476469eb6))
+
 ## [2.4.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.3.0...v2.4.0) (2024-11-28)
 
 
