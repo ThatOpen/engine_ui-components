@@ -153,6 +153,14 @@ export class ContextMenu extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     ContextMenu.menus.push(this);
+
+    if (this.visible) {
+      this.style.setProperty("width", "auto");
+      this.style.setProperty("height", "auto");
+    } else {
+      this.style.setProperty("width", "0");
+      this.style.setProperty("height", "0");
+    }
   }
 
   protected render() {
