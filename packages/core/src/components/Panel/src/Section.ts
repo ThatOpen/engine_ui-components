@@ -68,8 +68,8 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         padding: 0.125rem 1rem 1rem;
         box-sizing: border-box;
         transition:
-          height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-          padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
+          padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
       }
 
       :host(:not([fixed])[collapsed]) .components {
@@ -83,8 +83,8 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
       ::slotted(*) {
         transition:
-          transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-          opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          transform 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
+          opacity 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
       }
 
       :host(:not([fixed])[collapsed]) ::slotted(*) {
@@ -271,7 +271,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
           componentsElement.style.setProperty("padding", "0 1rem 0");
           componentsElement.style.setProperty(
             "transition",
-            "height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+            "height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1), padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1)",
           );
         });
       } else {

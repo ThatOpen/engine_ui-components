@@ -21,9 +21,9 @@ export class Panel extends LitElement implements HasName, HasValue {
         background-color: var(--bim-ui_bg-base);
         overflow: auto;
         transition:
-          transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-          height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-          opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
+          height 0.1s cubic-bezier(0.65, 0.05, 0.36, 1),
+          opacity 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
       }
 
       :host([hidden]) {
