@@ -12,11 +12,14 @@ export class TableChildren<T extends TableRowData> extends LitElement {
     :host {
       --bim-button--bgc: transparent;
       position: relative;
+      display: block;
+      overflow: hidden;
       grid-area: Children;
     }
 
     :host([hidden]) {
-      display: none;
+      height: 0;
+      opacity: 0;
     }
 
     ::slotted(.branch.branch-vertical) {
