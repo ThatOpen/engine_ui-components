@@ -8,7 +8,7 @@ const leftPanel = BUI.Component.create<BUI.Panel>(() => {
     alert("You clicked me!");
   };
   return BUI.html`
-    <bim-panel label="My Panel!">
+    <bim-panel label="My Panel" icon="mynaui:panel-left-solid" style="width: 24rem;">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-label>This is just a panel section... cool, right?</bim-label>
         <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
@@ -27,48 +27,6 @@ const leftPanel = BUI.Component.create<BUI.Panel>(() => {
         <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
       </bim-panel-section>
     </bim-panel>
-  `;
-});
-
-const ribbon = BUI.Component.create<BUI.Tabs>(() => {
-  const onThatOpenPeopleClick = () =>
-    window.open("https://people.thatopen.com/home");
-
-  const onToggleThemeClick = () => {
-    const html = document.querySelector("html");
-    if (!html) return;
-    if (html.classList.contains("bim-ui-dark")) {
-      html.classList.replace("bim-ui-dark", "bim-ui-light");
-    } else if (html.classList.contains("bim-ui-light")) {
-      html.classList.replace("bim-ui-light", "bim-ui-dark");
-    }
-  };
-
-  return BUI.html`
-   <bim-tabs>
-    <bim-tab label="Toolbar A">
-      <bim-toolbar>
-        <bim-toolbar-section label="Some section">
-          <bim-button @click=${onToggleThemeClick} label="Toggle Theme" vertical icon="proicons:dark-theme"></bim-button>
-          <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
-          <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
-          <bim-toolbar-group>
-            <bim-button icon="solar:settings-bold"></bim-button>
-            <bim-button icon="solar:settings-bold"></bim-button>
-            <bim-button icon="solar:settings-bold"></bim-button>
-            <bim-button icon="solar:settings-bold"></bim-button>
-          </bim-toolbar-group>
-        </bim-toolbar-section>
-      </bim-toolbar>
-    </bim-tab>
-    <bim-tab label="Toolbar B">
-      <bim-toolbar>
-        <bim-toolbar-section label="Some other section">
-          <bim-button label="Focus" vertical icon="material-symbols:center-focus-strong"></bim-button>
-        </bim-toolbar-section>
-      </bim-toolbar>
-    </bim-tab>
-   </bim-tabs> 
   `;
 });
 
@@ -363,7 +321,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
   };
 
   return BUI.html`
-    <bim-panel>
+    <bim-panel style="height: 25rem">
       <bim-panel-section label="Assignments" fixed>
         <bim-table ${BUI.ref(onTableCreated)}></bim-table>
       </bim-panel-section>
@@ -397,6 +355,63 @@ const rightPanel = BUI.Component.create<BUI.Panel>(() => {
         </bim-selector>
       </bim-panel-section>
     </bim-panel>
+  `;
+});
+
+const ribbon = BUI.Component.create<BUI.Tabs>(() => {
+  const onThatOpenPeopleClick = () =>
+    window.open("https://people.thatopen.com/home");
+
+  const onToggleThemeClick = () => {
+    const html = document.querySelector("html");
+    if (!html) return;
+    if (html.classList.contains("bim-ui-dark")) {
+      html.classList.replace("bim-ui-dark", "bim-ui-light");
+    } else if (html.classList.contains("bim-ui-light")) {
+      html.classList.replace("bim-ui-light", "bim-ui-dark");
+    }
+  };
+
+  const { activationButton: leftPanelBtn } = leftPanel;
+  leftPanelBtn.vertical = true;
+
+  const onTableBtnClick = ({ target }: { target: BUI.Button }) => {
+    const isHidden = bottomPanel.style.display === "none";
+    target.active = isHidden;
+    if (isHidden) {
+      bottomPanel.style.removeProperty("display");
+    } else {
+      bottomPanel.style.display = "none";
+    }
+  };
+
+  return BUI.html`
+   <bim-tabs>
+    <bim-tab label="Toolbar A">
+      <bim-toolbar>
+        <bim-toolbar-section label="Some section">
+          <bim-button @click=${onToggleThemeClick} label="Toggle Theme" vertical icon="proicons:dark-theme"></bim-button>
+          <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
+          ${leftPanel.activationButton}
+          <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
+          <bim-button active @click=${onTableBtnClick} label="Table" vertical icon="material-symbols:table"></bim-button>
+          <bim-toolbar-group>
+            <bim-button icon="solar:settings-bold"></bim-button>
+            <bim-button icon="solar:settings-bold"></bim-button>
+            <bim-button icon="solar:settings-bold"></bim-button>
+            <bim-button icon="solar:settings-bold"></bim-button>
+          </bim-toolbar-group>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </bim-tab>
+    <bim-tab label="Toolbar B">
+      <bim-toolbar>
+        <bim-toolbar-section label="Some other section">
+          <bim-button label="Focus" vertical icon="material-symbols:center-focus-strong"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </bim-tab>
+   </bim-tabs> 
   `;
 });
 
@@ -521,8 +536,8 @@ grid.layouts = {
     template: `
       "ribbon ribbon ribbon" auto
       "leftPanel viewport rightPanel" 1fr
-      "leftPanel bottomPanel bottomPanel" 1.25fr
-      / 22rem 1fr 20rem
+      "leftPanel bottomPanel bottomPanel" auto
+      / auto 1fr 20rem
     `,
     elements: {
       ribbon,
