@@ -19,7 +19,8 @@ export class Checkbox extends LitElement implements HasValue {
     .parent-label {
       --background: #fff;
       --border: #dfdfe6;
-      --border-hover: #bbc1e1;
+      --stroke: #fff;
+      --border-hover: var(--bim-ui_main-base);
       --border-active: var(--bim-ui_main-base);
       display: flex;
       justify-content: space-between;
@@ -70,29 +71,40 @@ export class Checkbox extends LitElement implements HasValue {
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke: var(--stroke, var(--border-active));
-      transform: scale(var(--scale, 1)) translateY(-100%);
+      transform: translateY(-100%) scale(0);
       position: absolute;
-      stroke-dasharray: var(--a, 86.12);
-      stroke-dashoffset: var(--o, 86.12);
-      transition:
-        stroke-dasharray 0.6s,
-        stroke-dashoffset 0.6s;
+      width: 1rem;
+      height: 1rem;
     }
 
     input:hover {
-      --s: 1.7px;
+      --s: 2px;
       --b: var(--border-hover);
     }
 
     input:checked {
-      --s: 2px;
-      transition-delay: 0.3s;
       --b: var(--border-active);
+      --s: 11px;
     }
 
     input:checked + svg {
-      --a: 16.1 86.12;
-      --o: 102.22;
+      -webkit-animation: bounce 0.4s linear forwards 0.2s;
+      animation: bounce 0.4s linear forwards 0.2s;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: translateY(-100%) scale(0);
+      }
+      50% {
+        transform: translateY(-100%) scale(1.2);
+      }
+      75% {
+        transform: translateY(-100%) scale(0.9);
+      }
+      100% {
+        transform: translateY(-100%) scale(1);
+      }
     }
   `;
 
@@ -196,9 +208,7 @@ export class Checkbox extends LitElement implements HasValue {
   protected render() {
     const checkboxIcon = html`
       <svg viewBox="0 0 21 21">
-        <path
-          d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"
-        ></path>
+        <polyline points="5 10.75 8.5 14.25 16 6"></polyline>
       </svg>
     `;
 
