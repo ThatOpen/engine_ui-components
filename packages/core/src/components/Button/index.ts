@@ -36,10 +36,10 @@ export class Button extends LitElement {
       height: 100%;
       border-radius: inherit;
       background-color: var(--bim-ui_main-base);
-      clip-path: ellipse(0 0 at center bottom);
+      clip-path: circle(0 at center center);
       box-sizing: border-box;
       transition:
-        clip-path 0.3s cubic-bezier(0.72, 0.1, 0.43, 0.93),
+        clip-path 0.3s cubic-bezier(0.65, 0.05, 0.36, 1),
         transform 0.15s;
     }
 
@@ -92,7 +92,7 @@ export class Button extends LitElement {
     }
 
     :host(:hover)::before {
-      clip-path: ellipse(120% 120% at center bottom);
+      clip-path: circle(120% at center center);
     }
 
     :host(:hover) {
