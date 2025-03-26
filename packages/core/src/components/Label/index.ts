@@ -28,7 +28,7 @@ export class Label extends LitElement {
       align-items: center;
       column-gap: 0.25rem;
       row-gap: 0.125rem;
-      user-select: none;
+      user-select: text;
       height: 100%;
     }
 
