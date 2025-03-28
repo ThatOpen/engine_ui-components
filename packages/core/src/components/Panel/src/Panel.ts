@@ -20,16 +20,11 @@ export class Panel extends LitElement implements HasName, HasValue {
         border-radius: var(--bim-ui_size-base);
         background-color: var(--bim-ui_bg-base);
         overflow: auto;
-        transition:
-          transform 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
-          height 0.1s cubic-bezier(0.65, 0.05, 0.36, 1),
-          opacity 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
+        animation: openPanel 0.5s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
       }
 
       :host([hidden]) {
-        height: 0;
-        transform: translateX(-10%);
-        opacity: 0;
+        animation: closePanel 0.5s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
       }
 
       .parent {
@@ -61,6 +56,47 @@ export class Panel extends LitElement implements HasName, HasValue {
 
       ::slotted(bim-panel-section:not(:last-child)) {
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      }
+
+      @keyframes openPanel {
+        0% {
+          max-height: 0;
+          max-width: 0;
+          transform: translateX(-10px);
+          opacity: 0;
+        }
+        20% {
+          max-height: 100vh;
+          max-width: 100vw;
+        }
+        50% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes closePanel {
+        0% {
+          max-height: 100vh;
+          max-width: 100vw;
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        70% {
+          max-height: 0;
+          max-width: 0;
+          transform: translateX(-10px);
+          opacity: 0;
+        }
+        100% {
+          max-height: 0;
+          max-width: 0;
+          transform: translateX(-10px);
+          opacity: 0;
+        }
       }
     `,
   ];
@@ -227,7 +263,6 @@ export class Panel extends LitElement implements HasName, HasValue {
     this.activationButton.active = !this.hidden;
     this.activationButton.onclick = () => {
       this.hidden = !this.hidden;
-      this.animatePanel();
     };
   }
 
@@ -256,55 +291,6 @@ export class Panel extends LitElement implements HasName, HasValue {
   expandSections() {
     const sections = this.querySelectorAll("bim-panel-section");
     for (const section of sections) section.collapsed = false;
-  }
-
-  protected firstUpdated() {
-    requestAnimationFrame(() => {
-      this.animatePanel();
-    });
-  }
-
-  private panelHeight = -1;
-
-  private calculateHeight(recalc: boolean = false) {
-    // Save the component"s maximum height
-    if (this.panelHeight <= 0 || recalc) {
-      if (!this.hidden) {
-        this.style.setProperty("height", "auto");
-
-        this.panelHeight = this.clientHeight;
-
-        requestAnimationFrame(() => {
-          this.style.setProperty("height", "0px");
-        });
-      } else {
-        this.style.setProperty("height", "auto");
-        this.panelHeight = this.clientHeight;
-      }
-    }
-  }
-
-  private animatePanel() {
-    this.calculateHeight();
-
-    // Animate the component
-    if (this.hidden) {
-      this.calculateHeight(true);
-      this.style.setProperty("height", `${this.panelHeight}px`);
-      this.style.setProperty("opacity", "0");
-      this.style.setProperty("transform", "translateX(-10%)");
-
-      setTimeout(() => {
-        this.style.setProperty("height", "0px");
-      }, 300);
-    } else {
-      // this.style.setProperty("height", "0px");
-      requestAnimationFrame(() => {
-        this.style.setProperty("opacity", "1");
-        this.style.setProperty("transform", "translateX(0)");
-        this.style.setProperty("height", "auto");
-      });
-    }
   }
 
   protected render() {
