@@ -171,7 +171,9 @@ export class Selector extends LitElement implements HasValue, HasName {
     ) as Option;
     if (option) this._value = option;
 
-    this.setAnimatedBackgound(true);
+    window.addEventListener("load", () => {
+      this.setAnimatedBackgound(true);
+    });
   }
 
   protected render() {

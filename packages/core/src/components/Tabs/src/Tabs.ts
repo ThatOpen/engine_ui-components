@@ -36,6 +36,7 @@ export class Tabs extends LitElement {
       }
 
       .switchers {
+        position: relative;
         display: flex;
         height: 2.25rem;
         font-weight: 600;
@@ -361,9 +362,10 @@ export class Tabs extends LitElement {
       this.setAnimatedBackgound(true);
     });
 
-    window.addEventListener("resize", () => {
+    // To make sure it triggers when the element gets resized, too.
+    new ResizeObserver(() => {
       this.setAnimatedBackgound();
-    });
+    }).observe(this);
   }
 
   protected render() {

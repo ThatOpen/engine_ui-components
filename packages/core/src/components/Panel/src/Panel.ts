@@ -20,11 +20,11 @@ export class Panel extends LitElement implements HasName, HasValue {
         border-radius: var(--bim-ui_size-base);
         background-color: var(--bim-ui_bg-base);
         overflow: auto;
-        animation: openPanel 0.5s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
       }
 
       :host([hidden]) {
-        animation: closePanel 0.5s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
+        max-height: 0;
+        max-width: 0;
       }
 
       .parent {
@@ -65,11 +65,11 @@ export class Panel extends LitElement implements HasName, HasValue {
           transform: translateX(-10px);
           opacity: 0;
         }
-        20% {
+        50% {
           max-height: 100vh;
           max-width: 100vw;
         }
-        50% {
+        70% {
           opacity: 1;
           transform: translateX(0);
         }
@@ -263,6 +263,10 @@ export class Panel extends LitElement implements HasName, HasValue {
     this.activationButton.active = !this.hidden;
     this.activationButton.onclick = () => {
       this.hidden = !this.hidden;
+      this.style.setProperty(
+        "animation",
+        `${this.hidden ? "closePanel" : "openPanel"} 0.4s cubic-bezier(0.65, 0.05, 0.36, 1) forwards`,
+      );
     };
   }
 
