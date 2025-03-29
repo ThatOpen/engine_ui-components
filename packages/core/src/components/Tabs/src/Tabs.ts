@@ -83,7 +83,7 @@ export class Tabs extends LitElement {
         grid-area: content;
         max-height: 100vh;
         overflow: auto;
-        transition: max-height 0.3s;
+        transition: max-height 0.2s;
       }
 
       :host([tab="hidden"]) .content {
@@ -111,9 +111,14 @@ export class Tabs extends LitElement {
         display: none;
       }
 
+      :host([floating]) {
+        background-color: transparent;
+      }
+
       :host([floating]) .switchers {
         justify-self: center;
         overflow: auto;
+        background-color: var(--bim-ui_bg-base);
       }
 
       :host([floating]:not([bottom])) .switchers {

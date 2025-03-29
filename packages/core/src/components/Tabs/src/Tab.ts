@@ -13,18 +13,19 @@ export class Tab extends LitElement {
     :host {
       display: block;
       height: 100%;
-      grid-row-start: 1;
-      grid-column-start: 1;
-      overflow: hidden;
+      transform: translateY(0);
       transition:
-        opacity 0.3s,
-        transform 0.4s;
+        opacity 0.3s ease,
+        transform 0.3s ease;
     }
 
     :host([hidden]) {
+      transform: translateY(-20%);
       opacity: 0;
-      transform: translateY(-100%);
-      pointer-events: none;
+      overflow: hidden;
+      width: 0;
+      height: 0;
+      visibility: hidden;
     }
   `;
 

@@ -174,6 +174,10 @@ export class Selector extends LitElement implements HasValue, HasName {
     window.addEventListener("load", () => {
       this.setAnimatedBackgound(true);
     });
+
+    new ResizeObserver(() => {
+      this.setAnimatedBackgound();
+    }).observe(this);
   }
 
   protected render() {
