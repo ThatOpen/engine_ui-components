@@ -81,9 +81,37 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     this.childrenHidden =
       typeof force === "undefined" ? !this.childrenHidden : !force;
     if (recursive) this._children.toggleGroups(force, recursive);
+
+    this.animateTableChildren(true); // set it to false to deactivate the animations
   }
 
-  private animateTableChildren() {
+  private animateTableChildren(active = true) {
+    if (!active) {
+      requestAnimationFrame(() => {
+        const caret = this.renderRoot.querySelector(".caret") as HTMLElement;
+        const rowVerticalBranch = this.renderRoot.querySelector(
+          ".branch-vertical",
+        ) as HTMLElement;
+        const childrenVerticalBranch = this.renderRoot
+          .querySelector("bim-table-children")
+          ?.querySelector(".branch-vertical") as HTMLElement;
+
+        caret.style.setProperty(
+          "transform",
+          `translateY(-50%) rotate(${this.childrenHidden ? "0" : "90"}deg)`,
+        );
+        rowVerticalBranch.style.setProperty(
+          "transform",
+          `scaleY(${this.childrenHidden ? "0" : "1"})`,
+        );
+        childrenVerticalBranch.style.setProperty(
+          "transform",
+          `scaleY(${this.childrenHidden ? "0" : "1"})`,
+        );
+      });
+      return;
+    }
+
     requestAnimationFrame(() => {
       // Targeting Elements
       const children = this.renderRoot.querySelector("bim-table-children");
@@ -284,7 +312,6 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       caret.addEventListener("click", (e: Event) => {
         e.stopPropagation();
         this.toggleChildren();
-        this.animateTableChildren();
       });
       caret.classList.add("caret");
       caret.style.left = `${(this.table.selectableRows ? 1.5 : 0.125) + indentation}rem`;
