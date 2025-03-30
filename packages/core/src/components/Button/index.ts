@@ -155,7 +155,6 @@ export class Button extends LitElement {
       clip-path: circle(150% at top left);
       transition:
         clip-path 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93),
-        padding 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93),
         transform 0.3s cubic-bezier(0.72, 0.1, 0.45, 2.35);
     }
 
@@ -167,7 +166,16 @@ export class Button extends LitElement {
     :host(:not([tooltip-visible])) .tooltip {
       clip-path: circle(0 at top left);
       transform: scale(0.8);
-      padding: 0;
+      animation: lowerPadding 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93) forwards;
+    }
+
+    @keyframes lowerPadding {
+      0% {
+        padding: 0.75rem;
+      }
+      100% {
+        padding: 0;
+      }
     }
   `;
 
