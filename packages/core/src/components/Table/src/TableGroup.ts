@@ -104,7 +104,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
           "transform",
           `scaleY(${this.childrenHidden ? "0" : "1"})`,
         );
-        childrenVerticalBranch.style.setProperty(
+        childrenVerticalBranch?.style.setProperty(
           "transform",
           `scaleY(${this.childrenHidden ? "0" : "1"})`,
         );
@@ -210,7 +210,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
           { transform: "scaleY(1)" },
         ];
 
-        childrenVerticalBranch.animate(childrenVerticalBranchAnimKeyframes, {
+        childrenVerticalBranch?.animate(childrenVerticalBranchAnimKeyframes, {
           duration: 300,
           easing: "cubic-bezier(0.4, 0, 0.2, 1)",
           fill: "forwards",
