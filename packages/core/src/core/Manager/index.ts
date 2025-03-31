@@ -123,4 +123,137 @@ export class Manager {
 
     return id;
   }
+
+  static animateOnLoad(selectedElements: string = "") {
+    // Elements Selectors
+    // Canceled Elements for reason
+    /*
+
+    bim-color-input,
+    bim-number-input,
+    bim-text-input,
+    bim-dropdown,
+    */
+    const childrensSelector = `
+      bim-input,
+      bim-button,
+      bim-checkbox,
+      bim-selector,
+      bim-label,
+      bim-table-row,
+      bim-panel-section,
+      bim-table-children .branch-vertical,
+      .switchers
+    `;
+    const components: HTMLElement[] = [];
+
+    // Traversing first level shadow DOMs
+    function querySelectorAllDeep(
+      selector: string,
+      root: Document | ShadowRoot = document,
+      visited: Set<HTMLElement> = new Set(),
+    ): HTMLElement[] {
+      const elements: HTMLElement[] = [];
+      const nodes = Array.from(root.querySelectorAll<HTMLElement>(selector));
+
+      nodes.forEach((node) => {
+        if (!visited.has(node)) {
+          visited.add(node);
+          elements.push(node);
+        }
+      });
+
+      const shadowHosts = Array.from(
+        root.querySelectorAll<HTMLElement>("*"),
+      ).filter((el) => el.shadowRoot);
+
+      shadowHosts.forEach((shadowHost) => {
+        if (!visited.has(shadowHost)) {
+          visited.add(shadowHost);
+          elements.push(
+            ...querySelectorAllDeep(selector, shadowHost.shadowRoot!, visited),
+          );
+        }
+      });
+
+      return elements;
+    }
+
+    requestAnimationFrame(() => {
+      // you can use a regular querySelectorAll if needed, but that won't target shadowroot elements
+      const childrenComponents = querySelectorAllDeep(
+        selectedElements || childrensSelector,
+      );
+
+      // Setting the elements to be invisible at the start
+      childrenComponents.forEach((element) => {
+        const child = element as HTMLElement;
+        let oldTransition = "auto";
+
+        oldTransition = window
+          .getComputedStyle(child)
+          .getPropertyValue("transition");
+
+        child.style.setProperty("opacity", "0");
+        child.style.setProperty("transition", "none");
+        requestAnimationFrame(() => {
+          child.style.setProperty("transition", oldTransition);
+        });
+
+        components.push(child);
+      });
+
+      const onLoadHandler = () => {
+        components.forEach((element) => {
+          const child = element as HTMLElement;
+          const delay =
+            (child.getBoundingClientRect().x +
+              child.getBoundingClientRect().y) /
+            (window.innerWidth + window.innerHeight);
+
+          const oldTransforms = window
+            .getComputedStyle(child)
+            .getPropertyValue("transform");
+
+          const animationDuration = 400;
+          const animationDelay = 200 + delay * 1000;
+
+          child.animate(
+            [
+              {
+                transform: "translateY(-20px)",
+                opacity: "0",
+              },
+              {
+                transform: "translateY(0)",
+                opacity: "1",
+              },
+            ],
+            {
+              duration: animationDuration,
+              easing: "ease-in-out",
+              delay: animationDelay,
+            },
+          );
+
+          // Used a setTimeout to cleanup the updated css additions once the animation ends
+          setTimeout(() => {
+            child.style.removeProperty("opacity");
+
+            if (oldTransforms)
+              child.style.setProperty("transform", oldTransforms);
+            else child.style.removeProperty("transform");
+          }, animationDelay + animationDuration);
+        });
+      };
+
+      if (document.readyState === "complete") {
+        // If the document is already loaded because of the cache, execute the handler immediately
+        onLoadHandler();
+      } else {
+        // Otherwise, attach the handler to the load event
+        window.addEventListener("load", onLoadHandler);
+      }
+    });
+  }
 }

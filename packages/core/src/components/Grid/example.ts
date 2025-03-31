@@ -2,6 +2,7 @@
 import * as BUI from "../..";
 
 BUI.Manager.init();
+BUI.Manager.animateOnLoad();
 
 const leftPanel = BUI.Component.create<BUI.Panel>(() => {
   const onBtnClick = () => {
