@@ -162,10 +162,12 @@ export class Button extends LitElement {
     :host(:not([tooltip-visible])) .tooltip {
       animation: closeTooltips 0.15s ease-in forwards;
       visibility: hidden;
+      display: none;
     }
 
     @keyframes closeTooltips {
       0% {
+        display: flex;
         padding: 0.75rem;
         transform: translateY(0);
         opacity: 1;
@@ -174,6 +176,7 @@ export class Button extends LitElement {
         padding: 0.75rem;
       }
       100% {
+        display: none;
         padding: 0;
         transform: translateY(-10px);
         opacity: 0;
@@ -182,6 +185,7 @@ export class Button extends LitElement {
 
     @keyframes openTooltips {
       0% {
+        display: flex;
         transform: translateY(-10px);
         opacity: 0;
       }
