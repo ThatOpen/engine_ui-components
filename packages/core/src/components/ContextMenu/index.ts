@@ -112,6 +112,7 @@ export class ContextMenu extends LitElement {
       }
       this._previousContainer = this.parentElement;
       ContextMenu.dialog.style.top = `${window.scrollY || document.documentElement.scrollTop}px`;
+      this.style.setProperty("display", "flex");
       ContextMenu.dialog.append(this);
       ContextMenu.dialog.showModal();
       this.updatePosition();
@@ -120,6 +121,7 @@ export class ContextMenu extends LitElement {
       setTimeout(() => {
         this._previousContainer?.append(this);
         this._previousContainer = null;
+        this.style.setProperty("display", "none");
         this.dispatchEvent(new Event("hidden"));
       }, 310); // at the transition max speed
     }
