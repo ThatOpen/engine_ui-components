@@ -240,7 +240,7 @@ export class Manager {
           setTimeout(() => {
             child.style.removeProperty("opacity");
 
-            if (oldTransforms)
+            if (oldTransforms !== "none")
               child.style.setProperty("transform", oldTransforms);
             else child.style.removeProperty("transform");
           }, animationDelay + animationDuration);
