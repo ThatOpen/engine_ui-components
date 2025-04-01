@@ -17,7 +17,7 @@ export class Label extends LitElement {
       overflow: hidden;
       display: block;
       white-space: nowrap;
-      line-height: 1.1rem;
+      line-height: 1.1em;
       transition: all 0.15s;
     }
 
