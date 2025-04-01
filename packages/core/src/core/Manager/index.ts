@@ -78,7 +78,7 @@ export class Manager {
    * Manager.init();
    * ```
    */
-  static init() {
+  static init(querySelectorElements = "", animateOnLoad = true) {
     Manager.addGlobalStyles();
     Manager.defineCustomElement("bim-button", components.Button);
     Manager.defineCustomElement("bim-checkbox", components.Checkbox);
@@ -109,6 +109,8 @@ export class Manager {
       components.ToolbarSection,
     );
     Manager.defineCustomElement("bim-viewport", components.Viewport);
+
+    if (animateOnLoad) this.animateOnLoad(querySelectorElements);
   }
 
   static newRandomId() {
@@ -124,16 +126,8 @@ export class Manager {
     return id;
   }
 
-  static animateOnLoad(selectedElements: string = "") {
+  private static animateOnLoad(selectedElements: string = "") {
     // Elements Selectors
-    // Canceled Elements for reason
-    /*
-
-    bim-color-input,
-    bim-number-input,
-    bim-text-input,
-    bim-dropdown,
-    */
     const childrensSelector = `
       bim-input,
       bim-button,

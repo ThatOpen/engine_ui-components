@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
 
-BUI.Manager.init();
+BUI.Manager.init("bim-button:nth-child(even), .btn-2");
 
 const btn = document.body.querySelector<BUI.Button>("bim-button")!;
 btn.addEventListener("click", () => {
