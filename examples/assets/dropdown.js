@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as d}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";d.init();const t=document.getElementById("my-dropdown-1");t.addEventListener("change",()=>{const e=t.value;alert(`You've selected: ${e.join(", ")}.`)});const n=document.getElementById("my-dropdown-2");for(let e=0;e<300;e++){const o=document.createElement("bim-option");o.label=`Option ${e}`,o.value=e,n.append(o)}n.value=[100];
+=======
+import"./lit-element-CToom8Wf.js";import{M as d}from"./index-BCngLrVF.js";import"./state-H9kisBvQ.js";import"./ref-CyNRy2Tn.js";d.init();const t=document.getElementById("my-dropdown-1");t.addEventListener("change",()=>{const e=t.value;alert(`You've selected: ${e.join(", ")}.`)});const n=document.getElementById("my-dropdown-2");for(let e=0;e<300;e++){const o=document.createElement("bim-option");o.label=`Option ${e}`,o.value=e,n.append(o)}n.value=[100];
+>>>>>>> main

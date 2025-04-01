@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import"./modulepreload-polyfill-B5Qt9EMX.js";import{T as m,C as c,W as l,S as d,a as p,b,G as f,I as g,F as w,l as u,m as L}from"./index-N2x2mgv3.js";import{b as C}from"./index-DAXFTtA6.js";import{t as v}from"./index-BazQpUSZ.js";import"./lit-html-paDGiEfB.js";m.init();const e=new c,I=e.get(l),n=I.create(),s=new d(e);s.setup();n.scene=s;const a=document.createElement("bim-viewport"),r=new p(e,a);n.renderer=r;const i=new b(e);n.camera=i;a.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const S=e.get(f);S.create(n);e.init();const F=e.get(g);await F.setup();const M=e.get(w);M.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[y]=v.modelsList({components:e,tags:{schema:!0,viewDefinition:!1},actions:{download:!1}}),E=u.create(()=>{const[t]=C.loadIfc({components:e});return L`
+=======
+import{x as m}from"./lit-element-CToom8Wf.js";import{P as c,C as l,W as d,S as p,a as b,b as f,G as g,I as w,F as u,T as C}from"./index-DNiVoluI.js";import{b as L}from"./index-CqhcBaEU.js";import{t as v}from"./index-kdXv3cq4.js";c.init();const e=new l,I=e.get(d),n=I.create(),s=new p(e);s.setup();n.scene=s;const a=document.createElement("bim-viewport"),r=new b(e,a);n.renderer=r;const i=new f(e);n.camera=i;a.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const S=e.get(g);S.create(n);e.init();const F=e.get(w);await F.setup();const M=e.get(u);M.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[y]=v.modelsList({components:e,tags:{schema:!0,viewDefinition:!1},actions:{download:!1}}),E=C.create(()=>{const[t]=L.loadIfc({components:e});return m`
+>>>>>>> main
    <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
       ${t}
