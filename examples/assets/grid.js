@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as u,C as b}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import{T as d,x as l}from"./lit-html-paDGiEfB.js";import{a as p,i as g,t as h,n as f}from"./ref-CInB0H-f.js";/**
-=======
-import{T as p,x as b}from"./lit-element-CToom8Wf.js";import{M as g,C as s}from"./index-BCngLrVF.js";import{a as h,i as D,t as T,n as y}from"./ref-CyNRy2Tn.js";import"./state-H9kisBvQ.js";/**
->>>>>>> main
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as p,C as s}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import{T as g,x as b}from"./lit-html-paDGiEfB.js";import{a as h,i as D,t as T,n as y}from"./ref-CInB0H-f.js";/**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const u="important",f=" !"+u,r=h(class extends D{constructor(e){var n;if(super(e),e.type!==T.ATTRIBUTE||e.name!=="style"||((n=e.strings)==null?void 0:n.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((n,i)=>{const o=e[i];return o==null?n:n+`${i=i.includes("-")?i:i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${o};`},"")}update(e,[n]){const{style:i}=e.element;if(this.ft===void 0)return this.ft=new Set(Object.keys(n)),this.render(n);for(const o of this.ft)n[o]==null&&(this.ft.delete(o),o.includes("-")?i.removeProperty(o):i[o]=null);for(const o in n){const t=n[o];if(t!=null){this.ft.add(o);const a=typeof t=="string"&&t.endsWith(f);o.includes("-")||a?i.setProperty(o,a?t.slice(0,-11):t,a?u:""):i[o]=t}}return p}});g.init();const c=s.create(()=>b`
+ */const u="important",f=" !"+u,r=h(class extends D{constructor(e){var n;if(super(e),e.type!==T.ATTRIBUTE||e.name!=="style"||((n=e.strings)==null?void 0:n.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((n,i)=>{const o=e[i];return o==null?n:n+`${i=i.includes("-")?i:i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${o};`},"")}update(e,[n]){const{style:i}=e.element;if(this.ft===void 0)return this.ft=new Set(Object.keys(n)),this.render(n);for(const o of this.ft)n[o]==null&&(this.ft.delete(o),o.includes("-")?i.removeProperty(o):i[o]=null);for(const o in n){const t=n[o];if(t!=null){this.ft.add(o);const a=typeof t=="string"&&t.endsWith(f);o.includes("-")||a?i.setProperty(o,a?t.slice(0,-11):t,a?u:""):i[o]=t}}return g}});p.init();const c=s.create(()=>b`
     <bim-panel label="My Panel" icon="mynaui:panel-left-solid" style="width: 24rem;">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-label>This is just a panel section... cool, right?</bim-label>
