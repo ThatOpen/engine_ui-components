@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as n,C as e}from"./index-W5V5HNuJ.js";import"./state-DYefyXr3.js";import{x as a}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";n.init();const t=document.createElement("bim-table"),r=e.create(()=>a`
-=======
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as n,C as e}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import{x as a}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";n.init();const t=document.createElement("bim-table"),r=e.create(()=>a`
->>>>>>> main
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as n,C as e}from"./index-DyXslpcX.js";import"./state-DYefyXr3.js";import{x as a}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";n.init();const t=document.createElement("bim-table"),r=e.create(()=>a`
     <!-- The most important thing is to have the slot attribute set as missing-data -->
     <!-- Other than that, the element can hold anything inside -->
     <!-- Be aware you can use this missing-data slot no matter if you are not loading data asynchronously -->

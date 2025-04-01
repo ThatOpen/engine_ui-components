@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as e}from"./index-W5V5HNuJ.js";import"./state-DYefyXr3.js";import"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";e.init();const t=document.body.querySelector("bim-selector"),r=t.querySelector("bim-option[label='Custom']"),i={data:"Hi!"};r.value=i;t.addEventListener("change",()=>{const o=t.value;alert(`Your new camera projection is: ${JSON.stringify(o)}.`)});
-=======
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as e}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";e.init();const t=document.body.querySelector("bim-selector"),r=t.querySelector("bim-option[label='Custom']"),i={data:"Hi!"};r.value=i;t.addEventListener("change",()=>{const o=t.value;alert(`Your new camera projection is: ${JSON.stringify(o)}.`)});
->>>>>>> main
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as e}from"./index-DyXslpcX.js";import"./state-DYefyXr3.js";import"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";e.init();const t=document.body.querySelector("bim-selector"),r=t.querySelector("bim-option[label='Custom']"),i={data:"Hi!"};r.value=i;t.addEventListener("change",()=>{const o=t.value;alert(`Your new camera projection is: ${JSON.stringify(o)}.`)});

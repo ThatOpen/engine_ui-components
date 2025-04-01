@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as s,C as t,T as l,a as c}from"./index-W5V5HNuJ.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";s.init();const a=t.create(()=>n`
-=======
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as s,C as t,T as l,a as c}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";s.init();const a=t.create(()=>n`
->>>>>>> main
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as s,C as t,T as l,a as c}from"./index-DyXslpcX.js";import"./state-DYefyXr3.js";import{x as n}from"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";s.init();const a=t.create(()=>n`
     <bim-table expanded>
       <div slot="missing-data" style="display: flex; flex-direction: column; align-items: center; width: 8rem; margin: auto;">
         <bim-label>No data to display!</bim-label>

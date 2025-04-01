@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as u,C as b}from"./index-W5V5HNuJ.js";import"./state-DYefyXr3.js";import{T as d,x as l}from"./lit-html-paDGiEfB.js";import{a as p,i as g,t as h,n as f}from"./ref-CInB0H-f.js";/**
-=======
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as p,C as s}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import{T as g,x as b}from"./lit-html-paDGiEfB.js";import{a as h,i as D,t as T,n as y}from"./ref-CInB0H-f.js";/**
->>>>>>> main
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as p,C as s}from"./index-DyXslpcX.js";import"./state-DYefyXr3.js";import{T as g,x as b}from"./lit-html-paDGiEfB.js";import{a as h,i as D,t as T,n as y}from"./ref-CInB0H-f.js";/**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
