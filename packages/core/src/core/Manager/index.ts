@@ -250,4 +250,54 @@ export class Manager {
       }
     });
   }
+
+  static toggleTheme(animate = true) {
+    // Targetting the head HTML element
+    const html = document.querySelector("html");
+    if (!html) return;
+
+    // Toggle the html theme
+    const toggleTheme = () => {
+      if (html.classList.contains("bim-ui-dark")) {
+        html.classList.replace("bim-ui-dark", "bim-ui-light");
+      } else if (html.classList.contains("bim-ui-light")) {
+        html.classList.replace("bim-ui-light", "bim-ui-dark");
+      } else {
+        html.classList.add("bim-ui-light"); // if nothing was set at all!
+      }
+    };
+
+    if (animate) {
+      // The same as the CSS's toggleThemeAnimation duration
+      const delayTime = 1100;
+
+      // Creating and styling the overlay element
+      const overlay = document.createElement("div");
+      overlay.classList.add("theme-transition-overlay");
+
+      // Added another div child to be able to create a shadow effect
+      overlay.appendChild(document.createElement("div"));
+
+      // Add the overlay to the DOM
+      document.body.appendChild(overlay);
+
+      setTimeout(() => {
+        toggleTheme();
+      }, delayTime / 3);
+
+      // After the animation ends, clean things up
+      setTimeout(() => {
+        // Used a querySelectorAll in case it was added more than once
+        const needsCleanup = document.body.querySelectorAll(
+          ".theme-transition-overlay",
+        );
+
+        needsCleanup.forEach((child) => {
+          document.body.removeChild(child);
+        });
+      }, delayTime);
+    } else {
+      toggleTheme();
+    }
+  }
 }

@@ -363,13 +363,7 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
     window.open("https://people.thatopen.com/home");
 
   const onToggleThemeClick = () => {
-    const html = document.querySelector("html");
-    if (!html) return;
-    if (html.classList.contains("bim-ui-dark")) {
-      html.classList.replace("bim-ui-dark", "bim-ui-light");
-    } else if (html.classList.contains("bim-ui-light")) {
-      html.classList.replace("bim-ui-light", "bim-ui-dark");
-    }
+    BUI.Manager.toggleTheme();
   };
 
   const { activationButton: leftPanelBtn } = leftPanel;
