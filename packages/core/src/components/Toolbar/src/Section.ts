@@ -8,8 +8,8 @@ import { HasName } from "../../../core/types";
  */
 export class ToolbarSection extends LitElement implements HasName {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-label--fz: var(--bim-ui_size-xs);
@@ -21,10 +21,6 @@ export class ToolbarSection extends LitElement implements HasName {
     :host(:not([vertical])) ::slotted(bim-button[vertical]) {
       --bim-icon--fz: var(--bim-ui_size-5xl);
       min-height: 3.75rem;
-    }
-
-    ::slotted(bim-button) {
-      --bim-label--c: var(--bim-ui_bg-contrast-80);
     }
 
     .parent {
