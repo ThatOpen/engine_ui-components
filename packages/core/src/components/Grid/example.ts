@@ -321,7 +321,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
   };
 
   return BUI.html`
-    <bim-panel style="height: 25rem">
+    <bim-panel label="Table" icon="material-symbols:table" style="height: 25rem">
       <bim-panel-section label="Assignments" fixed>
         <bim-table ${BUI.ref(onTableCreated)}></bim-table>
       </bim-panel-section>
@@ -368,16 +368,8 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
 
   const { activationButton: leftPanelBtn } = leftPanel;
   leftPanelBtn.vertical = true;
-
-  const onTableBtnClick = ({ target }: { target: BUI.Button }) => {
-    const isHidden = bottomPanel.style.display === "none";
-    target.active = isHidden;
-    if (isHidden) {
-      bottomPanel.style.removeProperty("display");
-    } else {
-      bottomPanel.style.display = "none";
-    }
-  };
+  const { activationButton: bottomPanelBtn } = bottomPanel;
+  bottomPanelBtn.vertical = true;
 
   return BUI.html`
    <bim-tabs>
@@ -388,7 +380,7 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
           <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
           ${leftPanel.activationButton}
           <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
-          <bim-button active @click=${onTableBtnClick} label="Table" vertical icon="material-symbols:table"></bim-button>
+          ${bottomPanel.activationButton}
           <bim-toolbar-group>
             <bim-button icon="solar:settings-bold"></bim-button>
             <bim-button icon="solar:settings-bold"></bim-button>

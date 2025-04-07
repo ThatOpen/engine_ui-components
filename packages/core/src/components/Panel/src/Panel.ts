@@ -82,16 +82,12 @@ export class Panel extends LitElement implements HasName, HasValue {
           opacity: 1;
         }
         50% {
+          max-height: 100vh;
+          max-width: 100vw;
           opacity: 0;
           transform: translateX(-10px);
         }
         70% {
-          max-height: 0;
-          max-width: 0;
-          transform: translateX(-10px);
-          opacity: 0;
-        }
-        100% {
           max-height: 0;
           max-width: 0;
           transform: translateX(-10px);
