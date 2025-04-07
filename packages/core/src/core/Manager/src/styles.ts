@@ -95,8 +95,7 @@ const globalStyles = css`
     left: 0;
     width: 100vw;
     height: 100vh;
-    filter: drop-shadow(0 0 20px var(--bim-ui_bg-base));
-    animation: toggleOverlay 1.1s ease-in forwards;
+    filter: drop-shadow(0 0 10px var(--bim-ui_bg-base));
     z-index: 9999;
   }
 
@@ -107,7 +106,6 @@ const globalStyles = css`
     width: 100%;
     height: 100%;
     background-color: var(--bim-ui_bg-base);
-    animation: toggleThemeAnimation 1.1s ease forwards;
     transition: background-color 0.4s;
   }
 
@@ -147,14 +145,14 @@ const globalStyles = css`
 
   @keyframes toggleThemeAnimation {
     0% {
-      clip-path: polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%);
+      clip-path: circle(0% at center top);
     }
-    25%,
-    60% {
-      clip-path: polygon(0% 0%, 0% 0%, 200% 0%, 0% 200%);
+    45%,
+    55% {
+      clip-path: circle(150% at center center);
     }
     100% {
-      clip-path: polygon(0% 200%, 200% 0%, 200% 0%, 0% 200%);
+      clip-path: circle(0% at center bottom);
     }
   }
 

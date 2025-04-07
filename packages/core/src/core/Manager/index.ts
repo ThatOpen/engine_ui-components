@@ -269,21 +269,32 @@ export class Manager {
 
     if (animate) {
       // The same as the CSS's toggleThemeAnimation duration
-      const delayTime = 1100;
+      const animDuration = 1500;
 
       // Creating and styling the overlay element
       const overlay = document.createElement("div");
       overlay.classList.add("theme-transition-overlay");
 
       // Added another div child to be able to create a shadow effect
-      overlay.appendChild(document.createElement("div"));
+      const overlayChild = document.createElement("div");
+      overlay.appendChild(overlayChild);
 
       // Add the overlay to the DOM
       document.body.appendChild(overlay);
 
+      // Setting the animation in JS to be controllable
+      overlay.style.setProperty(
+        "animation",
+        `toggleOverlay ${animDuration / 1000}s ease-in forwards`,
+      );
+      overlayChild.style.setProperty(
+        "animation",
+        `toggleThemeAnimation ${animDuration / 1000}s ease forwards`,
+      );
+
       setTimeout(() => {
         toggleTheme();
-      }, delayTime / 3);
+      }, animDuration / 3);
 
       // After the animation ends, clean things up
       setTimeout(() => {
@@ -295,7 +306,7 @@ export class Manager {
         needsCleanup.forEach((child) => {
           document.body.removeChild(child);
         });
-      }, delayTime);
+      }, animDuration);
     } else {
       toggleTheme();
     }
