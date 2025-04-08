@@ -1,7 +1,7 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
 import * as CUI from "../..";
+import { entityForm } from "../../sections/SpecificationInformation/src/entity-form";
 
 BUI.Manager.init();
 
@@ -43,10 +43,11 @@ grids.create(world);
   */
 
 const ifcLoader = components.get(OBC.IfcLoader);
-await ifcLoader.setup();
-const file = await fetch(
-  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
-);
+await ifcLoader.setup({
+  autoSetWasm: false,
+  wasm: { absolute: true, path: "https://unpkg.com/web-ifc@0.0.68/" },
+});
+const file = await fetch("/resources/school_str.ifc");
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
 const model = await ifcLoader.load(typedArray);
@@ -72,69 +73,154 @@ await indexer.process(model);
   Let's create an instance of the functional component, like this:
   */
 
-const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
+const ids = components.get(OBC.IDSSpecifications);
+const specification = ids.create("Walls_LOI200", ["IFC4"]);
+specification.description =
+  "These are all the requirements for walls in Level of Information 200";
+
+const ifcWallFacet = new OBC.IDSEntity(components, {
+  type: "simple",
+  parameter: "IFCWALL",
+});
+
+ifcWallFacet.predefinedType = {
+  type: "enumeration",
+  parameter: ["SOLIDWALL", "PARTITIONING", "SHEAR"],
+};
+
+const ifcSlabFacet = new OBC.IDSEntity(components, {
+  type: "simple",
+  parameter: "IFCSLAB",
+});
+
+const isExternalFacet = new OBC.IDSProperty(
   components,
-  fragmentIdMap: {},
-});
-
-propertiesTable.preserveStructureOnFilter = true;
-propertiesTable.indentationInText = false;
-
-/* MD
-  :::tip
-
-  The `elementProperties` functional component is a simplified version that shows any model entity data. However, if you like a more complete properties table, use the `entityAttributes` component.
-
-  :::
-
-  Cool! properties table created. Then after, let's tell the properties table to update each time the user makes a selection over the model. For it, we will use the highlighter from `@thatopen/components-front`:
-  */
-
-const highlighter = components.get(OBF.Highlighter);
-highlighter.setup({ world });
-
-highlighter.events.select.onHighlight.add((fragmentIdMap) => {
-  updatePropertiesTable({ fragmentIdMap });
-});
-
-highlighter.events.select.onClear.add(() =>
-  updatePropertiesTable({ fragmentIdMap: {} }),
+  { type: "simple", parameter: "Pset_WallCommon" },
+  { type: "simple", parameter: "IsExternal" },
 );
 
-/* MD
-  ### Creating a panel to append the table
-  Allright! Let's now create a BIM Panel to control some aspects of the properties table and to trigger some functionalities like expanding the rows children and copying the values to TSV, so you can paste your element values inside a spreadsheet application 😉
-  */
+isExternalFacet.dataType = "IFCBOOLEAN";
+isExternalFacet.uri = "www.custom-cde.com/12398b";
+isExternalFacet.value = { type: "pattern", parameter: "*." };
 
-const propertiesPanel = BUI.Component.create(() => {
-  const onTextInput = (e: Event) => {
-    const input = e.target as BUI.TextInput;
-    propertiesTable.queryString = input.value !== "" ? input.value : null;
-  };
+const uniformatFacet = new OBC.IDSClassification(components, {
+  type: "simple",
+  parameter: "Uniformat (2015)",
+});
 
-  const expandTable = (e: Event) => {
-    const button = e.target as BUI.Button;
-    propertiesTable.expanded = !propertiesTable.expanded;
-    button.label = propertiesTable.expanded ? "Collapse" : "Expand";
-  };
+uniformatFacet.cardinality = "optional";
+uniformatFacet.value = { type: "simple", parameter: "A.10" };
+uniformatFacet.uri = "www.custom-cde.com/23570b9";
 
-  const copyAsTSV = async () => {
-    await navigator.clipboard.writeText(propertiesTable.tsv);
-  };
+const attributeFacet = new OBC.IDSAttribute(components, {
+  type: "simple",
+  parameter: "Name",
+});
+
+attributeFacet.value = { type: "simple", parameter: "MuroFachada_20cm" };
+
+specification.applicability.add(ifcWallFacet, ifcSlabFacet);
+specification.requirements.add(isExternalFacet, uniformatFacet, attributeFacet);
+
+const [panel] = BUI.Component.create((state, update) => {
+  const { spec } = state;
+
+  let specificationSection: Element | null = null;
+  let applicabilitySection: Element | null = null;
+  let requirementsSection: Element | null = null;
+  let loadSpecificationSection: Element | null = null;
+
+  if (spec) {
+    const specificationInformation = CUI.sections.specificationInformation({
+      components,
+      specification,
+    })[0];
+
+    specificationSection = BUI.Component.create(
+      () => BUI.html`
+      <bim-panel-section label="Information" collapsed>
+        ${specificationInformation}
+      </bim-panel-section>
+    `,
+    );
+
+    const applicabilityTable = CUI.tables.facetsList({
+      components,
+      facets: specification.applicability,
+    })[0];
+
+    applicabilityTable.expanded = false;
+
+    applicabilitySection = BUI.Component.create(
+      () => BUI.html`
+        <bim-panel-section label="Applicability" collapsed>
+          <div class="applicability" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.25rem">
+              <bim-text-input placeholder="Search..."></bim-text-input>
+              <bim-button style="flex: 0" icon="mingcute:add-fill">
+                <bim-context-menu>
+                  <bim-button label="Entity"></bim-button>
+                  <bim-button label="Attribute"></bim-button>
+                  <bim-button label="Property"></bim-button>
+                  <bim-button label="Classification"></bim-button>
+                </bim-context-menu> 
+              </bim-button>
+            </div>
+            ${applicabilityTable}
+          </div> 
+        </bim-panel-section>
+      `,
+    );
+
+    const requirementsTable = CUI.tables.facetsList({
+      components,
+      facets: specification.requirements,
+    })[0];
+
+    requirementsTable.expanded = false;
+
+    requirementsSection = BUI.Component.create(
+      () => BUI.html`
+    <bim-panel-section label="Requirements" collapsed>
+          ${requirementsTable}
+        </bim-panel-section>
+    `,
+    );
+
+    // const [entity] = entityForm({
+    //   components,
+    //   onSubmit: (facet) => {
+    //     specification.applicability.add(facet);
+    //     update();
+    //   },
+    // });
+  } else {
+    const onClick = ({ target }: { target: BUI.Button }) => {
+      target.loading = true;
+      setTimeout(() => {
+        update({ spec: specification });
+        target.loading = false;
+      }, 200);
+    };
+
+    loadSpecificationSection = BUI.Component.create(
+      () => BUI.html`
+      <bim-panel-section label="Information Delivery Specification">
+        <bim-button label="Load Specification" @click=${onClick}></bim-button>
+      </bim-panel-section>
+    `,
+    );
+  }
 
   return BUI.html`
-    <bim-panel label="Properties">
-      <bim-panel-section label="Element Data">
-        <div style="display: flex; gap: 0.5rem;">
-          <bim-button @click=${expandTable} label=${propertiesTable.expanded ? "Collapse" : "Expand"}></bim-button> 
-          <bim-button @click=${copyAsTSV} label="Copy as TSV"></bim-button> 
-        </div> 
-        <bim-text-input @input=${onTextInput} placeholder="Search Property" debounce="250"></bim-text-input>
-        ${propertiesTable}
-      </bim-panel-section>
-    </bim-panel>
-  `;
-});
+      <bim-panel style="width: 24rem">
+        ${loadSpecificationSection}
+        ${specificationSection}
+        ${applicabilitySection}
+        ${requirementsSection}
+      </bim-panel> 
+    `;
+}, {});
 
 /* MD
   Finally, let's create a BIM Grid element and provide both the panel and the viewport to display everything.
@@ -144,10 +230,10 @@ const app = document.createElement("bim-grid");
 app.layouts = {
   main: {
     template: `
-    "propertiesPanel viewport"
-    /25rem 1fr
+    "panel viewport"
+    /auto 1fr
     `,
-    elements: { propertiesPanel, viewport },
+    elements: { panel, viewport },
   },
 };
 
