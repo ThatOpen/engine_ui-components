@@ -112,6 +112,12 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       return;
     }
 
+    // Setting editable animation timings
+    const elementEnteringDuration = 900;
+    const elementEnteringDelay = 50;
+    const strokesDuration = 350;
+    const crateDuration = 350;
+
     requestAnimationFrame(() => {
       // Targeting Elements
       const children = this.renderRoot.querySelector("bim-table-children");
@@ -133,8 +139,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
           child.style.setProperty("opacity", "0");
           child.style.setProperty("left", "-30px");
 
-          // eslint-disable-next-line no-undef
-          const childAnimKeyframes: Keyframe[] = [
+          const childAnimKeyframes = [
             {
               opacity: "0",
               left: "-30px",
@@ -146,44 +151,44 @@ export class TableGroup<T extends TableRowData> extends LitElement {
           ];
 
           child.animate(childAnimKeyframes, {
-            duration: 300,
-            delay: 50 + index * 50,
+            duration: elementEnteringDuration / 2,
+            delay: 50 + index * elementEnteringDelay,
             easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
             fill: "forwards",
           });
         });
       };
 
-      const caretAnimFunc = (open = false) => {
+      const caretAnimFunc = () => {
         const caretAnimKeyframes = [
           { transform: "translateY(-50%) rotate(90deg)" },
           { transform: "translateY(-50%) rotate(0deg)" },
         ];
 
         caret?.animate(caretAnimKeyframes, {
-          duration: 500,
+          duration: crateDuration,
           easing: "cubic-bezier(0.68, -0.55, 0.27, 1.55)",
           fill: "forwards",
-          direction: open ? "normal" : "reverse",
+          direction: this.childrenHidden ? "normal" : "reverse",
         });
       };
 
-      const rowVerticalBranchAnimFunc = (open = false) => {
+      const rowVerticalBranchAnimFunc = () => {
         const verticalBranchAnimKeyframes = [
           { transform: "scaleY(1)" },
           { transform: "scaleY(0)" },
         ];
 
         rowVerticalBranch?.animate(verticalBranchAnimKeyframes, {
-          duration: 250,
+          duration: strokesDuration,
           easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-          delay: open ? 0 : 200, // Update this 200 when changing the transition of other elements
+          delay: elementEnteringDelay,
           fill: "forwards",
-          direction: open ? "normal" : "reverse",
+          direction: this.childrenHidden ? "normal" : "reverse",
         });
       };
 
-      const rowHorizontalBranchesExceptionAnimFunc = (open = false) => {
+      const rowHorizontalBranchesExceptionAnimFunc = () => {
         const neededBranch = this.renderRoot
           .querySelector("bim-table-row")
           ?.querySelector(".branch-horizontal") as HTMLElement;
@@ -196,10 +201,10 @@ export class TableGroup<T extends TableRowData> extends LitElement {
           ];
 
           neededBranch.animate(exceptionalBranchAnimKeyframes, {
-            duration: 250,
+            duration: strokesDuration,
             easing: "cubic-bezier(0.4, 0, 0.2, 1)",
             fill: "forwards",
-            direction: open ? "normal" : "reverse",
+            direction: this.childrenHidden ? "normal" : "reverse",
           });
         }
       };
@@ -211,18 +216,18 @@ export class TableGroup<T extends TableRowData> extends LitElement {
         ];
 
         childrenVerticalBranch?.animate(childrenVerticalBranchAnimKeyframes, {
-          duration: 300,
+          duration: strokesDuration * 1.2,
           easing: "cubic-bezier(0.4, 0, 0.2, 1)",
           fill: "forwards",
-          delay: 300, // Update this 400 when changing the transition of other elements
+          delay: (elementEnteringDelay + strokesDuration) * 0.7,
         });
       };
 
       // Calling the animation functions
       childrenAnimFunc();
-      caretAnimFunc(this.childrenHidden);
-      rowVerticalBranchAnimFunc(this.childrenHidden);
-      rowHorizontalBranchesExceptionAnimFunc(this.childrenHidden);
+      caretAnimFunc();
+      rowVerticalBranchAnimFunc();
+      rowHorizontalBranchesExceptionAnimFunc();
       childrenVerticalBranchAnimFunc();
     });
   }
