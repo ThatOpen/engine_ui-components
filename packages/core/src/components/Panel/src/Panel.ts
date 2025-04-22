@@ -25,6 +25,7 @@ export class Panel extends LitElement implements HasName, HasValue {
       :host([hidden]) {
         max-height: 0;
         max-width: 0;
+        opacity: 0;
       }
 
       .parent {
@@ -56,43 +57,6 @@ export class Panel extends LitElement implements HasName, HasValue {
 
       ::slotted(bim-panel-section:not(:last-child)) {
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
-      }
-
-      @keyframes openPanel {
-        0% {
-          max-height: 0;
-          max-width: 0;
-          transform: translateX(-10px);
-          opacity: 0;
-        }
-        50% {
-          max-height: 100vh;
-          max-width: 100vw;
-        }
-        70% {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      @keyframes closePanel {
-        0% {
-          max-height: 100vh;
-          max-width: 100vw;
-          opacity: 1;
-        }
-        50% {
-          max-height: 100vh;
-          max-width: 100vw;
-          opacity: 0;
-          transform: translateX(-10px);
-        }
-        70% {
-          max-height: 0;
-          max-width: 0;
-          transform: translateX(-10px);
-          opacity: 0;
-        }
       }
     `,
   ];
@@ -254,15 +218,39 @@ export class Panel extends LitElement implements HasName, HasValue {
 
   readonly activationButton: Button = document.createElement("bim-button");
 
+  private animatePanles() {
+    const animationKeyframes = [
+      {
+        maxHeight: "100vh",
+        maxWidth: "100vw",
+        opacity: 1,
+      },
+      {
+        maxHeight: "100vh",
+        maxWidth: "100vw",
+        opacity: 0,
+      },
+      {
+        maxHeight: 0,
+        maxWidth: 0,
+        opacity: 0,
+      },
+    ];
+
+    this.animate(animationKeyframes, {
+      duration: 300,
+      easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
+      direction: this.hidden ? "normal" : "reverse",
+      fill: "forwards",
+    });
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.activationButton.active = !this.hidden;
     this.activationButton.onclick = () => {
       this.hidden = !this.hidden;
-      this.style.setProperty(
-        "animation",
-        `${this.hidden ? "closePanel" : "openPanel"} 0.4s cubic-bezier(0.65, 0.05, 0.36, 1) forwards`,
-      );
+      this.animatePanles();
     };
   }
 
