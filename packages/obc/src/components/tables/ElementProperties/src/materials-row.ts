@@ -44,6 +44,39 @@ export const createMaterialsRow = async (
         row.children.push(layerRow);
       }
     }
+    if (material.type === WEBIFC.IFCMATERIALPROFILESETUSAGE) {
+      const profileSetID = material.ForProfileSet?.value;
+      const profileSetAttrs = await model.getProperties(profileSetID);
+      if (!profileSetAttrs) continue;
+      for (const profileHandle of profileSetAttrs.MaterialProfiles) {
+        const { value: profileID } = profileHandle;
+        const profileAttrs = await model.getProperties(profileID);
+        if (!profileAttrs) continue;
+        const materialAttrs = await model.getProperties(profileAttrs.Material?.value);
+        if (!materialAttrs) continue;
+        const profileRow = {
+          data: {
+            Name: "Profile",
+          },
+          children: [
+            {
+              data: {
+                Name: "Name",
+                Value: profileAttrs.Name?.value,
+              },
+            },
+            {
+              data: {
+                Name: "Material",
+                Value: materialAttrs.Name?.value,
+              },
+            },
+          ],
+        };
+        if (!row.children) row.children = [];
+        row.children.push(profileRow);
+      }
+    }
     if (material.type === WEBIFC.IFCMATERIALLIST) {
       for (const materialHandle of material.Materials) {
         const { value: materialID } = materialHandle;
