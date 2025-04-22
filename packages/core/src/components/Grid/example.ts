@@ -334,7 +334,7 @@ const rightPanel = BUI.Component.create<BUI.Panel>(() => {
     alert("You are awesome 😏");
   };
   return BUI.html`
-    <bim-panel>
+    <bim-panel label="Right Panel" icon="mynaui:panel-right-solid" style="width: 20rem">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button label="Button With Nestings">
           <bim-context-menu>
@@ -366,9 +366,11 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
     BUI.Manager.toggleTheme();
   };
 
+  const { activationButton: rightPanelBtn } = rightPanel;
   const { activationButton: leftPanelBtn } = leftPanel;
-  leftPanelBtn.vertical = true;
   const { activationButton: bottomPanelBtn } = bottomPanel;
+  rightPanelBtn.vertical = true;
+  leftPanelBtn.vertical = true;
   bottomPanelBtn.vertical = true;
 
   return BUI.html`
@@ -380,6 +382,7 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
           <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
           ${leftPanel.activationButton}
           <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
+          ${rightPanel.activationButton}
           ${bottomPanel.activationButton}
           <bim-toolbar-group>
             <bim-button icon="solar:settings-bold"></bim-button>
@@ -523,7 +526,7 @@ grid.layouts = {
       "ribbon ribbon ribbon" auto
       "leftPanel viewport rightPanel" 1fr
       "leftPanel bottomPanel bottomPanel" auto
-      / auto 1fr 20rem
+      / auto 1fr auto
     `,
     elements: {
       ribbon,
