@@ -23,10 +23,6 @@ export class ToolbarSection extends LitElement implements HasName {
       min-height: 3.75rem;
     }
 
-    ::slotted(bim-button) {
-      --bim-label--c: var(--bim-ui_bg-contrast-80);
-    }
-
     .parent {
       display: flex;
       flex-direction: column;

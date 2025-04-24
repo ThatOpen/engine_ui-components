@@ -17,6 +17,10 @@
 BIM UI Components is the ultimate set of user interface elements you need to create fully featured BIM applications 🚀
 <br></br>
 
+## 🤝 Want our help?
+Are you developing a project with our technology and would like our help?
+Apply now to join [That Open Accelerator Program](https://thatopen.com/accelerator)!
+
 ## How it works? 🤓
 This library is a monorepo where separate but correlated repositories exists in the packages folder. The main repository resides in `core`.
 <br></br>
