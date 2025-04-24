@@ -107,17 +107,13 @@ export class Tabs extends LitElement {
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host(:not([tab])) .content {
-        display: none;
-      }
-
       :host([floating]) {
         background-color: transparent;
       }
 
       :host([floating]) .switchers {
         justify-self: center;
-        overflow: auto;
+        overflow: hidden;
         background-color: var(--bim-ui_bg-base);
       }
 
@@ -135,12 +131,12 @@ export class Tabs extends LitElement {
         border-right: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host([floating]:not([tab])) .switchers {
+      :host([floating][tab="hidden"]) .switchers {
         border-radius: var(--bim-ui_size-2xs);
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host([floating][bottom]:not([tab])) .switchers {
+      :host([floating][bottom][tab="hidden"]) .switchers {
         border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
