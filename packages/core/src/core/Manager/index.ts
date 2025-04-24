@@ -269,7 +269,7 @@ export class Manager {
 
     if (animate) {
       // The same as the CSS's toggleThemeAnimation duration
-      const animDuration = 1500;
+      const animDuration = 1000;
 
       // Creating and styling the overlay element
       const overlay = document.createElement("div");
@@ -278,6 +278,10 @@ export class Manager {
       // Added another div child to be able to create a shadow effect
       const overlayChild = document.createElement("div");
       overlay.appendChild(overlayChild);
+      overlayChild.style.setProperty(
+        "transition",
+        `background-color ${animDuration / 3200}s`,
+      );
 
       // Add the overlay to the DOM
       document.body.appendChild(overlay);
@@ -294,7 +298,7 @@ export class Manager {
 
       setTimeout(() => {
         toggleTheme();
-      }, animDuration / 3);
+      }, animDuration / 4);
 
       // After the animation ends, clean things up
       setTimeout(() => {

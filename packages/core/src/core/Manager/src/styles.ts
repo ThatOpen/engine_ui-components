@@ -106,7 +106,6 @@ const globalStyles = css`
     width: 100%;
     height: 100%;
     background-color: var(--bim-ui_bg-base);
-    transition: background-color 0.4s;
   }
 
   html.bim-ui-dark {
