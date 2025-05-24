@@ -321,7 +321,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
   };
 
   return BUI.html`
-    <bim-panel style="height: 25rem">
+    <bim-panel label="Table" icon="material-symbols:table" style="height: 25rem">
       <bim-panel-section label="Assignments" fixed>
         <bim-table ${BUI.ref(onTableCreated)}></bim-table>
       </bim-panel-section>
@@ -334,7 +334,7 @@ const rightPanel = BUI.Component.create<BUI.Panel>(() => {
     alert("You are awesome 😏");
   };
   return BUI.html`
-    <bim-panel>
+    <bim-panel label="Right Panel" icon="mynaui:panel-right-solid" style="width: 20rem">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button label="Button With Nestings">
           <bim-context-menu>
@@ -363,27 +363,15 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
     window.open("https://people.thatopen.com/home");
 
   const onToggleThemeClick = () => {
-    const html = document.querySelector("html");
-    if (!html) return;
-    if (html.classList.contains("bim-ui-dark")) {
-      html.classList.replace("bim-ui-dark", "bim-ui-light");
-    } else if (html.classList.contains("bim-ui-light")) {
-      html.classList.replace("bim-ui-light", "bim-ui-dark");
-    }
+    BUI.Manager.toggleTheme();
   };
 
+  const { activationButton: rightPanelBtn } = rightPanel;
   const { activationButton: leftPanelBtn } = leftPanel;
+  const { activationButton: bottomPanelBtn } = bottomPanel;
+  rightPanelBtn.vertical = true;
   leftPanelBtn.vertical = true;
-
-  const onTableBtnClick = ({ target }: { target: BUI.Button }) => {
-    const isHidden = bottomPanel.style.display === "none";
-    target.active = isHidden;
-    if (isHidden) {
-      bottomPanel.style.removeProperty("display");
-    } else {
-      bottomPanel.style.display = "none";
-    }
-  };
+  bottomPanelBtn.vertical = true;
 
   return BUI.html`
    <bim-tabs>
@@ -394,7 +382,8 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
           <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
           ${leftPanel.activationButton}
           <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
-          <bim-button active @click=${onTableBtnClick} label="Table" vertical icon="material-symbols:table"></bim-button>
+          ${rightPanel.activationButton}
+          ${bottomPanel.activationButton}
           <bim-toolbar-group>
             <bim-button icon="solar:settings-bold"></bim-button>
             <bim-button icon="solar:settings-bold"></bim-button>
@@ -537,7 +526,7 @@ grid.layouts = {
       "ribbon ribbon ribbon" auto
       "leftPanel viewport rightPanel" 1fr
       "leftPanel bottomPanel bottomPanel" auto
-      / auto 1fr 20rem
+      / auto 1fr auto
     `,
     elements: {
       ribbon,

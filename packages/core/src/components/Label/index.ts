@@ -14,11 +14,13 @@ export class Label extends LitElement {
       --bim-icon--c: var(--bim-label--c);
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
       font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
-      overflow: hidden;
       display: block;
       white-space: nowrap;
-      line-height: 1.1em;
       transition: all 0.15s;
+    }
+
+    :host([icon]) {
+      line-height: 1.1rem;
     }
 
     .parent {

@@ -8,8 +8,8 @@ import { Manager } from "../../../core/Manager";
  */
 export class Toolbar extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
@@ -24,7 +24,7 @@ export class Toolbar extends LitElement {
 
     .parent {
       display: flex;
-      width: min-content;
+      width: max-content;
       pointer-events: auto;
     }
 

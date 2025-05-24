@@ -1,34 +1,8 @@
-/* MD
-   ## Managing your loaded models 🏢
-  ---
-  What else can we say? The task is really simple: we need to see a list of the loaded models in the app. Let's get into it!
-  ### 🖖 Importing our Libraries
-
-  In this tutorial, we will import:
-
-  - @thatopen/components to set up the barebone of our app.
-  - @thatopen/ui to add some simple and cool UI menus.
-  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
-*/
-
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
-// You have to import from "@thatopen/ui-obc"
-import * as BUIC from "../..";
-
-/* MD
-  ### 📋 Initializing the UI
-  As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-*/
+import * as CUI from "../..";
 
 BUI.Manager.init();
-
-/* MD
-  ### 🌎 Setting up a simple scene
-  ---
-
-  We will start by creating a simple scene with a camera and a renderer. If you don't know how to set up a scene, you can check the Worlds tutorial.
-*/
 
 const components = new OBC.Components();
 
@@ -57,6 +31,9 @@ viewerGrids.create(world);
 components.init();
 
 /* MD
+  ## Managing your loaded models 🏢
+  ---
+  What else can we say? The task is really simple: we need to see a list of the loaded models in the app. Let's get into it!
 
   ### Setting up the components
   First of all, we're going to get the `FragmentIfcLoader` from an existing components instance:
@@ -79,7 +56,7 @@ fragmentsManager.onFragmentsLoaded.add((model) => {
   Allright! Now that some basic events are setup, it's time to create a new fresh models list component:
   */
 
-const [modelsList] = BUIC.tables.modelsList({
+const [modelsList] = CUI.tables.modelsList({
   components,
   tags: { schema: true, viewDefinition: false },
   actions: { download: false },
@@ -90,7 +67,7 @@ const [modelsList] = BUIC.tables.modelsList({
   */
 
 const panel = BUI.Component.create(() => {
-  const [loadIfcBtn] = BUIC.buttons.loadIfc({ components });
+  const [loadIfcBtn] = CUI.buttons.loadIfc({ components });
 
   return BUI.html`
    <bim-panel label="IFC Models">

@@ -1,37 +1,8 @@
-/* MD
-  ## Displaying elements grouping 📦
-  ---
-  One of the greatest things we can make using BIM models is to group elements based on their properties. This has many use cases! Like grouping elements to check their collisions 💥, grouping elements based on their construction activities 🔨, or grouping fininshed elements during the construction phase ✅. 
-  
-  Other than grouping the elements, the next most important thing is to show them to your user in an easy way... well, here is where it comes the `ClassificationsTree` functional component!
-
-  ### 🖖 Importing our Libraries
-
-  In this tutorial, we will import:
-
-  - @thatopen/components to set up the barebone of our app.
-  - @thatopen/ui to add some simple and cool UI menus.
-  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
-*/
-
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
-// You have to import from "@thatopen/ui-obc"
-import * as BUIC from "../..";
-
-/* MD
-  ### 📋 Initializing the UI
-  As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-*/
+import * as CUI from "../..";
 
 BUI.Manager.init();
-
-/* MD
-  ### 🌎 Setting up a simple scene
-  ---
-
-  We will start by creating a simple scene with a camera and a renderer. If you don't know how to set up a scene, you can check the Worlds tutorial.
-*/
 
 const components = new OBC.Components();
 
@@ -61,39 +32,27 @@ viewerGrids.create(world);
 
 components.init();
 
-/* MD
-  ## Managing your loaded models 🏢
-  ---
-  What else can we say? The task is really simple: we need to see a list of the loaded models in the app. Let's get into it!
-
-  ### Setting up the components
-  First of all, we're going to get the `FragmentIfcLoader` from an existing components instance:
-  */
-
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
-/* MD
-  The step above is super important as none of the existing functional components setup any tool, they just get it as they are! So, if we don't setup the `FragmentIfcLoader` then the wasm path is not going to be defined and an error will arise 🤓. Just after we have setup the loader, let's then configure the `FragmentManager` so any time a model is loaded it gets added to some world scene created before: 
-  */
-
 const fragmentsManager = components.get(OBC.FragmentsManager);
-
-/* MD
-  If you want to get the resulted model every time a new model is loaded, you can subscribe to the following event anywhere in your app:
-*/
-
 fragmentsManager.onFragmentsLoaded.add((model) => {
   if (world.scene) world.scene.three.add(model);
 });
 
 /* MD 
+  ## Displaying elements grouping 📦
+  ---
+  One of the greatest things we can make using BIM models is to group elements based on their properties. This has many use cases! Like grouping elements to check their collisions 💥, grouping elements based on their construction activities 🔨, or grouping fininshed elements during the construction phase ✅. 
+  
+  Other than grouping the elements, the next most important thing is to show them to your user in an easy way... well, here is where it comes the `ClassificationsTree` functional component!
+
   ### Creating the classifications tree
   First things first, let's create an instance of the functional component, like this:
   */
 
 const [classificationsTree, updateClassificationsTree] =
-  BUIC.tables.classificationTree({
+  CUI.tables.classificationTree({
     components,
     classifications: [],
   });
@@ -130,7 +89,7 @@ fragmentsManager.onFragmentsLoaded.add(async (model) => {
   */
 
 const panel = BUI.Component.create(() => {
-  const [loadIfcBtn] = BUIC.buttons.loadIfc({ components });
+  const [loadIfcBtn] = CUI.buttons.loadIfc({ components });
 
   return BUI.html`
    <bim-panel label="Classifications Tree">

@@ -33,6 +33,7 @@ export class Input extends LitElement implements HasValue, HasName {
     }
 
     .input {
+      position: relative;
       overflow: hidden;
       box-sizing: border-box;
       display: flex;

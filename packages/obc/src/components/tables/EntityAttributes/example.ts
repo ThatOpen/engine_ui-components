@@ -1,40 +1,11 @@
-/* MD
-  ## Displaying data the advanced way 🔥🔥
-  ---
-  What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!
-
-  ### 🖖 Importing our Libraries
-
-  In this tutorial, we will import:
-
-  - web-ifc to get some IFC items.
-  - @thatopen/ui to add some simple and cool UI menus.
-  - @thatopen/components to set up the barebone of our app.
-  - @thatopen/components-front to use some frontend-oriented components.
-  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
-*/
-
 /* eslint-disable no-alert */
 import * as WEBIFC from "web-ifc";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-import * as OBCF from "@thatopen/components-front";
-// You have to import from "@thatopen/ui-obc"
-import * as BUIC from "../..";
-
-/* MD
-  ### 📋 Initializing the UI
-  As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-*/
+import * as OBF from "@thatopen/components-front";
+import * as CUI from "../..";
 
 BUI.Manager.init();
-
-/* MD
-  ### 🌎 Setting up a simple scene
-  ---
-
-  We will start by creating a simple scene with a camera and a renderer. If you don't know how to set up a scene, you can check the Worlds tutorial.
-*/
 
 const components = new OBC.Components();
 
@@ -64,6 +35,9 @@ const grids = components.get(OBC.Grids);
 grids.create(world);
 
 /* MD 
+  ## Displaying data the advanced way 🔥🔥
+  ---
+  What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!
 
   ### Loading a model and computing it's relations
   First things first... let's load a model 👇
@@ -154,7 +128,7 @@ const tableDefinition: BUI.TableDataTransform = {
   Keep in mind the step above is optional! Not needed for the table to work. Now its time to create the table using the predefine functional component that ships with the library 🙂
   */
 
-const [attributesTable, updateAttributesTable] = BUIC.tables.entityAttributes({
+const [attributesTable, updateAttributesTable] = CUI.tables.entityAttributes({
   components,
   fragmentIdMap: {},
   tableDefinition,
@@ -184,7 +158,7 @@ attributesTable.preserveStructureOnFilter = true;
   Cool! attributes table created. Then after, let's tell the attributes table to update each time the user makes a selection over the model. For it, we will use the [Highlighter](/Tutorials/Components/Front/Highlighter):
   */
 
-const highlighter = components.get(OBCF.Highlighter);
+const highlighter = components.get(OBF.Highlighter);
 highlighter.setup({ world });
 
 highlighter.events.select.onHighlight.add((fragmentIdMap) => {

@@ -26,12 +26,18 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
     .branch-vertical {
       border-left: 1px dotted var(--bim-ui_bg-contrast-40);
+      transform-origin: top center;
+      transform: scaleY(0);
     }
 
     .branch-horizontal {
       top: 50%;
       width: 1rem;
       border-bottom: 1px dotted var(--bim-ui_bg-contrast-40);
+    }
+
+    .branch-horizontal {
+      transform-origin: center left;
     }
 
     .caret {
@@ -75,6 +81,184 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     this.childrenHidden =
       typeof force === "undefined" ? !this.childrenHidden : !force;
     if (recursive) this._children.toggleGroups(force, recursive);
+
+    this.animateTableChildren(true); // set it to false to deactivate the animations
+  }
+
+  private animateTableChildren(active = true) {
+    if (!active) {
+      requestAnimationFrame(() => {
+        const caret = this.renderRoot.querySelector(".caret") as HTMLElement;
+        const rowVerticalBranch = this.renderRoot.querySelector(
+          ".branch-vertical",
+        ) as HTMLElement;
+        const childrenVerticalBranch = this.renderRoot
+          .querySelector("bim-table-children")
+          ?.querySelector(".branch-vertical") as HTMLElement;
+
+        caret.style.setProperty(
+          "transform",
+          `translateY(-50%) rotate(${this.childrenHidden ? "0" : "90"}deg)`,
+        );
+        rowVerticalBranch.style.setProperty(
+          "transform",
+          `scaleY(${this.childrenHidden ? "0" : "1"})`,
+        );
+        childrenVerticalBranch?.style.setProperty(
+          "transform",
+          `scaleY(${this.childrenHidden ? "0" : "1"})`,
+        );
+      });
+      return;
+    }
+
+    // Setting editable animation timings
+    const elementEnteringDuration = 900;
+    const elementEnteringDelay = 50;
+    const strokesDuration = 350;
+    const crateDuration = 350;
+
+    requestAnimationFrame(() => {
+      // Targeting Elements
+      const children = this.renderRoot.querySelector("bim-table-children");
+      const caret = this.renderRoot.querySelector(".caret") as HTMLElement;
+      const rowVerticalBranch = this.renderRoot.querySelector(
+        ".branch-vertical",
+      ) as HTMLElement;
+
+      const childrenVerticalBranch = this.renderRoot
+        .querySelector("bim-table-children")
+        ?.querySelector(".branch-vertical") as HTMLElement;
+
+      // Animation functions
+      const childrenAnimFunc = () => {
+        const extraChildren =
+          children?.renderRoot.querySelectorAll("bim-table-group");
+
+        extraChildren?.forEach((child, index) => {
+          child.style.setProperty("opacity", "0");
+          child.style.setProperty("left", "-30px");
+
+          const childAnimKeyframes = [
+            {
+              opacity: "0",
+              left: "-30px",
+            },
+            {
+              opacity: "1",
+              left: "0",
+            },
+          ];
+
+          child.animate(childAnimKeyframes, {
+            duration: elementEnteringDuration / 2,
+            delay: 50 + index * elementEnteringDelay,
+            easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
+            fill: "forwards",
+          });
+        });
+      };
+
+      const caretAnimFunc = () => {
+        const caretAnimKeyframes = [
+          { transform: "translateY(-50%) rotate(90deg)" },
+          { transform: "translateY(-50%) rotate(0deg)" },
+        ];
+
+        caret?.animate(caretAnimKeyframes, {
+          duration: crateDuration,
+          easing: "cubic-bezier(0.68, -0.55, 0.27, 1.55)",
+          fill: "forwards",
+          direction: this.childrenHidden ? "normal" : "reverse",
+        });
+      };
+
+      const rowVerticalBranchAnimFunc = () => {
+        const verticalBranchAnimKeyframes = [
+          { transform: "scaleY(1)" },
+          { transform: "scaleY(0)" },
+        ];
+
+        rowVerticalBranch?.animate(verticalBranchAnimKeyframes, {
+          duration: strokesDuration,
+          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          delay: elementEnteringDelay,
+          fill: "forwards",
+          direction: this.childrenHidden ? "normal" : "reverse",
+        });
+      };
+
+      const rowHorizontalBranchesExceptionAnimFunc = () => {
+        const neededBranch = this.renderRoot
+          .querySelector("bim-table-row")
+          ?.querySelector(".branch-horizontal") as HTMLElement;
+
+        if (neededBranch) {
+          neededBranch.style.setProperty("transform-origin", "center right");
+          const exceptionalBranchAnimKeyframes = [
+            { transform: "scaleX(0)" },
+            { transform: "scaleX(1)" },
+          ];
+
+          neededBranch.animate(exceptionalBranchAnimKeyframes, {
+            duration: strokesDuration,
+            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+            fill: "forwards",
+            direction: this.childrenHidden ? "normal" : "reverse",
+          });
+        }
+      };
+
+      const childrenVerticalBranchAnimFunc = () => {
+        const childrenVerticalBranchAnimKeyframes = [
+          { transform: "scaleY(0)" },
+          { transform: "scaleY(1)" },
+        ];
+
+        childrenVerticalBranch?.animate(childrenVerticalBranchAnimKeyframes, {
+          duration: strokesDuration * 1.2,
+          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          fill: "forwards",
+          delay: (elementEnteringDelay + strokesDuration) * 0.7,
+        });
+      };
+
+      // Calling the animation functions
+      childrenAnimFunc();
+      caretAnimFunc();
+      rowVerticalBranchAnimFunc();
+      rowHorizontalBranchesExceptionAnimFunc();
+      childrenVerticalBranchAnimFunc();
+    });
+  }
+
+  protected firstUpdated() {
+    const caret = this.renderRoot.querySelectorAll(".caret");
+
+    caret.forEach((child) => {
+      if (!this.childrenHidden) {
+        const newChild = child as HTMLElement;
+        newChild.style.setProperty(
+          "transform",
+          "translateY(-50%) rotate(90deg)",
+        );
+
+        const horizontalBranch = child.parentElement?.querySelector(
+          ".branch-horizontal",
+        ) as HTMLElement;
+        if (horizontalBranch)
+          horizontalBranch.style.setProperty("transform", "scaleX(0)");
+
+        const verticalBranch =
+          child.parentElement?.parentElement?.querySelectorAll(
+            ".branch-vertical",
+          );
+        verticalBranch?.forEach((branch) => {
+          const newBranch = branch as HTMLElement;
+          newBranch.style.setProperty("transform", "scaleY(1)");
+        });
+      }
+    });
   }
 
   protected render() {
@@ -108,14 +292,14 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
     let caret: HTMLDivElement | null = null;
     if (!this.table.noIndentation) {
-      const childrenHiddenCaret = document.createElementNS(
+      const childrenToggleCaret = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "svg",
       );
 
-      childrenHiddenCaret.setAttribute("height", "9.5");
-      childrenHiddenCaret.setAttribute("width", "7.5");
-      childrenHiddenCaret.setAttribute("viewBox", "0 0 4.6666672 7.3333333");
+      childrenToggleCaret.setAttribute("height", "9.9");
+      childrenToggleCaret.setAttribute("width", "7.5");
+      childrenToggleCaret.setAttribute("viewBox", "0 0 4.6666672 7.7");
 
       const childrenHiddenCaretPath = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -127,28 +311,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
         "m 1.7470835,6.9583848 2.5899999,-2.59 c 0.39,-0.39 0.39,-1.02 0,-1.41 L 1.7470835,0.36838483 c -0.63,-0.62000003 -1.71000005,-0.18 -1.71000005,0.70999997 v 5.17 c 0,0.9 1.08000005,1.34 1.71000005,0.71 z",
       );
 
-      childrenHiddenCaret.append(childrenHiddenCaretPath);
-
-      const childrenVisibleCaret = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg",
-      );
-
-      childrenVisibleCaret.setAttribute("height", "6.5");
-      childrenVisibleCaret.setAttribute("width", "9.5");
-      childrenVisibleCaret.setAttribute("viewBox", "0 0 5.9111118 5.0175439");
-
-      const childrenVisibleCaretPath = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path",
-      );
-
-      childrenVisibleCaretPath.setAttribute(
-        "d",
-        "M -0.33616196,1.922522 2.253838,4.5125219 c 0.39,0.39 1.02,0.39 1.41,0 L 6.2538379,1.922522 c 0.6200001,-0.63 0.18,-1.71000007 -0.7099999,-1.71000007 H 0.37383804 c -0.89999997,0 -1.33999997,1.08000007 -0.71,1.71000007 z",
-      );
-
-      childrenVisibleCaret.append(childrenVisibleCaretPath);
+      childrenToggleCaret.append(childrenHiddenCaretPath);
 
       caret = document.createElement("div");
       caret.addEventListener("click", (e: Event) => {
@@ -157,17 +320,13 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       });
       caret.classList.add("caret");
       caret.style.left = `${(this.table.selectableRows ? 1.5 : 0.125) + indentation}rem`;
-      if (this.childrenHidden) {
-        caret.append(childrenHiddenCaret);
-      } else {
-        caret.append(childrenVisibleCaret);
-      }
+      caret.append(childrenToggleCaret);
     }
 
     // @ts-ignore
     const row = document.createElement("bim-table-row") as TableRow<T>;
-    if (this.data.children && !this.childrenHidden)
-      row.append(verticalBranchRow);
+    if (this.data.children) row.append(verticalBranchRow);
+
     row.table = this.table;
     row.data = this.data.data;
     this.table.dispatchEvent(
@@ -177,12 +336,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     );
 
     if (caret && this.data.children) row.append(caret);
-    if (
-      indentation !== 0 &&
-      (!this.data.children || this.childrenHidden) &&
-      horizontalBranch
-    )
-      row.append(horizontalBranch);
+    if (indentation !== 0 && horizontalBranch) row.append(horizontalBranch);
 
     let children: TableChildren<T> | undefined;
     if (this.data.children) {
@@ -196,6 +350,8 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       const verticalBranchChildren = document.createDocumentFragment();
       render(verticalBranchTemplate, verticalBranchChildren);
       children.append(verticalBranchChildren);
+
+      if (this.childrenHidden) children.setAttribute("hidden", "");
     }
 
     return html`
