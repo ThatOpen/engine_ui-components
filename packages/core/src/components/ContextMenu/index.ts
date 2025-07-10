@@ -32,14 +32,18 @@ export class ContextMenu extends LitElement {
         padding: 0.5rem;
         border-radius: var(--bim-ui_size-4xs);
         display: flex;
-        background-color: var(
-          --bim-context-menu--bgc,
-          var(--bim-ui_bg-contrast-20)
-        );
+        transform-origin: top left;
+        transform: scale(1);
+        clip-path: circle(150% at top left);
+        background-color: var(--bim-ui_bg-contrast-20);
+        transition:
+          clip-path 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93),
+          transform 0.3s cubic-bezier(0.72, 0.1, 0.45, 2.35);
       }
 
       :host(:not([visible])) {
-        display: none;
+        transform: scale(0.8);
+        clip-path: circle(0 at top left);
       }
     `,
   ];
@@ -84,8 +88,10 @@ export class ContextMenu extends LitElement {
       if (!(menu instanceof ContextMenu)) continue;
       menu.visible = false;
     }
-    ContextMenu.dialog.close();
-    ContextMenu.dialog.remove();
+    setTimeout(() => {
+      ContextMenu.dialog.close();
+      ContextMenu.dialog.remove();
+    }, 310); // at the transition max speed
   }
 
   private _visible = false;
@@ -103,14 +109,18 @@ export class ContextMenu extends LitElement {
       }
       this._previousContainer = this.parentElement;
       ContextMenu.dialog.style.top = `${window.scrollY || document.documentElement.scrollTop}px`;
+      this.style.setProperty("display", "flex");
       ContextMenu.dialog.append(this);
       ContextMenu.dialog.showModal();
       this.updatePosition();
       this.dispatchEvent(new Event("visible"));
     } else {
-      this._previousContainer?.append(this);
-      this._previousContainer = null;
-      this.dispatchEvent(new Event("hidden"));
+      setTimeout(() => {
+        this._previousContainer?.append(this);
+        this._previousContainer = null;
+        this.style.setProperty("display", "none");
+        this.dispatchEvent(new Event("hidden"));
+      }, 310); // at the transition max speed
     }
   }
 
@@ -142,6 +152,15 @@ export class ContextMenu extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     ContextMenu.menus.push(this);
+
+    if (this.visible) {
+      this.style.setProperty("width", "auto");
+      this.style.setProperty("height", "auto");
+    } else {
+      this.style.setProperty("display", "none");
+      this.style.setProperty("width", "0");
+      this.style.setProperty("height", "0");
+    }
   }
 
   protected render() {

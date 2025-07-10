@@ -1,1 +1,1 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{M as r}from"./index-CcrzIsUO.js";import"./state-DYefyXr3.js";import"./lit-html-paDGiEfB.js";import"./ref-CInB0H-f.js";r.init();const o=document.body.querySelector("bim-color-input");o.addEventListener("input",()=>{const{color:t}=o;console.log(t)});
+import"./lit-html-Cs86_c16.js";import{M as n}from"./index-uc4fg9kd.js";import"./ref-DXXV_dKT.js";n.init();const o=document.body.querySelector("bim-color-input");o.addEventListener("input",()=>{const{color:t}=o;console.log(t)});

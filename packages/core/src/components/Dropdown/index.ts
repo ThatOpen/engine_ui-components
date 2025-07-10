@@ -129,6 +129,17 @@ export class Dropdown extends Component implements HasValue, HasName {
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
+  /**
+   * Represents the placeholder property of the component.
+   * This property is used to display a hint or a placeholder text inside the input field.
+   * The placeholder text is displayed when the input field is empty and loses focus.
+   *
+   * @example
+   * <bim-dropdown placeholder="Select something.."></bim-dropdown>
+   */
+  @property({ type: String, reflect: true })
+  placeholder?: string;
+
   private _visible = false;
 
   /**
@@ -285,7 +296,7 @@ export class Dropdown extends Component implements HasValue, HasName {
     let inputIcon: string | undefined;
 
     if (this._value.size === 0) {
-      inputLabel = "Select an option...";
+      inputLabel = this.placeholder ?? "Select an option...";
     } else if (this._value.size === 1) {
       const option = [...this._value][0];
       inputLabel = option?.label || option?.value;

@@ -38,9 +38,14 @@ export class TextInput extends LitElement implements HasName, HasValue {
         border-radius: var(--bim-text-input--bdrs, var(--bim-ui_size-4xs));
       }
 
+      :host([disabled]) input,
+      :host([disabled]) textarea {
+        color: var(--bim-ui_bg-contrast-60);
+      }
+
       textarea {
         line-height: 1.1rem;
-        resize: vertical;
+        outline: none;
       }
 
       :host(:focus) {
@@ -153,6 +158,33 @@ export class TextInput extends LitElement implements HasName, HasValue {
   @property({ type: Number, reflect: true })
   rows?: number;
 
+  /**
+   * Represents the disabled property of the TextInput component.
+   * This property is used to disable the input field.
+   * When set to `true`, the input field will be disabled and the user will not be able to interact with it.
+   *
+   * @default false
+   *
+   * @example
+   * <bim-text-input disabled></bim-text-input>
+   */
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  /**
+   * Represents the resize property of the TextInput component.
+   * This property controls how the textarea can be resized.
+   * Possible values: "none", "both", "horizontal", "vertical", "block", "inline"
+   *
+   * @default "vertical"
+   *
+   * @example
+   * <bim-text-input resize="both"></bim-text-input>
+   */
+  @property({ type: String, reflect: true })
+  resize: "none" | "both" | "horizontal" | "vertical" | "block" | "inline" =
+    "vertical";
+
   private _type = "text";
 
   /**
@@ -226,13 +258,16 @@ export class TextInput extends LitElement implements HasName, HasValue {
               aria-label=${this.label || this.name || "Text Input"}
               .value=${this.value}
               .rows=${this.rows ?? 5}
+              ?disabled=${this.disabled}
               placeholder=${ifDefined(this.placeholder)}
               @input=${this.onInputChange}
+              style="resize: ${this.resize};"
             ></textarea>`
           : html` <input
               aria-label=${this.label || this.name || "Text Input"}
               .type=${this.type}
               .value=${this.value}
+              ?disabled=${this.disabled}
               placeholder=${ifDefined(this.placeholder)}
               @input=${this.onInputChange}
             />`}

@@ -1,0 +1,6 @@
+import"./lit-html-Cs86_c16.js";import{a as i,C as l,F as p,R as u,m as b,H as w}from"./index-BgQRAdOj.js";import"./index-VwooTTqL.js";import{M as f}from"./index-CgF6s4_8.js";import{b as g}from"./index-NGXf93vL.js";import"./ref-DXXV_dKT.js";i.init();f.init();const e=new l,a=e.get(p);a.init("/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs");const o=document.createElement("bim-world");document.body.append(o);o.name="main";o.components=e;const t=document.createElement("bim-world");document.body.append(t);t.name="secondary";t.components=e;await e.init();const m=o.world;setTimeout(()=>m.camera.updateAspect());m.camera.controls.addEventListener("update",()=>a.core.update(!0));const d=t.world;setTimeout(()=>d.camera.updateAspect());d.camera.controls.addEventListener("update",()=>a.core.update(!0));const[n,y]=g.loadIfc({components:e,worldName:o.name});n.style.position="absolute";n.style.top="1rem";n.style.left="1rem";const E=u.create(()=>b`
+    <bim-dropdown @change=${s=>{const r=s.target;if(!(r instanceof w))return;const[c]=r.value;y({worldName:c})}} style="position: absolute; top: 4rem; left: 1rem">
+      <bim-option label="First World" value="main" checked></bim-option>
+      <bim-option label="Second World" value="secondary"></bim-option>
+    </bim-dropdown>
+    `);document.body.append(n,E);

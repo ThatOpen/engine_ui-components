@@ -1,6 +1,11 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-import { modelsListTemplate, ModelsListUIState } from "./src/template";
+import {
+  modelsListTemplate,
+  ModelsListState,
+  ModelsListTableData,
+} from "./src";
+import { setDefaults } from "./src/set-defaults";
 
 /**
  * Creates a table component for displaying a list of models.
@@ -15,19 +20,24 @@ import { modelsListTemplate, ModelsListUIState } from "./src/template";
  * This function creates a table component using the provided state and template.
  * If `autoUpdate` is set to `true`, the component will automatically update when fragments are loaded or disposed.
  */
-export const modelsList = (state: ModelsListUIState, autoUpdate = true) => {
-  const element = BUI.Component.create<BUI.Table, ModelsListUIState>(
-    modelsListTemplate,
-    state,
-  );
+export const modelsList = (state: ModelsListState, autoUpdate = true) => {
+  const element = BUI.Component.create<
+    BUI.Table<ModelsListTableData>,
+    ModelsListState
+  >(modelsListTemplate, state);
+
+  const [table, update] = element;
+  setDefaults(state, table);
 
   if (autoUpdate) {
     const { components } = state;
-    const manager = components.get(OBC.FragmentsManager);
-    const [, updateElement] = element;
-    manager.onFragmentsLoaded.add(() => setTimeout(() => updateElement()));
-    manager.onFragmentsDisposed.add(() => updateElement());
+    const fragments = components.get(OBC.FragmentsManager);
+    const updateFunction = () => setTimeout(() => update());
+    fragments.list.onItemSet.add(updateFunction);
+    fragments.list.onItemDeleted.add(updateFunction);
   }
 
   return element;
 };
+
+export * from "./src";

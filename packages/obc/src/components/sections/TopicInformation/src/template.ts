@@ -7,11 +7,11 @@ import {
 } from "../../../../utils/topics";
 import {
   TopicInformationSectionActions,
-  TopicInformationSectionUI,
+  TopicInformationSectionState,
 } from "./types";
 
 export const topicInformationSectionTemplate: BUI.StatefullComponent<
-  TopicInformationSectionUI
+  TopicInformationSectionState
 > = (state, update) => {
   const { components, editing, topic, styles } = state;
 
@@ -148,7 +148,7 @@ export const topicInformationSectionTemplate: BUI.StatefullComponent<
           ? BUI.html`
           <div style="display: flex; gap: 0.375rem">
             <bim-label>Labels</bim-label>
-            <bim-label style="--bim-label--c: var(--bim-ui_bg-contrast-100)">${[...topic.labels].join(", ")}</bim-label>
+            <bim-label style="white-space: normal; --bim-label--c: var(--bim-ui_bg-contrast-100)">${[...topic.labels].join(", ")}</bim-label>
           </div>`
           : null
       }

@@ -1,6 +1,11 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-import { ViewpointsUI, viewpointsListTemplate } from "./src/template";
+import {
+  ViewpointsListState,
+  ViewpointsListTableData,
+  viewpointsListTemplate,
+} from "./src";
+import { setDefaults } from "./src/set-defaults";
 
 /**
  * Creates a Viewpoints component with the given UI state.
@@ -11,15 +16,20 @@ import { ViewpointsUI, viewpointsListTemplate } from "./src/template";
  *
  * @returns A tuple containing the created Viewpoints component and a function to update it.
  */
-export const viewpointsList = (state: ViewpointsUI, autoUpdate = true) => {
-  const element = BUI.Component.create<BUI.Table, ViewpointsUI>(
-    viewpointsListTemplate,
-    state,
-  );
+export const viewpointsList = (
+  state: ViewpointsListState,
+  autoUpdate = true,
+) => {
+  const element = BUI.Component.create<
+    BUI.Table<ViewpointsListTableData>,
+    ViewpointsListState
+  >(viewpointsListTemplate, state);
 
-  const { components, topic } = state;
+  const [table, updateElement] = element;
+  setDefaults(state, table);
+
   if (autoUpdate) {
-    const [, updateElement] = element;
+    const { components, topic } = state;
     const manager = components.get(OBC.Viewpoints);
     manager.list.onItemUpdated.add(() => updateElement());
     manager.list.onItemDeleted.add(() => updateElement());
@@ -35,3 +45,5 @@ export const viewpointsList = (state: ViewpointsUI, autoUpdate = true) => {
 
   return element;
 };
+
+export * from "./src";

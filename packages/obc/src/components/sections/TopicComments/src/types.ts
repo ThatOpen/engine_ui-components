@@ -1,12 +1,12 @@
 import * as OBC from "@thatopen/components";
-import { TopicCommentsActions } from "../../../tables/TopicComments/src/template";
+import { CommentsListActions } from "../../../tables/CommentsList";
 import { TopicUserStyles } from "../../../../utils/topics";
 
-export interface TopicCommentsSectionActions extends TopicCommentsActions {
+export interface TopicCommentsSectionActions extends CommentsListActions {
   add: boolean;
 }
 
-export interface TopicCommentsSectionUI {
+export interface TopicCommentsSectionState {
   topic: OBC.Topic;
   showInput?: boolean;
   styles?: TopicUserStyles;

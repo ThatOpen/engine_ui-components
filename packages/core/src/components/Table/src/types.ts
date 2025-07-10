@@ -1,5 +1,5 @@
 import { TemplateResult } from "lit";
-import { TableCell, TableRow } from ".";
+import { TableCell, TableGroup, TableRow } from ".";
 
 export type TableCellValue = string | number | boolean;
 
@@ -41,7 +41,11 @@ export interface TableGroupTemplate<
  * Represents a transformation function for table data.
  */
 export type TableDataTransform<T extends TableRowData = TableRowData> = {
-  [K in keyof T]?: (value: T[K], data: Partial<T>) => CellRenderValue;
+  [K in keyof T]?: (
+    value: T[K],
+    data: Partial<T>,
+    group: TableGroup<T>,
+  ) => CellRenderValue;
 };
 
 /**

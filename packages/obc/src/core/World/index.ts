@@ -1,6 +1,5 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
 import * as THREE from "three";
 import { LitElement, css, html } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
@@ -19,7 +18,7 @@ export class World extends LitElement {
   world: OBC.SimpleWorld<
     OBC.SimpleScene,
     OBC.OrthoPerspectiveCamera,
-    OBF.PostproductionRenderer
+    OBC.SimpleRenderer
   > | null = null;
 
   private _components: OBC.Components | null = null;
@@ -65,14 +64,11 @@ export class World extends LitElement {
     sceneComponent.setup();
     sceneComponent.three.background = null;
 
-    const rendererComponent = new OBF.PostproductionRenderer(
-      this.components,
-      viewport,
-    );
+    const rendererComponent = new OBC.SimpleRenderer(this.components, viewport);
 
     this.world.renderer = rendererComponent;
 
-    const { postproduction } = rendererComponent;
+    // const { postproduction } = rendererComponent;
 
     const cameraComponent = new OBC.OrthoPerspectiveCamera(this.components);
     this.world.camera = cameraComponent;
@@ -82,10 +78,10 @@ export class World extends LitElement {
     worldGrid.material.uniforms.uSize1.value = 2;
     worldGrid.material.uniforms.uSize2.value = 8;
 
-    postproduction.enabled = true;
-    postproduction.customEffects.excludedMeshes.push(worldGrid.three);
-    postproduction.setPasses({ custom: true, ao: true, gamma: true });
-    postproduction.customEffects.lineColor = 0x17191c;
+    // postproduction.enabled = true;
+    // postproduction.customEffects.excludedMeshes.push(worldGrid.three);
+    // postproduction.setPasses({ custom: true, ao: true, gamma: true });
+    // postproduction.customEffects.lineColor = 0x17191c;
   }
 
   private onSlotChange() {

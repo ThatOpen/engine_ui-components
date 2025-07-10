@@ -5,7 +5,7 @@ export interface TopicInformationSectionActions {
   update: boolean;
 }
 
-export interface TopicInformationSectionUI {
+export interface TopicInformationSectionState {
   components: OBC.Components;
   topic: OBC.Topic;
   editing?: boolean;

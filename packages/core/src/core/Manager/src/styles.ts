@@ -89,6 +89,25 @@ const globalStyles = css`
     }
   }
 
+  .theme-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    filter: drop-shadow(0 0 10px var(--bim-ui_bg-base));
+    z-index: 9999;
+  }
+
+  .theme-transition-overlay > div {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bim-ui_bg-base);
+  }
+
   html.bim-ui-dark {
     --bim-ui_bg-base: var(--bim-ui_gray-0);
     --bim-ui_bg-contrast-10: var(--bim-ui_gray-1);
@@ -110,6 +129,30 @@ const globalStyles = css`
     --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
     --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
     --bim-ui_accent-base: #6528d7;
+  }
+
+  @keyframes toggleOverlay {
+    0%,
+    99% {
+      display: block;
+    }
+
+    100% {
+      display: none;
+    }
+  }
+
+  @keyframes toggleThemeAnimation {
+    0% {
+      clip-path: circle(0% at center top);
+    }
+    45%,
+    55% {
+      clip-path: circle(150% at center center);
+    }
+    100% {
+      clip-path: circle(0% at center bottom);
+    }
   }
 
   [data-context-dialog]::backdrop {

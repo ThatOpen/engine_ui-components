@@ -33,6 +33,7 @@ export class Input extends LitElement implements HasValue, HasName {
     }
 
     .input {
+      position: relative;
       overflow: hidden;
       box-sizing: border-box;
       display: flex;
@@ -43,7 +44,7 @@ export class Input extends LitElement implements HasValue, HasName {
       gap: var(--bim-input--g, var(--bim-ui_size-4xs));
       padding: var(--bim-input--p, 0);
       background-color: var(--bim-input--bgc, transparent);
-      outline: var(--bim-input--olw, 2px) solid
+      border: var(--bim-input--olw, 2px) solid
         var(--bim-input--olc, transparent);
       border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
       transition: all 0.15s;

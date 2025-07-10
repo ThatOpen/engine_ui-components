@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui-obc",
   "description": "Collection of web components (UI components) implementations to use with @thatopen/components.",
-  "version": "2.4.4",
+  "version": "3.1.0",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
@@ -33,28 +33,43 @@
     "dev": "vite --host",
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "prepublishOnly": "npm run build",
-    "publish-repo": "npm publish",
-    "publish-alpha": "npm publish --tag alpha"
+    "publish-repo": "npm publish"
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@thatopen/ui": "~2.4.0",
+    "@thatopen/ui": "~3.1.0",
     "lit": "3.1.2"
   },
   "devDependencies": {
-    "@thatopen/components": "~2.4.10",
-    "@thatopen/components-front": "~2.4.10",
-    "@thatopen/fragments": "~3.0.0",
-    "@types/three": "0.160.0",
+    "@thatopen/components": "~3.1.0",
+    "@thatopen/components-front": "~3.1.0",
+    "@thatopen/fragments": "~3.1.0",
+    "@types/node": "20.11.30",
+    "@types/three": "0.175.0",
+    "@typescript-eslint/eslint-plugin": "7.2.0",
+    "@typescript-eslint/parser": "7.2.0",
+    "eslint": "8.57.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-lit": "1.11.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "eslint-plugin-wc": "2.1.0",
+    "glob": "10.3.12",
+    "prettier": "3.2.5",
     "three": "0.175.0",
-    "web-ifc": ">=0.0.68"
+    "typescript": "5.4.2",
+    "vite": "5.1.6",
+    "vite-plugin-dts": "3.7.3",
+    "web-ifc": "0.0.69"
   },
   "peerDependencies": {
-    "@thatopen/components": "~2.4.10",
-    "@thatopen/components-front": "~2.4.10",
+    "@thatopen-platform/components-beta": "~3.0.0",
+    "@thatopen-platform/components-front-beta": "~3.0.0",
+    "@thatopen-platform/fragments-beta": "~3.0.0",
     "three": ">=0.175.0",
-    "web-ifc": ">=0.0.68"
+    "web-ifc": "0.0.69"
   }
 }

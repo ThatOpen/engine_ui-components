@@ -1,97 +1,92 @@
-import * as THREE from "three";
-import * as BUI from "@thatopen/ui";
-import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
-import * as CUI from "../..";
+// import * as BUI from "@thatopen/ui";
+// import * as OBC from "@thatopen/components";
+// import * as CUI from "../../..";
+// import * as THREE from "three";
 
-BUI.Manager.init();
+// BUI.Manager.init();
+// CUI.Manager.init();
 
-const viewport = document.createElement("bim-viewport");
+// const components = new OBC.Components();
 
-const components = new OBC.Components();
+// const fragments = components.get(OBC.FragmentsManager);
+// fragments.init(
+//   "/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs",
+// );
 
-const worlds = components.get(OBC.Worlds);
+// const worldElementA = document.createElement("bim-world");
+// document.body.append(worldElementA);
+// worldElementA.name = "main";
+// worldElementA.components = components;
 
-const world = worlds.create<
-  OBC.SimpleScene,
-  OBC.SimpleCamera,
-  OBF.PostproductionRenderer
->();
+// await components.init();
 
-world.name = "Default World";
+// const worldA = worldElementA.world!;
+// console.log(`Instance of camera: ${worldA.camera.three instanceof THREE.PerspectiveCamera}`);
+// setTimeout(() => worldA.camera.updateAspect()); // Don't know a wait is needed for this to work
+// worldA.camera.controls.addEventListener("update", () =>
+//   fragments.core.update(true),
+// );
 
-world.scene = new OBC.SimpleScene(components);
-world.scene.three.background = null;
-world.scene.setup();
+// const ifcLoader = components.get(OBC.IfcLoader);
+// ifcLoader.settings.autoSetWasm = false;
+// ifcLoader.settings.wasm = {
+//   path: "https://unpkg.com/web-ifc@0.0.69/",
+//   absolute: false,
+// };
+// await ifcLoader.setup();
 
-world.renderer = new OBF.PostproductionRenderer(components, viewport);
-const { postproduction } = world.renderer;
+// async function loadIfc() {
+//   const file = await fetch(
+//     "https://thatopen.github.io/engine_components/resources/small.ifc",
+//   );
+//   const data = await file.arrayBuffer();
+//   const buffer = new Uint8Array(data);
+//   const model = await ifcLoader.load(buffer, false, "example");
+//   await model.useCamera(worldA.camera.three);
+//   console.log(model);
+//   worldA.scene.three.add(model.object);
+// }
 
-world.camera = new OBC.SimpleCamera(components);
-world.camera.controls.setLookAt(1.5, 1.4, 0.12, -3.5, -0.5, -7);
+// await loadIfc();
 
-viewport.addEventListener("resize", () => {
-  if (world.renderer) world.renderer.resize();
-  world.camera.updateAspect();
-});
+// const [worldsConfig] = CUI.tables.worldsConfiguration({
+//   components
+// });
 
-components.init();
+// const worldsConfigPanel = BUI.Component.create(() => {
+//   const onSearch = (e: Event) => {
+//     const input = e.target as BUI.TextInput;
+//     worldsConfig.queryString = input.value !== "" ? input.value : null;
+//   };
 
-const grids = components.get(OBC.Grids);
-const worldGrid = grids.create(world);
-worldGrid.material.uniforms.uColor.value = new THREE.Color("#4D4D4D");
+//   const expandTable = () => {
+//     worldsConfig.expanded = !worldsConfig.expanded;
+//   };
 
-const ifcLoader = components.get(OBC.IfcLoader);
-await ifcLoader.setup();
-const file = await fetch(
-  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
-);
-const buffer = await file.arrayBuffer();
-const typedArray = new Uint8Array(buffer);
-const model = await ifcLoader.load(typedArray);
-world.scene.three.add(model);
+//   return BUI.html`
+//     <bim-panel label="App Config">
+//       <bim-panel-section label="Worlds">
+//         <div style="display: flex; gap: 0.5rem;">
+//           <bim-text-input @input=${onSearch} placeholder="Search..."></bim-text-input>
+//           <bim-button style="flex: 0;" @click=${expandTable} icon="eva:expand-outline"></bim-button>
+//         </div>
+//         ${worldsConfig}
+//       </bim-panel-section>
+//     </bim-panel>
+//   `;
+// });
 
-postproduction.enabled = true;
-postproduction.customEffects.excludedMeshes.push(worldGrid.three);
-postproduction.setPasses({ ao: true });
+// const app = document.createElement("bim-grid");
+// app.layouts = {
+//   main: {
+//     template: `
+//     "worldsConfigPanel"
+//     /26rem 1fr
+//     `,
+//     elements: { worldsConfigPanel },
+//   },
+// };
 
-const [worldsConfig] = CUI.tables.worldsConfiguration({
-  components,
-});
+// app.layout = "main";
 
-const worldsConfigPanel = BUI.Component.create(() => {
-  const onSearch = (e: Event) => {
-    const input = e.target as BUI.TextInput;
-    worldsConfig.queryString = input.value !== "" ? input.value : null;
-  };
-
-  const expandTable = () => {
-    worldsConfig.expanded = !worldsConfig.expanded;
-  };
-
-  return BUI.html`
-    <bim-panel label="App Config">
-      <bim-panel-section label="Worlds">
-        <div style="display: flex; gap: 0.5rem;">
-          <bim-text-input @input=${onSearch} placeholder="Search..."></bim-text-input>
-          <bim-button style="flex: 0;" @click=${expandTable} icon="eva:expand-outline"></bim-button> 
-        </div> 
-        ${worldsConfig}
-      </bim-panel-section>
-    </bim-panel>
-  `;
-});
-
-const app = document.createElement("bim-grid");
-app.layouts = {
-  main: {
-    template: `
-    "worldsConfigPanel viewport"
-    /26rem 1fr
-    `,
-    elements: { worldsConfigPanel, viewport },
-  },
-};
-
-app.layout = "main";
-document.body.append(app);
+// document.body.append(app);

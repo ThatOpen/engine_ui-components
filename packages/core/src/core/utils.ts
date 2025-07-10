@@ -6,16 +6,20 @@ import { EntryQuery, Query, QueryCondition, QueryGroup } from "./types";
  * @param recursive - Whether to recursively extract values from child elements. Default is true.
  * @returns An object containing the extracted values.
  */
-export const getElementValue = (
+export const getElementValue = <
+  T extends Record<string, any> = Record<string, any>,
+>(
   child: HTMLElement,
-  transform: Record<string, (value: any) => any> = {},
+  transform: { [K in keyof T]?: (value: any) => any } = {},
   recursive = true,
 ) => {
-  let value: Record<string, any> = {};
+  let value = {} as T;
   for (const _child of child.children) {
     const child = _child as any;
-    const key = child.getAttribute("name") || child.getAttribute("label");
-    const keyTransform = transform[key];
+    const key = (child.getAttribute("name") || child.getAttribute("label")) as
+      | keyof T
+      | null;
+    const keyTransform = key ? transform[key] : undefined;
     if (key) {
       if (
         "value" in child &&

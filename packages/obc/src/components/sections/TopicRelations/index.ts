@@ -9,3 +9,5 @@ export const topicRelations = (state: TopicRelationsSectionsUI) => {
 
   return element;
 };
+
+export * from "./src";

@@ -1,7 +1,7 @@
 import * as OBC from "@thatopen/components";
-import { ViewpointUIActions } from "../../../tables/ViewpointsList/src/template";
+import { ViewpointsListActions } from "../../../tables/ViewpointsList";
 
-export interface TopicViewpointsSectionActions extends ViewpointUIActions {
+export interface TopicViewpointsSectionActions extends ViewpointsListActions {
   add: boolean;
   link: boolean;
 }

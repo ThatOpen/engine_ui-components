@@ -25,6 +25,8 @@ export class Tabs extends LitElement {
 
       .parent {
         display: grid;
+        overflow: hidden;
+        position: relative;
         grid-template: "switchers" auto "content" 1fr;
         height: 100%;
       }
@@ -34,6 +36,7 @@ export class Tabs extends LitElement {
       }
 
       .switchers {
+        position: relative;
         display: flex;
         height: 2.25rem;
         font-weight: 600;
@@ -42,23 +45,27 @@ export class Tabs extends LitElement {
 
       .switcher {
         --bim-label--c: var(--bim-ui_bg-contrast-80);
-        background-color: var(--bim-ui_bg-base);
+        background-color: transparent;
+        position: relative;
         cursor: pointer;
         pointer-events: auto;
         padding: 0rem 0.75rem;
         display: flex;
         justify-content: center;
+        z-index: 2;
         transition: all 0.15s;
+      }
+
+      .switcher:not([data-active]):hover {
+        filter: brightness(150%);
       }
 
       :host([switchers-full]) .switcher {
         flex: 1;
       }
 
-      .switcher:hover,
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_main-contrast);
-        background-color: var(--bim-ui_main-base);
       }
 
       .switchers bim-label {
@@ -70,8 +77,26 @@ export class Tabs extends LitElement {
       }
 
       .content {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
         grid-area: content;
+        max-height: 100vh;
         overflow: auto;
+        transition: max-height 0.2s;
+      }
+
+      :host([tab="hidden"]) .content {
+        max-height: 0;
+      }
+
+      .animated-background {
+        position: absolute;
+        background: var(--bim-ui_main-base);
+        width: 0;
+        height: 0;
+        top: 0;
+        left: 0;
       }
 
       :host(:not([bottom])) .content {
@@ -82,17 +107,14 @@ export class Tabs extends LitElement {
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host(:not([tab])) .content {
-        display: none;
-      }
-
       :host([floating]) {
         background-color: transparent;
       }
 
       :host([floating]) .switchers {
         justify-self: center;
-        overflow: auto;
+        overflow: hidden;
+        background-color: var(--bim-ui_bg-base);
       }
 
       :host([floating]:not([bottom])) .switchers {
@@ -109,12 +131,12 @@ export class Tabs extends LitElement {
         border-right: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host([floating]:not([tab])) .switchers {
+      :host([floating][tab="hidden"]) .switchers {
         border-radius: var(--bim-ui_size-2xs);
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host([floating][bottom]:not([tab])) .switchers {
+      :host([floating][bottom][tab="hidden"]) .switchers {
         border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
@@ -188,6 +210,10 @@ export class Tabs extends LitElement {
       if (!switcher) continue;
       switcher.toggleAttribute("data-active", !child.hidden);
     }
+    if (!matchingTab) {
+      this._tab = "hidden";
+      this.setAttribute("tab", "hidden");
+    }
   }
 
   get tab() {
@@ -224,6 +250,7 @@ export class Tabs extends LitElement {
         } else {
           this.tab = child.name;
         }
+        this.setAnimatedBackgound();
       });
       element.setAttribute("data-name", child.name);
       element.className = "switcher";
@@ -272,10 +299,83 @@ export class Tabs extends LitElement {
     }
   }
 
+  private doubleRequestAnimationFrames(callback: () => void) {
+    requestAnimationFrame(() => requestAnimationFrame(callback));
+  }
+
+  private setAnimatedBackgound(resetTransition = false) {
+    const bgElement = this.renderRoot.querySelector(
+      ".animated-background",
+    ) as HTMLElement;
+
+    const checkedElement = [
+      ...(this.renderRoot
+        .querySelector(".switchers")
+        ?.querySelectorAll(".switcher") || []),
+    ].filter((option) => option.hasAttribute("data-active"))[0] as HTMLElement;
+
+    requestAnimationFrame(() => {
+      const parentNode = checkedElement?.parentElement?.shadowRoot
+        ?.querySelector("bim-input")
+        ?.shadowRoot?.querySelector(".input");
+
+      const properties = {
+        width: checkedElement?.clientWidth,
+        height: checkedElement?.clientHeight,
+        top:
+          ((checkedElement as HTMLElement)?.offsetTop ?? 0) -
+          ((parentNode as HTMLElement)?.offsetTop ?? 0),
+        left:
+          ((checkedElement as HTMLElement)?.offsetLeft ?? 0) -
+          ((parentNode as HTMLElement)?.offsetLeft ?? 0),
+      };
+
+      if (checkedElement) {
+        bgElement?.style.setProperty("width", `${properties.width}px`);
+        bgElement?.style.setProperty("height", `${properties.height}px`);
+        bgElement?.style.setProperty("left", `${properties.left}px`);
+      } else {
+        bgElement?.style.setProperty("width", "0");
+      }
+
+      if (this.bottom) {
+        bgElement?.style.setProperty("top", "100%");
+        bgElement?.style.setProperty("transform", "translateY(-100%)");
+      } else {
+        bgElement?.style.setProperty("top", `${properties.top}px`);
+      }
+    });
+
+    if (resetTransition) {
+      this.doubleRequestAnimationFrames(() => {
+        const time = 0.3;
+        const ease = "ease";
+        bgElement?.style.setProperty(
+          "transition",
+          `width ${time}s ${ease}, height ${time}s ${ease}, top ${time}s ${ease}, left ${time}s ${ease}`,
+        );
+      });
+    }
+  }
+
+  protected firstUpdated() {
+    requestAnimationFrame(() => {
+      this.setAnimatedBackgound(true);
+    });
+
+    // To make sure it triggers when the element gets resized, too.
+    new ResizeObserver(() => {
+      this.setAnimatedBackgound();
+    }).observe(this);
+  }
+
   protected render() {
     return html`
       <div class="parent">
-        <div class="switchers">${this._switchers}</div>
+        <div class="switchers">
+          <div class="animated-background"></div>
+          ${this._switchers}
+        </div>
         <div class="content">
           <slot @slotchange=${this.onSlotChange}></slot>
         </div>

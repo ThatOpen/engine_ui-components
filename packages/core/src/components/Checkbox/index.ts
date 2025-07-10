@@ -16,34 +16,95 @@ export class Checkbox extends LitElement implements HasValue {
       display: block;
     }
 
-    .parent {
+    .parent-label {
+      --background: #fff;
+      --border: #dfdfe6;
+      --stroke: #fff;
+      --border-hover: var(--bim-ui_main-base);
+      --border-active: var(--bim-ui_main-base);
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      width: 100%;
       height: 1.75rem;
       column-gap: 0.25rem;
-      width: 100%;
-      align-items: center;
-      transition: all 0.15s;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
-    :host([inverted]) .parent {
+    :host([inverted]) .parent-label {
       flex-direction: row-reverse;
       justify-content: start;
     }
 
-    input {
-      height: 1rem;
+    input,
+    svg {
       width: 1rem;
-      cursor: pointer;
-      border: none;
-      outline: none;
-      accent-color: var(--bim-checkbox--c, var(--bim-ui_main-base));
-      transition: all 0.15s;
+      height: 1rem;
+      display: block;
     }
 
-    input:focus {
-      outline: var(--bim-checkbox--olw, 2px) solid
-        var(--bim-checkbox--olc, var(--bim-ui_accent-base));
+    input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      position: relative;
+      outline: none;
+      background: var(--background);
+      border: none;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: box-shadow 0.3s;
+      box-shadow: inset 0 0 0 var(--s, 1px) var(--b, var(--border));
+    }
+
+    svg {
+      pointer-events: none;
+      fill: none;
+      stroke-width: 2.2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke: var(--stroke, var(--border-active));
+      transform: translateY(-100%) scale(0);
+      position: absolute;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    input:hover {
+      --s: 2px;
+      --b: var(--border-hover);
+    }
+
+    input:checked {
+      --b: var(--border-active);
+      --s: 11px;
+    }
+
+    input:checked + svg {
+      -webkit-animation: bounce 0.4s linear forwards 0.2s;
+      animation: bounce 0.4s linear forwards 0.2s;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: translateY(-100%) scale(0);
+      }
+      50% {
+        transform: translateY(-100%) scale(1.2);
+      }
+      75% {
+        transform: translateY(-100%) scale(0.9);
+      }
+      100% {
+        transform: translateY(-100%) scale(1);
+      }
     }
   `;
 
@@ -145,17 +206,28 @@ export class Checkbox extends LitElement implements HasValue {
   }
 
   protected render() {
+    const checkboxIcon = html`
+      <svg viewBox="0 0 21 21">
+        <polyline points="5 10.75 8.5 14.25 16 6"></polyline>
+      </svg>
+    `;
+
     return html`
       <div class="parent">
-        ${this.label
-          ? html`<bim-label .icon="${this.icon}">${this.label}</bim-label> `
-          : null}
-        <input
-          type="checkbox"
-          aria-label=${this.label || this.name || "Checkbox Input"}
-          @change="${this.onChange}"
-          .checked="${this.checked}"
-        />
+        <label class="parent-label">
+          ${this.label
+            ? html`<bim-label .icon="${this.icon}">${this.label}</bim-label> `
+            : null}
+          <div class="input-container">
+            <input
+              type="checkbox"
+              aria-label=${this.label || this.name || "Checkbox Input"}
+              @change="${this.onChange}"
+              .checked="${this.checked}"
+            />
+            ${checkboxIcon}
+          </div>
+        </label>
       </div>
     `;
   }

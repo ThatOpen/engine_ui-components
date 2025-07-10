@@ -23,7 +23,9 @@ export class Panel extends LitElement implements HasName, HasValue {
       }
 
       :host([hidden]) {
-        display: none;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
       }
 
       .parent {
@@ -48,9 +50,11 @@ export class Panel extends LitElement implements HasName, HasValue {
       }
 
       .sections {
+        height: 100%;
         display: flex;
         flex-direction: column;
         overflow: auto;
+        flex: 1;
       }
 
       ::slotted(bim-panel-section:not(:last-child)) {
@@ -216,10 +220,40 @@ export class Panel extends LitElement implements HasName, HasValue {
 
   readonly activationButton: Button = document.createElement("bim-button");
 
+  private animatePanles() {
+    const animationKeyframes = [
+      {
+        maxHeight: "100vh",
+        maxWidth: "100vw",
+        opacity: 1,
+      },
+      {
+        maxHeight: "100vh",
+        maxWidth: "100vw",
+        opacity: 0,
+      },
+      {
+        maxHeight: 0,
+        maxWidth: 0,
+        opacity: 0,
+      },
+    ];
+
+    this.animate(animationKeyframes, {
+      duration: 300,
+      easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
+      direction: this.hidden ? "normal" : "reverse",
+      fill: "forwards",
+    });
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.activationButton.active = !this.hidden;
-    this.activationButton.onclick = () => (this.hidden = !this.hidden);
+    this.activationButton.onclick = () => {
+      this.hidden = !this.hidden;
+      this.animatePanles();
+    };
   }
 
   disconnectedCallback() {

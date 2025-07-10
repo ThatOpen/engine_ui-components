@@ -20,19 +20,28 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         pointer-events: auto;
       }
 
+      :host .parent {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
       :host(:not([fixed])) .header:hover {
         --bim-label--c: var(--bim-ui_accent-base);
         color: var(--bim-ui_accent-base);
         cursor: pointer;
       }
 
-      :host(:not([fixed])) .header:hover svg {
+      :host(:not([fixed])) .header:hover .expand-icon {
         fill: var(--bim-ui_accent-base);
       }
 
       .header {
         --bim-label--fz: var(--bim-ui_size-sm);
-        --bim-label--c: var(--bim-ui_bg-contrast-80);
+        --bim-label--c: var(
+          --bim-panel-section_hc,
+          var(--bim-ui_bg-contrast-80)
+        );
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -41,8 +50,13 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         padding: 0.75rem 1rem;
       }
 
-      .header svg {
+      .expand-icon {
         fill: var(--bim-ui_bg-contrast-80);
+        transition: transform 0.2s;
+      }
+
+      :host([collapsed]) .expand-icon {
+        transform: rotateZ(-180deg);
       }
 
       .title {
@@ -58,17 +72,77 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       .components {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         row-gap: 0.75rem;
-        padding: 0.125rem 1rem 1rem;
+        padding: 0 1rem 1rem;
+        box-sizing: border-box;
+        transition:
+          height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
+          padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
+      }
+
+      .components > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        flex: 1;
+        overflow: auto;
+      }
+
+      :host(:not([icon]):not([label])) .components {
+        padding: 1rem;
       }
 
       :host(:not([fixed])[collapsed]) .components {
-        display: none;
+        padding: 0 1rem 0;
         height: 0px;
       }
 
       bim-label {
         pointer-events: none;
+      }
+
+      ::slotted(*) {
+        transition:
+          transform 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
+          opacity 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
+      }
+
+      :host(:not([fixed])[collapsed]) ::slotted(*) {
+        transform: translateX(-20%);
+        opacity: 0;
+      }
+
+      @keyframes expandAnim {
+        0%,
+        100% {
+          transform: translateY(0%);
+        }
+        25% {
+          transform: translateY(-30%);
+        }
+        50% {
+          transform: translateY(10%);
+        }
+        75% {
+          transform: translateY(-30%);
+        }
+      }
+
+      @keyframes collapseAnim {
+        0%,
+        100% {
+          transform: translateY(0%) rotateZ(-180deg);
+        }
+        25% {
+          transform: translateY(30%) rotateZ(-180deg);
+        }
+        50% {
+          transform: translateY(-10%) rotateZ(-180deg);
+        }
+        75% {
+          transform: translateY(30%) rotateZ(-180deg);
+        }
       }
     `,
   ];
@@ -197,40 +271,124 @@ export class PanelSection extends LitElement implements HasName, HasValue {
    */
   valueTransform: Record<string, (value: any) => any> = {};
 
+  private setFlexAfterTransition() {
+    const componentsElement = this.shadowRoot?.querySelector(
+      ".components",
+    ) as HTMLElement;
+    if (!componentsElement) return;
+    setTimeout(() => {
+      if (!this.collapsed) {
+        componentsElement.style.setProperty("flex", "1");
+      } else {
+        componentsElement.style.removeProperty("flex");
+      }
+    }, 150);
+  }
+
+  private componentHeight = -1;
+
+  private animateHeader() {
+    const componentsElement = this.shadowRoot?.querySelector(
+      ".components",
+    ) as HTMLElement;
+
+    // Save the component"s maximum height
+    if (this.componentHeight < 0) {
+      if (!this.collapsed) {
+        componentsElement.style.setProperty("transition", "none");
+        componentsElement.style.setProperty("height", "auto");
+        componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
+
+        this.componentHeight = componentsElement.clientHeight;
+
+        requestAnimationFrame(() => {
+          componentsElement.style.setProperty("height", "0px");
+          componentsElement.style.setProperty("padding", "0 1rem 0");
+          componentsElement.style.setProperty(
+            "transition",
+            "height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1), padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1)",
+          );
+        });
+      } else {
+        this.componentHeight = componentsElement.clientHeight;
+      }
+    }
+
+    // Animate the component
+    if (this.collapsed) {
+      componentsElement.style.setProperty(
+        "height",
+        `${this.componentHeight}px`,
+      );
+      requestAnimationFrame(() => {
+        componentsElement.style.setProperty("height", "0px");
+        componentsElement.style.setProperty("padding", "0 1rem 0");
+      });
+    } else {
+      componentsElement.style.setProperty("height", "0px");
+      componentsElement.style.setProperty("padding", "0 1rem 0");
+      requestAnimationFrame(() => {
+        componentsElement.style.setProperty(
+          "height",
+          `${this.componentHeight}px`,
+        );
+        componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
+      });
+    }
+
+    this.setFlexAfterTransition();
+  }
+
   private onHeaderClick() {
     if (this.fixed) return;
     this.collapsed = !this.collapsed;
+    this.animateHeader();
+  }
+
+  private handelSlotChange(e: Event) {
+    const slots = e.target as HTMLSlotElement;
+    const childNodes = slots.assignedElements({ flatten: true });
+
+    // Apply stagger effect to slotted elements
+    childNodes.forEach((element, index) => {
+      const delay = index * 0.05;
+      const child = element as HTMLElement;
+      child.style.setProperty("transition-delay", `${delay}s`);
+    });
+  }
+
+  private handlePointerEnter() {
+    const icon = this.renderRoot.querySelector(".expand-icon") as HTMLElement;
+    if (this.collapsed)
+      icon?.style.setProperty("animation", "collapseAnim 0.5s");
+    else icon?.style.setProperty("animation", "expandAnim 0.5s");
+  }
+
+  private handlePointerLeave() {
+    const icon = this.renderRoot.querySelector(".expand-icon") as HTMLElement;
+    icon?.style.setProperty("animation", "none");
   }
 
   protected render() {
     const header = this.label || this.icon || this.name || this.fixed;
 
-    const expandLessSVG = html`<svg
+    const expandIcon = html`<svg
       xmlns="http://www.w3.org/2000/svg"
       height="1.125rem"
       viewBox="0 0 24 24"
       width="1.125rem"
-    >
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-    </svg>`;
-
-    const expandMoreSVG = html`<svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="1.125rem"
-      viewBox="0 0 24 24"
-      width="1.125rem"
+      class="expand-icon"
     >
       <path d="M0 0h24v24H0z" fill="none" />
       <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
     </svg>`;
 
-    const expandIcon = this.collapsed ? expandLessSVG : expandMoreSVG;
-
     const headerTemplate = html`
       <div
         class="header"
         title=${this.label ?? ""}
+        @pointerenter=${this.handlePointerEnter}
+        @pointerleave=${this.handlePointerLeave}
         @click=${this.onHeaderClick}
       >
         ${this.label || this.icon || this.name
@@ -243,8 +401,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     return html`
       <div class="parent">
         ${header ? headerTemplate : null}
-        <div class="components">
-          <slot></slot>
+        <div class="components" style="flex: 1;">
+          <div>
+            <slot @slotchange=${this.handelSlotChange}></slot>
+          </div>
         </div>
       </div>
     `;

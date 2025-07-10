@@ -18,12 +18,29 @@ export class Button extends LitElement {
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100, white);
+      position: relative;
       display: block;
       flex: 1;
       pointer-events: none;
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-4xs);
       transition: all 0.15s;
+    }
+
+    :host(:not([disabled]))::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background-color: var(--bim-ui_main-base);
+      clip-path: circle(0 at center center);
+      box-sizing: border-box;
+      transition:
+        clip-path 0.3s cubic-bezier(0.65, 0.05, 0.36, 1),
+        transform 0.15s;
     }
 
     :host(:not([disabled]):hover) {
@@ -67,16 +84,33 @@ export class Button extends LitElement {
 
     .button {
       flex-grow: 1;
+      transition: transform 0.15s;
     }
 
     :host(:not([label-hidden])[label]) .button {
       justify-content: var(--bim-button--jc, center);
     }
 
-    :host(:hover),
-    :host([active]) {
+    :host(:hover)::before {
+      clip-path: circle(120% at center center);
+    }
+
+    :host(:hover) {
       --bim-label--c: var(--bim-ui_main-contrast);
+      z-index: 2;
+    }
+
+    :host([active]) {
       background-color: var(--bim-ui_main-base);
+    }
+
+    :host(:not([disabled]):active) {
+      background: transparent;
+    }
+
+    :host(:not([disabled]):active) .button,
+    :host(:not([disabled]):active)::before {
+      transform: scale(0.98);
     }
 
     :host(:not([label]):not([icon])) .children {
@@ -116,6 +150,8 @@ export class Button extends LitElement {
       border-radius: var(--bim-ui_size-4xs);
       background-color: var(--bim-ui_bg-contrast-20);
       color: var(--bim-ui_bg-contrast-100);
+      animation: openTooltips 0.15s ease-out forwards;
+      transition: visibility 0.2s;
     }
 
     .tooltip p {
@@ -124,7 +160,39 @@ export class Button extends LitElement {
     }
 
     :host(:not([tooltip-visible])) .tooltip {
+      animation: closeTooltips 0.15s ease-in forwards;
+      visibility: hidden;
       display: none;
+    }
+
+    @keyframes closeTooltips {
+      0% {
+        display: flex;
+        padding: 0.75rem;
+        transform: translateY(0);
+        opacity: 1;
+      }
+      90% {
+        padding: 0.75rem;
+      }
+      100% {
+        display: none;
+        padding: 0;
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes openTooltips {
+      0% {
+        display: flex;
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
   `;
 

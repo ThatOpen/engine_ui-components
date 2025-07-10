@@ -33,7 +33,12 @@ BUI.Manager.init();
 const components = new OBC.Components();
 
 const worlds = components.get(OBC.Worlds);
-const world = worlds.create();
+const world = worlds.create<
+  OBC.SimpleScene,
+  OBC.SimpleCamera,
+  OBC.SimpleRenderer
+>();
+world.name = "main";
 
 const sceneComponent = new OBC.SimpleScene(components);
 sceneComponent.setup();
@@ -69,9 +74,19 @@ await ifcLoader.setup();
   The step above is super important as none of the existing functional components setup any tool, they just get it as they are! So, if we don't setup the `FragmentIfcLoader` then the wasm path is not going to be defined and an error will arise 🤓. Just after we have setup the loader, let's then configure the `FragmentManager` so any time a model is loaded it gets added to some world scene created before: 
   */
 
-const fragmentsManager = components.get(OBC.FragmentsManager);
-fragmentsManager.onFragmentsLoaded.add((model) => {
-  if (world.scene) world.scene.three.add(model);
+const fragments = components.get(OBC.FragmentsManager);
+fragments.init(
+  "/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs",
+);
+
+world.camera.controls.addEventListener("rest", () =>
+  fragments.core.update(true),
+);
+
+fragments.list.onItemSet.add(async ({ value: model }) => {
+  model.useCamera(world.camera.three);
+  world.scene.three.add(model.object);
+  await fragments.core.update(true);
 });
 
 /* MD
@@ -81,8 +96,8 @@ fragmentsManager.onFragmentsLoaded.add((model) => {
 
 const [modelsList] = BUIC.tables.modelsList({
   components,
-  tags: { schema: true, viewDefinition: false },
-  actions: { download: false },
+  metaDataTags: ["schema"],
+  actions: { download: true },
 });
 
 /* MD
@@ -90,12 +105,12 @@ const [modelsList] = BUIC.tables.modelsList({
   */
 
 const panel = BUI.Component.create(() => {
-  const [loadIfcBtn] = BUIC.buttons.loadIfc({ components });
+  const [loadFragBtn] = BUIC.buttons.loadFrag({ components });
 
   return BUI.html`
    <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
-      ${loadIfcBtn}
+      ${loadFragBtn}
     </bim-panel-section>
     <bim-panel-section icon="mage:box-3d-fill" label="Loaded Models">
       ${modelsList}
@@ -108,7 +123,7 @@ const panel = BUI.Component.create(() => {
   Finally, let's append the BIM Panel to the page to see the models list working 😉
   */
 
-const app = document.createElement("bim-grid");
+const app = document.createElement("bim-grid") as BUI.Grid<["main"]>;
 app.layouts = {
   main: {
     template: `

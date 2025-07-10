@@ -1,13 +1,13 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{T as m,C as c,W as l,S as d,a as p,b,G as f,I as g,F as w,l as u,m as L}from"./index-N2x2mgv3.js";import{b as C}from"./index-DAXFTtA6.js";import{t as v}from"./index-BazQpUSZ.js";import"./lit-html-paDGiEfB.js";m.init();const e=new c,I=e.get(l),n=I.create(),s=new d(e);s.setup();n.scene=s;const a=document.createElement("bim-viewport"),r=new p(e,a);n.renderer=r;const i=new b(e);n.camera=i;a.addEventListener("resize",()=>{r.resize(),i.updateAspect()});const S=e.get(f);S.create(n);e.init();const F=e.get(g);await F.setup();const M=e.get(w);M.onFragmentsLoaded.add(t=>{n.scene&&n.scene.three.add(t)});const[y]=v.modelsList({components:e,tags:{schema:!0,viewDefinition:!1},actions:{download:!1}}),E=u.create(()=>{const[t]=C.loadIfc({components:e});return L`
+import"./lit-html-Cs86_c16.js";import{a as c,C as d,W as l,S as p,b,c as u,G as g,I as w,F as f,R as C,m as v}from"./index-BgQRAdOj.js";import{b as L}from"./index-NGXf93vL.js";import{e as S}from"./index-E2Xb6mG8.js";c.init();const e=new d,F=e.get(l),t=F.create();t.name="main";const r=new p(e);r.setup();t.scene=r;const o=document.createElement("bim-viewport"),m=new b(e,o);t.renderer=m;const i=new u(e);t.camera=i;o.addEventListener("resize",()=>{m.resize(),i.updateAspect()});const I=e.get(g);I.create(t);e.init();const h=e.get(w);await h.setup();const n=e.get(f);n.init("/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs");t.camera.controls.addEventListener("rest",()=>n.core.update(!0));n.list.onItemSet.add(async({value:a})=>{a.useCamera(t.camera.three),t.scene.three.add(a.object),await n.core.update(!0)});const[y]=S.modelsList({components:e,metaDataTags:["schema"],actions:{download:!0}}),E=C.create(()=>{const[a]=L.loadFrag({components:e});return v`
    <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
-      ${t}
+      ${a}
     </bim-panel-section>
     <bim-panel-section icon="mage:box-3d-fill" label="Loaded Models">
       ${y}
     </bim-panel-section>
    </bim-panel> 
-  `}),o=document.createElement("bim-grid");o.layouts={main:{template:`
+  `}),s=document.createElement("bim-grid");s.layouts={main:{template:`
       "panel viewport"
       / 23rem 1fr
-    `,elements:{panel:E,viewport:a}}};o.layout="main";document.body.append(o);
+    `,elements:{panel:E,viewport:o}}};s.layout="main";document.body.append(s);

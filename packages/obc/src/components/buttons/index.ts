@@ -1,7 +1,7 @@
-import * as loadIfc from "./LoadIfc";
-// import { fragmentExploder } from "./fragment-exploder";
+import * as loadIfc from "./load-ifc";
+import * as loadFrag from "./load-frag";
 
 export const buttons = {
   ...loadIfc,
-  // fragmentExploder,
+  ...loadFrag,
 };

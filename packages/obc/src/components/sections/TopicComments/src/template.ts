@@ -1,10 +1,13 @@
 import * as BUI from "@thatopen/ui";
-import { topicComments } from "../../../tables/TopicComments";
 import { defaultTopicStyles } from "../../../../utils/topics";
-import { TopicCommentsSectionActions, TopicCommentsSectionUI } from "./types";
+import {
+  TopicCommentsSectionActions,
+  TopicCommentsSectionState,
+} from "./types";
+import { commentsList } from "../../../tables/CommentsList";
 
 export const topicCommentsSectionTemplate: BUI.StatefullComponent<
-  TopicCommentsSectionUI
+  TopicCommentsSectionState
 > = (state, update) => {
   const { showInput, topic, styles } = state;
 
@@ -95,7 +98,7 @@ export const topicCommentsSectionTemplate: BUI.StatefullComponent<
     </div>
   `;
 
-  const [commentsList] = topicComments({
+  const [list] = commentsList({
     topic,
     actions,
     styles: styles ?? defaultTopicStyles.users,
@@ -103,7 +106,7 @@ export const topicCommentsSectionTemplate: BUI.StatefullComponent<
 
   return BUI.html`
     <div style="display: flex; flex-direction: column; gap: 0.5rem">
-      ${commentsList}
+      ${list}
       ${showInput ? commentInputTemplate : addCommentBtnTemplate}
     </div>
   `;
