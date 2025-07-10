@@ -9,7 +9,7 @@ CUI.Manager.init();
 const components = new OBC.Components();
 const fragments = components.get(OBC.FragmentsManager);
 fragments.init(
-  "/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs",
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
 );
 
 const worldElementA = document.createElement("bim-world");

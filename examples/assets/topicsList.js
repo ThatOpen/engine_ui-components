@@ -228,10 +228,10 @@ import"./lit-html-Cs86_c16.js";import{d as z,T as C,a as S,m as o,e as X,L as be
     <bim-panel-section fixed label="New Topic" name="topic">
       ${te(e)}
     </bim-panel-section>
-  `,Fe=e=>I.create(Pe,e),Ee=Object.freeze(Object.defineProperty({__proto__:null,topic:Fe},Symbol.toStringTag,{value:"Module"})),Oe={...Ee};S.init();const q=document.createElement("bim-viewport"),T=new ue,Me=T.get(fe),A=Me.create(),se=new ye(T);se.setup();A.scene=se;const ae=new ge(T,q);A.renderer=ae;const W=new $e(T);A.camera=W;W.controls.setLookAt(10,5.5,5,-4,-1,-6.5);q.addEventListener("resize",()=>{ae.resize(),W.updateAspect()});T.init();const Ue=T.get(we);Ue.create(A);const P=T.get(ve);P.init("/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs");A.camera.controls.addEventListener("rest",()=>P.core.update(!0));P.list.onItemSet.add(async({value:e})=>{e.useCamera(A.camera.three),A.scene.three.add(e.object),await P.core.update(!0)});const re=T.get(he);await re.setup({autoSetWasm:!1,wasm:{path:"https://unpkg.com/web-ifc@0.0.69/",absolute:!0}});const Ve=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),ze=await Ve.arrayBuffer(),qe=new Uint8Array(ze);await re.load(qe,!0,"small");const E={"jhon.doe@example.com":{name:"Jhon Doe",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Profile-Image-AI.jpg"},"user_a@something.com":{name:"User A",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Portrait-Photography.jpg"},"user_b@something.com":{name:"User B",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/AI-Portrait.jpg"}},_=T.get(z);_.setup({users:new Set(Object.keys(E)),labels:new Set(["Architecture","Structure","MEP"])});const We=T.get(ee);_.list.onItemSet.add(({value:e})=>{const l=We.create();l.world=A,e.viewpoints.add(l.guid)});const[B]=Se.topicsList({components:T,dataStyles:{users:E}});B.selectableRows=!0;const[Ke,Ge]=Oe.topic({components:T,styles:{users:E}}),F=I.create(()=>o`
+  `,Fe=e=>I.create(Pe,e),Ee=Object.freeze(Object.defineProperty({__proto__:null,topic:Fe},Symbol.toStringTag,{value:"Module"})),Oe={...Ee};S.init();const q=document.createElement("bim-viewport"),T=new ue,Me=T.get(fe),A=Me.create(),se=new ye(T);se.setup();A.scene=se;const ae=new ge(T,q);A.renderer=ae;const K=new $e(T);A.camera=K;K.controls.setLookAt(10,5.5,5,-4,-1,-6.5);q.addEventListener("resize",()=>{ae.resize(),K.updateAspect()});T.init();const Ue=T.get(we);Ue.create(A);const P=T.get(ve);P.init("https://thatopen.github.io/engine_fragment/resources/worker.mjs");A.camera.controls.addEventListener("rest",()=>P.core.update(!0));P.list.onItemSet.add(async({value:e})=>{e.useCamera(A.camera.three),A.scene.three.add(e.object),await P.core.update(!0)});const re=T.get(he);await re.setup({autoSetWasm:!1,wasm:{path:"https://unpkg.com/web-ifc@0.0.69/",absolute:!0}});const Ve=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),ze=await Ve.arrayBuffer(),qe=new Uint8Array(ze);await re.load(qe,!0,"small");const E={"jhon.doe@example.com":{name:"Jhon Doe",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Profile-Image-AI.jpg"},"user_a@something.com":{name:"User A",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Portrait-Photography.jpg"},"user_b@something.com":{name:"User B",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/AI-Portrait.jpg"}},_=T.get(z);_.setup({users:new Set(Object.keys(E)),labels:new Set(["Architecture","Structure","MEP"])});const Ke=T.get(ee);_.list.onItemSet.add(({value:e})=>{const l=Ke.create();l.world=A,e.viewpoints.add(l.guid)});const[B]=Se.topicsList({components:T,dataStyles:{users:E}});B.selectableRows=!0;const[We,Ge]=Oe.topic({components:T,styles:{users:E}}),F=I.create(()=>o`
     <dialog class="form-dialog">
      <bim-panel style="border-radius: var(--bim-ui_size-base); width: 22rem;">
-      ${Ke}
+      ${We}
      </bim-panel> 
     </dialog>
   `);document.body.append(F);const Qe=I.create(()=>o`
@@ -283,8 +283,8 @@ import"./lit-html-Cs86_c16.js";import{d as z,T as C,a as S,m as o,e as X,L as be
         ${B}
       </bim-panel-section>
     </bim-panel>
-  `),K=document.createElement("bim-grid");K.layouts={main:{template:`
+  `),W=document.createElement("bim-grid");W.layouts={main:{template:`
     "customTopicPanel viewport"
     "customTopicPanel bcfPanel" 25rem
     /24rem 1fr
-    `,elements:{bcfPanel:Ne,viewport:q,customTopicPanel:He}}};K.layout="main";document.body.append(K);
+    `,elements:{bcfPanel:Ne,viewport:q,customTopicPanel:He}}};W.layout="main";document.body.append(W);
