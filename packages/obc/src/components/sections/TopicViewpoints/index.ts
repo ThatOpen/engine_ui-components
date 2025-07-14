@@ -12,3 +12,5 @@ export const topicViewpoints = (state: TopicViewpointsSectionUI) => {
 
   return element;
 };
+
+export * from "./src";

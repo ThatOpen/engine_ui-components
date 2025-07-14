@@ -1,14 +1,16 @@
 import * as BUI from "@thatopen/ui";
 import {
   topicInformationSectionTemplate,
-  TopicInformationSectionUI,
+  TopicInformationSectionState,
 } from "./src";
 
-export const topicInformation = (state: TopicInformationSectionUI) => {
+export const topicInformation = (state: TopicInformationSectionState) => {
   const element = BUI.Component.create<
     HTMLDivElement,
-    TopicInformationSectionUI
+    TopicInformationSectionState
   >(topicInformationSectionTemplate, state);
 
   return element;
 };
+
+export * from "./src";

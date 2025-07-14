@@ -50,9 +50,11 @@ export class Panel extends LitElement implements HasName, HasValue {
       }
 
       .sections {
+        height: 100%;
         display: flex;
         flex-direction: column;
         overflow: auto;
+        flex: 1;
       }
 
       ::slotted(bim-panel-section:not(:last-child)) {

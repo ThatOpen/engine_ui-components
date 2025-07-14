@@ -10,7 +10,7 @@ import { NumberInput } from "../NumberInput";
  * @fires input - Fired when the color input changes.
  */
 export class ColorInput extends LitElement implements HasValue, HasName {
-    /**
+  /**
    * CSS styles for the component.
    */
   static styles = css`
@@ -68,6 +68,10 @@ export class ColorInput extends LitElement implements HasValue, HasName {
       outline: none;
       border: none;
       color: var(--bim-color-input--c, var(--bim-ui_bg-contrast-100));
+    }
+
+    :host([disabled]) .color-container input[type="text"] {
+      color: var(--bim-ui_bg-contrast-60);
     }
 
     bim-number-input {
@@ -151,6 +155,12 @@ export class ColorInput extends LitElement implements HasValue, HasName {
   @property({ type: String, reflect: true })
   color = "#bcf124";
 
+  /**
+   * Disables the input, preventing user interaction.
+   */
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
   private _colorInput = createRef<HTMLInputElement>();
   private _textInput = createRef<HTMLInputElement>();
   onValueChange = new Event("input");
@@ -233,6 +243,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
                 type="color"
                 aria-label=${this.label || this.name || "Color Input"}
                 value="${this.color}"
+                ?disabled=${this.disabled}
               />
               <div
                 @click=${this.focus}
@@ -245,6 +256,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
                 value="${this.color}"
                 type="text"
                 aria-label=${this.label || this.name || "Text Color Input"}
+                ?disabled=${this.disabled}
               />
             </div>
             ${this.opacity !== undefined

@@ -83,6 +83,7 @@ export class Selector extends LitElement implements HasValue, HasName {
       option.checked = option === matchingOption;
     }
     this._value = matchingOption;
+    this.setAnimatedBackgound();
     if (this._canEmitEvents) this.dispatchEvent(this.onValueChange);
   }
 
@@ -103,6 +104,7 @@ export class Selector extends LitElement implements HasValue, HasName {
 
   private onOptionClick = (e: MouseEvent) => {
     this._value = e.target as Option;
+    this.setAnimatedBackgound();
     this.dispatchEvent(this.onValueChange);
     for (const child of this.children) {
       if (!(child instanceof Option)) continue;
@@ -126,10 +128,7 @@ export class Selector extends LitElement implements HasValue, HasName {
     const bgElement = this.renderRoot.querySelector(
       ".animated-background",
     ) as HTMLElement;
-    const checkedElement = this.shadowRoot
-      ?.querySelector("slot")
-      ?.assignedElements({ flatten: true })
-      .filter((option) => option.hasAttribute("checked"))[0] as HTMLElement;
+    const checkedElement = this._value;
 
     requestAnimationFrame(() => {
       const parentNode = checkedElement?.parentElement?.shadowRoot

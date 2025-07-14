@@ -20,6 +20,12 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         pointer-events: auto;
       }
 
+      :host .parent {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
       :host(:not([fixed])) .header:hover {
         --bim-label--c: var(--bim-ui_accent-base);
         color: var(--bim-ui_accent-base);
@@ -32,7 +38,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
       .header {
         --bim-label--fz: var(--bim-ui_size-sm);
-        --bim-label--c: var(--bim-ui_bg-contrast-80);
+        --bim-label--c: var(
+          --bim-panel-section_hc,
+          var(--bim-ui_bg-contrast-80)
+        );
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -65,11 +74,23 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         flex-direction: column;
         overflow: hidden;
         row-gap: 0.75rem;
-        padding: 0.125rem 1rem 1rem;
+        padding: 0 1rem 1rem;
         box-sizing: border-box;
         transition:
           height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
           padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
+      }
+
+      .components > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        flex: 1;
+        overflow: auto;
+      }
+
+      :host(:not([icon]):not([label])) .components {
+        padding: 1rem;
       }
 
       :host(:not([fixed])[collapsed]) .components {
@@ -250,6 +271,20 @@ export class PanelSection extends LitElement implements HasName, HasValue {
    */
   valueTransform: Record<string, (value: any) => any> = {};
 
+  private setFlexAfterTransition() {
+    const componentsElement = this.shadowRoot?.querySelector(
+      ".components",
+    ) as HTMLElement;
+    if (!componentsElement) return;
+    setTimeout(() => {
+      if (!this.collapsed) {
+        componentsElement.style.setProperty("flex", "1");
+      } else {
+        componentsElement.style.removeProperty("flex");
+      }
+    }, 150);
+  }
+
   private componentHeight = -1;
 
   private animateHeader() {
@@ -300,6 +335,8 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
       });
     }
+
+    this.setFlexAfterTransition();
   }
 
   private onHeaderClick() {
@@ -364,8 +401,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     return html`
       <div class="parent">
         ${header ? headerTemplate : null}
-        <div class="components">
-          <slot @slotchange=${this.handelSlotChange}></slot>
+        <div class="components" style="flex: 1;">
+          <div>
+            <slot @slotchange=${this.handelSlotChange}></slot>
+          </div>
         </div>
       </div>
     `;

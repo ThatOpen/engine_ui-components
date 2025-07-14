@@ -26,6 +26,7 @@ type AppLayouts = {
   app: ["input", "btn", "list", { name: "content"; state: ContentState }];
 };
 
+// @ts-ignore
 const grid = document.body.querySelector<BUI.Grid<AppLayouts>>("bim-grid")!;
 
 grid.layouts = {
@@ -48,6 +49,7 @@ const input = () => {
   const onChange = (e: Event) => {
     const input = e.target as BUI.TextInput;
     userDetails.name = input.value;
+    // @ts-ignore
     grid.updateComponent?.app.content({ name: userDetails.name });
   };
   return BUI.html`<bim-text-input @input=${onChange} value=${userDetails.name}></bim-text-input>`;
@@ -70,8 +72,11 @@ grid.layouts = {
       input: BUI.Component.create(input),
       btn: BUI.Component.create(() => {
         const onClick = () => {
+          // @ts-ignore
           grid.layouts.app.elements.list = numbersListTemplate;
+          // @ts-ignore
           delete grid.layouts.app.elements.btn;
+          // @ts-ignore
           grid.layouts.app.template = `
             "input" auto
             "content" auto
@@ -93,6 +98,7 @@ grid.layouts = {
   },
 };
 
+// @ts-ignore
 grid.updateComponent?.app.content();
 
 grid.addEventListener("layoutchange", () => {

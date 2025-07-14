@@ -7,8 +7,8 @@ import { Tabs } from "./Tabs";
  */
 export class Tab extends LitElement {
   /**
-   * CSS styles for the component.
-   */
+  * CSS styles for the component.
+  */
   static styles = css`
     :host {
       display: block;
@@ -58,11 +58,22 @@ export class Tab extends LitElement {
     return this._label;
   }
 
+  private _icon?: string;
+
   /**
    * The icon of the tab. This property is optional and can be used to display an icon next to the tab's label or name.
    */
   @property({ type: String, reflect: true })
-  icon?: string;
+  set icon(value: string | undefined) {
+    this._icon = value;
+    const parent = this.parentElement;
+    if (!(parent instanceof Tabs)) return;
+    parent.updateSwitchers();
+  }
+
+  get icon() {
+    return this._icon;
+  }
 
   private _hidden = false;
 

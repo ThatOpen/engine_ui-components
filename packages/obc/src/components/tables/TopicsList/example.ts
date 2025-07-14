@@ -8,9 +8,14 @@
   */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
+<<<<<<< HEAD
 import * as CUI from "@thatopen/ui-obc";
+=======
+>>>>>>> upstream/main
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
+// You have to import * from "@thatopen/ui-obc"
+import * as CUI from "../../..";
 
 /* MD 
   Next, it's always necessary to initialize the core UI library no matter if you're using functional components from `@thatopen/ui-obc`. Also, let's setup `@thatopen/components` with the minimum things to get a [World](/Tutorials/Components/Core/Worlds) up and running to load models.
@@ -24,7 +29,11 @@ const components = new OBC.Components();
 
 const worlds = components.get(OBC.Worlds);
 
-const world = worlds.create();
+const world = worlds.create<
+  OBC.SimpleScene,
+  OBC.SimpleCamera,
+  OBC.SimpleRenderer
+>();
 const sceneComponent = new OBC.SimpleScene(components);
 sceneComponent.setup();
 world.scene = sceneComponent;
@@ -51,15 +60,38 @@ grids.create(world);
   Just after setting up the world, let's programatically load a model 👇
   */
 
+const fragments = components.get(OBC.FragmentsManager);
+fragments.init(
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
+);
+
+world.camera.controls.addEventListener("rest", () =>
+  fragments.core.update(true),
+);
+
+fragments.list.onItemSet.add(async ({ value: model }) => {
+  model.useCamera(world.camera.three);
+  world.scene.three.add(model.object);
+  await fragments.core.update(true);
+});
+
 const ifcLoader = components.get(OBC.IfcLoader);
-await ifcLoader.setup();
+await ifcLoader.setup({
+  autoSetWasm: false,
+  wasm: {
+    path: "https://unpkg.com/web-ifc@0.0.69/",
+    absolute: true,
+  },
+});
+
 const file = await fetch(
   "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
 );
+
 const buffer = await file.arrayBuffer();
 const typedArray = new Uint8Array(buffer);
-const model = await ifcLoader.load(typedArray);
-world.scene.three.add(model);
+await ifcLoader.load(typedArray, true, "small");
+// world.scene.three.add(model.object);
 
 /* MD
   :::tip
@@ -102,7 +134,8 @@ topics.setup({
 // Add a default viewpoint to the topics each time they get created.
 const viewpoints = components.get(OBC.Viewpoints);
 topics.list.onItemSet.add(({ value: topic }) => {
-  const viewpoint = viewpoints.create(world);
+  const viewpoint = viewpoints.create();
+  viewpoint.world = world;
   topic.viewpoints.add(viewpoint.guid);
 });
 
@@ -137,7 +170,11 @@ topics.list.onItemSet.add(({ value: topic }) => {
   The topics list table is the easiest way to display all topics created in the app using the BCFTopics component. Creating it is really simple, as you just need to write the following:
   */
 
+<<<<<<< HEAD
 const [topicsList, updateTopicsList] = CUI.tables.topicsList({
+=======
+const [topicsList] = CUI.tables.topicsList({
+>>>>>>> upstream/main
   components,
   dataStyles: { users },
 });
@@ -224,8 +261,11 @@ interface TopicPanelUI {
 }
 
 // By default, it doesn't know which topic to display, so will show a default message of not topic selected.
-const [topicPanel, updateTopicPanel] = BUI.Component.create(
-  (state: TopicPanelUI) => {
+const [topicPanel, updateTopicPanel] = BUI.Component.create<
+  HTMLElement,
+  TopicPanelUI
+>(
+  (state) => {
     const { components, topic, world, actions, styles } = state;
 
     let topicSections: BUI.TemplateResult | undefined;
@@ -315,20 +355,42 @@ topics.list.onItemUpdated.add(() => updateTopicPanel());
 /* MD
   :::tip
 
-  If you're unsure about how to create custom functional UI components just like the panel above, take a look at the dedicated [Component](/Tutorials/UserInterface/Core/Component) tutorial.
+  Unsure about creating custom functional UI components like the panel above? Check the [Component](/Tutorials/UserInterface/Core/Component) tutorial.
 
   :::
 
-  It looks scarier than what it actually is! We give you the functional pieces, then is entirely up to you how to stack them together to define your UIs. If we give you a pre-made panel with everything, it would be easier to implement but harder to customize. The way its made let you create a panel with all the functional pieces already working, but then you have the chance to keep adding custom UIs for other functionalities you may create on top of topics.
+  It may seem complex, but it's simpler than it looks! We provide functional pieces, and you decide how to combine them to define your UIs. This approach offers flexibility for customization, unlike pre-made panels that are easier to implement but harder to modify. You can create panels with functional pieces already working and add custom UIs for additional features.
 
-  When you know which topic data to display in the panel, then you can update the topic data component. What need to happen to update the topic data panel entirely depends on your app! However, the topics list table includes a callback that gets triggered each time a topic is clicked with a button located next to its title, lets use that in this case! For it, set the callback to update the topic panel with the clicked topic as follows:
+  To update the topic panel with specific data, it depends on your app's logic. In this case, we can assign a click to each row created on the topicsList to update the panel, as follows:
   */
 
-updateTopicsList({
-  onTopicEnter: (topic) => {
-    updateTopicPanel({ topic });
+// @ts-ignore
+topicsList.addEventListener(
+  "rowcreated",
+  (event: CustomEvent<BUI.RowCreatedEventDetail<{ Guid: string }>>) => {
+    const { row } = event.detail;
+    row.addEventListener("click", () => {
+      const { Guid } = row.data;
+      if (!Guid) return;
+      const topic = topics.list.get(Guid);
+      if (!topic) return;
+      updateTopicPanel({ topic });
+    });
+
+    row.style.cursor = "pointer";
+    row.addEventListener("mouseover", () => {
+      row.style.backgroundColor = `color-mix(
+        in lab,
+        var(--bim-ui_bg-contrast-20) 30%,
+        var(--bim-ui_main-base) 10%
+      )`;
+    });
+
+    row.addEventListener("mouseout", () => {
+      row.style.removeProperty("background-color");
+    });
   },
-});
+);
 
 /* MD
   ### ⏬ Creating a Button to Download BCFs
@@ -394,7 +456,7 @@ const bcfPanel = BUI.Component.create(() => {
   Finally, let's create a BIM Grid element and provide the panels to the viewport to display everything.
   */
 
-const app = document.createElement("bim-grid");
+const app = document.createElement("bim-grid") as BUI.Grid<["main"]>;
 app.layouts = {
   main: {
     template: `

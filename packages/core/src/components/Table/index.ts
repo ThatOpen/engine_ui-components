@@ -10,6 +10,7 @@ import {
   TableRowData,
   TableRowTemplate,
   ColumnData,
+  TableGroup,
 } from "./src";
 import { evalCondition, getQuery } from "../../core/utils";
 import { loadingSkeleton } from "./src/loading-skeleton";
@@ -299,6 +300,9 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
   @property({ type: Boolean, attribute: "no-indentation", reflect: true })
   noIndentation = false;
 
+  @property({ type: Boolean, attribute: "no-carets", reflect: true })
+  noCarets = false;
+
   @property({ type: Boolean, reflect: true })
   loading = false;
 
@@ -307,9 +311,9 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
   private _onColumnsHidden = new Event("columnshidden");
 
-  private _hiddenColumns: string[] = [];
+  private _hiddenColumns: (keyof T)[] = [];
 
-  set hiddenColumns(value: string[]) {
+  set hiddenColumns(value: (keyof T)[]) {
     this._hiddenColumns = value;
     setTimeout(() => {
       this.dispatchEvent(this._onColumnsHidden);
@@ -440,8 +444,10 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
     return this.generateText("tab");
   }
 
-  applyDataTransform(data: Partial<T>) {
+  applyDataTransform(group: TableGroup<T> | null) {
     const declaration: TableRowTemplate<T> = {};
+    if (!group) return declaration;
+    const { data } = group.data;
     for (const key of Object.keys(this.dataTransform)) {
       const columnConfig = this.columns.find((column) => column.name === key);
       if (!(columnConfig && columnConfig.forceDataTransform)) continue;
@@ -452,7 +458,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
     for (const key in _data) {
       const rowDeclaration = this.dataTransform[key];
       if (rowDeclaration) {
-        declaration[key] = rowDeclaration(_data[key], data);
+        declaration[key] = rowDeclaration(_data[key], data, group);
       } else {
         declaration[key] = data[key];
       }

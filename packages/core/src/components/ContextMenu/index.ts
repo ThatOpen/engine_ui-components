@@ -35,10 +35,7 @@ export class ContextMenu extends LitElement {
         transform-origin: top left;
         transform: scale(1);
         clip-path: circle(150% at top left);
-        background-color: var(
-          --bim-context-menu--bgc,
-          var(--bim-ui_bg-contrast-20)
-        );
+        background-color: var(--bim-ui_bg-contrast-20);
         transition:
           clip-path 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93),
           transform 0.3s cubic-bezier(0.72, 0.1, 0.45, 2.35);
@@ -160,6 +157,7 @@ export class ContextMenu extends LitElement {
       this.style.setProperty("width", "auto");
       this.style.setProperty("height", "auto");
     } else {
+      this.style.setProperty("display", "none");
       this.style.setProperty("width", "0");
       this.style.setProperty("height", "0");
     }

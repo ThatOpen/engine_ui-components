@@ -1,17 +1,26 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Component, StatefullComponent, StatelessComponent } from "../../core";
 import {
-  GridLayoutComponents,
+  Component,
+  Manager,
+  StatefullComponent,
+  StatelessComponent,
+} from "../../core";
+import {
+  GridComponents,
   GridLayoutsDefinition,
-  UpdateGridLayoutElements,
+  GridComponentDefinition,
+  UpdateGridComponents,
 } from "./src";
 
 /**
  * A custom grid component for web applications.
  * @element bim-grid
  */
-export class Grid<T extends GridLayoutComponents = {}> extends LitElement {
+export class Grid<
+  L extends string[] = [],
+  E extends GridComponentDefinition = [],
+> extends LitElement {
   /**
    * CSS styles for the component.
    */
@@ -70,9 +79,12 @@ export class Grid<T extends GridLayoutComponents = {}> extends LitElement {
    * document.body.appendChild(grid);
    */
   @property({ type: String, reflect: true })
-  layout?: string;
+  layout?: L[number];
 
-  private _layouts: GridLayoutsDefinition<T> = {} as GridLayoutsDefinition<T>;
+  private _layouts: GridLayoutsDefinition<L, E> = {} as GridLayoutsDefinition<
+    L,
+    E
+  >;
 
   /**
    * Represents a collection of predefined grid layouts for the Grid component.
@@ -82,32 +94,38 @@ export class Grid<T extends GridLayoutComponents = {}> extends LitElement {
    * The HTMLElement instances are used to populate the grid with content.
    * @remarks Once defined, the layout is meant to be immutable.
    */
-  set layouts(value: GridLayoutsDefinition<T>) {
+  set layouts(value: GridLayoutsDefinition<L, E>) {
     this._layouts = value;
-    const result: {
-      [layout: string]: {
-        [area: string]: (state?: Record<string, any>) => void;
-      };
-    } = {};
-
-    for (const [layoutName, layout] of Object.entries(value)) {
-      for (const name in layout.elements) {
-        if (!result[layoutName]) result[layoutName] = {};
-        result[layoutName][name] = (state: any) => {
-          const layoutFunctions = this._updateFunctions[layoutName];
-          if (!layoutFunctions) return;
-          const fn = layoutFunctions[name];
-          if (!fn) return;
-          fn(state);
-        };
-      }
-    }
-
-    this.updateComponent = result as UpdateGridLayoutElements<T>;
+    this._templateIds.clear();
   }
 
   get layouts() {
     return this._layouts;
+  }
+
+  private _elements = {} as GridComponents<E>;
+
+  set elements(value: GridComponents<E>) {
+    this._elements = value;
+
+    const result: {
+      [area: string]: (state?: Record<string, any>) => void;
+    } = {};
+
+    for (const [name, value] of Object.entries(this.elements)) {
+      if (!("template" in (value as any))) continue;
+      result[name] = (state: any) => {
+        const fn = this._updateFunctions[name];
+        if (!fn) return;
+        fn(state);
+      };
+    }
+
+    this.updateComponent = result as UpdateGridComponents<E>;
+  }
+
+  get elements() {
+    return this._elements;
   }
 
   // private isVerticalArea(area: string) {
@@ -141,24 +159,49 @@ export class Grid<T extends GridLayoutComponents = {}> extends LitElement {
     this._onLayoutChange = new Event("layoutchange");
   }
 
+  private _templateIds = new Map<
+    StatefullComponent | StatelessComponent,
+    string
+  >();
+
   private _updateFunctions: {
-    [layout: string]: { [area: string]: (state?: Record<string, any>) => void };
+    [element: string]: (state?: Record<string, any>) => void;
   } = {};
 
-  updateComponent?: UpdateGridLayoutElements<T>;
+  private getTemplateId(template: StatefullComponent | StatelessComponent) {
+    let id = this._templateIds.get(template);
+    if (!id) {
+      id = Manager.newRandomId();
+      this._templateIds.set(template, id);
+    }
+    return id;
+  }
+
+  updateComponent = {} as UpdateGridComponents<E>;
+
+  private cleanUpdateFunctions() {
+    if (!this.layout) {
+      this._updateFunctions = {};
+      return;
+    }
+
+    const layout = this.layouts[this.layout];
+    const areas = this.getLayoutAreas(layout);
+    for (const name in this.elements) {
+      if (areas.includes(name)) continue;
+      delete this._updateFunctions[name];
+    }
+  }
 
   protected render() {
     if (this.layout) {
-      this._updateFunctions = {};
       if (this.layouts[this.layout]) {
-        this.innerHTML = "";
-        this._updateFunctions[this.layout] = {};
-        const layoutUpdateFunctions = this._updateFunctions[this.layout];
         const layout = this.layouts[this.layout];
         const areas = this.getLayoutAreas(layout);
         const elements = areas
           .map((area: string) => {
-            const element = (layout.elements as any)[area] as
+            const element = (layout.elements?.[area as keyof E] ||
+              this.elements[area as keyof E]) as
               | HTMLElement
               | StatelessComponent
               | {
@@ -175,31 +218,56 @@ export class Grid<T extends GridLayoutComponents = {}> extends LitElement {
 
             if ("template" in element) {
               const { template, initialState } = element;
+              const templateId = this.getTemplateId(template);
+
+              const existingComponent = this.querySelector(
+                `[data-grid-template-id="${templateId}"]`,
+              );
+
+              if (existingComponent) return existingComponent;
+
               const [component, updateComponent] = Component.create<
                 HTMLElement,
                 {}
               >(template, initialState);
 
+              component.setAttribute("data-grid-template-id", templateId);
+
               component.style.gridArea = area;
-              layoutUpdateFunctions[area] = updateComponent;
+              this._updateFunctions[area] = updateComponent;
               return component;
             }
 
+            const templateId = this.getTemplateId(element);
+            const existingComponent = this.querySelector(
+              `[data-grid-template-id="${templateId}"]`,
+            );
+
+            if (existingComponent) return existingComponent;
+
             const component = Component.create(element);
+            component.setAttribute(
+              "data-grid-template-id",
+              this.getTemplateId(element),
+            );
+            component.style.gridArea = area;
             return component;
           })
-          .filter((element) => !!element) as HTMLElement[];
+          .filter((element) => element !== null) as HTMLElement[];
 
+        this.innerHTML = "";
         this.style.gridTemplate = layout.template;
         this.append(...elements);
         if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
       }
     } else {
-      this._updateFunctions = {};
       this.innerHTML = "";
       this.style.gridTemplate = "";
       if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
     }
+
+    this.cleanUpdateFunctions();
+
     return html`<slot></slot>`;
   }
 }

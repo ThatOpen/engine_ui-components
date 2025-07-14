@@ -1,6 +1,6 @@
 import { LitElement, css, html, render } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Table } from "../index";
+import { Table, TableGroup } from "../index";
 import { TableCell } from "./TableCell";
 import {
   TableRowData,
@@ -45,10 +45,23 @@ export class TableRow<T extends TableRowData> extends LitElement {
   columns: ColumnData<T>[] = [];
 
   @property({ attribute: false })
-  hiddenColumns: string[] = [];
+  hiddenColumns: (keyof T)[] = [];
 
-  @property({ attribute: false })
-  data: Partial<T> = {};
+  group = this.closest<TableGroup<T>>("bim-table-group");
+
+  get groupData() {
+    return this.group?.data;
+  }
+
+  private _data: Partial<T> = {};
+
+  get data() {
+    return this.group?.data.data ?? this._data;
+  }
+
+  set data(value: Partial<T>) {
+    this._data = value;
+  }
 
   @property({ type: Boolean, attribute: "is-header", reflect: true })
   isHeader = false;
@@ -147,7 +160,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
     const indentation = this.table.getRowIndentation(this.data) ?? 0;
     const declaration = !this.isHeader
-      ? this.table.applyDataTransform(this.data) ?? this.data
+      ? this.table.applyDataTransform(this.group) ?? this.data
       : this.data;
     const cells: Element[] = [];
     for (const column in declaration) {

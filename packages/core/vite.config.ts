@@ -14,9 +14,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      include: ["./src"],
-      exclude: ["./src/**/example.ts", "./src/**/*.test.ts"],
-      // afterBuild: (files) => generateTSNamespace("BUI", files),
+      rollupTypes: true
     }),
   ],
 });

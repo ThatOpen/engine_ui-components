@@ -1,5 +1,4 @@
 import { LitElement, css, html } from "lit";
-import { property } from "lit/decorators.js";
 import { Table } from "../index";
 import { TableGroup } from "./TableGroup";
 import { TableGroupData, TableRowData } from "./types";
@@ -30,18 +29,19 @@ export class TableChildren<T extends TableRowData> extends LitElement {
 
   private _groups: TableGroup<T>[] = [];
 
-  @property({ type: Array, attribute: false })
-  data: TableGroupData<T>[] = [];
+  group = this.closest<TableGroup<T>>("bim-table-group");
+
+  private _data: TableGroupData<T>[] = [];
+
+  get data() {
+    return this.group?.data.children ?? this._data;
+  }
+
+  set data(value: TableGroupData<T>[]) {
+    this._data = value;
+  }
 
   table = this.closest<Table<T>>("bim-table");
-
-  toggleGroups(force?: boolean, recursive = false) {
-    for (const group of this._groups) {
-      group.childrenHidden =
-        typeof force === "undefined" ? !group.childrenHidden : !force;
-      if (recursive) group.toggleChildren(force, recursive);
-    }
-  }
 
   protected render() {
     this._groups = [];

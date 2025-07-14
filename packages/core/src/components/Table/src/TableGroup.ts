@@ -50,7 +50,6 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       height: 0.95rem;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
     }
 
     .caret svg {
@@ -58,14 +57,30 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     }
   `;
 
-  private _children?: TableChildren<T>;
-
-  data: TableGroupData<T> = { data: {} };
-
   @property({ type: Boolean, attribute: "children-hidden", reflect: true })
   childrenHidden = true;
 
   table = this.closest<Table<T>>("bim-table");
+
+  data: TableGroupData<T> = { data: {} };
+
+  get rowElement() {
+    const root = this.shadowRoot;
+    if (!root) return null;
+    // @ts-ignore
+    return root.querySelector("bim-table-row") as TableRow<T>;
+  }
+
+  get childrenElement() {
+    const root = this.shadowRoot;
+    if (!root) return null;
+    // @ts-ignore
+    return root.querySelector("bim-table-children") as TableChildren<T>;
+  }
+
+  private get _isChildrenEmpty() {
+    return !(this.data.children && this.data.children.length !== 0);
+  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -76,11 +91,9 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     }
   }
 
-  toggleChildren(force?: boolean, recursive = false) {
-    if (!this._children) return;
+  toggleChildren(force?: boolean) {
     this.childrenHidden =
       typeof force === "undefined" ? !this.childrenHidden : !force;
-    if (recursive) this._children.toggleGroups(force, recursive);
 
     this.animateTableChildren(true); // set it to false to deactivate the animations
   }
@@ -113,9 +126,9 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     }
 
     // Setting editable animation timings
-    const elementEnteringDuration = 900;
-    const elementEnteringDelay = 50;
-    const strokesDuration = 350;
+    const elementEnteringDuration = 500;
+    const elementEnteringDelay = 0;
+    const strokesDuration = 200;
     const crateDuration = 350;
 
     requestAnimationFrame(() => {
@@ -280,9 +293,6 @@ export class TableGroup<T extends TableRowData> extends LitElement {
         : null}
     `;
 
-    const verticalBranchRow = document.createDocumentFragment();
-    render(verticalBranchTemplate, verticalBranchRow);
-
     let horizontalBranch: HTMLDivElement | null = null;
     if (!this.table.noIndentation) {
       horizontalBranch = document.createElement("div");
@@ -292,70 +302,85 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
     let caret: HTMLDivElement | null = null;
     if (!this.table.noIndentation) {
-      const childrenToggleCaret = document.createElementNS(
+      caret = document.createElement("div");
+
+      const toggleCaret = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "svg",
       );
 
-      childrenToggleCaret.setAttribute("height", "9.9");
-      childrenToggleCaret.setAttribute("width", "7.5");
-      childrenToggleCaret.setAttribute("viewBox", "0 0 4.6666672 7.7");
+      toggleCaret.setAttribute("height", "9.9");
+      toggleCaret.setAttribute("width", "7.5");
+      toggleCaret.setAttribute("viewBox", "0 0 4.6666672 7.7");
 
-      const childrenHiddenCaretPath = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path",
-      );
+      if (this.table.noCarets) {
+        const childrenToggleCaretDot = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle",
+        );
 
-      childrenHiddenCaretPath.setAttribute(
-        "d",
-        "m 1.7470835,6.9583848 2.5899999,-2.59 c 0.39,-0.39 0.39,-1.02 0,-1.41 L 1.7470835,0.36838483 c -0.63,-0.62000003 -1.71000005,-0.18 -1.71000005,0.70999997 v 5.17 c 0,0.9 1.08000005,1.34 1.71000005,0.71 z",
-      );
+        childrenToggleCaretDot.setAttribute("cx", "2.3333336");
+        childrenToggleCaretDot.setAttribute("cy", "3.85");
+        childrenToggleCaretDot.setAttribute("r", "2.5");
 
-      childrenToggleCaret.append(childrenHiddenCaretPath);
+        toggleCaret.append(childrenToggleCaretDot);
+      } else {
+        const childrenHiddenCaretPath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
 
-      caret = document.createElement("div");
-      caret.addEventListener("click", (e: Event) => {
-        e.stopPropagation();
-        this.toggleChildren();
-      });
+        childrenHiddenCaretPath.setAttribute(
+          "d",
+          "m 1.7470835,6.9583848 2.5899999,-2.59 c 0.39,-0.39 0.39,-1.02 0,-1.41 L 1.7470835,0.36838483 c -0.63,-0.62000003 -1.71000005,-0.18 -1.71000005,0.70999997 v 5.17 c 0,0.9 1.08000005,1.34 1.71000005,0.71 z",
+        );
+
+        toggleCaret.append(childrenHiddenCaretPath);
+        caret.style.cursor = "pointer";
+        caret.addEventListener("click", (e: Event) => {
+          e.stopPropagation();
+          this.toggleChildren();
+        });
+      }
+
       caret.classList.add("caret");
       caret.style.left = `${(this.table.selectableRows ? 1.5 : 0.125) + indentation}rem`;
-      caret.append(childrenToggleCaret);
+      caret.append(toggleCaret);
     }
 
     // @ts-ignore
     const row = document.createElement("bim-table-row") as TableRow<T>;
-    if (this.data.children) row.append(verticalBranchRow);
+    if (!this._isChildrenEmpty) {
+      const verticalBranchRow = document.createDocumentFragment();
+      render(verticalBranchTemplate, verticalBranchRow);
+      row.append(verticalBranchRow);
+    }
 
     row.table = this.table;
-    row.data = this.data.data;
+    row.group = this;
     this.table.dispatchEvent(
       new CustomEvent<RowCreatedEventDetail<T>>("rowcreated", {
         detail: { row },
       }),
     );
 
-    if (caret && this.data.children) row.append(caret);
+    if (caret && !this._isChildrenEmpty) row.append(caret);
     if (indentation !== 0 && horizontalBranch) row.append(horizontalBranch);
 
     let children: TableChildren<T> | undefined;
-    if (this.data.children) {
+    if (!this._isChildrenEmpty && !this.childrenHidden) {
       // @ts-ignore
       children = document.createElement(
         "bim-table-children",
       ) as TableChildren<T>;
-      this._children = children;
       children.table = this.table;
-      children.data = this.data.children;
+      children.group = this;
       const verticalBranchChildren = document.createDocumentFragment();
       render(verticalBranchTemplate, verticalBranchChildren);
       children.append(verticalBranchChildren);
-
-      if (this.childrenHidden) children.setAttribute("hidden", "");
+      this.animateTableChildren();
     }
 
-    return html`
-      <div class="parent">${row} ${!this.childrenHidden ? children : null}</div>
-    `;
+    return html`<div class="parent">${row} ${children}</div>`;
   }
 }

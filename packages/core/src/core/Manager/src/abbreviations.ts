@@ -9,20 +9,21 @@
  *
  */
 export const abbreviations = {
-  borderRadius: "bdrs",
-  borderStyle: "bds",
-  borderColor: "bdc",
-  backgroundColor: "bgc",
-  color: "c",
-  fontSize: "fz",
-  outline: "ol",
-  outlineColor: "olc",
-  outlineWidth: "olw",
-  scrollbar: "sb",
-  template: "tpl", // Not from emmet
-  padding: "p",
-  gap: "g",
-  display: "d",
-  justifySelf: "js",
-  justifyContent: "jc",
+  bdrs: "borderRadius",
+  bds: "borderStyle",
+  bdc: "borderColor",
+  bgc: "backgroundColor",
+  hc: "headerColor", // Not from emmet
+  c: "color",
+  fz: "fontSize",
+  ol: "outline",
+  olc: "outlineColor",
+  olw: "outlineWidth",
+  sb: "scrollbar",
+  tpl: "template", // Not from emmet
+  p: "padding",
+  g: "gap",
+  d: "display",
+  js: "justifySelf",
+  jc: "justifyContent",
 };

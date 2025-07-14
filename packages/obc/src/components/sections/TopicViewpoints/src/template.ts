@@ -118,8 +118,9 @@ export const topicViewpointsSectionTemplate: BUI.StatefullComponent<
     });
 
     const onAddViewpoint = () => {
-      if (!(topic && world && actions.add && !linking)) return;
-      const viewpoint = viewpoints.create(world);
+      if (!(topic && actions.add && !linking)) return;
+      const viewpoint = viewpoints.create();
+      if (world) viewpoint.world = world;
       topic.viewpoints.add(viewpoint.guid);
     };
 

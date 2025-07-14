@@ -12,6 +12,7 @@ export class Label extends LitElement {
   static styles = css`
     :host {
       --bim-icon--c: var(--bim-label--c);
+      overflow: auto;
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
       font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
       display: block;
@@ -28,7 +29,7 @@ export class Label extends LitElement {
       align-items: center;
       column-gap: 0.25rem;
       row-gap: 0.125rem;
-      user-select: text;
+      user-select: none;
       height: 100%;
     }
 
@@ -37,10 +38,10 @@ export class Label extends LitElement {
     }
 
     .parent p {
+      display: flex;
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;
-      display: flex;
       align-items: center;
       gap: 0.125rem;
     }
