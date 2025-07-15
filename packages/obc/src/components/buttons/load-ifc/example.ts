@@ -8,9 +8,15 @@ CUI.Manager.init();
 
 const components = new OBC.Components();
 const fragments = components.get(OBC.FragmentsManager);
-fragments.init(
-  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
-);
+const githubUrl =
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
+const fetchedUrl = await fetch(githubUrl);
+const workerBlob = await fetchedUrl.blob();
+const workerFile = new File([workerBlob], "worker.mjs", {
+  type: "text/javascript",
+});
+const workerUrl = URL.createObjectURL(workerFile);
+fragments.init(workerUrl);
 
 const worldElementA = document.createElement("bim-world");
 document.body.append(worldElementA);

@@ -84,9 +84,15 @@ await ifcLoader.setup();
   */
 
 const fragments = components.get(OBC.FragmentsManager);
-fragments.init(
-  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
-);
+const githubUrl =
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
+const fetchedUrl = await fetch(githubUrl);
+const workerBlob = await fetchedUrl.blob();
+const workerFile = new File([workerBlob], "worker.mjs", {
+  type: "text/javascript",
+});
+const workerUrl = URL.createObjectURL(workerFile);
+fragments.init(workerUrl);
 
 world.camera.controls.addEventListener("update", () =>
   fragments.core.update(true),
