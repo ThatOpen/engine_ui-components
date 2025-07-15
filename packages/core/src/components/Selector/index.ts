@@ -185,6 +185,7 @@ export class Selector extends LitElement implements HasValue, HasName {
         .vertical=${this.vertical}
         .label=${this.label}
         .icon=${this.icon}
+        @click=${this.setAnimatedBackgound}
       >
         <div class="animated-background"></div>
         <slot @slotchange=${this.onSlotChange}></slot>

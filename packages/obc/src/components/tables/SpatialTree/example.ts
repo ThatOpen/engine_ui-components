@@ -14,24 +14,11 @@
 */
 
 import * as OBC from "@thatopen/components";
-import * as OBCF from "@thatopen/components-front";
+import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
-// You have to import from "@thatopen/ui-obc"
-import * as BUIC from "../..";
-
-/* MD
-  ### 📋 Initializing the UI
-  As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-*/
+import * as CUI from "../..";
 
 BUI.Manager.init();
-
-/* MD
-  ### 🌎 Setting up a simple scene
-  ---
-
-  We will start by creating a simple scene with a camera and a renderer. If you don't know how to set up a scene, you can check the Worlds tutorial.
-*/
 
 const components = new OBC.Components();
 
@@ -64,25 +51,10 @@ viewerGrids.create(world);
 
 components.init();
 
-/* MD
-
-  ### Setting up the components
-  First of all, we're going to get the `FragmentIfcLoader` from an existing components instance:
-  */
-
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
-/* MD
-
-  ###💡 Getting the highlighter
-  Now, we will basically get the highlighter and set it up. This will create and configure 2 things:
-
-  - Selecting: when clicking on an element.
-  - Hovering: when hovering the mouse over an element.
-  */
-
-const highlighter = components.get(OBCF.Highlighter);
+const highlighter = components.get(OBF.Highlighter);
 highlighter.setup({ world });
 highlighter.zoomToSelection = true;
 
@@ -112,6 +84,11 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
 });
 
 /* MD 
+  ## Showing your model tree 🌲
+  ---
+  Among the most common things to do with BIM models, is to show their spatial structure. This is really important, because then you can know better the model and see how elements are hierarchized between them. 🔗
+  
+  However, the IFC schema is not always that intuitive when it comes to create a model tree. Why? You may wonder... and it's because IfcRelContainedInSpatialStructure is not the only IFC relation that takes play in a real model tree. 🤯 Luckily, this is already taken into account by That Open Engine's UI when creating a model tree. Let's learn how you can use the Relations Tree!
 
   ### Creating the tree
   Doing this is extremely simple thanks to the information saved in the Fragments file and the power of the UI components from That Open Engine. To proceed with the creation, you can do the following 💪

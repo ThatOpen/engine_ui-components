@@ -6,8 +6,8 @@ import { property } from "lit/decorators.js";
  */
 export class ToolbarGroup extends LitElement {
   /**
-  * CSS styles for the component.
-  */
+   * CSS styles for the component.
+   */
   static styles = css`
     .parent {
       display: grid;

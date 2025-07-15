@@ -22,19 +22,19 @@ import{T as p,x as b}from"./lit-html-Cs86_c16.js";import{M as g,C as s}from"./in
         <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
       </bim-panel-section>
     </bim-panel>
-  `),m=s.create(()=>b`
-    <bim-panel style="height: 25rem">
+  `),c=s.create(()=>b`
+    <bim-panel label="Table" icon="material-symbols:table" style="height: 25rem">
       <bim-panel-section label="Assignments" fixed>
-        <bim-table ${y(n=>{if(!n)return;const i=n,o={padding:"0.25rem 0.375rem",borderRadius:"0.25rem"};i.dataTransform={Status:t=>{if(typeof t!="string")return t;if(t==="In Progress"){const a={...o,backgroundColor:"#3c59c3",color:"white"};return b`<bim-label style=${r(a)}>${t}</bim-label>`}if(t==="Pending"){const a={...o,backgroundColor:"#5c5c5c",color:"white"};return b`<bim-label style=${r(a)}>${t}</bim-label>`}if(t==="Completed"){const a={...o,backgroundColor:"#3a7829",color:"white"};return b`<bim-label style=${r(a)}>${t}</bim-label>`}if(t==="Scheduled"){const a={...o,backgroundColor:"#9e2980",color:"white"};return b`<bim-label style=${r(a)}>${t}</bim-label>`}return t},AssignedTo:(t,a)=>b`
+        <bim-table ${y(n=>{if(!n)return;const i=n,o={padding:"0.25rem 0.375rem",borderRadius:"0.25rem"};i.dataTransform={Status:e=>{if(typeof e!="string")return e;if(e==="In Progress"){const a={...o,backgroundColor:"#3c59c3",color:"white"};return b`<bim-label style=${r(a)}>${e}</bim-label>`}if(e==="Pending"){const a={...o,backgroundColor:"#5c5c5c",color:"white"};return b`<bim-label style=${r(a)}>${e}</bim-label>`}if(e==="Completed"){const a={...o,backgroundColor:"#3a7829",color:"white"};return b`<bim-label style=${r(a)}>${e}</bim-label>`}if(e==="Scheduled"){const a={...o,backgroundColor:"#9e2980",color:"white"};return b`<bim-label style=${r(a)}>${e}</bim-label>`}return e},AssignedTo:(e,a)=>b`
           <div style="display: flex; gap: 0.5rem">
-            <bim-label>${t}</bim-label>
-            <bim-button @click=${()=>{const{Task:d}=a;alert(`Will send ${t} a reminder of ${d}!`)}} icon="mingcute:send-fill" tooltip-title="Send reminder!"></bim-button>
+            <bim-label>${e}</bim-label>
+            <bim-button @click=${()=>{const{Task:g}=a;alert(`Will send ${e} a reminder of ${g}!`)}} icon="mingcute:send-fill" tooltip-title="Send reminder!"></bim-button>
           </div> 
         `},i.data=[{data:{Task:"Code Review",Description:"Review code for the new feature implementation",AssignedTo:"Alice",DueDate:"2024-05-20",Status:"In Progress"},children:[{data:{Task:"Code Review - Round 1",Description:"First pass code review",AssignedTo:"Alice",DueDate:"2024-05-18",Status:"Completed"}},{data:{Task:"Address Comments",Description:"Address the comments from the first round of review",AssignedTo:"Author of Code",DueDate:"2024-05-19",Status:"In Progress"}},{data:{Task:"Code Review - Round 2",Description:"Second pass code review after addressing comments",AssignedTo:"Alice",DueDate:"2024-05-20",Status:"Pending"}},{data:{Task:"Merge Code",Description:"Merge reviewed code after final approval",AssignedTo:"Project Lead",DueDate:"2024-05-21",Status:"Not Started"}}]},{data:{Task:"Write Documentation",Description:"Write user documentation for the latest release",AssignedTo:"Bob",DueDate:"2024-05-25",Status:"Pending"}},{data:{Task:"Unit Testing",Description:"Create and run unit tests for the new modules",AssignedTo:"Charlie",DueDate:"2024-05-22",Status:"Completed"},children:[{data:{Task:"Create Test Cases",Description:"Identify and document all necessary test cases",AssignedTo:"Charlie",DueDate:"2024-05-19",Status:"Completed"}},{data:{Task:"Implement Unit Tests",Description:"Write the actual unit tests based on the test cases",AssignedTo:"Charlie",DueDate:"2024-05-20",Status:"Completed"}},{data:{Task:"Run Unit Tests",Description:"Execute the unit tests and analyze the results",AssignedTo:"Charlie",DueDate:"2024-05-21",Status:"Completed"}},{data:{Task:"Fix Failing Tests",Description:"Address any failing unit tests and correct the code",AssignedTo:"Charlie",DueDate:"2024-05-22",Status:"Completed"}},{data:{Task:"Refactor Code",Description:"Improve the code structure and readability",AssignedTo:"Charlie",DueDate:"2024-05-23",Status:"Completed"}}]},{data:{Task:"Deploy to Staging",Description:"Deploy the current build to the staging environment",AssignedTo:"David",DueDate:"2024-05-18",Status:"Pending"},children:[{data:{Task:"Prepare Build Package",Description:"Create the deployable package for the application",AssignedTo:"David",DueDate:"2024-05-16",Status:"Completed"}},{data:{Task:"Configure Staging Environment",Description:"Set up the staging environment with necessary configurations",AssignedTo:"David",DueDate:"2024-05-17",Status:"Completed"}},{data:{Task:"Upload Build Package",Description:"Upload the build package to the staging server",AssignedTo:"David",DueDate:"2024-05-18",Status:"Completed"}},{data:{Task:"Run Deployment Script",Description:"Execute the deployment script to deploy the application",AssignedTo:"David",DueDate:"2024-05-18",Status:"In Progress"}},{data:{Task:"Verify Deployment",Description:"Check the application in the staging environment to ensure proper deployment",AssignedTo:"David",DueDate:"2024-05-19",Status:"Pending"}}]},{data:{Task:"UI Design",Description:"Design the user interface for the new dashboard",AssignedTo:"Eve",DueDate:"2024-05-30",Status:"In Progress"}},{data:{Task:"Database Migration",Description:"Migrate the database schema to the new version",AssignedTo:"Frank",DueDate:"2024-05-21",Status:"Not Started"}},{data:{Task:"Client Meeting",Description:"Discuss project requirements and deliverables",AssignedTo:"Grace",DueDate:"2024-05-19",Status:"Scheduled"}},{data:{Task:"Bug Fixing",Description:"Fix critical bugs reported by QA",AssignedTo:"Hank",DueDate:"2024-05-23",Status:"In Progress"}},{data:{Task:"Performance Optimization",Description:"Optimize the application for better performance",AssignedTo:"Ivy",DueDate:"2024-05-27",Status:"Pending"}},{data:{Task:"Code Merge",Description:"Merge the feature branch into the main branch",AssignedTo:"Jack",DueDate:"2024-05-24",Status:"Completed"}}]})}></bim-table>
       </bim-panel-section>
     </bim-panel> 
-  `),k=s.create(()=>b`
-    <bim-panel>
+  `),u=s.create(()=>b`
+    <bim-panel label="Right Panel" icon="mynaui:panel-right-solid" style="width: 20rem">
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button label="Button With Nestings">
           <bim-context-menu>
@@ -55,16 +55,17 @@ import{T as p,x as b}from"./lit-html-Cs86_c16.js";import{M as g,C as s}from"./in
         </bim-selector>
       </bim-panel-section>
     </bim-panel>
-  `),C=s.create(()=>{const e=()=>window.open("https://people.thatopen.com/home"),n=()=>{const t=document.querySelector("html");t&&(t.classList.contains("bim-ui-dark")?t.classList.replace("bim-ui-dark","bim-ui-light"):t.classList.contains("bim-ui-light")&&t.classList.replace("bim-ui-light","bim-ui-dark"))},{activationButton:i}=c;i.vertical=!0;const o=({target:t})=>{const a=m.style.display==="none";t.active=a,a?m.style.removeProperty("display"):m.style.display="none"};return b`
+  `),C=s.create(()=>{const t=()=>window.open("https://people.thatopen.com/home"),n=()=>{d.toggleTheme()},{activationButton:i}=u,{activationButton:o}=m,{activationButton:e}=c;return i.vertical=!0,o.vertical=!0,e.vertical=!0,b`
    <bim-tabs>
     <bim-tab label="Toolbar A">
       <bim-toolbar>
         <bim-toolbar-section label="Some section">
           <bim-button @click=${n} label="Toggle Theme" vertical icon="proicons:dark-theme"></bim-button>
           <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
+          ${m.activationButton}
+          <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${t}></bim-button>
+          ${u.activationButton}
           ${c.activationButton}
-          <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${e}></bim-button>
-          <bim-button active @click=${o} label="Table" vertical icon="material-symbols:table"></bim-button>
           <bim-toolbar-group>
             <bim-button icon="solar:settings-bold"></bim-button>
             <bim-button icon="solar:settings-bold"></bim-button>
@@ -82,7 +83,7 @@ import{T as p,x as b}from"./lit-html-Cs86_c16.js";import{M as g,C as s}from"./in
       </bim-toolbar>
     </bim-tab>
    </bim-tabs> 
-  `}),A=s.create(()=>{const e=s.create(()=>b`
+  `}),v=s.create(()=>{const t=s.create(()=>b`
     <bim-tabs floating style="justify-self: center; border-radius: 0.5rem;">
       <bim-tab label="Import">
         <bim-toolbar>
@@ -142,15 +143,15 @@ import{T as p,x as b}from"./lit-html-Cs86_c16.js";import{M as g,C as s}from"./in
       "empty rightToolbar" 1fr
       "bottomToolbar bottomToolbar" auto
       /1fr
-    `,elements:{bottomToolbar:e,rightToolbar:n}}},i.layout="main",b`
+    `,elements:{bottomToolbar:t,rightToolbar:n}}},i.layout="main",b`
     <bim-viewport>${i}</bim-viewport>
   `}),l=document.body.querySelector("bim-grid");l.layouts={main:{template:`
       "header header" 80px
       "sidebar content" 1fr
       / 80px 1fr
-    `,elements:{header:(()=>{const e=document.createElement("div");return e.style.backgroundColor="#641b1b66",e})(),sidebar:(()=>{const e=document.createElement("div");return e.style.backgroundColor="#1b536466",e})(),content:(()=>{const e=document.createElement("div");return e.style.backgroundColor="#1b644c66",e})()}},app:{template:`
+    `,elements:{header:(()=>{const t=document.createElement("div");return t.style.backgroundColor="#641b1b66",t})(),sidebar:(()=>{const t=document.createElement("div");return t.style.backgroundColor="#1b536466",t})(),content:(()=>{const t=document.createElement("div");return t.style.backgroundColor="#1b644c66",t})()}},app:{template:`
       "ribbon ribbon ribbon" auto
       "leftPanel viewport rightPanel" 1fr
       "leftPanel bottomPanel bottomPanel" auto
-      / auto 1fr 20rem
-    `,elements:{ribbon:C,leftPanel:c,viewport:A,bottomPanel:m,rightPanel:k}}};l.addEventListener("layoutchange",()=>{l.layout?alert(`Your have changed to "${l.layout}" layout!`):alert("Your have cleaned up your layout!")});const v=document.body.querySelector("bim-button");v.addEventListener("click",()=>{const{layout:e}=l;switch(e){case void 0:l.layout="main";break;case"main":l.layout="app";break;case"app":l.layout=void 0;break;default:console.log("No follow up action")}});
+      / auto 1fr auto
+    `,elements:{ribbon:C,leftPanel:m,viewport:v,bottomPanel:c,rightPanel:u}}};l.addEventListener("layoutchange",()=>{l.layout?alert(`Your have changed to "${l.layout}" layout!`):alert("Your have cleaned up your layout!")});const A=document.body.querySelector("bim-button");A.addEventListener("click",()=>{const{layout:t}=l;switch(t){case void 0:l.layout="main";break;case"main":l.layout="app";break;case"app":l.layout=void 0;break;default:console.log("No follow up action")}});
