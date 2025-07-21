@@ -67,10 +67,6 @@ viewCube.camera = world.camera.three;
 viewport.append(viewCube);
 
 /* MD
-  This attaches the ViewCube to your viewport and links it to your camera's Three.js instance.
-*/
-
-/* MD
   ### 🔄 Keeping the ViewCube in Sync
 
   To keep the ViewCube orientation updated as the camera moves, listen for camera control updates:
