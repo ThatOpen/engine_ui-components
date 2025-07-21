@@ -86,7 +86,7 @@ world.camera.controls.addEventListener("update", () =>
   You can let users click on the ViewCube to change the camera's orientation. For example, set the camera to a specific view when the left face is clicked:
 */
 
-viewCube.addEventListener("back", () => {
+viewCube.addEventListener("leftclick", () => {
   world.camera.controls.setLookAt(-10, 10, 0, 1, 10, 0, true);
 });
 
