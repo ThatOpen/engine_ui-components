@@ -8,6 +8,10 @@
   */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
+<<<<<<< HEAD
+import * as CUI from "@thatopen/ui-obc";
+=======
+>>>>>>> upstream/main
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 // You have to import * from "@thatopen/ui-obc"
@@ -172,7 +176,11 @@ topics.list.onItemSet.add(({ value: topic }) => {
   The topics list table is the easiest way to display all topics created in the app using the BCFTopics component. Creating it is really simple, as you just need to write the following:
   */
 
+<<<<<<< HEAD
+const [topicsList, updateTopicsList] = CUI.tables.topicsList({
+=======
 const [topicsList] = CUI.tables.topicsList({
+>>>>>>> upstream/main
   components,
   dataStyles: { users },
 });
