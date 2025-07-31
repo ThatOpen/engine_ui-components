@@ -39,7 +39,7 @@ world.renderer = rendererComponent;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
-cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
+await world.camera.controls.setLookAt(68, 23, -8.5, 21.5, -5.5, 23);
 
 viewport.addEventListener("resize", () => {
   rendererComponent.resize();
@@ -77,23 +77,19 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
   await fragments.core.update(true);
 });
 
-const ifcLoader = components.get(OBC.IfcLoader);
-await ifcLoader.setup({
-  autoSetWasm: false,
-  wasm: {
-    path: "https://unpkg.com/web-ifc@0.0.70/",
-    absolute: true,
-  },
-});
+const fragPaths = [
+  "https://thatopen.github.io/engine_components/resources/frags/school_arq.frag",
+  "https://thatopen.github.io/engine_components/resources/frags/school_str.frag",
+];
 
-const file = await fetch(
-  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
-);
-
-const buffer = await file.arrayBuffer();
-const typedArray = new Uint8Array(buffer);
-await ifcLoader.load(typedArray, true, "small");
-// world.scene.three.add(model.object);
+await Promise.all(
+  fragPaths.map(async (path) => {
+    const modelId = path.split("/").pop()?.split(".").shift();
+    if (!modelId) return null;
+    const file = await fetch(path);
+    const buffer = await file.arrayBuffer();
+    return fragments.core.load(buffer, { modelId });
+  });
 
 /* MD
   :::tip
@@ -318,15 +314,14 @@ const [topicPanel, updateTopicPanel] = BUI.Component.create<
         </bim-panel-section>
         <!-- This is a custom section where you can add any functionality you like -->
         <bim-panel-section label="Communication" icon="tabler:link">
-          ${
-            topic.assignedTo
-              ? BUI.html`
+          ${topic.assignedTo
+          ? BUI.html`
                 <bim-button @click=${onReminderClick} label="Send Mail Reminder" icon="mingcute:send-fill"></bim-button> 
               `
-              : BUI.html`
+          : BUI.html`
                 <bim-label style="white-space: normal">The topic must have an assignee to use the communication tools. Update the topic with a new assignee!</bim-label>
               `
-          }
+        }
         </bim-panel-section>
       `;
     } else {
