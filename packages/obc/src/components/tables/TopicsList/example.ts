@@ -89,8 +89,7 @@ await Promise.all(
     const file = await fetch(path);
     const buffer = await file.arrayBuffer();
     return fragments.core.load(buffer, { modelId });
-  }),
-);
+  });
 
 /* MD
   :::tip
