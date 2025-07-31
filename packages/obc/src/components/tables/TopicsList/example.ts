@@ -89,7 +89,8 @@ await Promise.all(
     const file = await fetch(path);
     const buffer = await file.arrayBuffer();
     return fragments.core.load(buffer, { modelId });
-  });
+  }),
+);
 
 /* MD
   :::tip
@@ -314,14 +315,15 @@ const [topicPanel, updateTopicPanel] = BUI.Component.create<
         </bim-panel-section>
         <!-- This is a custom section where you can add any functionality you like -->
         <bim-panel-section label="Communication" icon="tabler:link">
-          ${topic.assignedTo
-          ? BUI.html`
+          ${
+            topic.assignedTo
+              ? BUI.html`
                 <bim-button @click=${onReminderClick} label="Send Mail Reminder" icon="mingcute:send-fill"></bim-button> 
               `
-          : BUI.html`
+              : BUI.html`
                 <bim-label style="white-space: normal">The topic must have an assignee to use the communication tools. Update the topic with a new assignee!</bim-label>
               `
-        }
+          }
         </bim-panel-section>
       `;
     } else {
