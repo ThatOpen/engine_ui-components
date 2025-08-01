@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.1.0...v3.2.0) (2025-08-01)
+
+
+### Features
+
+* let label icon color to be set independently ([f1f5e81](https://github.com/ThatOpen/engine_ui-components/commit/f1f5e81f50e16e7e13733993aa0b19b757e1638d))
+
+
+### Bug Fixes
+
+* adds missing comma ([bcb53dc](https://github.com/ThatOpen/engine_ui-components/commit/bcb53dca51596ad754e3807b52bc885b88c131f8))
+
 ## [3.1.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.4.0...v3.1.0) (2025-07-10)
 
 
