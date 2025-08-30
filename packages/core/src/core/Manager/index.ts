@@ -109,6 +109,7 @@ export class Manager {
       components.ToolbarSection,
     );
     Manager.defineCustomElement("bim-viewport", components.Viewport);
+    Manager.defineCustomElement("bim-tooltip", components.Tooltip);
 
     if (animateOnLoad) this.animateOnLoad(querySelectorElements);
   }

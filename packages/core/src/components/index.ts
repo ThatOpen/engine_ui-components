@@ -11,6 +11,7 @@ import { NumberInput } from "./NumberInput";
 import { Option } from "./Option";
 import { Panel, PanelSection } from "./Panel";
 import { Selector } from "./Selector";
+import { Tooltip } from "./Tooltip";
 import {
   Table,
   TableRow,
@@ -60,6 +61,7 @@ declare global {
     "bim-toolbar-group": ToolbarGroup;
     "bim-toolbar-section": ToolbarSection;
     "bim-viewport": Viewport;
+    "bim-tooltip": Tooltip;
   }
 
   /**
@@ -101,3 +103,4 @@ export * from "./Toolbar/src/Toolbar";
 export * from "./Toolbar/src/Group";
 export * from "./Toolbar/src/Section";
 export * from "./Viewport";
+export * from "./Tooltip";
