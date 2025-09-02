@@ -63,13 +63,13 @@
     "typescript": "5.4.2",
     "vite": "5.1.6",
     "vite-plugin-dts": "3.7.3",
-    "web-ifc": "0.0.70"
+    "web-ifc": "0.0.71"
   },
   "peerDependencies": {
     "@thatopen/components": "~3.1.0",
     "@thatopen/components-front": "~3.1.0",
     "@thatopen/fragments": "~3.1.0",
     "three": ">=0.175.0",
-    "web-ifc": "0.0.70"
+    "web-ifc": "0.0.71"
   }
 }

@@ -51,64 +51,42 @@ export class Tooltip extends LitElement {
    *          tooltip.showTimeout = 1000
    */
   @property({ type: Number, reflect: true })
-  showTimeout: number = 700;
-
-  /**
-   * Whether the tooltip will stay visible or not when the user hovers it
-   * @type {Boolean}
-   * @default false
-   * @example <bim-tooltip hoverable=true></bim-tooltip>
-   * @example const tooltip = document.createElement('bim-tooltip');
-   *          tooltip.hoverable = true;
-   */
-  @property({ type: Boolean, reflect: true })
-  hoverable: boolean = false;
+  showTimeout: number = 100;
 
   private timeoutId?: number;
-  private _parentHovered = false;
-  private _tooltipHovered = false;
 
-  private _showToolTip = () => {
-    this._parentHovered = true;
-    this.computePosition();
+  private _showToolTip = async () => {
     this.timeoutId = setTimeout(() => {
       this.visible = true;
     }, this.showTimeout) as unknown as number;
+    await this.computePosition();
   };
 
   private _hideToolTip = () => {
-    this._parentHovered = false;
     clearTimeout(this.timeoutId);
-    if (this.hoverable && this._tooltipHovered) return;
     this.visible = false;
   };
 
-  private _onTooltipMouseEnter = () => {
-    this._tooltipHovered = true;
-    if (this.hoverable && !this._parentHovered) {
-      this.visible = true;
-    }
-  };
-
-  private _onTooltipMouseLeave = () => {
-    this._tooltipHovered = false;
-    if (!this._parentHovered) {
-      this.visible = false;
-    }
-  };
-
-  private computePosition() {
+  private async computePosition() {
     const parent = this.parentElement;
     if (!parent) return;
-    computePosition(parent, this, {
+
+    const prevDisplay = this.style.display;
+    this.style.display = "block";
+    this.style.visibility = "hidden";
+
+    await new Promise(requestAnimationFrame);
+
+    const { x, y } = await computePosition(parent, this, {
       placement: "bottom",
-      middleware: [offset(10), inline(), flip(), shift({ padding: 5 })],
-    }).then((data: any) => {
-      const { x, y } = data;
-      Object.assign(this.style, {
-        left: `${x}px`,
-        top: `${y}px`,
-      });
+      middleware: [offset(10), flip(), shift({ padding: 8 }), inline()],
+    });
+
+    Object.assign(this.style, {
+      left: `${x}px`,
+      top: `${y}px`,
+      display: prevDisplay,
+      visibility: "",
     });
   }
 
@@ -119,11 +97,6 @@ export class Tooltip extends LitElement {
       parent.addEventListener("mouseenter", this._showToolTip);
       parent.addEventListener("mouseleave", this._hideToolTip);
     }
-
-    if (this.hoverable) {
-      this.addEventListener("mouseenter", this._onTooltipMouseEnter);
-      this.addEventListener("mouseenter", this._onTooltipMouseLeave);
-    }
   }
 
   disconnectedCallback(): void {
@@ -133,16 +106,9 @@ export class Tooltip extends LitElement {
       parent.removeEventListener("mouseenter", this._showToolTip);
       parent.removeEventListener("mouseleave", this._hideToolTip);
     }
-
-    if (this.hoverable) {
-      this.addEventListener("mouseenter", this._onTooltipMouseEnter);
-      this.addEventListener("mouseenter", this._onTooltipMouseLeave);
-    }
   }
 
   protected render() {
     return html`<div><slot></slot></div>`;
   }
 }
-
-// customElements.define("bim-tooltip", Tooltip);
