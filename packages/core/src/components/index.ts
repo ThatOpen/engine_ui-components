@@ -3,7 +3,7 @@ import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
 import { ContextMenu } from "./ContextMenu";
 import { Dropdown } from "./Dropdown";
-import { Grid } from "./Grid";
+import { ElementCreatedEventDetail, Grid } from "./Grid";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
 import { Label } from "./Label";
@@ -77,6 +77,7 @@ declare global {
     rowcreated: CustomEvent<RowCreatedEventDetail>;
     rowselected: CustomEvent<RowSelectedEventDetail>;
     rowdeselected: CustomEvent<RowDeselectedEventDetail>;
+    elementcreated: CustomEvent<ElementCreatedEventDetail>;
   }
 }
 

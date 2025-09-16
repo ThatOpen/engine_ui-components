@@ -11,6 +11,7 @@ import {
   GridLayoutsDefinition,
   GridComponentDefinition,
   UpdateGridComponents,
+  ElementCreatedEventDetail,
 } from "./src";
 
 /**
@@ -193,6 +194,12 @@ export class Grid<
     }
   }
 
+  private emitElementCreation(detail: ElementCreatedEventDetail) {
+    this.dispatchEvent(new CustomEvent<ElementCreatedEventDetail>("elementcreated", {
+      detail
+    }))
+  }
+
   protected render() {
     if (this.layout) {
       if (this.layouts[this.layout]) {
@@ -230,6 +237,8 @@ export class Grid<
                 HTMLElement,
                 {}
               >(template, initialState);
+              
+              this.emitElementCreation({name: area, element: component})
 
               component.setAttribute("data-grid-template-id", templateId);
 
@@ -246,6 +255,9 @@ export class Grid<
             if (existingComponent) return existingComponent;
 
             const component = Component.create(element);
+            
+            this.emitElementCreation({name: area, element: component})
+
             component.setAttribute(
               "data-grid-template-id",
               this.getTemplateId(element),

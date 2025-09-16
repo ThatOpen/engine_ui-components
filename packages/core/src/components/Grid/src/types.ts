@@ -57,3 +57,8 @@ export type UpdateGridComponents<T extends GridComponentDefinition> = {
     >,
   ) => void;
 };
+
+export interface ElementCreatedEventDetail<T extends HTMLElement = HTMLElement> {
+  name: string;
+  element: T
+}
