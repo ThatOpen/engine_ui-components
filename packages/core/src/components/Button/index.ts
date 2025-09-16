@@ -395,7 +395,6 @@ export class Button extends LitElement {
   private onClick = (e: PointerEvent) => {
     e.stopPropagation();
     if (!this.disabled) this.dispatchEvent(new Event("click"));
-    ContextMenu.removeMenus();
   };
 
   closeNestedContexts() {
