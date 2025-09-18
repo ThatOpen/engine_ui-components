@@ -174,6 +174,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
       ) {
         content = document.createElement("bim-label");
         content.textContent = String(value);
+      } else if (Array.isArray(value)) {
+        content = document.createElement("bim-label");
+        content.textContent = value.join(", ");
       } else if (value instanceof HTMLElement) {
         content = value;
       } else {
