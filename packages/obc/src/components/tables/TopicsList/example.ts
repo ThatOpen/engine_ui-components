@@ -39,7 +39,7 @@ world.renderer = rendererComponent;
 
 const cameraComponent = new OBC.SimpleCamera(components);
 world.camera = cameraComponent;
-await world.camera.controls.setLookAt(68, 23, -8.5, 21.5, -5.5, 23);
+cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
 
 viewport.addEventListener("resize", () => {
   rendererComponent.resize();
@@ -57,15 +57,9 @@ grids.create(world);
   */
 
 const fragments = components.get(OBC.FragmentsManager);
-const githubUrl =
-  "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
-const fetchedUrl = await fetch(githubUrl);
-const workerBlob = await fetchedUrl.blob();
-const workerFile = new File([workerBlob], "worker.mjs", {
-  type: "text/javascript",
-});
-const workerUrl = URL.createObjectURL(workerFile);
-fragments.init(workerUrl);
+fragments.init(
+  "/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs",
+);
 
 world.camera.controls.addEventListener("rest", () =>
   fragments.core.update(true),
@@ -77,20 +71,23 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
   await fragments.core.update(true);
 });
 
-const fragPaths = [
-  "https://thatopen.github.io/engine_components/resources/frags/school_arq.frag",
-  "https://thatopen.github.io/engine_components/resources/frags/school_str.frag",
-];
+const ifcLoader = components.get(OBC.IfcLoader);
+await ifcLoader.setup({
+  autoSetWasm: false,
+  wasm: {
+    path: "https://unpkg.com/web-ifc@0.0.70/",
+    absolute: true,
+  },
+});
 
-await Promise.all(
-  fragPaths.map(async (path) => {
-    const modelId = path.split("/").pop()?.split(".").shift();
-    if (!modelId) return null;
-    const file = await fetch(path);
-    const buffer = await file.arrayBuffer();
-    return fragments.core.load(buffer, { modelId });
-  }),
+const file = await fetch(
+  "https://thatopen.github.io/engine_ui-components/resources/small.ifc",
 );
+
+const buffer = await file.arrayBuffer();
+const typedArray = new Uint8Array(buffer);
+await ifcLoader.load(typedArray, true, "small");
+// world.scene.three.add(model.object);
 
 /* MD
   :::tip

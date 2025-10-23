@@ -20,6 +20,7 @@ export const setDefaults = (
   table.noIndentation = true;
   table.dataTransform = {
     Name: (value, row) => {
+      if (!fragments.initialized) return value
       const { modelId, metadata } = row;
       if (!modelId) return value;
       const model = fragments.list.get(modelId);

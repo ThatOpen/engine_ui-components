@@ -5,3 +5,6 @@ export const buttons = {
   ...loadIfc,
   ...loadFrag,
 };
+
+export * from "./load-frag/src/types"
+export * from "./load-ifc/src/types"

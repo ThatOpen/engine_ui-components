@@ -12,7 +12,7 @@ export const sections = {
   // ...specificationInformation,
 };
 
-export * from "./TopicInformation/src";
-export * from "./TopicComments/src";
-export * from "./TopicRelations/src";
-export * from "./TopicViewpoints/src";
+export * from "./TopicInformation/src/types";
+export * from "./TopicComments/src/types";
+export * from "./TopicRelations/src/types";
+export * from "./TopicViewpoints/src/types";

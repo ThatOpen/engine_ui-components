@@ -12,7 +12,7 @@ export const setDefaults = (
 ) => {
   const { dataStyles: styles } = state;
 
-  if (table.hiddenColumns.length === 0) table.hiddenColumns = ["Guid"];
+  if (table.hiddenColumns.length === 0) table.hiddenColumns = ["Guid", "Actions"];
   table.columns = ["Title"];
 
   table.dataTransform = {

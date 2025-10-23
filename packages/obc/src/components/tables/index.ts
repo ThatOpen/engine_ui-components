@@ -15,3 +15,10 @@ export const tables = {
   ...topicsList,
   ...commentsList,
 };
+
+export * from "./SpatialTree/src/types"
+export * from "./ItemsData/src/types"
+export * from "./ModelsList/src/types"
+export * from "./ViewpointsList/src/types"
+export * from "./TopicsList/src/types"
+export * from "./CommentsList/src/types"

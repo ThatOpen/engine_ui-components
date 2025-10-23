@@ -21,18 +21,22 @@ export const modelsListTemplate = (state: ModelsListState) => {
     if (!e) return;
     const table = e as BUI.Table<ModelsListTableData>;
     const rowGroups: BUI.TableGroupData<ModelsListTableData>[] = [];
-    for (const [, model] of fragments.list) {
-      if (!model) continue;
-      const metadata = await model.getMetadata();
-      const rowGroup: BUI.TableGroupData<ModelsListTableData> = {
-        data: {
-          Name: model.modelId,
-          modelId: model.modelId,
-          metadata: JSON.stringify(metadata),
-        },
-      };
-      rowGroups.push(rowGroup);
+
+    if (fragments.initialized) {
+      for (const [, model] of fragments.list) {
+        if (!model) continue;
+        const metadata = await model.getMetadata();
+        const rowGroup: BUI.TableGroupData<ModelsListTableData> = {
+          data: {
+            Name: model.modelId,
+            modelId: model.modelId,
+            metadata: JSON.stringify(metadata),
+          },
+        };
+        rowGroups.push(rowGroup);
+      }
     }
+
 
     table.data = rowGroups;
   };

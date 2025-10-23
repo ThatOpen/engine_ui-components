@@ -28,6 +28,7 @@ export const topicsListTemplate: BUI.StatefullComponent<TopicsListState> = (
           DueDate: topic.dueDate?.toDateString() ?? "",
           Type: topic.type,
           Priority: topic.priority ?? "",
+          Actions: "",
         },
       };
     });

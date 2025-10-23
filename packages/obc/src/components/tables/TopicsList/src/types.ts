@@ -12,6 +12,7 @@ export type TopicsListTableData = {
   DueDate: string;
   Type: string;
   Priority: string;
+  Actions: string;
 };
 
 export interface TopicsListState {
