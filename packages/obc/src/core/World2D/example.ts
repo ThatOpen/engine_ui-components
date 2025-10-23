@@ -40,7 +40,7 @@ grids.create(world);
 const fragments = components.get(OBC.FragmentsManager);
 
 const file = await fetch(
-  "https://thatopen.github.io/engine_ui-components/resources/road.frag",
+  "https://thatopen.github.io/engine_ui-components/resources/small_road.frag",
 );
 const data = await file.arrayBuffer();
 const buffer = new Uint8Array(data);
