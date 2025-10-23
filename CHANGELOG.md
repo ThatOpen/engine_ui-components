@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.2.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.1.0...v3.2.0) (2025-10-23)
+
+
+### Features
+
+* add optional icon to bim-grid layouts ([97e1fcb](https://github.com/ThatOpen/engine_ui-components/commit/97e1fcb5c9b27d948b8bf632c48604cadefe8163))
+* emit event on bim-grid when elements are created based on templates ([29f8029](https://github.com/ThatOpen/engine_ui-components/commit/29f80297fe58cd082486ca4e0be06fcfcf76e252))
+* let label icon color to be set independently ([f1f5e81](https://github.com/ThatOpen/engine_ui-components/commit/f1f5e81f50e16e7e13733993aa0b19b757e1638d))
+* release ([1cf1afe](https://github.com/ThatOpen/engine_ui-components/commit/1cf1afe3521fc1f4bbec06741ddc938e76675bc0))
+* release obc ([02ac3e5](https://github.com/ThatOpen/engine_ui-components/commit/02ac3e538cbe6f3adf59948300f1c5f4e90b084d))
+
+
+### Bug Fixes
+
+* adds missing comma ([bcb53dc](https://github.com/ThatOpen/engine_ui-components/commit/bcb53dca51596ad754e3807b52bc885b88c131f8))
+* join array values in table row cells ([6c81081](https://github.com/ThatOpen/engine_ui-components/commit/6c81081c68c7f67af0983494b9c9b8d1ed30f1be))
+* nested buttons not working ([52c66a4](https://github.com/ThatOpen/engine_ui-components/commit/52c66a401cec37acc331a1fae9df1d0216af3edb))
+
 ## [3.1.0](https://github.com/ThatOpen/engine_ui-components/compare/v2.4.0...v3.1.0) (2025-07-10)
 
 
