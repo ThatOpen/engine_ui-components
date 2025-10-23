@@ -1,9 +1,9 @@
 import { computePosition, flip, shift, offset, inline } from "@floating-ui/dom";
-import { LitElement, css, html } from "lit";
+import { LitElement, TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import "iconify-icon";
-import { Manager } from "../../core";
+import { Component, Manager } from "../../core";
 import { ContextMenu } from "../ContextMenu";
 
 /**
@@ -417,12 +417,27 @@ export class Button extends LitElement {
     if (!this.disabled) super.click();
   }
 
+  contextMenuTemplate?: () => TemplateResult
+
   private get _contextMenu() {
     return this.querySelector("bim-context-menu");
   }
 
   private showContextMenu = () => {
-    const contextMenu = this._contextMenu;
+    let contextMenu = this._contextMenu;
+    if (this.contextMenuTemplate) {
+      contextMenu = Component.create<ContextMenu>(() => {
+        const element = Component.create(this.contextMenuTemplate!)
+        if (element instanceof ContextMenu) return html`${element}`
+        return html`
+          <bim-context-menu>${element}</bim-context-menu>
+        `
+      })
+      this.append(contextMenu)
+      contextMenu.addEventListener("hidden", () => {
+        contextMenu?.remove()
+      })
+    }
     if (contextMenu) {
       const id = this.getAttribute("data-context-group");
       if (id) contextMenu.setAttribute("data-context-group", id);
@@ -460,16 +475,27 @@ export class Button extends LitElement {
       </div>
     `;
 
-    const hasChildrenSVG = html`<svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="1.125rem"
-      viewBox="0 0 24 24"
-      width="1.125rem"
-      style="fill: var(--bim-label--c)"
-    >
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-    </svg>`;
+    let labelContent = html`${this.label}`
+    if ((this._contextMenu || this.contextMenuTemplate) && this.label) {
+      const childrenSVG = html`<svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="1.125rem"
+        viewBox="0 0 24 24"
+        width="1.125rem"
+        style="fill: var(--bim-label--c)"
+      >
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+      </svg>`;
+
+      labelContent = html`
+        <div style="display: flex; align-items: center;">
+          ${this.label}
+          ${childrenSVG}
+        </div>
+      `
+    }
+
 
     return html`
       <div ${ref(this._parent)} class="parent" @click=${this.onClick}>
@@ -484,9 +510,7 @@ export class Button extends LitElement {
                   .icon=${this.icon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
-                  >${this.label}${this.label && this._contextMenu
-                    ? hasChildrenSVG
-                    : null}</bim-label
+                  >${labelContent}</bim-label
                 >
               </div>
             `

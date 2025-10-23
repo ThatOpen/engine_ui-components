@@ -1,6 +1,8 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { convertString } from "../../core/utils";
+import { when } from "lit/directives/when.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
  * A custom label web component for BIM applications. HTML tag: bim-label
@@ -38,12 +40,9 @@ export class Label extends LitElement {
     }
 
     .parent p {
-      display: flex;
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;
-      align-items: center;
-      gap: 0.125rem;
     }
 
     :host([label-hidden]) .parent p,
@@ -147,15 +146,14 @@ export class Label extends LitElement {
     return convertString(this.textContent);
   }
 
+  private _imgTemplate = () => html`<img src=${ifDefined(this.img)} .alt=${this.textContent || ""} />`
+  private _iconTemplate = () => html`<bim-icon .icon=${this.icon}></bim-icon>`
+
   protected render() {
     return html`
-      <div class="parent" .title=${this.textContent ?? ""}>
-        ${this.img
-          ? html`<img .src=${this.img} .alt=${this.textContent || ""} />`
-          : null}
-        ${!this.iconHidden && this.icon
-          ? html`<bim-icon .icon=${this.icon}></bim-icon>`
-          : null}
+      <div class="parent" title=${this.textContent}>
+        ${when(this.img, this._imgTemplate, () => nothing)}
+        ${when(!this.iconHidden && this.icon, this._iconTemplate, () => nothing)}
         <p><slot></slot></p>
       </div>
     `;

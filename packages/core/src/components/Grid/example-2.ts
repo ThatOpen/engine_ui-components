@@ -61,6 +61,7 @@ grid.layouts = {
     elements: {
       el: document.createElement("div"),
     },
+    guard: () => false,
   },
   app: {
     template: `
@@ -98,8 +99,7 @@ grid.layouts = {
   },
 };
 
-// @ts-ignore
-grid.updateComponent?.app.content();
+// grid.updateComponent?.app.content();
 
 grid.addEventListener("layoutchange", () => {
   if (grid.layout) {

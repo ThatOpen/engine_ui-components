@@ -43,8 +43,15 @@ export class TableChildren<T extends TableRowData> extends LitElement {
 
   table = this.closest<Table<T>>("bim-table");
 
-  protected render() {
+  private clean() {
+    for (const group of this._groups) {
+      group.remove()
+    }
     this._groups = [];
+  }
+
+  protected render() {
+    this.clean()
     return html`
       <slot></slot>
       ${this.data.map((group) => {

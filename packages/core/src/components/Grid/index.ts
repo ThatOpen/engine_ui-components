@@ -105,43 +105,14 @@ export class Grid<
   }
 
   private _elements = {} as GridComponents<E>;
-
   set elements(value: GridComponents<E>) {
-    this._elements = value;
-
-    const result: {
-      [area: string]: (state?: Record<string, any>) => void;
-    } = {};
-
-    for (const [name, value] of Object.entries(this.elements)) {
-      if (!("template" in (value as any))) continue;
-      result[name] = (state: any) => {
-        const fn = this._updateFunctions[name];
-        if (!fn) return;
-        fn(state);
-      };
-    }
-
-    this.updateComponent = result as UpdateGridComponents<E>;
+    this._elements = value
+    this.setUpdateFunctions()
   }
 
   get elements() {
-    return this._elements;
+    return this._elements
   }
-
-  // private isVerticalArea(area: string) {
-  //   const { rows } = this;
-  //   const row = rows.find((row) => row.includes(area));
-  //   if (!row)
-  //     throw new Error(
-  //       `${area} wasn't defined in the grid-template of this bim-grid`,
-  //     );
-  //   const index = rows.indexOf(row);
-  //   const abovePanel = index > 0 && rows[index - 1].includes(area);
-  //   const belowPanel =
-  //     index < rows.length - 1 && rows[index + 1].includes(area);
-  //   return abovePanel || belowPanel;
-  // }
 
   private getLayoutAreas(layout: { template: string }) {
     const { template } = layout;
@@ -154,10 +125,31 @@ export class Grid<
     return uniqueAreas;
   }
 
-  private _onLayoutChange?: Event;
+  private setUpdateFunctions() {
+    const result: {
+      [area: string]: (state?: Record<string, any>) => void;
+    } = {};
 
-  protected firstUpdated() {
-    this._onLayoutChange = new Event("layoutchange");
+    for (const [name, value] of Object.entries(this.elements)) {
+      if (!("template" in (value as any))) continue;
+      result[name] = (state: any) => {
+        this._updateFunctions[name]?.(state)
+      };
+    }
+
+    this.updateComponent = result as UpdateGridComponents<E>;
+  }
+
+  // connectedCallback() {
+  //   super.connectedCallback()
+  //   this.setUpdateFunctions()
+  // }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+    this._templateIds.clear()
+    this._updateFunctions = {}
+    this.updateComponent = {} as UpdateGridComponents<E>;
   }
 
   private _templateIds = new Map<
@@ -168,6 +160,12 @@ export class Grid<
   private _updateFunctions: {
     [element: string]: (state?: Record<string, any>) => void;
   } = {};
+
+  private _slotNames = {
+    notAllowed: "not-allowed",
+    notFound: "not-found",
+    emptyLayout: "empty-layout",
+  };
 
   private getTemplateId(template: StatefullComponent | StatelessComponent) {
     let id = this._templateIds.get(template);
@@ -194,16 +192,43 @@ export class Grid<
     }
   }
 
+  private clean() {
+    this.style.gridTemplate = "";
+    for (const child of [...this.children]) {
+      if (
+        Object.values(this._slotNames).some(
+          (value) => child.getAttribute("slot") === value,
+        )
+      ) {
+        continue;
+      }
+      child.remove();
+    }
+
+    this.cleanUpdateFunctions();
+  }
+
   private emitElementCreation(detail: ElementCreatedEventDetail) {
     this.dispatchEvent(new CustomEvent<ElementCreatedEventDetail>("elementcreated", {
       detail
     }))
   }
 
+  private emitLayoutChange = () => {
+    this.dispatchEvent(new Event("layoutchange"))
+  }
+
   protected render() {
     if (this.layout) {
-      if (this.layouts[this.layout]) {
-        const layout = this.layouts[this.layout];
+      const layout = this.layouts[this.layout];
+      if (layout) {
+        const guard = layout.guard ?? (() => true);
+        const isAllowed = guard();
+        if (!isAllowed) {
+          this.clean();
+          return html`<slot name=${this._slotNames.notAllowed}></slot>`;
+        }
+
         const areas = this.getLayoutAreas(layout);
         const elements = areas
           .map((area: string) => {
@@ -266,21 +291,22 @@ export class Grid<
             return component;
           })
           .filter((element) => element !== null) as HTMLElement[];
-
-        this.innerHTML = "";
+        
+        this.clean()
         this.style.gridTemplate = layout.template;
         this.append(...elements);
-        if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
+        this.emitLayoutChange()
+      } else {
+        this.clean()
+        return html`<slot name=${this._slotNames.notFound}></slot>`;
       }
     } else {
-      this.innerHTML = "";
-      this.style.gridTemplate = "";
-      if (this._onLayoutChange) this.dispatchEvent(this._onLayoutChange);
+      this.clean();
+      this.emitLayoutChange()
+      return html`<slot name=${this._slotNames.emptyLayout}></slot>`;
     }
 
-    this.cleanUpdateFunctions();
-
-    return html`<slot></slot>`;
+    return html`${html`<slot></slot>`}`;
   }
 }
 

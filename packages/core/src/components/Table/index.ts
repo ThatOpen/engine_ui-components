@@ -1,4 +1,4 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import {
@@ -15,6 +15,8 @@ import {
 import { evalCondition, getQuery } from "../../core/utils";
 import { loadingSkeleton } from "./src/loading-skeleton";
 import { processingBar } from "./src/processing-bar";
+import { ref } from "lit/directives/ref.js";
+import { when } from "lit/directives/when.js";
 
 /**
  * A custom table web component for BIM applications. HTML tag: bim-table
@@ -414,6 +416,8 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
     return text;
   }
 
+  defaultContentTemplate: (value: string | boolean | number, data: Partial<T>, group: TableGroup<T> | null) => TemplateResult = (value) => html`<bim-label style="white-space: normal;">${value}</bim-label>`
+
   /**
    * A getter function that generates a CSV (Comma Separated Values) representation of the table data.
    *
@@ -716,29 +720,28 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
       return html`<slot name="missing-data"></slot>`;
     }
 
-    // @ts-ignore
-    const header = document.createElement("bim-table-row") as TableRow<T>;
-    header.table = this;
-    header.isHeader = true;
-    header.data = this._headerRowData;
-    header.style.gridArea = "Header";
-    header.style.position = "sticky";
-    header.style.top = "0";
-    header.style.zIndex = "5";
+    const onHeaderCreated = (e?: Element) => {
+      if (!e) return
+      const header = e as TableRow<T>
+      header.table = this;
+      header.data = this._headerRowData;
+    }
 
-    // @ts-ignore
-    const children = document.createElement(
-      "bim-table-children",
-    ) as TableChildren<T>;
-    children.table = this;
-    children.data = this.value;
-    children.style.gridArea = "Body";
-    children.style.backgroundColor = "transparent";
+    const onChildrenCreated = (e?: Element) => {
+      if (!e) return
+      const children = e as TableChildren<T>
+      children.table = this;
+      children.data = this.value;
+      children.requestUpdate()
+    }
 
     return html`
       <div class="parent">
-        ${!this.headersHidden ? header : null} ${processingBar()}
-        <div style="overflow-x: hidden; grid-area: Body">${children}</div>
+        ${processingBar()}
+        ${when(!this.headersHidden, () => html`<bim-table-row is-header style="grid-area: Header; position: sticky; top: 0; z-index: 5" ${ref(onHeaderCreated)}></bim-table-row>`)} 
+        <div style="overflow-x: hidden; grid-area: Body">
+          <bim-table-children ${ref(onChildrenCreated)} style="grid-area: Body; background-color: transparent"></bim-table-children>
+        </div>
       </div>
     `;
   }

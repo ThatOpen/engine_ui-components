@@ -39,8 +39,12 @@
 
 <body>
   <bim-button label="Change Layout" icon="mingcute:layout-fill"></bim-button>
-  <bim-grid layout="app"></bim-grid>
-  <script type="module" src="./example.ts"></script>
+  <bim-grid layout="app">
+    <bim-label slot="not-allowed">You're not allowed to see this page</bim-label>
+    <bim-label slot="not-found">404</bim-label>
+    <bim-label slot="empty-layout">Nothing here</bim-label>
+  </bim-grid>
+  <script type="module" src="./example-2.ts"></script>
 </body>
 
 </html>

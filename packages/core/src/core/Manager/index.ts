@@ -1,5 +1,6 @@
 import * as components from "../../components";
 import { styles } from "./src/styles";
+import { loadIcons } from "iconify-icon";
 
 /**
  * Configuration interface for the Manager class. Defines the properties and their types that can be configured for the Manager.
@@ -55,6 +56,16 @@ export class Manager {
     } else {
       document.head.append(style);
     }
+  }
+
+  static preloadIcons(icons: string[], printLog = false) {
+    loadIcons(icons, (loaded, missing, pending) => {
+      if (printLog) {
+        console.log(`Icons loaded:`, loaded);
+        if (missing.length) console.warn(`Icons missing:`, missing);
+        if (pending.length) console.info(`Icons pending:`, pending);
+      }
+    })
   }
 
   static defineCustomElement(tag: string, constructor: new () => HTMLElement) {

@@ -1,9 +1,12 @@
-import { LitElement, css, html, render } from "lit";
+import { LitElement, TemplateResult, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { Table } from "../index";
 import { TableRow } from "./TableRow";
 import { RowCreatedEventDetail, TableGroupData, TableRowData } from "./types";
 import { TableChildren } from "./TableChildren";
+import { ref } from "lit/directives/ref.js";
+import { when } from "lit/directives/when.js";
+import { styleMap } from "lit/directives/style-map.js";
 
 export class TableGroup<T extends TableRowData> extends LitElement {
   /**
@@ -60,7 +63,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
   @property({ type: Boolean, attribute: "children-hidden", reflect: true })
   childrenHidden = true;
 
-  table = this.closest<Table<T>>("bim-table");
+  table: Table<T> | null = null
 
   data: TableGroupData<T> = { data: {} };
 
@@ -89,6 +92,11 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     } else {
       this.childrenHidden = true;
     }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+    this.data = { data: {} }
   }
 
   toggleChildren(force?: boolean) {
@@ -146,7 +154,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       // Animation functions
       const childrenAnimFunc = () => {
         const extraChildren =
-          children?.renderRoot.querySelectorAll("bim-table-group");
+          children?.renderRoot?.querySelectorAll("bim-table-group");
 
         extraChildren?.forEach((child, index) => {
           child.style.setProperty("opacity", "0");
@@ -275,9 +283,15 @@ export class TableGroup<T extends TableRowData> extends LitElement {
   }
 
   protected render() {
-    if (!this.table) throw new Error("TableGroup: parent table wasn't found!");
+    if (!this.table) return html`${nothing}`;
 
     const indentation = this.table.getGroupIndentation(this.data) ?? 0;
+
+    let horizontalBranchTemplate: TemplateResult | undefined
+    if (!this.table.noIndentation) {
+      const styles = { left: `${indentation - 1 + (this.table.selectableRows ? 2.05 : 0.5625)}rem` }
+      horizontalBranchTemplate = html`<div style=${styleMap(styles)} class="branch branch-horizontal"></div>`
+    }
 
     const verticalBranchTemplate = html`
       ${!this.table.noIndentation
@@ -293,17 +307,8 @@ export class TableGroup<T extends TableRowData> extends LitElement {
         : null}
     `;
 
-    let horizontalBranch: HTMLDivElement | null = null;
+    let caretTemplate: TemplateResult | undefined
     if (!this.table.noIndentation) {
-      horizontalBranch = document.createElement("div");
-      horizontalBranch.classList.add("branch", "branch-horizontal");
-      horizontalBranch.style.left = `${indentation - 1 + (this.table.selectableRows ? 2.05 : 0.5625)}rem`;
-    }
-
-    let caret: HTMLDivElement | null = null;
-    if (!this.table.noIndentation) {
-      caret = document.createElement("div");
-
       const toggleCaret = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "svg",
@@ -336,51 +341,57 @@ export class TableGroup<T extends TableRowData> extends LitElement {
         );
 
         toggleCaret.append(childrenHiddenCaretPath);
-        caret.style.cursor = "pointer";
-        caret.addEventListener("click", (e: Event) => {
-          e.stopPropagation();
-          this.toggleChildren();
-        });
       }
 
-      caret.classList.add("caret");
-      caret.style.left = `${(this.table.selectableRows ? 1.5 : 0.125) + indentation}rem`;
-      caret.append(toggleCaret);
+      const styles = {
+        left: `${(this.table.selectableRows ? 1.5 : 0.125) + indentation}rem`,
+        cursor: `${this.table.noCarets ? "unset" : "pointer"}`
+      }
+
+      const onClick = (e: Event) => {
+        if (this.table?.noCarets) return
+        e.stopPropagation()
+        this.toggleChildren()
+      }
+
+      caretTemplate = html`<div @click=${onClick} style=${styleMap(styles)} class="caret">${toggleCaret}</div>`
     }
 
-    // @ts-ignore
-    const row = document.createElement("bim-table-row") as TableRow<T>;
-    if (!this._isChildrenEmpty) {
-      const verticalBranchRow = document.createDocumentFragment();
-      render(verticalBranchTemplate, verticalBranchRow);
-      row.append(verticalBranchRow);
-    }
-
-    row.table = this.table;
-    row.group = this;
-    this.table.dispatchEvent(
-      new CustomEvent<RowCreatedEventDetail<T>>("rowcreated", {
-        detail: { row },
-      }),
-    );
-
-    if (caret && !this._isChildrenEmpty) row.append(caret);
-    if (indentation !== 0 && horizontalBranch) row.append(horizontalBranch);
-
-    let children: TableChildren<T> | undefined;
+    let childrenTemplate: TemplateResult | undefined
     if (!this._isChildrenEmpty && !this.childrenHidden) {
-      // @ts-ignore
-      children = document.createElement(
-        "bim-table-children",
-      ) as TableChildren<T>;
-      children.table = this.table;
-      children.group = this;
-      const verticalBranchChildren = document.createDocumentFragment();
-      render(verticalBranchTemplate, verticalBranchChildren);
-      children.append(verticalBranchChildren);
-      this.animateTableChildren();
+      const onChildrenCreated = (e?: Element) => {
+        if (!e) return
+        const children = e as TableChildren<T>
+        children.table = this.table;
+        children.group = this;
+      }
+
+      childrenTemplate = html`
+        <bim-table-children ${ref(onChildrenCreated)}>${verticalBranchTemplate}</bim-table-children>
+      `
     }
 
-    return html`<div class="parent">${row} ${children}</div>`;
+    const onRowCreated = (e?: Element) => {
+      if (!e) return
+      const row = e as TableRow<T>
+      row.table = this.table;
+      row.group = this;
+      this.table?.dispatchEvent(
+        new CustomEvent<RowCreatedEventDetail<T>>("rowcreated", {
+          detail: { row },
+        }),
+      );
+    }
+
+    return html`
+      <div class="parent">
+        <bim-table-row ${ref(onRowCreated)}>
+          ${when(!this._isChildrenEmpty, () => verticalBranchTemplate)}
+          ${when(indentation !== 0, () => horizontalBranchTemplate)}
+          ${when(!this.table.noIndentation && !this._isChildrenEmpty, () => caretTemplate)}
+        </bim-table-row>
+        ${childrenTemplate}
+      </div>
+    `;
   }
 }

@@ -41,8 +41,9 @@ export type GridLayoutsDefinition<
 > = {
   [K in L[number]]: {
     template: string;
-    icon?: string;
     elements?: GridComponents<E>;
+    guard?: () => boolean;
+    icon?: string;
   };
 };
 

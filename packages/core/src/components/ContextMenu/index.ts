@@ -82,10 +82,11 @@ export class ContextMenu extends LitElement {
     "
     ></dialog>`;
   });
-  static menus: HTMLElement[] = [];
+
   static removeMenus() {
-    for (const menu of ContextMenu.menus) {
+    for (const menu of [...ContextMenu.dialog.children]) {
       if (!(menu instanceof ContextMenu)) continue;
+      menu.remove()
       menu.visible = false;
     }
     setTimeout(() => {
@@ -151,7 +152,6 @@ export class ContextMenu extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    ContextMenu.menus.push(this);
 
     if (this.visible) {
       this.style.setProperty("width", "auto");
