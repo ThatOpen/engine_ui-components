@@ -78,9 +78,9 @@ npm i @thatopen/ui
 Then, you need to tell the library to register the components, so you can use them in any HTML syntax. To do it, in your entry JavaScript file execute the following:
 
 ```ts
-import { UIManager } from "@thatopen/ui"
+import * as BUI from "@thatopen/ui"
 
-UIManager.init()
+BUI.Manager.init()
 ```
 
 Finally, in your HTML file you can start to use the components! 

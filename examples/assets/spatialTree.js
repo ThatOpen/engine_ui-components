@@ -1,12 +1,12 @@
-import"./lit-html-BUQgm8fs.js";import{l as u,C as b,W as w,S as g,a as h,b as S,G as f,I as v,J as C,F,R as y,m as L}from"./index-DMl8TH7x.js";import{b as j}from"./index-Dmq0ynaz.js";import{e as k}from"./index-CVqmvCLw.js";u.init();const e=new b,R=e.get(w),t=R.create();t.name="main";const s=new g(e);s.setup();t.scene=s;const o=document.createElement("bim-viewport"),c=new h(e,o);t.renderer=c;const i=new S(e);t.camera=i;o.addEventListener("resize",()=>{c.resize(),i.updateAspect()});const T=e.get(f);T.create(t);e.init();const U=e.get(v);await U.setup();const l=e.get(C);l.setup({world:t});l.zoomToSelection=!0;const a=e.get(F),E="https://thatopen.github.io/engine_fragment/resources/worker.mjs",I=await fetch(E),x=await I.blob(),z=new File([x],"worker.mjs",{type:"text/javascript"}),B=URL.createObjectURL(z);a.init(B);t.camera.controls.addEventListener("rest",()=>a.core.update(!0));a.list.onItemSet.add(async({value:r})=>{r.useCamera(t.camera.three),t.scene.three.add(r.object),await a.core.update(!0)});const[n]=k.spatialTree({components:e,models:[]});n.preserveStructureOnFilter=!0;const G=y.create(()=>{const[r]=j.loadFrag({components:e});return L`
+import"./lit-html-BUQgm8fs.js";import{u,C as b,W as g,S as w,a as S,b as f,G as h,I as v,e as C,F as y,V as F,f as T}from"./index-DAd_Xb3m.js";import{b as E}from"./index-ChzsFr2R.js";import{e as I}from"./index-BnaeDa9G.js";u.init();const e=new b,L=e.get(g),t=L.create();t.name="main";const s=new w(e);s.setup();t.scene=s;const o=document.createElement("bim-viewport"),i=new S(e,o);t.renderer=i;const c=new f(e);t.camera=c;o.addEventListener("resize",()=>{i.resize(),c.updateAspect()});const z=e.get(h);z.create(t);e.init();const G=e.get(v);await G.setup();const m=e.get(C);m.setup({world:t});m.zoomToSelection=!0;const n=e.get(y);n.init("/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs");t.camera.controls.addEventListener("rest",()=>n.core.update(!0));n.list.onItemSet.add(async({value:a})=>{a.useCamera(t.camera.three),t.scene.three.add(a.object),await n.core.update(!0)});const[r]=I.spatialTree({components:e,models:[]});r.preserveStructureOnFilter=!0;const W=F.create(()=>{const[a]=E.loadFrag({components:e});return T`
    <bim-panel label="Spatial Tree">
     <bim-panel-section label="Model Tree">
+      ${a}
+      <bim-text-input @input=${l=>{const d=l.target;r.queryString=d.value}} placeholder="Search..." debounce="200"></bim-text-input>
       ${r}
-      <bim-text-input @input=${p=>{const d=p.target;n.queryString=d.value}} placeholder="Search..." debounce="200"></bim-text-input>
-      ${n}
     </bim-panel-section>
    </bim-panel> 
-  `}),m=document.getElementById("app");m.layouts={main:{template:`
+  `}),p=document.getElementById("app");p.layouts={main:{template:`
       "panel viewport"
       / 30rem 1fr
-    `,elements:{panel:G,viewport:o}}};m.layout="main";
+    `,elements:{panel:W,viewport:o}}};p.layout="main";

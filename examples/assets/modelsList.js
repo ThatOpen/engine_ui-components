@@ -1,13 +1,13 @@
-import"./lit-html-BUQgm8fs.js";import{l as m,C as l,W as p,S as d,a as b,b as w,G as u,I as g,F as f,R as h,m as L}from"./index-DMl8TH7x.js";import{b as v}from"./index-Dmq0ynaz.js";import{e as C}from"./index-CVqmvCLw.js";m.init();const e=new l,F=e.get(p),t=F.create();t.name="main";const s=new d(e);s.setup();t.scene=s;const o=document.createElement("bim-viewport"),i=new b(e,o);t.renderer=i;const c=new w(e);t.camera=c;o.addEventListener("resize",()=>{i.resize(),c.updateAspect()});const S=e.get(u);S.create(t);e.init();const j=e.get(g);await j.setup();const n=e.get(f),k="https://thatopen.github.io/engine_fragment/resources/worker.mjs",y=await fetch(k),I=await y.blob(),R=new File([I],"worker.mjs",{type:"text/javascript"}),U=URL.createObjectURL(R);n.init(U);t.camera.controls.addEventListener("rest",()=>n.core.update(!0));n.list.onItemSet.add(async({value:a})=>{a.useCamera(t.camera.three),t.scene.three.add(a.object),await n.core.update(!0)});const[E]=C.modelsList({components:e,metaDataTags:["schema"],actions:{download:!0}}),G=h.create(()=>{const[a]=v.loadFrag({components:e});return L`
+import"./lit-html-BUQgm8fs.js";import{u as c,C as d,W as l,S as p,a as u,b,G as g,I as w,F as f,V as C,f as v}from"./index-DAd_Xb3m.js";import{b as L}from"./index-ChzsFr2R.js";import{e as S}from"./index-BnaeDa9G.js";c.init();const e=new d,F=e.get(l),t=F.create();t.name="main";const r=new p(e);r.setup();t.scene=r;const o=document.createElement("bim-viewport"),m=new u(e,o);t.renderer=m;const i=new b(e);t.camera=i;o.addEventListener("resize",()=>{m.resize(),i.updateAspect()});const I=e.get(g);I.create(t);e.init();const h=e.get(w);await h.setup();const n=e.get(f);n.init("/node_modules/@thatopen-platform/fragments-beta/dist/Worker/worker.mjs");t.camera.controls.addEventListener("rest",()=>n.core.update(!0));n.list.onItemSet.add(async({value:a})=>{a.useCamera(t.camera.three),t.scene.three.add(a.object),await n.core.update(!0)});const[y]=S.modelsList({components:e,metaDataTags:["schema"],actions:{download:!0}}),E=C.create(()=>{const[a]=L.loadFrag({components:e});return v`
    <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
       ${a}
     </bim-panel-section>
     <bim-panel-section icon="mage:box-3d-fill" label="Loaded Models">
-      ${E}
+      ${y}
     </bim-panel-section>
    </bim-panel> 
-  `}),r=document.createElement("bim-grid");r.layouts={main:{template:`
+  `}),s=document.createElement("bim-grid");s.layouts={main:{template:`
       "panel viewport"
       / 23rem 1fr
-    `,elements:{panel:G,viewport:o}}};r.layout="main";document.body.append(r);
+    `,elements:{panel:E,viewport:o}}};s.layout="main";document.body.append(s);
