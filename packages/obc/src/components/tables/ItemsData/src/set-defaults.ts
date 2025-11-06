@@ -6,5 +6,6 @@ export const setDefaults = (
   table: BUI.Table<ItemsDataTableData>,
 ) => {
   table.columns = [{ name: "Name", width: "12rem" }];
+  table.hiddenColumns = ["modelId", "localId", "Actions", "type"]
   table.headersHidden = true;
 };

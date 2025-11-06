@@ -15,11 +15,16 @@ const addDataToRow = (
   row: BUI.TableGroupData<ItemsDataTableData>,
   key: string,
   value: any,
+  modelId: string,
+  localId: number,
 ) => {
   const dataRow: BUI.TableGroupData<ItemsDataTableData> = {
     data: {
+      type: "attribute",
+      modelId,
+      localId,
       Name: key in attrMappings ? attrMappings[key] : key,
-      Value: value,
+      Value: value
     },
   };
   if (!row.children) row.children = [];
@@ -46,6 +51,9 @@ const getItemRow = (
 
   const row: BUI.TableGroupData<ItemsDataTableData> = {
     data: {
+      modelId,
+      localId,
+      type: "item",
       Name:
         name?.toString().length > 0
           ? name.toString()
@@ -58,11 +66,12 @@ const getItemRow = (
   for (const key in propertyData) {
     const data = propertyData[key];
     if (!Array.isArray(data)) {
-      addDataToRow(row, key, data.value);
+      addDataToRow(row, key, data.value, modelId, localId);
     } else {
       const relRow: BUI.TableGroupData<ItemsDataTableData> = {
         data: {
           Name: key,
+          type: "relation"
         },
       };
       if (!row.children) row.children = [];
@@ -147,7 +156,7 @@ export const itemsDataTemplate = (_state: ItemsDataState) => {
     if (!e) return;
     const table = e as BUI.Table<ItemsDataTableData>;
     table.loadFunction = async () => {
-      return computeTableData(components, modelIdMap, state);
+      return computeTableData(components, filteredModelIdMap, state);
     };
 
     const loaded = await table.loadData(true);

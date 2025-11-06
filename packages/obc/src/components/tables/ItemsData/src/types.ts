@@ -6,8 +6,12 @@ export type ModelIdMap = {
 };
 
 export type ItemsDataTableData = {
+  modelId: string;
+  localId: number;
+  type: "item" | "relation" | "attribute";
   Name: string;
   Value: any;
+  Actions: string;
 };
 
 /**
