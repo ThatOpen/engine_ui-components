@@ -136,6 +136,13 @@ export const itemsDataTemplate = (_state: ItemsDataState) => {
 
   const { components, modelIdMap, emptySelectionWarning } = _state;
 
+  const filteredModelIdMap = Object.keys(modelIdMap).reduce((acc, key) => {
+    if (!key.includes('DELTA')) {
+      acc[key] = modelIdMap[key];
+    }
+    return acc;
+  }, {} as typeof modelIdMap);
+
   const onTableCreated = async (e?: Element) => {
     if (!e) return;
     const table = e as BUI.Table<ItemsDataTableData>;
