@@ -158,8 +158,11 @@ export const itemsDataTemplate = (_state: ItemsDataState) => {
     detail,
   }: CustomEvent<BUI.CellCreatedEventDetail>) => {
     const { cell } = detail;
-    if (cell.column === "Name" && !("Value" in cell.rowData)) {
-      cell.style.gridColumn = "1 / -1";
+    const { Name, Value } = cell.rowData
+    if (Name && Value === undefined) {
+      setTimeout(() => {
+        cell.style.gridColumn = "1 / -1";
+      })
     }
   };
 
