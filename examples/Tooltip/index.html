@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tooltip</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      height: 100dvh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/tooltip.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/lit-html-CgQwCkHV.js">
+  <link rel="modulepreload" crossorigin href="../assets/ref-B0YVjWyu.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-Dxq5IOpt.js">
+</head>
+
+<body>
+  <bim-button label="Hello" style="margin: auto; flex: 0;">
+    <bim-tooltip>
+      <bim-label>This is a tooltip!</bim-label>
+    </bim-tooltip>
+  </bim-button>
+</body>
+
+</html>
