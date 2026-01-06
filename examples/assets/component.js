@@ -1,4 +1,4 @@
-import{x as t}from"./lit-html-BUQgm8fs.js";import{M as c,C as n}from"./index-JvVqNY9f.js";import"./ref-CLKbrLVk.js";c.init();const b=n.create(()=>t`
+import{b as t}from"./lit-html-CgQwCkHV.js";import{M as c,C as n}from"./index-Dxq5IOpt.js";import"./ref-B0YVjWyu.js";c.init();const b=n.create(()=>t`
     <bim-panel-section label="Stateless Panel Section">
       <bim-color-input label="Color"></bim-color-input>
     </bim-panel-section>

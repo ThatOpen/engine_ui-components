@@ -9,6 +9,7 @@
   "packages/obc/src/components/tables/ItemsData/example.ts",
   "packages/obc/src/components/buttons/load-ifc/example.ts",
   "packages/core/src/core/Component/example.ts",
+  "packages/core/src/components/Tooltip/example.ts",
   "packages/core/src/components/Toolbar/example.ts",
   "packages/core/src/components/TextInput/example.ts",
   "packages/core/src/components/Tabs/example.ts",

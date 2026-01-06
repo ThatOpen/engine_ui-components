@@ -46,20 +46,25 @@
     }
   </style>
   <script type="module" crossorigin src="../assets/button.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/lit-html-BUQgm8fs.js">
-  <link rel="modulepreload" crossorigin href="../assets/ref-CLKbrLVk.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-JvVqNY9f.js">
+  <link rel="modulepreload" crossorigin href="../assets/lit-html-CgQwCkHV.js">
+  <link rel="modulepreload" crossorigin href="../assets/ref-B0YVjWyu.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-Dxq5IOpt.js">
 </head>
 
 <body>
   <div style="display: flex; flex-direction: column; gap: 0.35rem; width: 15rem;">
-    <bim-button label="My Button!" icon="solar:alarm-play-bold" tooltip-title="The Button"
-      tooltip-text="This just activates a popup!"></bim-button>
+    <bim-button label="My Button!" icon="solar:alarm-play-bold">
+      <bim-tooltip>
+        <bim-label style="color: var(--bim-ui_bg-contrast-80); font-weight: bold;">The Button</bim-label>
+        <bim-label>This just activates a popup!</bim-label>
+      </bim-tooltip>
+    </bim-button>
     <bim-button class="btn-1" label="An nicely styled button" icon="solar:alarm-play-bold"></bim-button>
     <bim-button class="btn-2" label="An styled button" icon="solar:alarm-play-bold"></bim-button>
     <bim-button label="Vertical Button" icon="solar:alarm-play-bold" vertical></bim-button>
     <bim-button label="No icon"></bim-button>
     <bim-button icon="solar:settings-bold"></bim-button>
+    <bim-button label="Custom Icon" icon="bim:ifc"></bim-button>
     <bim-button loading label="Loading..."></bim-button>
     <bim-button icon="solar:settings-bold" id="context-testing" label="Programatically Menu"></bim-button>
     <bim-button icon="fe:elipsis-v" style="width: min-content;">
