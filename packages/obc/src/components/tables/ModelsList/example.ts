@@ -76,7 +76,7 @@ await ifcLoader.setup();
 
 const fragments = components.get(OBC.FragmentsManager);
 fragments.init(
-  "https://thatopen.github.io/engine_fragment/resources/worker.mjs/worker.mjs",
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
 );
 
 world.camera.controls.addEventListener("rest", () =>

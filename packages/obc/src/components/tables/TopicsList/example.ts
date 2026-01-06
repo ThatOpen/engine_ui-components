@@ -27,7 +27,7 @@ const worlds = components.get(OBC.Worlds);
 
 const world = worlds.create<
   OBC.SimpleScene,
-  OBC.SimpleCamera,
+  OBC.OrthoPerspectiveCamera,
   OBC.SimpleRenderer
 >();
 const sceneComponent = new OBC.SimpleScene(components);
@@ -37,7 +37,7 @@ world.scene = sceneComponent;
 const rendererComponent = new OBC.SimpleRenderer(components, viewport);
 world.renderer = rendererComponent;
 
-const cameraComponent = new OBC.SimpleCamera(components);
+const cameraComponent = new OBC.OrthoPerspectiveCamera(components);
 world.camera = cameraComponent;
 cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
 
@@ -58,7 +58,7 @@ grids.create(world);
 
 const fragments = components.get(OBC.FragmentsManager);
 fragments.init(
-  "https://thatopen.github.io/engine_fragment/resources/worker.mjs/worker.mjs",
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
 );
 
 world.camera.controls.addEventListener("rest", () =>
