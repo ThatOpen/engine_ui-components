@@ -1,7 +1,20 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
+import { icons as customIcons } from "../../../../../resources/custom-icons.json";
 
 BUI.Manager.init();
+BUI.Manager.addIconsCollection({
+  // You can add icons by manually declaring the SVG
+  circle: {
+    body: '<circle fill="currentColor" cx="12" cy="12" r="10"/>',
+  },
+  // Or you can provide a set of IconifyJSON
+  // made with the Iconify utilities.
+  // Take a look at resources/build-icons
+  // and resources/custom-icons.json which is the result
+  // from running the script.
+  ...customIcons
+});
 
 const btn = document.body.querySelector<BUI.Button>("bim-button")!;
 btn.addEventListener("click", () => {
