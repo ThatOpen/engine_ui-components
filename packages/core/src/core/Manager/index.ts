@@ -1,6 +1,6 @@
+import { loadIcons, addCollection } from "iconify-icon";
 import * as components from "../../components";
 import { styles } from "./src/styles";
-import { loadIcons } from "iconify-icon";
 
 /**
  * Configuration interface for the Manager class. Defines the properties and their types that can be configured for the Manager.
@@ -66,6 +66,15 @@ export class Manager {
         if (pending.length) console.info(`Icons pending:`, pending);
       }
     })
+  }
+
+  static addIconsCollection(icons: Record<string, { body: string; width?: number; height?: number }>, config?: {prefix?: string}) {
+    addCollection({
+      prefix: config?.prefix ?? "bim",
+      icons: icons,
+      width: 24,
+      height: 24,
+    });
   }
 
   static defineCustomElement(tag: string, constructor: new () => HTMLElement) {
