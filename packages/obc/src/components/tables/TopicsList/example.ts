@@ -186,6 +186,11 @@ const [topicForm, updateTopicForm] = CUI.forms.topic({
   styles: { users },
 });
 
+// Optionally, you can activate the dropdown searchbox for the 
+// assignee input in case you have too many users in your app.
+const assigneeDropdown = topicForm.querySelector<BUI.Dropdown>("bim-dropdown[name='assignedTo']")
+if (assigneeDropdown) assigneeDropdown.searchBox = true
+
 // We won't add the form directly to the page, but will wrap it inside a dialog element to show it as a modal.
 const topicsModal = BUI.Component.create<HTMLDialogElement>(() => {
   return BUI.html`

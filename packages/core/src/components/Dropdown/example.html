@@ -28,8 +28,8 @@
 
 <body>
   <div style="display: flex; flex-direction: column; gap: 0.35rem; width: 15rem;">
-    <bim-dropdown id="my-dropdown-1" label="IFC Entity" multiple>
-      <bim-option label="IfcWindow" checked></bim-option>
+    <bim-dropdown id="my-dropdown-1" label="IFC Entity" multiple icon="iconamoon:home-fill">
+      <bim-option label-hidden label="IfcWindow" checked icon="iconamoon:home-fill"></bim-option>
       <bim-option label="IfcWall"></bim-option>
       <bim-option label="IfcSlab"></bim-option>
     </bim-dropdown>
@@ -39,7 +39,7 @@
     <bim-dropdown label="Vertical Layout" vertical>
       <bim-option label="IfcSlab"></bim-option>
     </bim-dropdown>
-    <bim-dropdown id="my-dropdown-2" required></bim-dropdown>
+    <bim-dropdown id="my-dropdown-2" required search-box></bim-dropdown>
   </div>
   <script type="module" src="./example.ts"></script>
 </body>
