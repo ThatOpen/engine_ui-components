@@ -3,6 +3,14 @@ import * as BUI from "../..";
 
 BUI.Manager.init();
 
+const tooltipTemplate = () => BUI.html`
+  <bim-tooltip style="width: 18rem;">
+    <bim-label style="font-weight: bold; font-size: 0.9rem;">Title</bim-label>
+    <bim-label style="white-space: normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</bim-label>
+    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmIyaHpuaGM5OWx4dXluZGxtZHR3c25rNm1qZWhza3k3azF0bGxhciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/gXXFrjHFJIMoqKr8UT/giphy.gif" alt="funny gif" style="width: 100%; border-radius: 0.5rem;" />
+  </bim-tooltip>
+`
+
 const leftPanel = BUI.Component.create<BUI.Panel>(() => {
   const onBtnClick = () => {
     alert("You clicked me!");
@@ -14,7 +22,9 @@ const leftPanel = BUI.Component.create<BUI.Panel>(() => {
         <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
         <bim-selector label="Choose">
           <bim-option label="Option A"></bim-option>
-          <bim-option label="Option B" checked></bim-option>
+          <bim-option label="Option B" checked>
+            ${BUI.Component.create(tooltipTemplate)}
+          </bim-option>
         </bim-selector>
         <bim-color-input></bim-color-input>
         <bim-dropdown>
@@ -47,7 +57,10 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
             backgroundColor: "#3c59c3",
             color: "white",
           };
-          return BUI.html`<bim-label style=${BUI.styleMap(style)}>${value}</bim-label>`;
+          return BUI.html`<bim-label style=${BUI.styleMap(style)}>
+            ${value}
+            ${BUI.Component.create(tooltipTemplate)}
+          </bim-label>`;
         }
         if (value === "Pending") {
           const style = {
@@ -338,9 +351,11 @@ const rightPanel = BUI.Component.create<BUI.Panel>(() => {
       <bim-panel-section label="Panel Section" icon="solar:settings-bold">
         <bim-button label="Button With Nestings">
           <bim-context-menu>
-            <bim-button label="Nested Button A" tooltip-title="asdasdasd" tooltip-text="asdasdasd">
+            <bim-button label="Nested Button A">
               <bim-context-menu>
-                <bim-button label="Nested Button A-1"></bim-button>
+                <bim-button label="Nested Button A-1">
+                  ${BUI.Component.create(tooltipTemplate)}
+                </bim-button>
                 <bim-button label="Nested Button A-2"></bim-button>
               </bim-context-menu>
             </bim-button>
@@ -428,7 +443,9 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
             <bim-button label="DXF"></bim-button>
           </bim-toolbar-section>
           <bim-toolbar-section label="External">
-            <bim-button label="RVT"></bim-button>
+            <bim-button label="RVT">
+              ${BUI.Component.create(tooltipTemplate)}
+            </bim-button>
             <bim-button label="PDF"></bim-button>
             <bim-button label="DWG"></bim-button>
           </bim-toolbar-section>
@@ -536,8 +553,8 @@ grid.layouts = {
     template: `
       "ribbon ribbon ribbon" auto
       "leftPanel viewport rightPanel" 1fr
-      "leftPanel bottomPanel bottomPanel" auto
-      / auto 1fr 20rem
+      "leftPanel bottomPanel bottomPanel" 20rem
+      / 22rem 1fr 20rem
     `,
     elements: {
       ribbon,

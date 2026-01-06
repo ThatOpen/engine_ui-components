@@ -49,8 +49,12 @@
 
 <body>
   <div style="display: flex; flex-direction: column; gap: 0.35rem; width: 15rem;">
-    <bim-button label="My Button!" icon="solar:alarm-play-bold" tooltip-title="The Button"
-      tooltip-text="This just activates a popup!"></bim-button>
+    <bim-button label="My Button!" icon="solar:alarm-play-bold">
+      <bim-tooltip>
+        <bim-label style="color: var(--bim-ui_bg-contrast-80); font-weight: bold;">The Button</bim-label>
+        <bim-label>This just activates a popup!</bim-label>
+      </bim-tooltip>
+    </bim-button>
     <bim-button class="btn-1" label="An nicely styled button" icon="solar:alarm-play-bold"></bim-button>
     <bim-button class="btn-2" label="An styled button" icon="solar:alarm-play-bold"></bim-button>
     <bim-button label="Vertical Button" icon="solar:alarm-play-bold" vertical></bim-button>
