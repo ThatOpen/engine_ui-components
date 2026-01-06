@@ -126,23 +126,33 @@ export class TableRow<T extends TableRowData> extends LitElement {
     const target = e.target as Checkbox;
     this.selected = target.value;
     if (target.value) {
-      this.table.selection.add(this.data);
-      this.table.dispatchEvent(
-        new CustomEvent<RowSelectedEventDetail<T>>("rowselected", {
-          detail: {
-            data: this.data,
-          },
-        }),
-      );
+      let data = [this.data]
+      if (this.isHeader) {
+        data = Table.flattenData<T>(this.table.data).map(entry => entry.data)
+      }
+      this.table.selection.add(...data);
+      if (this.isHeader) {
+        this.table.dispatchEvent(
+          new CustomEvent<RowSelectedEventDetail<T>>("rowselected", {
+            detail: {
+              data: this.data,
+            },
+          }),
+        );
+      }
     } else {
-      this.table.selection.delete(this.data);
-      this.table.dispatchEvent(
-        new CustomEvent<RowDeselectedEventDetail<T>>("rowdeselected", {
-          detail: {
-            data: this.data,
-          },
-        }),
-      );
+      if (this.isHeader) {
+        this.table.selection.clear()
+      } else {
+        this.table.selection.delete(this.data);
+        this.table.dispatchEvent(
+          new CustomEvent<RowDeselectedEventDetail<T>>("rowdeselected", {
+            detail: {
+              data: this.data,
+            },
+          }),
+        );
+      }
     }
   }
 
@@ -296,7 +306,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
     // this._cacheTimeout = window.setTimeout(() => this.clean(), 10000)
 
     return html`
-      ${!this.isHeader && this.table.selectableRows
+      ${this.table.selectableRows
         ? html`<bim-checkbox
             @change=${this.onSelectionChange}
             .checked=${this._isSelected ?? false}
