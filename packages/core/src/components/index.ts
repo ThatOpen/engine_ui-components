@@ -27,6 +27,7 @@ import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
 import { Toolbar, ToolbarGroup, ToolbarSection } from "./Toolbar";
 import { Viewport } from "./Viewport";
+import { Tooltip } from "./Tooltip";
 
 /**
  * Extends the global HTMLElementTagNameMap interface to include custom element tags.
@@ -60,6 +61,7 @@ declare global {
     "bim-toolbar-group": ToolbarGroup;
     "bim-toolbar-section": ToolbarSection;
     "bim-viewport": Viewport;
+    "bim-tooltip": Tooltip;
   }
 
   /**
@@ -102,3 +104,4 @@ export * from "./Toolbar/src/Toolbar";
 export * from "./Toolbar/src/Group";
 export * from "./Toolbar/src/Section";
 export * from "./Viewport";
+export * from "./Tooltip";
