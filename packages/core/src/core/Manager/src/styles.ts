@@ -28,6 +28,7 @@ const globalStyles = css`
     --bim-ui_gray-2: hsl(210 10% 20%);
     --bim-ui_gray-3: hsl(210 10% 30%);
     --bim-ui_gray-4: hsl(210 10% 40%);
+    --bim-ui_gray-5: hsl(210 10% 50%);
     --bim-ui_gray-6: hsl(210 10% 60%);
     --bim-ui_gray-7: hsl(210 10% 70%);
     --bim-ui_gray-8: hsl(210 10% 80%);

@@ -1,4 +1,4 @@
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ref, createRef } from "lit/directives/ref.js";
 import { Component } from "../../core/Component";
@@ -6,6 +6,7 @@ import { styles } from "../../core/Manager/src/styles";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
 import { ContextMenu } from "../ContextMenu";
+import { TextInput } from "../TextInput";
 
 /**
  * A custom dropdown web component for BIM applications.
@@ -142,6 +143,9 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   private _visible = false;
 
+  @property({ type: Boolean, reflect: true, attribute: "search-box" })
+  searchBox?: boolean;
+
   /**
    * Indicates whether the dropdown it-self (not the component) is visible.
    * @type {boolean}
@@ -168,6 +172,14 @@ export class Dropdown extends Component implements HasValue, HasName {
       }
       this._visible = false;
       this.resetVisibleElements();
+      // Reset display of all options
+      for (const option of this._options) {
+        if (!(option instanceof Option)) continue;
+        (option as HTMLElement).style.display = "";
+      }
+      // Reset search input
+      const searchInput = this._contextMenu.value?.querySelector("bim-text-input")
+      if (searchInput) searchInput.value = "";
     }
   }
 
@@ -259,6 +271,19 @@ export class Dropdown extends Component implements HasValue, HasName {
     this.dispatchEvent(this.onValueChange);
   };
 
+  private onSearch = ({target}: {target: TextInput}) => {
+    const searchValue = target.value.toLowerCase();
+    for (const option of this._options) {
+      if (!(option instanceof Option)) continue;
+      const optionLabel = (option.label || option.value || "").toLowerCase();
+      if (optionLabel.includes(searchValue)) {
+        (option as HTMLElement).style.display = "";
+      } else {
+        (option as HTMLElement).style.display = "none";
+      }
+    }
+  };
+
   private onSlotChange(e: any) {
     const children = e.target.assignedElements();
     this.observe(children);
@@ -338,6 +363,7 @@ export class Dropdown extends Component implements HasValue, HasName {
               if (this.visible) this.visible = false;
             }}
           >
+            ${this.searchBox ? html`<bim-text-input @input=${this.onSearch} placeholder="Search..." debounce=200 style="--bim-input--bgc: var(--bim-ui_bg-contrast-30)"></bim-text-input>` : nothing}
             <slot @slotchange=${this.onSlotChange}></slot>
           </bim-context-menu>
         </div>
