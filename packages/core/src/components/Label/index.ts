@@ -20,6 +20,7 @@ export class Label extends LitElement {
       display: block;
       white-space: nowrap;
       transition: all 0.15s;
+      user-select: none;
     }
 
     :host([icon]) {
@@ -31,7 +32,6 @@ export class Label extends LitElement {
       align-items: center;
       column-gap: 0.25rem;
       row-gap: 0.125rem;
-      user-select: none;
       height: 100%;
     }
 

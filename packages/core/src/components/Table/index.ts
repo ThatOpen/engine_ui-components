@@ -416,7 +416,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
     return text;
   }
 
-  defaultContentTemplate: (value: string | boolean | number, data: Partial<T>, group: TableGroup<T> | null) => TemplateResult = (value) => html`<bim-label style="white-space: normal;">${value}</bim-label>`
+  defaultContentTemplate: (value: string | boolean | number, data: Partial<T>, group: TableGroup<T> | null) => TemplateResult = (value) => html`<bim-label style="white-space: normal; user-select: text;">${value}</bim-label>`
 
   /**
    * A getter function that generates a CSV (Comma Separated Values) representation of the table data.
