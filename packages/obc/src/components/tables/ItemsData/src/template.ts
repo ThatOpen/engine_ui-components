@@ -17,6 +17,7 @@ const addDataToRow = (
   value: any,
   modelId: string,
   localId: number,
+  dataType?: string,
 ) => {
   const dataRow: BUI.TableGroupData<ItemsDataTableData> = {
     data: {
@@ -24,7 +25,8 @@ const addDataToRow = (
       modelId,
       localId,
       Name: key in attrMappings ? attrMappings[key] : key,
-      Value: value
+      Value: value,
+      dataType
     },
   };
   if (!row.children) row.children = [];
@@ -66,7 +68,7 @@ const getItemRow = (
   for (const key in propertyData) {
     const data = propertyData[key];
     if (!Array.isArray(data)) {
-      addDataToRow(row, key, data.value, modelId, localId);
+      addDataToRow(row, key, data.value, modelId, localId, data.type);
     } else {
       const relRow: BUI.TableGroupData<ItemsDataTableData> = {
         data: {

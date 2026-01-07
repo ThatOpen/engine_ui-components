@@ -9,6 +9,7 @@ export type ItemsDataTableData = {
   modelId: string;
   localId: number;
   type: "item" | "relation" | "attribute";
+  dataType: string;
   Name: string;
   Value: any;
   Actions: string;
