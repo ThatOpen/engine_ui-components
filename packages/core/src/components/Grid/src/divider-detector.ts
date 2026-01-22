@@ -1,8 +1,7 @@
 import { GridDividerInfo } from "./types";
 
 /**
- * Detects all dividers (vertical and horizontal) in a grid matrix.
- * A divider exists where two adjacent areas have different names.
+ * Detects all dividers (vertical and horizontal) in a grid matrix. A divider exists where two adjacent areas have different names.
  * 
  * @param gridMatrix - 2D array representing the grid structure
  * @returns Array of divider information including type, position, and adjacent areas
@@ -84,8 +83,7 @@ export function detectDividers(gridMatrix: (string | null)[][]): GridDividerInfo
 }
 
 /**
- * Removes duplicate area names from divider area arrays.
- * Each adjacent area should only appear once in the divider's area list.
+ * Removes duplicate area names from divider area arrays. Each adjacent area should only appear once in the divider's area list.
  * 
  * @param dividers - Array of dividers to deduplicate
  * @returns The same array with deduplicated area names

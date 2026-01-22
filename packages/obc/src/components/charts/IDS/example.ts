@@ -80,10 +80,16 @@ await ifcLoader.setup({
   wasm: { absolute: false, path: "https://unpkg.com/web-ifc@0.0.74/" },
 });
 
+const githubUrl =
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
+const fetchedUrl = await fetch(githubUrl);
+const workerBlob = await fetchedUrl.blob();
+const workerFile = new File([workerBlob], "worker.mjs", {
+  type: "text/javascript",
+});
+const workerUrl = URL.createObjectURL(workerFile);
 const fragments = components.get(OBC.FragmentsManager);
-fragments.init(
-  "/node_modules/@thatopen/fragments/dist/Worker/worker.mjs",
-);
+fragments.init(workerUrl);
 
 world.camera.controls.addEventListener("rest", () =>
   fragments.core.update(true),

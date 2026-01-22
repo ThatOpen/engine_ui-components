@@ -66,9 +66,7 @@ export function calculateHorizontalResize(
 }
 
 /**
- * Validates if a vertical resize operation is allowed.
- * Prevents resizing if it would make an area smaller than the minimum size.
- * Only blocks movement in the direction that would shrink an area below the minimum.
+ * Validates if a vertical resize operation is allowed. Prevents resizing if it would make an area smaller than the minimum size. Only blocks movement in the direction that would shrink an area below the minimum.
  * 
  * @param leftValue - New size for the left column
  * @param rightValue - New size for the right column
@@ -96,9 +94,7 @@ export function validateVerticalResize(
 }
 
 /**
- * Validates if a horizontal resize operation is allowed.
- * Prevents resizing if it would make an area smaller than the minimum size.
- * Only blocks movement in the direction that would shrink an area below the minimum.
+ * Validates if a horizontal resize operation is allowed. Prevents resizing if it would make an area smaller than the minimum size. Only blocks movement in the direction that would shrink an area below the minimum.
  * 
  * @param topValue - New size for the top row
  * @param bottomValue - New size for the bottom row

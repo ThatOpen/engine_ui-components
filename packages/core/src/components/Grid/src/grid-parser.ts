@@ -1,6 +1,5 @@
 /**
- * Parses a grid template string and returns a 2D matrix representation.
- * Handles both quoted strings and newline-delimited formats.
+ * Parses a grid template string and returns a 2D matrix representation. Handles both quoted strings and newline-delimited formats.
  * 
  * @param template - The grid template string to parse
  * @returns A 2D array where each cell contains the area name or null for empty cells
@@ -49,8 +48,7 @@ export function parseGridTemplate(template: string): (string | null)[][] {
 }
 
 /**
- * Extracts unique area names from a grid template string.
- * Filters out empty cells (dots) and returns only unique area names.
+ * Extracts unique area names from a grid template string. Filters out empty cells (dots) and returns only unique area names.
  * 
  * @param template - The grid template string
  * @returns An array of unique area names

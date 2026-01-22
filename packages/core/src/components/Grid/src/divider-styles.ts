@@ -1,8 +1,7 @@
 import { GridDividerInfo } from "./types";
 
 /**
- * Calculates the CSS styles needed for a divider element.
- * Handles positioning, transforms, and sizing based on divider type and grid gaps.
+ * Calculates the CSS styles needed for a divider element. Handles positioning, transforms, and sizing based on divider type and grid gaps.
  * 
  * @param divider - The divider information
  * @param computedStyles - The computed styles of the grid element
