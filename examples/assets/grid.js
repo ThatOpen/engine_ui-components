@@ -1,4 +1,4 @@
-import{b as i}from"./lit-html-CgQwCkHV.js";import{M as p,C as a,o as r}from"./index-Dxq5IOpt.js";import{b as g}from"./ref-B0YVjWyu.js";p.init();const c=()=>i`
+import{b as i}from"./lit-html-CgQwCkHV.js";import{M as p,C as a,o as r}from"./index-D8pO6-HT.js";import{b as g}from"./ref-B0YVjWyu.js";p.init();const c=()=>i`
   <bim-tooltip style="width: 18rem;">
     <bim-label style="font-weight: bold; font-size: 0.9rem;">Title</bim-label>
     <bim-label style="white-space: normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</bim-label>

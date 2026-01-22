@@ -16,7 +16,7 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 // eslint-disable-next-line import/no-unresolved
-import { v4 as uuidv4 } from "uuid";
+import * as THREE from "three";
 import * as BUIC from "../..";
 
 const components = new OBC.Components();
@@ -72,7 +72,7 @@ const generateRandomTopic = (index: number) => {
     Math.random() > 0.5 ? getRandomDate(creationDate, new Date()) : undefined;
 
   return bcfTopics.create({
-    guid: uuidv4(),
+    guid: THREE.MathUtils.generateUUID(),
     type: getRandomElement(types),
     status: getRandomElement(statuses),
     title: `Topic ${index + 1}: Minor issue found on level ${(index % 3) + 1}`,

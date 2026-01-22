@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Grouping</title>
+  <style>
+    :root {
+      --bim-ui_gray-0: hsl(210 10% 5%);
+      --bim-ui_gray-1: hsl(210deg 20.4% 10.96%);
+      --bim-ui_gray-2: hsl(210deg 21.41% 19.69%);
+      --bim-ui_gray-3: hsl(210 10% 30%);
+      --bim-ui_gray-4: hsl(210 10% 40%);
+      --bim-ui_gray-6: hsl(210 10% 60%);
+      --bim-ui_gray-7: hsl(210 10% 70%);
+      --bim-ui_gray-8: hsl(210 10% 80%);
+      --bim-ui_gray-9: hsl(210 10% 90%);
+      --bim-ui_gray-10: hsl(210 10% 95%);
+      --bim-ui_main-base: #6528d7;
+      --bim-ui_accent-base: #bcf124;
+      --bim-ui_main-contrast: var(--bim-ui_gray-10);
+      --bim-ui_accent-contrast: var(--bim-ui_gray-0);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background: linear-gradient(170deg, hsl(210deg 11% 16.74%), hsl(210deg 34.41% 9.61%) 30%, hsl(184.98deg 17.77% 11.23%) 100%);
+      /* background-color: var(--bim-ui_bg-base); */
+      height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    bim-table {
+      flex: 1;
+      border: 1px solid var(--bim-ui_bg-contrast-20);
+      border-radius: 0.5rem;
+    }
+
+    bim-table::part(grouping-message) {
+      color: var(--bim-ui_accent-base);
+    }
+
+    bim-table::part(group) {
+      background-color: red;
+    }
+  </style>
+  <script type="module" crossorigin src="../../assets/grouping.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/lit-html-CgQwCkHV.js">
+  <link rel="modulepreload" crossorigin href="../../assets/ref-B0YVjWyu.js">
+  <link rel="modulepreload" crossorigin href="../../assets/index-D8pO6-HT.js">
+</head>
+
+<body>
+</body>
+
+</html>

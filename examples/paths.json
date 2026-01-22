@@ -7,6 +7,10 @@
   "packages/obc/src/components/tables/SpatialTree/example.ts",
   "packages/obc/src/components/tables/ModelsList/example.ts",
   "packages/obc/src/components/tables/ItemsData/example.ts",
+  "packages/obc/src/components/charts/Topics/example.ts",
+  "packages/obc/src/components/charts/IDS/example.ts",
+  "packages/obc/src/components/charts/Categories/example.ts",
+  "packages/obc/src/components/charts/Attributes/example.ts",
   "packages/obc/src/components/buttons/load-ifc/example.ts",
   "packages/core/src/core/Component/example.ts",
   "packages/core/src/components/Tooltip/example.ts",
@@ -16,6 +20,7 @@
   "packages/core/src/components/Table/example.ts",
   "packages/core/src/components/Table/examples/Searching/example.ts",
   "packages/core/src/components/Table/examples/LoadFunction/example.ts",
+  "packages/core/src/components/Table/examples/Grouping/example.ts",
   "packages/core/src/components/Table/examples/ExportingData/example.ts",
   "packages/core/src/components/Table/examples/DataTransform/example.ts",
   "packages/core/src/components/Selector/example.ts",
@@ -27,5 +32,6 @@
   "packages/core/src/components/ContextMenu/example.ts",
   "packages/core/src/components/ColorInput/example.ts",
   "packages/core/src/components/Checkbox/example.ts",
+  "packages/core/src/components/Chart/example.ts",
   "packages/core/src/components/Button/example.ts"
 ]
