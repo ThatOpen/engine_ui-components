@@ -1,5 +1,50 @@
 # Changelog
 
+## [3.3.1](https://github.com/ThatOpen/engine_ui-components/compare/v2.3.0...v3.3.1) (2026-01-22)
+
+
+### Features
+
+* adapt ui to fragments 2.0, improve all components ([5586d4e](https://github.com/ThatOpen/engine_ui-components/commit/5586d4ebf4686e90bdc2d66c5e2ef4da98193ddd))
+* add optional icon to bim-grid layouts ([97e1fcb](https://github.com/ThatOpen/engine_ui-components/commit/97e1fcb5c9b27d948b8bf632c48604cadefe8163))
+* add search functionality to Dropdown ([f3a9c62](https://github.com/ThatOpen/engine_ui-components/commit/f3a9c62a38b03be333b81d02de8e18a8f970de26))
+* add tooltip component ([f215776](https://github.com/ThatOpen/engine_ui-components/commit/f215776207faa2ca63cc6fcefb4285dafa1cf223))
+* **core:** adds better typing support for bim-table ([51a8587](https://github.com/ThatOpen/engine_ui-components/commit/51a858722a19e2c7650a80cc93fd768af5d13d32))
+* **core:** adds the posibility to update a statefull component inside it-self ([2fdc271](https://github.com/ThatOpen/engine_ui-components/commit/2fdc2710570e2813c3c8125947d933f8e701351c))
+* **core:** improves the bim-grid component ([5f97e85](https://github.com/ThatOpen/engine_ui-components/commit/5f97e85897378db9478ff94b2935e5aee1263f64))
+* emit event on bim-grid when elements are created based on templates ([29f8029](https://github.com/ThatOpen/engine_ui-components/commit/29f80297fe58cd082486ca4e0be06fcfcf76e252))
+* implement addIconsCollection method to use custom icons ([8bcdb3d](https://github.com/ThatOpen/engine_ui-components/commit/8bcdb3d0758a13d501d3c1a944419b9138fb982e))
+* implement select-all from the checkbox in table headers ([80f5040](https://github.com/ThatOpen/engine_ui-components/commit/80f504058df0fb06517a65c44196c2374eb13122))
+* include units in the ItemsData table UI ([152aec0](https://github.com/ThatOpen/engine_ui-components/commit/152aec06ef4f723d4fff9c7743602be99498d775))
+* let label icon color to be set independently ([f1f5e81](https://github.com/ThatOpen/engine_ui-components/commit/f1f5e81f50e16e7e13733993aa0b19b757e1638d))
+* **obc:** adds dispose to bim-world ([a6e9ae1](https://github.com/ThatOpen/engine_ui-components/commit/a6e9ae19207e8c8e07ccd6d7459cf652dc6deab2))
+* **obc:** improves the set of BCFTopics UIs and creates a full tutorial to use them ([39faace](https://github.com/ThatOpen/engine_ui-components/commit/39faace28329ca24ccd7a66d37207b2fba4ee6f7))
+* release ([1cf1afe](https://github.com/ThatOpen/engine_ui-components/commit/1cf1afe3521fc1f4bbec06741ddc938e76675bc0))
+* release bim charts ([20b43a8](https://github.com/ThatOpen/engine_ui-components/commit/20b43a8d8ffd8403673d1ecb0d18b4a82d96638c))
+* release obc ([02ac3e5](https://github.com/ThatOpen/engine_ui-components/commit/02ac3e538cbe6f3adf59948300f1c5f4e90b084d))
+* use orthoperspective camera in bcf topics tutorial ([49632d1](https://github.com/ThatOpen/engine_ui-components/commit/49632d1f3a01133c47528bc35fbdb64c6da0bcb9))
+
+
+### Bug Fixes
+
+* adds missing comma ([bcb53dc](https://github.com/ThatOpen/engine_ui-components/commit/bcb53dca51596ad754e3807b52bc885b88c131f8))
+* bim-icon svg image position & bim-label font-size/line height [#56](https://github.com/ThatOpen/engine_ui-components/issues/56). ([#67](https://github.com/ThatOpen/engine_ui-components/issues/67)) ([604a4b9](https://github.com/ThatOpen/engine_ui-components/commit/604a4b9991be47147eb6bc8f8407dbc01db62ac4))
+* **core:** bim-tab was not updating the label in the UI ([ed10e91](https://github.com/ThatOpen/engine_ui-components/commit/ed10e910aecc12b9caabae750172a73eb707e1de))
+* Documentation Updates engine_ui-components [#459](https://github.com/ThatOpen/engine_ui-components/issues/459) ([#59](https://github.com/ThatOpen/engine_ui-components/issues/59)) ([bfdb5e8](https://github.com/ThatOpen/engine_ui-components/commit/bfdb5e8912348eb6f58a66f46c4ac9e3ca300499))
+* join array values in table row cells ([6c81081](https://github.com/ThatOpen/engine_ui-components/commit/6c81081c68c7f67af0983494b9c9b8d1ed30f1be))
+* make elementProperties values selectable [#57](https://github.com/ThatOpen/engine_ui-components/issues/57) ([#62](https://github.com/ThatOpen/engine_ui-components/issues/62)) ([6e5a11c](https://github.com/ThatOpen/engine_ui-components/commit/6e5a11c8aaa930edb6dc244a1eeb9a2476469eb6))
+* nested buttons not working ([52c66a4](https://github.com/ThatOpen/engine_ui-components/commit/52c66a401cec37acc331a1fae9df1d0216af3edb))
+* **obc:** solve missing ElementProperties table when no Name is found ([afccbc1](https://github.com/ThatOpen/engine_ui-components/commit/afccbc17ef980671c32d842c2cad8911b81e1a8d))
+* remove conflicting CSS rule in ToolbarSection ([1149821](https://github.com/ThatOpen/engine_ui-components/commit/1149821891b0f9613d7826581522f599d0d283bc))
+
+
+### Miscellaneous Chores
+
+* release 2.2.0 ([000d9bc](https://github.com/ThatOpen/engine_ui-components/commit/000d9bce5ac9d9d497368ac50cdf6d2282c01b1a))
+* release 2.3.1 ([375c93b](https://github.com/ThatOpen/engine_ui-components/commit/375c93bc6c20c2b9bc20177dd53632c748ab0e0d))
+* release 3.1.0 ([d219122](https://github.com/ThatOpen/engine_ui-components/commit/d2191223a0eb7b373410a95b60986868b0748625))
+* release 3.3.1 ([3c05fc2](https://github.com/ThatOpen/engine_ui-components/commit/3c05fc2dd636ccee6d617c0c53e9c6d41e08fe33))
+
 ## [2.3.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.2.0...v2.3.0) (2026-01-22)
 
 
