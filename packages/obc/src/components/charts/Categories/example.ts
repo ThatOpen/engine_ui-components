@@ -147,7 +147,7 @@ const labels = BUI.Component.create(() => {
       <bim-label slot="no-chart" icon="ph:warning-fill" style="--bim-icon--c: gold;">No charts Attached</bim-label>
       <bim-label slot="missing-data" icon="ph:warning-fill" style="--bim-icon--c: gold;">No data to display</bim-label>
     </bim-chart-legend>`;
-}) as BUI.ChartLabel;
+}) as BUI.ChartLegend;
 
 pieChart.addEventListener("data-loaded", () => {
   labels.charts = [...labels.charts, pieChart];
@@ -199,8 +199,9 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
 const onHighlight = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.highlight(({value}) => {
-    return value > 100;
+  pieChart.highlight((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;
@@ -215,8 +216,9 @@ const highlightButton = BUI.Component.create(() => {
 const onFilter = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.filterByValue(({value}) => {
-    return value > 100;
+  pieChart.filterByValue((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;

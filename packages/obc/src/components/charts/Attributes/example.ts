@@ -126,7 +126,7 @@ const labels = BUI.Component.create(() => {
       <bim-label slot="no-chart" icon="ph:warning-fill" style="--bim-icon--c: gold;">No charts Attached</bim-label>
       <bim-label slot="missing-data" icon="ph:warning-fill" style="--bim-icon--c: gold;">No data to display</bim-label>
     </bim-chart-legend>`;
-}) as BUI.ChartLabel;
+}) as BUI.ChartLegend;
 
 const hider = components.get(OBC.Hider);
 
@@ -164,8 +164,8 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
   world.scene.three.add(model.object);
   await fragments.core.update(true);
 
-  updatePie({ attribute: /^Name$/, category: /DOOR/, modelId: model.modelId });
-  updateBar({ attribute: /^Name$/, category: /DOOR/, modelId: model.modelId });
+  updatePie({ attribute: /^Name$/, category: /COLUMN/, modelId: model.modelId });
+  updateBar({ attribute: /^Name$/, category: /COLUMN/, modelId: model.modelId });
 
   pieChart.label = "Pie Chart Data";
   barChart.label = "Bar Chart Data";
@@ -173,7 +173,7 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
 
 const name = "sample";
 
-const fragPaths = ["https://thatopen.github.io/engine_components/resources/frags/school_arq.frag"];
+const fragPaths = ["https://thatopen.github.io/engine_components/resources/frags/school_str.frag"];
 await Promise.all(
   fragPaths.map(async (path) => {
     const modelId = path.split("/").pop()?.split(".").shift();
@@ -197,8 +197,9 @@ await Promise.all(
 const onHighlight = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.highlight(({value}) => {
-    return value > 100;
+  pieChart.highlight((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;
@@ -213,8 +214,9 @@ const highlightButton = BUI.Component.create(() => {
 const onFilter = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.filterByValue(({value}) => {
-    return value > 100;
+  pieChart.filterByValue((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;

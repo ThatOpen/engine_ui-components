@@ -124,7 +124,7 @@ barChart.label = "Bar Chart Data";
   - A `topicsList` table, created with a factory, to display the raw topic data in a clear, tabular format. This allows users to see the details behind the chart visualizations.
 */
 
-const labels = BUI.Component.create<BUI.ChartLabel>(() => {
+const labels = BUI.Component.create<BUI.ChartLegend>(() => {
   return BUI.html`
     <bim-chart-legend>
       <bim-label slot="missing-data">No data to display</bim-label>
@@ -163,8 +163,9 @@ topicsTable.hiddenColumns = ["Guid", "DueDate", "Actions"]
 const onHighlight = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.highlight((value) => {
-    return value > 100;
+  pieChart.highlight((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;
@@ -179,8 +180,9 @@ const highlightButton = BUI.Component.create(() => {
 const onFilter = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.filterByValue(({value}) => {
-    return value > 100;
+  pieChart.filterByValue((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;

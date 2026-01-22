@@ -225,7 +225,7 @@ const [barChart] = BUIC.charts.idsChart({
   To complement our charts, we'll add a `<bim-chart-legend>` component. This will act as a legend, showing the different result types (Pass, Fail, Unchecked). In a more advanced implementation, you could connect this to the `Highlighter` to allow users to toggle the visibility of element groups by clicking the labels.
 */
 
-const labels = BUI.Component.create<BUI.ChartLabel>(() => {
+const labels = BUI.Component.create<BUI.ChartLegend>(() => {
   return BUI.html`
     <bim-chart-legend>
       <bim-label slot="missing-data">No data to display</bim-label>
@@ -251,8 +251,9 @@ barChart.addEventListener("data-loaded", () => {
 const onHighlight = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.highlight(({value}) => {
-    return value > 100;
+  pieChart.highlight((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;
@@ -267,8 +268,9 @@ const highlightButton = BUI.Component.create(() => {
 const onFilter = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
-  pieChart.filterByValue(({value}) => {
-    return value > 100;
+  pieChart.filterByValue((entry) => {
+    if (!("value" in entry)) return false
+    return entry.value > 100;
   });
 
   target.loading = false;
