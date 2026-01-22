@@ -1,4 +1,4 @@
-import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe,e as I,v as M,x as ee,V as te,C as ye,W as ge,S as $e,a as we,O as ve,G as he,F as Te,I as xe}from"./index-suFrD91l.js";import"./index-C1FTul3w.js";import{c as ke,d as D,a as U,b as V,t as Se,v as Ie,e as Ae}from"./index-DeWDcPh-.js";import{e as Y}from"./ref-B0YVjWyu.js";const Ce={dueDate:e=>{if(typeof e=="string"&&e.trim()!=="")return new Date(e)},status:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},type:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},priority:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},stage:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},assignedTo:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},labels:e=>{if(Array.isArray(e))return new Set(e)}},ne=e=>{const{components:l,topic:t,value:i,onCancel:n,onSubmit:s,styles:r}=e,m=s??(()=>{}),d=l.get(z),v=(i==null?void 0:i.title)??(t==null?void 0:t.title)??C.default.title,p=(i==null?void 0:i.status)??(t==null?void 0:t.status)??C.default.status,b=(i==null?void 0:i.type)??(t==null?void 0:t.type)??C.default.type,a=(i==null?void 0:i.priority)??(t==null?void 0:t.priority)??C.default.priority,y=(i==null?void 0:i.assignedTo)??(t==null?void 0:t.assignedTo)??C.default.assignedTo,u=(i==null?void 0:i.labels)??(t==null?void 0:t.labels)??C.default.labels,g=(i==null?void 0:i.stage)??(t==null?void 0:t.stage)??C.default.stage,x=(i==null?void 0:i.description)??(t==null?void 0:t.description)??C.default.description,$=t!=null&&t.dueDate?t.dueDate.toISOString().split("T")[0]:null,f=new Set([...d.config.statuses]);p&&f.add(p);const h=new Set([...d.config.types]);b&&h.add(b);const w=new Set([...d.config.priorities]);a&&w.add(a);const j=new Set([...d.config.users]);y&&j.add(y);const G=new Set([...d.config.labels]);if(u)for(const c of u)G.add(c);const H=new Set([...d.config.stages]);g&&H.add(g);const J=Y(),pe=async()=>{const{value:c}=J;if(!c)return;const k=fe(c,Ce);if(t)t.set(k),await m(t);else{const B=d.create(k);await m(B)}},N=Y(),be=c=>{const{value:k}=N;if(!k)return;const B=c.target;k.disabled=B.value.trim()===""},Q=`btn-${S.newRandomId()}`,E=`btn-${S.newRandomId()}`;return o`
+import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe,e as I,v as M,x as ee,V as te,C as ye,W as ge,S as $e,a as we,O as ve,G as he,F as Te,I as xe}from"./index-Dns8uyf5.js";import"./index-D0rMDqrV.js";import{c as ke,d as D,b as U,a as V,t as Se,v as Ie,e as Ae}from"./index-B3C-Wr2i.js";import{e as Y}from"./ref-B0YVjWyu.js";const Ce={dueDate:e=>{if(typeof e=="string"&&e.trim()!=="")return new Date(e)},status:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},type:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},priority:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},stage:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},assignedTo:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},labels:e=>{if(Array.isArray(e))return new Set(e)}},ne=e=>{const{components:l,topic:t,value:i,onCancel:n,onSubmit:s,styles:r}=e,m=s??(()=>{}),d=l.get(z),v=(i==null?void 0:i.title)??(t==null?void 0:t.title)??C.default.title,p=(i==null?void 0:i.status)??(t==null?void 0:t.status)??C.default.status,b=(i==null?void 0:i.type)??(t==null?void 0:t.type)??C.default.type,a=(i==null?void 0:i.priority)??(t==null?void 0:t.priority)??C.default.priority,y=(i==null?void 0:i.assignedTo)??(t==null?void 0:t.assignedTo)??C.default.assignedTo,u=(i==null?void 0:i.labels)??(t==null?void 0:t.labels)??C.default.labels,g=(i==null?void 0:i.stage)??(t==null?void 0:t.stage)??C.default.stage,x=(i==null?void 0:i.description)??(t==null?void 0:t.description)??C.default.description,$=t!=null&&t.dueDate?t.dueDate.toISOString().split("T")[0]:null,f=new Set([...d.config.statuses]);p&&f.add(p);const h=new Set([...d.config.types]);b&&h.add(b);const w=new Set([...d.config.priorities]);a&&w.add(a);const j=new Set([...d.config.users]);y&&j.add(y);const G=new Set([...d.config.labels]);if(u)for(const c of u)G.add(c);const H=new Set([...d.config.stages]);g&&H.add(g);const J=Y(),pe=async()=>{const{value:c}=J;if(!c)return;const k=fe(c,Ce);if(t)t.set(k),await m(t);else{const B=d.create(k);await m(B)}},N=Y(),be=c=>{const{value:k}=N;if(!k)return;const B=c.target;k.disabled=B.value.trim()===""},Q=`btn-${S.newRandomId()}`,E=`btn-${S.newRandomId()}`;return o`
     <div ${X(J)} style="display: flex; flex-direction: column; gap: 0.75rem;">
       <div style="display: flex; gap: 0.375rem">
         <bim-text-input @input=${be} vertical label="Title" name="title" .value=${v}></bim-text-input>
@@ -91,14 +91,14 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Status</bim-label>
-        <bim-label .icon=${a==null?void 0:a.icon} style=${M({...V,...a==null?void 0:a.style})}
+        <bim-label .icon=${a==null?void 0:a.icon} style=${M({...U,...a==null?void 0:a.style})}
         >${n.status}
         </bim-label>
       </div>
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Type</bim-label>
-        <bim-label .icon=${b==null?void 0:b.icon} style=${M({...V,...b==null?void 0:b.style})}
+        <bim-label .icon=${b==null?void 0:b.icon} style=${M({...U,...b==null?void 0:b.style})}
         >${n.type}
         </bim-label>
       </div>
@@ -106,20 +106,20 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
       ${n.priority?o`
             <div style="display: flex; gap: 0.375rem">
               <bim-label>Priority</bim-label>
-              <bim-label .icon=${p==null?void 0:p.icon} style=${M({...V,...p==null?void 0:p.style})}
+              <bim-label .icon=${p==null?void 0:p.icon} style=${M({...U,...p==null?void 0:p.style})}
               >${n.priority}
               </bim-label>
             </div>`:null}
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Author</bim-label>
-        ${U(n.creationAuthor,(s==null?void 0:s.users)??D.users)}
+        ${V(n.creationAuthor,(s==null?void 0:s.users)??D.users)}
       </div>
 
       ${n.assignedTo?o`
           <div style="display: flex; gap: 0.375rem">
             <bim-label>Assignee</bim-label>
-            ${U(n.assignedTo,(s==null?void 0:s.users)??D.users)}
+            ${V(n.assignedTo,(s==null?void 0:s.users)??D.users)}
           </div>`:null}
 
       ${n.dueDate?o`
@@ -131,7 +131,7 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
       ${n.modifiedAuthor?o`
           <div style="display: flex; gap: 0.375rem">
             <bim-label>Modified By</bim-label>
-            ${U(n.modifiedAuthor,(s==null?void 0:s.users)??D.users)}
+            ${V(n.modifiedAuthor,(s==null?void 0:s.users)??D.users)}
           </div>`:null}
 
       ${n.modifiedDate?o`
