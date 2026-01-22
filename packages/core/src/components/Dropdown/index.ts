@@ -180,6 +180,7 @@ export class Dropdown extends Component implements HasValue, HasName {
       // Reset search input
       const searchInput = this._contextMenu.value?.querySelector("bim-text-input")
       if (searchInput) searchInput.value = "";
+      this._hasVisibleOptions = true;
     }
   }
 
@@ -189,6 +190,9 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   @state()
   private _value: Set<Option> = new Set();
+
+  @state()
+  private _hasVisibleOptions = true;
 
   /**
    * The selected values in the dropdown.
@@ -273,15 +277,18 @@ export class Dropdown extends Component implements HasValue, HasName {
 
   private onSearch = ({target}: {target: TextInput}) => {
     const searchValue = target.value.toLowerCase();
+    let visibleCount = 0;
     for (const option of this._options) {
       if (!(option instanceof Option)) continue;
       const optionLabel = (option.label || option.value || "").toLowerCase();
       if (optionLabel.includes(searchValue)) {
         (option as HTMLElement).style.display = "";
+        visibleCount++;
       } else {
         (option as HTMLElement).style.display = "none";
       }
     }
+    this._hasVisibleOptions = visibleCount > 0;
   };
 
   private onSlotChange(e: any) {
@@ -365,6 +372,7 @@ export class Dropdown extends Component implements HasValue, HasName {
           >
             ${this.searchBox ? html`<bim-text-input @input=${this.onSearch} placeholder="Search..." debounce=200 style="--bim-input--bgc: var(--bim-ui_bg-contrast-30)"></bim-text-input>` : nothing}
             <slot @slotchange=${this.onSlotChange}></slot>
+            ${!this._hasVisibleOptions ? html`<bim-label style="--bim-label--c: var(--bim-ui_bg-contrast-60); padding: 0.5rem;">No options found...</bim-label>` : nothing}
           </bim-context-menu>
         </div>
       </bim-input>

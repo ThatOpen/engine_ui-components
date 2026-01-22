@@ -1,4 +1,4 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import {
   Component,
@@ -6,13 +6,28 @@ import {
   StatefullComponent,
   StatelessComponent,
 } from "../../core";
+import { Tabs } from "../Tabs/src/Tabs";
+import { Tab } from "../Tabs/src/Tab";
 import {
   GridComponents,
   GridLayoutsDefinition,
   GridComponentDefinition,
   UpdateGridComponents,
   ElementCreatedEventDetail,
+  GridResizeState,
+  extractUniqueAreas,
+  parseGridTemplate,
+  detectDividers,
+  calculateDividerStyles,
+  calculateVerticalResize,
+  calculateHorizontalResize,
+  validateVerticalResize,
+  validateHorizontalResize,
 } from "./src";
+import { styleMap } from "lit/directives/style-map.js";
+
+// TODO: prevent re-rendering when changing resizeable-areas
+// TODO: save the new area sizes after resize
 
 /**
  * A custom grid component for web applications.
@@ -54,6 +69,47 @@ export class Grid<
       background-color: var(--bim-ui_bg-contrast-20);
       gap: 1px;
     }
+
+    .grid-divider {
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    .grid-divider > div {
+      transition: background-color 150ms ease-in-out;
+    }
+    
+    .grid-divider:hover > div {
+      background-color: var(--bim-ui_accent-base);
+    }
+    
+    .divider-horizontal {
+      /* background-color: #ff00003d; */
+      transform: translateY(-50%);
+      cursor: n-resize;
+    }
+    
+    .divider-horizontal > div {
+      height: 3px;
+      width: 100%;
+      /* transform: translateY(-50%); */
+    }
+    
+    .divider-vertical {
+      /* background-color: #ff00003d; */
+      transform: translateX(-50%);
+      cursor: e-resize;
+    }
+    
+    .divider-vertical > div {
+      width: 3px;
+      height: 100%;
+      /* transform: translateX(-50%); */
+    }
   `;
 
   /**
@@ -81,6 +137,34 @@ export class Grid<
    */
   @property({ type: String, reflect: true })
   layout?: L[number];
+
+  /**
+   * Enables resize functionality for grid areas.
+   * When true, dividers will appear between areas allowing manual resizing.
+   * Areas can be excluded from resizing using nonResizeableAreas.
+   * 
+   * @defaultValue false
+   * 
+   * @example
+   * ```html
+   * <bim-grid resizeable-areas></bim-grid>
+   * ```
+   * 
+   * @example
+   * ```typescript
+   * grid.resizeableAreas = true;
+   * grid.nonResizeableAreas = ['ribbon', 'statusBar']; // Lock specific areas
+   * ```
+   */
+  @property({ 
+    type: Boolean, 
+    attribute: "areas-resizeable", 
+    reflect: true
+  })
+  resizeableAreas = false;
+
+  @property({type: Array, attribute: false})
+  areasResizeExceptions: string[] = [];
 
   private _layouts: GridLayoutsDefinition<L, E> = {} as GridLayoutsDefinition<
     L,
@@ -115,14 +199,7 @@ export class Grid<
   }
 
   private getLayoutAreas(layout: { template: string }) {
-    const { template } = layout;
-    const rows = template.split("\n").map((row) => row.trim());
-    const areas = rows
-      .map((row) => row.split('"')[1])
-      .filter((area) => area !== undefined);
-    const words = areas.flatMap((area) => area.split(/\s+/));
-    const uniqueAreas = [...new Set(words)].filter((area) => area !== "");
-    return uniqueAreas;
+    return extractUniqueAreas(layout.template);
   }
 
   private setUpdateFunctions() {
@@ -176,6 +253,191 @@ export class Grid<
     return id;
   }
 
+  private _colSizesRaw: string[] = []
+  private _rowSizesRaw: string[] = []
+  private _colSizesComputed: string[] = []
+  private _rowSizesComputed: string[] = []
+  private _start: GridResizeState | null = null
+
+  layoutsResize: Record<string, {cols: string[], rows: string[]}> = {}
+
+  private isAreaResizeable(areaName: string): boolean {
+    // Si el área está en la lista de no redimensionables, siempre retornar false
+    if (this.areasResizeExceptions.includes(areaName)) {
+      return false;
+    }
+    // De lo contrario, retornar el valor de resizeableAreas
+    return this.resizeableAreas;
+  }
+
+  private canResizeVerticalDivider(divider: { left?: string[], right?: string[] }): boolean {
+    // Un divider vertical puede ser redimensionable solo si todas las áreas a ambos lados lo permiten
+    const leftAreas = divider.left || [];
+    const rightAreas = divider.right || [];
+    
+    // Todas las áreas de la izquierda deben ser redimensionables
+    for (const area of leftAreas) {
+      if (!this.isAreaResizeable(area)) return false;
+    }
+    
+    // Todas las áreas de la derecha deben ser redimensionables
+    for (const area of rightAreas) {
+      if (!this.isAreaResizeable(area)) return false;
+    }
+    
+    return true;
+  }
+
+  private canResizeHorizontalDivider(divider: { above?: string[], below?: string[] }): boolean {
+    // Un divider horizontal puede ser redimensionable solo si todas las áreas arriba y abajo lo permiten
+    const aboveAreas = divider.above || [];
+    const belowAreas = divider.below || [];
+    
+    // Todas las áreas de arriba deben ser redimensionables
+    for (const area of aboveAreas) {
+      if (!this.isAreaResizeable(area)) return false;
+    }
+    
+    // Todas las áreas de abajo deben ser redimensionables
+    for (const area of belowAreas) {
+      if (!this.isAreaResizeable(area)) return false;
+    }
+    
+    return true;
+  }
+
+  private computeDividers() {
+    if (!this.layout) return
+    const areasString = this.layouts[this.layout]?.template
+    if (!areasString) return
+    
+    const gridMatrix = parseGridTemplate(areasString);
+    const dividers = detectDividers(gridMatrix);
+
+    const computedStyles = getComputedStyle(this)
+    const templates: TemplateResult[] = []
+    
+    for (const divider of dividers) {
+      // Verificar si este divider puede ser redimensionable
+      let canResize = false;
+      if (divider.type === 'vertical') {
+        canResize = this.canResizeVerticalDivider(divider);
+      } else {
+        canResize = this.canResizeHorizontalDivider(divider);
+      }
+      
+      // Si no puede ser redimensionable, no crear el divider
+      if (!canResize) continue;
+
+      const onMouseDown = (e: MouseEvent) => {
+        this._colSizesRaw = this.style.gridTemplateColumns.split(" ")
+        this._rowSizesRaw = this.style.gridTemplateRows.split(" ")
+        this._rowSizesComputed = computedStyles.gridTemplateRows.split(" ")
+        this._colSizesComputed = computedStyles.gridTemplateColumns.split(" ")
+        this._start = {
+          x: e.clientX,
+          y: e.clientY,
+          divider,
+          colSizesRaw: [...this._colSizesRaw],
+          rowSizesRaw: [...this._rowSizesRaw],
+          colSizesComputed: [...this._colSizesComputed],
+          rowSizesComputed: [...this._rowSizesComputed]
+        }
+
+        window.addEventListener('mousemove', this._onMouseMove);
+        window.addEventListener('mouseup', this._onMouseUp);
+      }
+
+      const onContextMenu = (e: Event) => {
+        e.preventDefault()
+      }
+
+      const style = calculateDividerStyles(divider, computedStyles);
+
+      const template = html`
+        <div @mousedown=${onMouseDown} @contextmenu=${onContextMenu} class="grid-divider divider-${divider.type}" style=${styleMap(style)}>
+          <div></div>
+        </div>
+      `
+
+      templates.push(template)
+    }
+
+    return templates;
+  }
+
+  private _onMouseMove = (e: MouseEvent) => {
+    if (!this._start) return;
+    if (!this.layout) return;
+    
+    const dx = e.clientX - this._start.x;
+    const dy = e.clientY - this._start.y;
+    const d = this._start.divider;
+
+    // Calcular el valor mínimo en píxeles (3rem)
+    const computedStyles = getComputedStyle(this);
+    const minSize = parseFloat(computedStyles.fontSize) * 3;
+
+    if (d.type === 'vertical') {
+      const col = d.from[0];
+      const totalCols = this._colSizesRaw.length;
+      const lastColIndex = totalCols - 1;
+      const isLastCol = col === lastColIndex;
+      
+      // Calcular nuevos valores
+      const sizes = calculateVerticalResize(this._start, dx, col, isLastCol);
+      
+      // Validar direccionalmente
+      if (!validateVerticalResize(sizes.left, sizes.right, dx, minSize)) {
+        return;
+      }
+      
+      // Asegurar que los valores no sean menores al mínimo
+      const finalLeftValue = Math.max(minSize, sizes.left);
+      const finalRightValue = Math.max(minSize, sizes.right);
+      
+      // Aplicar los cambios
+      this._colSizesRaw[col - 1] = `${finalLeftValue}px`;
+      this._colSizesRaw[col] = isLastCol ? '1fr' : `${finalRightValue}px`;
+      this.style.gridTemplateColumns = this._colSizesRaw.join(' ');
+    }
+
+    if (d.type === 'horizontal') {
+      const row = d.from[1];
+      const totalRows = this._rowSizesRaw.length;
+      const lastRowIndex = totalRows - 1;
+      const isLastRow = row === lastRowIndex;
+
+      // Calcular nuevos valores
+      const sizes = calculateHorizontalResize(this._start, dy, row, isLastRow);
+      
+      // Validar direccionalmente
+      if (!validateHorizontalResize(sizes.top, sizes.bottom, dy, minSize)) {
+        return;
+      }
+      
+      // Asegurar que los valores no sean menores al mínimo
+      const finalTopValue = Math.max(minSize, sizes.top);
+      const finalBottomValue = Math.max(minSize, sizes.bottom);
+      
+      // Aplicar los cambios
+      this._rowSizesRaw[row - 1] = `${finalTopValue}px`;
+      this._rowSizesRaw[row] = isLastRow ? '1fr' : `${finalBottomValue}px`;
+      this.style.gridTemplateRows = this._rowSizesRaw.join(' ');
+    }
+
+    this.layoutsResize[this.layout] = {
+      cols: this._colSizesRaw,
+      rows: this._rowSizesRaw,
+    }
+  };
+
+  private _onMouseUp = () => {
+    window.removeEventListener('mousemove', this._onMouseMove);
+    window.removeEventListener('mouseup', this._onMouseUp);
+    this._start = null;
+  };
+
   updateComponent = {} as UpdateGridComponents<E>;
 
   private cleanUpdateFunctions() {
@@ -185,7 +447,14 @@ export class Grid<
     }
 
     const layout = this.layouts[this.layout];
-    const areas = this.getLayoutAreas(layout);
+    const areas = this
+      .getLayoutAreas(layout)
+      .map(area => {
+        const match = area.match(/\[([^\]]+)\]/);
+        return match ? match[1].split(":")[0].split(",").map(s => s.trim()) : [area];
+      })
+      .flat()
+    
     for (const name in this.elements) {
       if (areas.includes(name)) continue;
       delete this._updateFunctions[name];
@@ -218,6 +487,83 @@ export class Grid<
     this.dispatchEvent(new Event("layoutchange"))
   }
 
+  private getSanitizedLayoutTemplate(template: string) {
+    // Replace the entire area value that includes square brackets (e.g., space[elementA, elementB])
+    // with just the area name (the part before the brackets)
+    return template.replace(/\b(\w+)\[[^\]]+\]/g, '$1');
+  }
+
+  private createElementFromDefinition(
+    elementKey: string,
+    elementDefinition: HTMLElement | StatelessComponent | {
+      template: StatefullComponent<any>;
+      initialState: Record<string, any>;
+    },
+  ): HTMLElement | null {
+    if (elementDefinition instanceof HTMLElement) {
+      return elementDefinition;
+    }
+
+    if ("template" in elementDefinition) {
+      const { template, initialState } = elementDefinition;
+      const templateId = this.getTemplateId(template);
+
+      const existingComponent = this.querySelector(
+        `[data-grid-template-id="${templateId}"]`,
+      ) as HTMLElement | null;
+
+      if (existingComponent) {
+        // Si el componente ya existe, asegurarnos de que su función de update
+        // esté registrada con el elementKey actual (puede haber cambiado)
+        // Buscar la función de update existente en _updateFunctions
+        let updateFunc = this._updateFunctions[elementKey];
+        
+        if (!updateFunc) {
+          // Buscar si hay otra clave que apunte al mismo template
+          for (const [, func] of Object.entries(this._updateFunctions)) {
+            const comp = this.querySelector(
+              `[data-grid-template-id="${this.getTemplateId(template)}"]`,
+            );
+            if (comp === existingComponent) {
+              updateFunc = func;
+              break;
+            }
+          }
+        }
+        
+        // Registrar la función con el elementKey actual
+        if (updateFunc) {
+          this._updateFunctions[elementKey] = updateFunc;
+        }
+        
+        return existingComponent;
+      }
+
+      const [component, updateComponent] = Component.create<
+        HTMLElement,
+        {}
+        >(template, initialState);
+      
+      component.setAttribute("data-grid-template-id", templateId);
+      this._updateFunctions[elementKey] = updateComponent;
+      return component;
+    }
+
+    const templateId = this.getTemplateId(elementDefinition);
+    const existingComponent = this.querySelector(
+      `[data-grid-template-id="${templateId}"]`,
+    );
+
+    if (existingComponent) return existingComponent as HTMLElement;
+
+    const component = Component.create(elementDefinition);
+    component.setAttribute(
+      "data-grid-template-id",
+      this.getTemplateId(elementDefinition),
+    );
+    return component;
+  }
+
   protected render() {
     if (this.layout) {
       const layout = this.layouts[this.layout];
@@ -232,68 +578,133 @@ export class Grid<
         const areas = this.getLayoutAreas(layout);
         const elements = areas
           .map((area: string) => {
-            const element = (layout.elements?.[area as keyof E] ||
-              this.elements[area as keyof E]) as
-              | HTMLElement
-              | StatelessComponent
-              | {
-                  template: StatefullComponent<any>;
-                  initialState: Record<string, any>;
-                };
-
-            if (!element) return null;
-
-            if (element instanceof HTMLElement) {
-              element.style.gridArea = area;
-              return element;
+            // Extract area name and element keys with optional labels
+            let areaName = area;
+            let elementSpecs: Array<{ key: string; label?: string }> = [];
+            const bracketMatch = area.match(/^([^\[]+)\[([^\]]+)\]$/);
+            const hasBrackets = !!bracketMatch;
+            
+            if (bracketMatch) {
+              areaName = bracketMatch[1];
+              const elementsStr = bracketMatch[2];
+              // Split by comma and parse each element for key:label format
+              elementSpecs = elementsStr.split(",").map(elem => {
+                const trimmed = elem.trim();
+                const colonIndex = trimmed.indexOf(":");
+                if (colonIndex > -1) {
+                  const key = trimmed.substring(0, colonIndex).trim();
+                  const label = trimmed.substring(colonIndex + 1).trim();
+                  return { key, label: label || undefined };
+                }
+                return { key: trimmed };
+              });
+            } else {
+              elementSpecs = [{ key: area }];
             }
 
-            if ("template" in element) {
-              const { template, initialState } = element;
-              const templateId = this.getTemplateId(template);
+            // If no brackets, render element directly (even if single element)
+            if (!hasBrackets) {
+              const elementKey = elementSpecs[0].key;
+              const elementDefinition = (layout.elements?.[elementKey as keyof E] ||
+                this.elements[elementKey as keyof E]) as
+                | HTMLElement
+                | StatelessComponent
+                | {
+                    template: StatefullComponent<any>;
+                    initialState: Record<string, any>;
+                  };
 
-              const existingComponent = this.querySelector(
-                `[data-grid-template-id="${templateId}"]`,
+              if (!elementDefinition) return null;
+
+              const component = this.createElementFromDefinition(
+                elementKey,
+                elementDefinition
               );
 
-              if (existingComponent) return existingComponent;
+              if (!component) return null;
 
-              const [component, updateComponent] = Component.create<
-                HTMLElement,
-                {}
-              >(template, initialState);
-              
-              this.emitElementCreation({name: area, element: component})
-
-              component.setAttribute("data-grid-template-id", templateId);
-
+              this.emitElementCreation({name: elementKey, element: component});
               component.style.gridArea = area;
-              this._updateFunctions[area] = updateComponent;
               return component;
             }
 
-            const templateId = this.getTemplateId(element);
-            const existingComponent = this.querySelector(
-              `[data-grid-template-id="${templateId}"]`,
-            );
+            // Has brackets: create tabs (even for single element)
+            const tabsId = `tabs-${areaName}`;
+            let tabsElement = this.querySelector(
+              `[data-grid-tabs-id="${tabsId}"]`,
+            ) as Tabs | null;
 
-            if (existingComponent) return existingComponent;
+            if (!tabsElement) {
+              tabsElement = document.createElement("bim-tabs") as Tabs;
+              tabsElement.setAttribute("data-grid-tabs-id", tabsId);
+              tabsElement.setAttribute("switchers-full", "");
+            }
 
-            const component = Component.create(element);
-            
-            this.emitElementCreation({name: area, element: component})
+            // Use the area name (without brackets) for grid-area
+            tabsElement.style.gridArea = areaName;
 
-            component.setAttribute(
-              "data-grid-template-id",
-              this.getTemplateId(element),
-            );
-            component.style.gridArea = area;
-            return component;
+            // Create a tab for each element
+            const tabs: Tab[] = [];
+            for (const elemSpec of elementSpecs) {
+              const elementKey = elemSpec.key;
+              const tabLabel = elemSpec.label || elementKey;
+
+              const elementDefinition = (layout.elements?.[elementKey as keyof E] ||
+                this.elements[elementKey as keyof E]) as
+                | HTMLElement
+                | StatelessComponent
+                | {
+                    template: StatefullComponent<any>;
+                    initialState: Record<string, any>;
+                  };
+
+              if (!elementDefinition) continue;
+
+              const component = this.createElementFromDefinition(
+                elementKey,
+                elementDefinition
+              );
+
+              if (!component) continue;
+
+              this.emitElementCreation({name: elementKey, element: component});
+
+              // Create or reuse tab
+              const tabId = `tab-${areaName}-${elementKey}`;
+              let tab = tabsElement.querySelector(
+                `[data-grid-tab-id="${tabId}"]`,
+              ) as Tab | null;
+
+              if (!tab) {
+                tab = document.createElement("bim-tab") as Tab;
+                tab.setAttribute("data-grid-tab-id", tabId);
+                tab.name = elementKey;
+              }
+
+              // Update tab label (may have changed)
+              tab.label = tabLabel;
+
+              // Clear and append component
+              tab.innerHTML = "";
+              tab.appendChild(component);
+              tabs.push(tab);
+            }
+
+            // Update tabs element with new tabs
+            tabsElement.innerHTML = "";
+            tabsElement.append(...tabs);
+
+            return tabsElement;
           })
           .filter((element) => element !== null) as HTMLElement[];
         
         this.clean()
-        this.style.gridTemplate = layout.template;
+        this.style.gridTemplate = this.getSanitizedLayoutTemplate(layout.template);
+        const resizeData = this.layoutsResize[this.layout]
+        if (resizeData) {
+          this.style.gridTemplateColumns = resizeData.cols.join(" ")
+          this.style.gridTemplateRows = resizeData.rows.join(" ")
+        }
         this.append(...elements);
         this.emitLayoutChange()
       } else {
@@ -306,7 +717,10 @@ export class Grid<
       return html`<slot name=${this._slotNames.emptyLayout}></slot>`;
     }
 
-    return html`${html`<slot></slot>`}`;
+    return html`
+      ${this.resizeableAreas ? this.computeDividers() : null}
+      <slot></slot>
+    `;
   }
 }
 

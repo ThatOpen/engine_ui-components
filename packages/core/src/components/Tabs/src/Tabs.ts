@@ -38,7 +38,8 @@ export class Tabs extends LitElement {
       .switchers {
         position: relative;
         display: flex;
-        height: 2.25rem;
+        flex-wrap: wrap;
+        min-height: 2.25rem;
         font-weight: 600;
         grid-area: switchers;
       }
@@ -54,6 +55,8 @@ export class Tabs extends LitElement {
         justify-content: center;
         z-index: 2;
         transition: all 0.15s;
+        min-height: 2.25rem;
+        min-width: 10rem;
       }
 
       .switcher:not([data-active]):hover {

@@ -77,7 +77,12 @@ export class TableCell<T extends TableRowData> extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.style.gridArea = this.column.toString()
+    if (this.group?.data._isComputedGroup && this.table?.groupedBy.includes(this.column)) {
+      this.style.gridColumn = "1"
+      this.style.gridRow = "1"
+    } else {
+      this.style.gridArea = this.column.toString()
+    }
   }
 
   protected render() {

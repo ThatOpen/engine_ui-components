@@ -7,7 +7,6 @@ import {
   CellCreatedEventDetail,
   RowSelectedEventDetail,
   RowDeselectedEventDetail,
-  ColumnData,
   TableDataTransform,
 } from "./types";
 import { Checkbox } from "../../Checkbox";
@@ -42,11 +41,16 @@ export class TableRow<T extends TableRowData> extends LitElement {
   @property({ type: Boolean, reflect: true })
   selected = false;
 
-  @property({ attribute: false })
-  columns: ColumnData<T>[] = [];
+  get columns() {
+    return this.table?.columns ?? []
+  }
 
-  @property({ attribute: false })
-  hiddenColumns: (keyof T)[] = [];
+  // @property({ attribute: false })
+  // hiddenColumns: (keyof T)[] = [];
+
+  get hiddenColumns() {
+    return this.table?.hiddenColumns ?? []
+  }
 
   group: TableGroup<T> | null = null
 
@@ -68,10 +72,10 @@ export class TableRow<T extends TableRowData> extends LitElement {
   isHeader = false;
 
   private get _columnNames() {
-    const columns = this.columns.filter(
+    const filteredColumns = this.columns.filter(
       (column) => !this.hiddenColumns.includes(column.name as string),
     );
-    const names = columns.map((column) => column.name);
+    const names = filteredColumns.map((column) => column.name);
     return names;
   }
 
@@ -87,12 +91,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   private onTableColumnsChange = () => {
     if (!this.table) return;
-    this.columns = this.table.columns;
-  };
-
-  private onTableColumnsHidden = () => {
-    if (!this.table) return;
-    this.hiddenColumns = this.table.hiddenColumns;
+    this.requestUpdate()
   };
 
   @state()
@@ -126,23 +125,33 @@ export class TableRow<T extends TableRowData> extends LitElement {
     const target = e.target as Checkbox;
     this.selected = target.value;
     if (target.value) {
-      this.table.selection.add(this.data);
-      this.table.dispatchEvent(
-        new CustomEvent<RowSelectedEventDetail<T>>("rowselected", {
-          detail: {
-            data: this.data,
-          },
-        }),
-      );
+      let data = [this.data]
+      if (this.isHeader) {
+        data = Table.flattenData<T>(this.table.data).map(entry => entry.data)
+      }
+      this.table.selection.add(...data);
+      if (this.isHeader) {
+        this.table.dispatchEvent(
+          new CustomEvent<RowSelectedEventDetail<T>>("rowselected", {
+            detail: {
+              data: this.data,
+            },
+          }),
+        );
+      }
     } else {
-      this.table.selection.delete(this.data);
-      this.table.dispatchEvent(
-        new CustomEvent<RowDeselectedEventDetail<T>>("rowdeselected", {
-          detail: {
-            data: this.data,
-          },
-        }),
-      );
+      if (this.isHeader) {
+        this.table.selection.clear()
+      } else {
+        this.table.selection.delete(this.data);
+        this.table.dispatchEvent(
+          new CustomEvent<RowDeselectedEventDetail<T>>("rowdeselected", {
+            detail: {
+              data: this.data,
+            },
+          }),
+        );
+      }
     }
   }
 
@@ -151,31 +160,36 @@ export class TableRow<T extends TableRowData> extends LitElement {
     this._observer.observe(this);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.toggleAttribute("selected", this._isSelected);
-    if (!this.table) return;
-    this.columns = this.table.columns;
-    this.hiddenColumns = this.table.hiddenColumns;
-    this.table.addEventListener("columnschange", this.onTableColumnsChange);
-    this.table.addEventListener("columnshidden", this.onTableColumnsHidden);
-    this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
-    this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+  private _onDataSelected = () => {
+    this.toggleAttribute("selected", this.table?.selection.has(this.data))
   }
 
+  private _onDataDeselected = () => {
+    if (!this.table?.selection.has(this.data)) this.removeAttribute("selected")
+  }
+
+  private _onDataSelectionCleared = () => {
+    this.removeAttribute("selected")
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this.table) return;
+    this.table.addEventListener("dataselected", this._onDataSelected)
+    this.table.addEventListener("datadeselected", this._onDataDeselected)
+    this.table.addEventListener("dataselectioncleared", this._onDataSelectionCleared)
+    this.toggleAttribute("selected", this._isSelected);
+    this.table.addEventListener("columnschange", this.onTableColumnsChange);
+  }
+  
   disconnectedCallback() {
     super.disconnectedCallback();
     this._observer.unobserve(this);
-    this.columns = [];
-    this.hiddenColumns = [];
-    this.toggleAttribute("selected", false);
+    this.table?.removeEventListener("dataselected", this._onDataSelected)
+    this.table?.removeEventListener("datadeselected", this._onDataDeselected)
+    this.table?.removeEventListener("dataselectioncleared", this._onDataSelectionCleared)
     this.data = {}
-    if (this.table) {
-      this.table.removeEventListener("columnschange", this.onTableColumnsChange);
-      this.table.removeEventListener("columnshidden", this.onTableColumnsHidden);
-      this.table = null
-    };
-    this.clean()
+    this.table = null
   }
 
   @state()
@@ -198,84 +212,33 @@ export class TableRow<T extends TableRowData> extends LitElement {
         this.clearDataTransform()
       }, 50)
     })
-    
-    // this.addEventListener("pointerleave", this.clearDataTransform)
-  }
-
-  private _cache: Record<string, TableCell<T>> = {}
-
-  private clean() {
-    clearTimeout(this._intersectTimeout);
-    this._intersectTimeout = undefined;
-    this._timeOutDelay = 250
-    for (const [, element] of Object.entries(this._cache)) {
-      element.remove()
-    }
-    this._cache = {}
-    // console.log("cleared")
   }
 
   protected render() {
     if (!(this.table && this._intersecting)) return html`${nothing}`
-    // window.clearTimeout(this._cacheTimeout)
+    this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
+    this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
     const indentation = this.table.getRowIndentation(this.data) ?? 0;
     const cells: Element[] = [];
-    // const cells: TemplateResult[] = [];
-    for (const column in this.data) {
-      if (this.hiddenColumns.includes(column)) continue;
-      
-      // const onCreated = (e?: Element) => {
-      //   if (!e) return
-      //   const cell = e as TableCell<T>
-      //   cell.group = this.group
-      //   cell.table = this.table
-      //   cell.row = this
-      //   cell.rowData = this.data
-
-      //   this.table?.dispatchEvent(
-      //     new CustomEvent<CellCreatedEventDetail<T>>("cellcreated", {
-      //       detail: { cell },
-      //     }),
-      //   );
-      // }
-
-      // const style = {
-      //   marginLeft: `${this._columnNames.indexOf(column) === 0 && this.table.noIndentation ? 0 : indentation + 0.75}rem`
-      // }
-
-      // const columnIndex = this._columnNames.indexOf(column);
-      
-      // const template = html`
-      //   ${cache(html`
-      //     <bim-table-cell
-      //       ${ref(onCreated)}
-      //       .column=${column}
-      //       style=${styleMap(style)} 
-      //       data-column-index=${columnIndex}
-      //       ?data-cell-header=${this.isHeader}
-      //       ?data-no-indendation=${columnIndex === 0 && this.table.noIndentation}
-      //     ></bim-table-cell>  
-      //   `)}
-      // `
-
-      // cells.push(template)
-
-      // const existingCell = this._cache[column]
-      // if (existingCell) {
-      //   cells.push(existingCell)
-      //   existingCell.requestUpdate()
-      //   continue
-      // }
+    let data = this.data
+    if (this.groupData?._isComputedGroup) {
+      const visibleColumns = this.table.dataKeys.filter(key => !this.table?.hiddenColumns.includes(key))
+      for (const column of visibleColumns) {
+        if (this._columnNames.indexOf(column) === 0) continue
+        (data as any)[column] = ""
+      }
+    }
+    for (const column in data) {
+      if (!this.groupData?._isComputedGroup && this.hiddenColumns.includes(column)) continue;
 
       const cell = document.createElement("bim-table-cell") as TableCell<T>;
-      // this._cache[column] = cell
       cell.group = this.group
       cell.table = this.table
       cell.row = this
       cell.column = column;
-      if (this._columnNames.indexOf(column) === 0)
+      const columnIndex = this.group?.data._isComputedGroup && this.table.groupedBy.includes(column) ? 0 : this._columnNames.indexOf(column);
+      if (columnIndex === 0)
         cell.style.marginLeft = `${this.table.noIndentation ? 0 : indentation + 0.75}rem`;
-      const columnIndex = this._columnNames.indexOf(column);
       cell.setAttribute("data-column-index", String(columnIndex));
       cell.toggleAttribute(
         "data-no-indentation",
@@ -293,10 +256,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
     }
 
     this._timeOutDelay = 0
-    // this._cacheTimeout = window.setTimeout(() => this.clean(), 10000)
 
     return html`
-      ${!this.isHeader && this.table.selectableRows
+      ${this.table.selectableRows
         ? html`<bim-checkbox
             @change=${this.onSelectionChange}
             .checked=${this._isSelected ?? false}

@@ -63,3 +63,23 @@ export interface ElementCreatedEventDetail<T extends HTMLElement = HTMLElement> 
   name: string;
   element: T
 }
+
+export interface GridDividerInfo {
+  type: "horizontal" | "vertical";
+  from: number[];
+  to: number[];
+  above?: string[];
+  below?: string[];
+  left?: string[];
+  right?: string[];
+}
+
+export interface GridResizeState {
+  x: number;
+  y: number;
+  divider: GridDividerInfo;
+  colSizesRaw: string[];
+  rowSizesRaw: string[];
+  colSizesComputed: string[];
+  rowSizesComputed: string[];
+}

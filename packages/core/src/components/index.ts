@@ -22,11 +22,14 @@ import {
   RowSelectedEventDetail,
   RowDeselectedEventDetail,
   TableRowData,
+  DataSelectedEventDetail,
 } from "./Table";
 import { Tabs, Tab } from "./Tabs";
 import { TextInput } from "./TextInput";
 import { Toolbar, ToolbarGroup, ToolbarSection } from "./Toolbar";
 import { Viewport } from "./Viewport";
+import { ChartLegend } from "./ChartLegend";
+import { Chart, DataClickDetail } from "./Chart";
 import { Tooltip } from "./Tooltip";
 
 /**
@@ -61,6 +64,8 @@ declare global {
     "bim-toolbar-group": ToolbarGroup;
     "bim-toolbar-section": ToolbarSection;
     "bim-viewport": Viewport;
+    "bim-chart-legend": ChartLegend;
+    "bim-chart": Chart;
     "bim-tooltip": Tooltip;
   }
 
@@ -75,11 +80,15 @@ declare global {
     layoutchange: Event;
     hiddenchange: Event;
     columnschange: Event;
+    dataselectioncleared: Event;
     cellcreated: CustomEvent<CellCreatedEventDetail>;
     rowcreated: CustomEvent<RowCreatedEventDetail>;
     rowselected: CustomEvent<RowSelectedEventDetail>;
     rowdeselected: CustomEvent<RowDeselectedEventDetail>;
     elementcreated: CustomEvent<ElementCreatedEventDetail>;
+    sectionclick: CustomEvent<DataClickDetail>;
+    dataselected: CustomEvent<DataSelectedEventDetail>;
+    datadeselected: CustomEvent<DataSelectedEventDetail>;
   }
 }
 
@@ -104,4 +113,6 @@ export * from "./Toolbar/src/Toolbar";
 export * from "./Toolbar/src/Group";
 export * from "./Toolbar/src/Section";
 export * from "./Viewport";
+export * from "./ChartLegend";
+export * from "./Chart";
 export * from "./Tooltip";

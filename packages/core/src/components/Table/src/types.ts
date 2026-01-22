@@ -25,6 +25,7 @@ export type TableRowTemplate<T extends TableRowData = TableRowData> = Partial<
 export interface TableGroupData<T extends TableRowData = TableRowData> {
   data: Partial<T>;
   children?: TableGroupData<T>[];
+  _isComputedGroup?: boolean;
 }
 
 /**
@@ -46,6 +47,25 @@ export type TableDataTransform<T extends TableRowData = TableRowData> = {
     data: Partial<T>,
     group: TableGroup<T>,
   ) => CellRenderValue;
+};
+
+/**
+ * Represents a transformation function for grouping table data.
+ * Used to transform values before they are used for grouping logic.
+ * ALWAYS returns an array of strings representing the hierarchical path.
+ * 
+ * Examples:
+ * - Simple grouping: ["Architecture"] 
+ * - Two-level: ["Shared Information", "S1 - Coordination"]
+ * - Multi-level: ["Shared Information", "S1 - Coordination", "S1.1 - Initial Coordination"]
+ * 
+ * The array length determines the hierarchy depth, independent of groupBy columns.
+ */
+export type TableGroupingTransform<T extends TableRowData = TableRowData> = {
+  [K in keyof T]?: (
+    value: T[K],
+    data: Partial<T>,
+  ) => string[];
 };
 
 /**
@@ -86,14 +106,18 @@ export type TableLoadFunction<T extends TableRowData = TableRowData> =
  *
  * @property name - The name of the column.
  * @property width - The width of the column.
+ * @property virtual - Whether this is a virtual column (doesn't exist in data)
  */
 export interface ColumnData<T extends TableRowData = TableRowData> {
   /** The name of the column. */
-  // name: keyof T extends string ? string : never;
   name: keyof T;
 
   /** The width of the column. */
   width: string;
 
   forceDataTransform?: boolean;
+}
+
+export interface DataSelectedEventDetail<T extends TableRowData = TableRowData> {
+  data: Partial<T>;
 }

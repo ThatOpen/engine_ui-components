@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui-obc",
   "description": "Collection of web components (UI components) implementations to use with @thatopen/components.",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)"
@@ -39,13 +39,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@thatopen/ui": "~3.2.0",
-    "lit": "3.1.2"
+    "@thatopen/ui": "~3.3.0",
+    "lit": "3.3.1"
   },
   "devDependencies": {
-    "@thatopen/components": "~3.2.0",
-    "@thatopen/components-front": "~3.2.0",
-    "@thatopen/fragments": "~3.2.0",
+    "@thatopen/components": "~3.3.0",
+    "@thatopen/components-front": "~3.3.0",
+    "@thatopen/fragments": "~3.3.0",
     "@types/node": "20.11.30",
     "@types/three": "0.175.0",
     "@typescript-eslint/eslint-plugin": "7.2.0",
@@ -63,13 +63,13 @@
     "typescript": "5.4.2",
     "vite": "5.1.6",
     "vite-plugin-dts": "3.7.3",
-    "web-ifc": "0.0.72"
+    "web-ifc": "0.0.74"
   },
   "peerDependencies": {
-    "@thatopen/components": "~3.2.0",
-    "@thatopen/components-front": "~3.2.0",
-    "@thatopen/fragments": "~3.2.0",
+    "@thatopen/components": "~3.3.0",
+    "@thatopen/components-front": "~3.3.0",
+    "@thatopen/fragments": "~3.3.0",
     "three": ">=0.175.0",
-    "web-ifc": ">=0.0.72"
+    "web-ifc": ">=0.0.74"
   }
 }

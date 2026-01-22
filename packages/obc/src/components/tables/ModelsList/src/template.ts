@@ -24,7 +24,7 @@ export const modelsListTemplate = (state: ModelsListState) => {
 
     if (fragments.initialized) {
       for (const [, model] of fragments.list) {
-        if (!model) continue;
+        if (!(model && !model.isDeltaModel)) continue;
         const metadata = await model.getMetadata();
         const rowGroup: BUI.TableGroupData<ModelsListTableData> = {
           data: {

@@ -426,17 +426,20 @@ export class Button extends LitElement {
   private showContextMenu = () => {
     let contextMenu = this._contextMenu;
     if (this.contextMenuTemplate) {
+      const previousDisabledValue = this.disabled
+      this.disabled = true
       contextMenu = Component.create<ContextMenu>(() => {
         const element = Component.create(this.contextMenuTemplate!)
         if (element instanceof ContextMenu) return html`${element}`
         return html`
           <bim-context-menu>${element}</bim-context-menu>
-        `
+          `
       })
       this.append(contextMenu)
       contextMenu.addEventListener("hidden", () => {
         contextMenu?.remove()
       })
+      this.disabled = previousDisabledValue
     }
     if (contextMenu) {
       const id = this.getAttribute("data-context-group");

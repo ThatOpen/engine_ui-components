@@ -1,31 +1,7 @@
 /* eslint-disable no-dupe-class-members */
-import { LitElement, TemplateResult, render } from "lit";
-
-/**
- * Represents a function that returns a TemplateResult for a stateless component.
- *
- * @returns A TemplateResult that represents the UI of the component.
- */
-export type StatelessComponent = () => TemplateResult;
-
-export type UpdateFunction<S extends Record<string, any>> = (
-  state?: Partial<S>,
-) => S;
-
-/**
- * Represents a function that returns a TemplateResult for a stateful component.
- *
- * @template S - The type of the component state.
- *
- * @param state - The current state of the component.
- * @param update - An update function you can call inside the template.
- * WARNING! It can cause infinite loops if not used properly.
- *
- * @returns A TemplateResult that represents the UI of the component based on the current state.
- */
-export type StatefullComponent<
-  S extends Record<string, any> = Record<string, any>,
-> = (state: S, update: UpdateFunction<S>) => TemplateResult;
+import { LitElement, render } from "lit";
+import { ComponentUtils, StatefullComponent, StatelessComponent, UpdateFunction } from "./src";
+import { Manager } from "../Manager";
 
 /**
  * A base class for UI components that utilizes the LitElement library. Provides functionality for rendering stateless and stateful components, as well as lazy loading of elements using Intersection Observer.
@@ -110,7 +86,7 @@ export class Component extends LitElement {
   static create<T extends HTMLElement, S extends Record<string, any>>(
     template: StatefullComponent<S>,
     state: S,
-  ): [element: T, update: UpdateFunction<S>, currentState: () => S];
+  ): [element: T, update: UpdateFunction<S>, utils: ComponentUtils<S>];
 
   /**
    * Creates a new UI component instance based on the provided template and initial state.
@@ -136,7 +112,7 @@ export class Component extends LitElement {
   static create<T extends HTMLElement, S extends Record<string, any>>(
     template: StatefullComponent<S> | StatelessComponent,
     initialState?: S,
-  ): T | [element: T, update: UpdateFunction<S>, currentState: () => S] {
+  ): T | [element: T, update: UpdateFunction<S>, utils: ComponentUtils<S>] {
     const fragment = document.createDocumentFragment();
 
     if (template.length === 0) {
@@ -161,8 +137,22 @@ export class Component extends LitElement {
     };
 
     update(initialState);
-    const getCurrentState = () => currentState;
     const element = fragment.firstElementChild as unknown as T;
-    return [element, update, getCurrentState];
+    const utils: ComponentUtils<S> = {
+      getElement: <T extends Element = Element>(name: string) => {
+        return element.querySelector<T>(`[data-${Manager.config.internalComponentNameAttribute}="${name}"]`)
+      },
+      getCurrentState: () => currentState,
+      dispose: () => {
+        element.remove();
+        (currentState as any) = {}
+        utils.updates = {}
+      },
+      updates: {}
+    }
+
+    return [element, update, utils];
   }
 }
+
+export * from "./src"

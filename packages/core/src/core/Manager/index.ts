@@ -12,6 +12,8 @@ export interface ManagerConfig {
    */
   sectionLabelOnVerticalToolbar: boolean;
 
+  internalComponentNameAttribute: string;
+
   // /**
   //  * Determines whether toolbars should be draggable.
   //  * Default value is `true`.
@@ -32,6 +34,7 @@ export interface ManagerConfig {
 export class Manager {
   private static _config: Required<ManagerConfig> = {
     sectionLabelOnVerticalToolbar: false,
+    internalComponentNameAttribute: "bim-element-name",
     // draggableToolbars: true,
     // draggablePanels: true,
   };
@@ -65,10 +68,13 @@ export class Manager {
         if (missing.length) console.warn(`Icons missing:`, missing);
         if (pending.length) console.info(`Icons pending:`, pending);
       }
-    })
+    });
   }
 
-  static addIconsCollection(icons: Record<string, { body: string; width?: number; height?: number }>, config?: {prefix?: string}) {
+  static addIconsCollection(
+    icons: Record<string, { body: string; width?: number; height?: number }>,
+    config?: { prefix?: string },
+  ) {
     addCollection({
       prefix: config?.prefix ?? "bim",
       icons: icons,
@@ -129,6 +135,8 @@ export class Manager {
       components.ToolbarSection,
     );
     Manager.defineCustomElement("bim-viewport", components.Viewport);
+    Manager.defineCustomElement("bim-chart-legend", components.ChartLegend);
+    Manager.defineCustomElement("bim-chart", components.Chart);
     Manager.defineCustomElement("bim-tooltip", components.Tooltip);
 
     if (animateOnLoad) this.animateOnLoad(querySelectorElements);

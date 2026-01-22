@@ -66,7 +66,7 @@ export const topicViewpointsSectionTemplate: BUI.StatefullComponent<
       })
       .map((entry) => entry.data);
 
-    topicViewpoints.selection = new Set(selection);
+    topicViewpoints.selection.add(...selection);
 
     const onAcceptLink = () => {
       const selectedGuids = [...topicViewpoints.selection]

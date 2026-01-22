@@ -68,7 +68,7 @@ export const topicRelationsSectionTemplate: BUI.StatefullComponent<
       })
       .map((entry) => entry.data);
 
-    topicsTable.selection = new Set(selection);
+    topicsTable.selection.add(...selection);
 
     const onAcceptLink = () => {
       const selectedGuids = [...topicsTable.selection]

@@ -30,7 +30,7 @@
 // const ifcLoader = components.get(OBC.IfcLoader);
 // ifcLoader.settings.autoSetWasm = false;
 // ifcLoader.settings.wasm = {
-//   path: "https://unpkg.com/web-ifc@0.0.72/",
+//   path: "https://unpkg.com/web-ifc@0.0.74/",
 //   absolute: false,
 // };
 // await ifcLoader.setup();
