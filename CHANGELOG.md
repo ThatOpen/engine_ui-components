@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.3.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.2.0...v2.3.0) (2026-01-22)
+
+
+### Features
+
+* add search functionality to Dropdown ([f3a9c62](https://github.com/ThatOpen/engine_ui-components/commit/f3a9c62a38b03be333b81d02de8e18a8f970de26))
+* add tooltip component ([f215776](https://github.com/ThatOpen/engine_ui-components/commit/f215776207faa2ca63cc6fcefb4285dafa1cf223))
+* implement addIconsCollection method to use custom icons ([8bcdb3d](https://github.com/ThatOpen/engine_ui-components/commit/8bcdb3d0758a13d501d3c1a944419b9138fb982e))
+* implement select-all from the checkbox in table headers ([80f5040](https://github.com/ThatOpen/engine_ui-components/commit/80f504058df0fb06517a65c44196c2374eb13122))
+* include units in the ItemsData table UI ([152aec0](https://github.com/ThatOpen/engine_ui-components/commit/152aec06ef4f723d4fff9c7743602be99498d775))
+* release bim charts ([20b43a8](https://github.com/ThatOpen/engine_ui-components/commit/20b43a8d8ffd8403673d1ecb0d18b4a82d96638c))
+* use orthoperspective camera in bcf topics tutorial ([49632d1](https://github.com/ThatOpen/engine_ui-components/commit/49632d1f3a01133c47528bc35fbdb64c6da0bcb9))
+
+
+### Miscellaneous Chores
+
+* release 2.2.0 ([000d9bc](https://github.com/ThatOpen/engine_ui-components/commit/000d9bce5ac9d9d497368ac50cdf6d2282c01b1a))
+
 ## [3.2.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.1.0...v3.2.0) (2025-10-23)
 
 
