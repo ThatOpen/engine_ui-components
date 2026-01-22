@@ -192,7 +192,10 @@ export class Chart extends LitElement {
       datalabels: {
         display: this.displayLabels,
         color: this.dataLabelsColor,
-        font: { weight: "bold", family: "Fira Code" },
+        font: {
+          weight: "bold",
+          family: "'Plus Jakarta Sans', sans-serif, 'Fira Code'",
+        },
       },
       title: {
         text: this.label,
