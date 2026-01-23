@@ -86,9 +86,16 @@ const workerUrl = URL.createObjectURL(workerFile);
 const fragments = components.get(OBC.FragmentsManager);
 fragments.init(workerUrl);
 
-world.camera.controls.addEventListener("rest", () =>
-  fragments.core.update(true),
-);
+world.camera.controls.addEventListener("update", () => fragments.core.update());
+
+// Remove z fighting
+fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
+  if (!("isLodMaterial" in material && material.isLodMaterial)) {
+    material.polygonOffset = true;
+    material.polygonOffsetUnits = 1;
+    material.polygonOffsetFactor = Math.random();
+  }
+});
 
 /* MD
 	### 📊 Creating the Category Charts
@@ -200,7 +207,7 @@ const onHighlight = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
   pieChart.highlight((entry) => {
-    if (!("value" in entry)) return false
+    if (!("value" in entry)) return false;
     return entry.value > 100;
   });
 
@@ -217,7 +224,7 @@ const onFilter = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
   pieChart.filterByValue((entry) => {
-    if (!("value" in entry)) return false
+    if (!("value" in entry)) return false;
     return entry.value > 100;
   });
 

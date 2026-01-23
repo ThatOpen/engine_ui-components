@@ -56,19 +56,32 @@ grids.create(world);
   Just after setting up the world, let's programatically load a model 👇
   */
 
+const githubUrl =
+  "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
+const fetchedUrl = await fetch(githubUrl);
+const workerBlob = await fetchedUrl.blob();
+const workerFile = new File([workerBlob], "worker.mjs", {
+  type: "text/javascript",
+});
+const workerUrl = URL.createObjectURL(workerFile);
 const fragments = components.get(OBC.FragmentsManager);
-fragments.init(
-  "https://thatopen.github.io/engine_fragment/resources/worker.mjs",
-);
+fragments.init(workerUrl);
 
-world.camera.controls.addEventListener("rest", () =>
-  fragments.core.update(true),
-);
+world.camera.controls.addEventListener("update", () => fragments.core.update());
 
 fragments.list.onItemSet.add(async ({ value: model }) => {
   model.useCamera(world.camera.three);
   world.scene.three.add(model.object);
   await fragments.core.update(true);
+});
+
+// Remove z fighting
+fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
+  if (!("isLodMaterial" in material && material.isLodMaterial)) {
+    material.polygonOffset = true;
+    material.polygonOffsetUnits = 1;
+    material.polygonOffsetFactor = Math.random();
+  }
 });
 
 const ifcLoader = components.get(OBC.IfcLoader);
@@ -186,10 +199,12 @@ const [topicForm, updateTopicForm] = CUI.forms.topic({
   styles: { users },
 });
 
-// Optionally, you can activate the dropdown searchbox for the 
+// Optionally, you can activate the dropdown searchbox for the
 // assignee input in case you have too many users in your app.
-const assigneeDropdown = topicForm.querySelector<BUI.Dropdown>("bim-dropdown[name='assignedTo']")
-if (assigneeDropdown) assigneeDropdown.searchBox = true
+const assigneeDropdown = topicForm.querySelector<BUI.Dropdown>(
+  "bim-dropdown[name='assignedTo']",
+);
+if (assigneeDropdown) assigneeDropdown.searchBox = true;
 
 // We won't add the form directly to the page, but will wrap it inside a dialog element to show it as a modal.
 const topicsModal = BUI.Component.create<HTMLDialogElement>(() => {

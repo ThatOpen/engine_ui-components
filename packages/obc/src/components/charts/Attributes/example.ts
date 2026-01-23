@@ -85,9 +85,16 @@ const workerUrl = URL.createObjectURL(workerFile);
 const fragments = components.get(OBC.FragmentsManager);
 fragments.init(workerUrl);
 
-world.camera.controls.addEventListener("rest", () =>
-  fragments.core.update(true),
-);
+world.camera.controls.addEventListener("update", () => fragments.core.update());
+
+// Remove z fighting
+fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
+  if (!("isLodMaterial" in material && material.isLodMaterial)) {
+    material.polygonOffset = true;
+    material.polygonOffsetUnits = 1;
+    material.polygonOffsetFactor = Math.random();
+  }
+});
 
 /* MD
 	### 📊 Creating the Attribute Charts
@@ -164,8 +171,16 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
   world.scene.three.add(model.object);
   await fragments.core.update(true);
 
-  updatePie({ attribute: /^Name$/, category: /COLUMN/, modelId: model.modelId });
-  updateBar({ attribute: /^Name$/, category: /COLUMN/, modelId: model.modelId });
+  updatePie({
+    attribute: /^Name$/,
+    category: /COLUMN/,
+    modelId: model.modelId,
+  });
+  updateBar({
+    attribute: /^Name$/,
+    category: /COLUMN/,
+    modelId: model.modelId,
+  });
 
   pieChart.label = "Pie Chart Data";
   barChart.label = "Bar Chart Data";
@@ -173,7 +188,9 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
 
 const name = "sample";
 
-const fragPaths = ["https://thatopen.github.io/engine_components/resources/frags/school_str.frag"];
+const fragPaths = [
+  "https://thatopen.github.io/engine_components/resources/frags/school_str.frag",
+];
 await Promise.all(
   fragPaths.map(async (path) => {
     const modelId = path.split("/").pop()?.split(".").shift();
@@ -198,7 +215,7 @@ const onHighlight = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
   pieChart.highlight((entry) => {
-    if (!("value" in entry)) return false
+    if (!("value" in entry)) return false;
     return entry.value > 100;
   });
 
@@ -215,7 +232,7 @@ const onFilter = ({ target }: { target: BUI.Button }) => {
   target.loading = true;
 
   pieChart.filterByValue((entry) => {
-    if (!("value" in entry)) return false
+    if (!("value" in entry)) return false;
     return entry.value > 100;
   });
 
