@@ -1,13 +1,13 @@
-import"./lit-html-CgQwCkHV.js";import{l as c,C as l,W as d,S as p,a as b,b as u,G as g,I as w,F as f,e as C,d as v}from"./index-Dns8uyf5.js";import{b as L}from"./index-CxRwsq7h.js";import{e as h}from"./index-B3C-Wr2i.js";c.init();const e=new l,S=e.get(d),t=S.create();t.name="main";const r=new p(e);r.setup();t.scene=r;const o=document.createElement("bim-viewport"),i=new b(e,o);t.renderer=i;const m=new u(e);t.camera=m;o.addEventListener("resize",()=>{i.resize(),m.updateAspect()});const F=e.get(g);F.create(t);e.init();const I=e.get(w);await I.setup();const n=e.get(f);n.init("https://thatopen.github.io/engine_fragment/resources/worker.mjs");t.camera.controls.addEventListener("rest",()=>n.core.update(!0));n.list.onItemSet.add(async({value:a})=>{a.useCamera(t.camera.three),t.scene.three.add(a.object),await n.core.update(!0)});const[y]=h.modelsList({components:e,metaDataTags:["schema"],actions:{download:!0}}),E=C.create(()=>{const[a]=L.loadFrag({components:e});return v`
+import"./lit-html-CgQwCkHV.js";import{l,C as m,W as d,S as p,a as b,b as u,G as w,I as g,F as f,e as L,d as h}from"./index-DPXt1yPz.js";import{b as v}from"./index-BINAE4l9.js";import{e as C}from"./index-COyobJWa.js";l.init();const t=new m,y=t.get(d),a=y.create();a.name="main";const r=new p(t);r.setup();a.scene=r;const n=document.createElement("bim-viewport"),i=new b(t,n);a.renderer=i;const c=new u(t);a.camera=c;n.addEventListener("resize",()=>{i.resize(),c.updateAspect()});const F=t.get(w);F.create(a);t.init();const S=t.get(g);await S.setup();const I="https://thatopen.github.io/engine_fragment/resources/worker.mjs",M=await fetch(I),U=await M.blob(),j=new File([U],"worker.mjs",{type:"text/javascript"}),k=URL.createObjectURL(j),o=t.get(f);o.init(k);a.camera.controls.addEventListener("update",()=>o.core.update());o.list.onItemSet.add(async({value:e})=>{e.useCamera(a.camera.three),a.scene.three.add(e.object),await o.core.update(!0)});o.core.models.materials.list.onItemSet.add(({value:e})=>{"isLodMaterial"in e&&e.isLodMaterial||(e.polygonOffset=!0,e.polygonOffsetUnits=1,e.polygonOffsetFactor=Math.random())});const[E]=C.modelsList({components:t,metaDataTags:["schema"],actions:{download:!0}}),O=L.create(()=>{const[e]=v.loadFrag({components:t});return h`
    <bim-panel label="IFC Models">
     <bim-panel-section label="Importing">
-      ${a}
+      ${e}
     </bim-panel-section>
     <bim-panel-section icon="mage:box-3d-fill" label="Loaded Models">
-      ${y}
+      ${E}
     </bim-panel-section>
    </bim-panel> 
   `}),s=document.createElement("bim-grid");s.layouts={main:{template:`
       "panel viewport"
       / 23rem 1fr
-    `,elements:{panel:E,viewport:o}}};s.layout="main";document.body.append(s);
+    `,elements:{panel:O,viewport:n}}};s.layout="main";document.body.append(s);

@@ -1,12 +1,12 @@
-import"./lit-html-CgQwCkHV.js";import{l as u,C as g,W as b,S as w,a as S,b as h,G as f,I as v,f as C,F as y,e as F,d as T}from"./index-Dns8uyf5.js";import{b as E}from"./index-CxRwsq7h.js";import{e as I}from"./index-B3C-Wr2i.js";u.init();const e=new g,L=e.get(b),t=L.create();t.name="main";const s=new w(e);s.setup();t.scene=s;const o=document.createElement("bim-viewport"),i=new S(e,o);t.renderer=i;const c=new h(e);t.camera=c;o.addEventListener("resize",()=>{i.resize(),c.updateAspect()});const z=e.get(f);z.create(t);e.init();const G=e.get(v);await G.setup();const m=e.get(C);m.setup({world:t});m.zoomToSelection=!0;const n=e.get(y);n.init("https://thatopen.github.io/engine_fragment/resources/worker.mjs");t.camera.controls.addEventListener("rest",()=>n.core.update(!0));n.list.onItemSet.add(async({value:a})=>{a.useCamera(t.camera.three),t.scene.three.add(a.object),await n.core.update(!0)});const[r]=I.spatialTree({components:e,models:[]});r.preserveStructureOnFilter=!0;const $=F.create(()=>{const[a]=E.loadFrag({components:e});return T`
+import"./lit-html-CgQwCkHV.js";import{l as u,C as g,W as b,S as w,a as f,b as h,G as S,I as v,i as y,F as C,e as F,d as L}from"./index-DPXt1yPz.js";import{b as U}from"./index-BINAE4l9.js";import{e as j}from"./index-COyobJWa.js";u.init();const e=new g,k=e.get(b),n=k.create();n.name="main";const s=new w(e);s.setup();n.scene=s;const o=document.createElement("bim-viewport"),i=new f(e,o);n.renderer=i;const c=new h(e);n.camera=c;o.addEventListener("resize",()=>{i.resize(),c.updateAspect()});const I=e.get(S);I.create(n);e.init();const M=e.get(v);await M.setup();const l=e.get(y);l.setup({world:n});l.zoomToSelection=!0;const O="https://thatopen.github.io/engine_fragment/resources/worker.mjs",T=await fetch(O),E=await T.blob(),x=new File([E],"worker.mjs",{type:"text/javascript"}),z=URL.createObjectURL(x),a=e.get(C);a.init(z);n.camera.controls.addEventListener("update",()=>a.core.update());a.list.onItemSet.add(async({value:t})=>{t.useCamera(n.camera.three),n.scene.three.add(t.object),await a.core.update(!0)});a.core.models.materials.list.onItemSet.add(({value:t})=>{"isLodMaterial"in t&&t.isLodMaterial||(t.polygonOffset=!0,t.polygonOffsetUnits=1,t.polygonOffsetFactor=Math.random())});const[r]=j.spatialTree({components:e,models:[]});r.preserveStructureOnFilter=!0;const B=F.create(()=>{const[t]=U.loadFrag({components:e});return L`
    <bim-panel label="Spatial Tree">
     <bim-panel-section label="Model Tree">
-      ${a}
-      <bim-text-input @input=${l=>{const d=l.target;r.queryString=d.value}} placeholder="Search..." debounce="200"></bim-text-input>
+      ${t}
+      <bim-text-input @input=${m=>{const d=m.target;r.queryString=d.value}} placeholder="Search..." debounce="200"></bim-text-input>
       ${r}
     </bim-panel-section>
    </bim-panel> 
   `}),p=document.getElementById("app");p.layouts={main:{template:`
       "panel viewport"
       / 30rem 1fr
-    `,elements:{panel:$,viewport:o}}};p.layout="main";
+    `,elements:{panel:B,viewport:o}}};p.layout="main";
