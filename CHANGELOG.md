@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.3](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.1...v3.3.3) (2026-01-27)
+
+
+### Miscellaneous Chores
+
+* release 3.3.3 ([09d95a2](https://github.com/ThatOpen/engine_ui-components/commit/09d95a201676da96538ea99c8e5ad18d2fdcf8ff))
+
 ## [3.3.1](https://github.com/ThatOpen/engine_ui-components/compare/v2.3.0...v3.3.1) (2026-01-22)
 
 
