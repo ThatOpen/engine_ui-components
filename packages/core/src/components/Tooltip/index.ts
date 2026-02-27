@@ -10,8 +10,7 @@ export class Tooltip extends LitElement {
   static styles = css`
     :host {
       position: absolute;
-      background: var(--bim-ui_bg-contrast-20, #fff);
-      color: var(--bim-ui_bg-contrast-100, #000);
+      background: var(--bim-ui_bg-contrast-50);
       border-radius: var(--bim-ui_size-4xs, 4px);
       box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.2);
       padding: 0.75rem;

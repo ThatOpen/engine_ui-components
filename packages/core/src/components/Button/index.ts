@@ -149,7 +149,7 @@ export class Button extends LitElement {
       outline: 1px solid var(--bim-ui_bg-contrast-40);
       font-size: var(--bim-ui_size-xs);
       border-radius: var(--bim-ui_size-4xs);
-      background-color: var(--bim-ui_bg-contrast-20);
+      background-color: var(--bim-ui_bg-contrast-50);
       color: var(--bim-ui_bg-contrast-100);
       animation: openTooltips 0.15s ease-out forwards;
       transition: visibility 0.2s;
