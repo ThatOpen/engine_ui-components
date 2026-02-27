@@ -22,8 +22,8 @@ export class Button extends LitElement {
       display: block;
       flex: 1;
       pointer-events: none;
-      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
-      border-radius: var(--bim-ui_size-4xs);
+      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-60));
+      border-radius: var(--bim-ui_size-2xs);
       transition: all 0.15s;
     }
 
@@ -58,8 +58,8 @@ export class Button extends LitElement {
       height: 100%;
       user-select: none;
       row-gap: 0.125rem;
-      min-height: var(--bim-ui_size-5xl);
-      min-width: var(--bim-ui_size-5xl);
+      min-height: var(--bim-ui_size-10xl);
+      min-width: var(--bim-ui_size-10xl);
     }
 
     .button,
@@ -79,7 +79,8 @@ export class Button extends LitElement {
     }
 
     :host(:not([label-hidden])[icon][vertical]) .parent {
-      min-height: 2.5rem;
+      min-height: var(--bim-ui_size-10xl);
+      min-width: var(--bim-ui_size-10xl);
     }
 
     .button {
@@ -122,7 +123,7 @@ export class Button extends LitElement {
     }
 
     :host(:not([label-hidden])[label]) .button {
-      padding: 0 0.5rem;
+      padding: 0 var(--bim-ui_size-sm);
     }
 
     :host([disabled]) {
@@ -468,12 +469,12 @@ export class Button extends LitElement {
     const tooltipTemplate = html`
       <div ${ref(this._tooltip)} class="tooltip">
         ${this.tooltipTitle
-          ? html`<p style="text-wrap: nowrap;">
+          ? html`<bim-label style="text-wrap: nowrap;">
               <strong>${this.tooltipTitle}</strong>
-            </p>`
+            </bim-label>`
           : null}
         ${this.tooltipText
-          ? html`<p style="width: 9rem;">${this.tooltipText}</p>`
+          ? html`<bim-label style="width: 9rem; white-space: normal;">${this.tooltipText}</bim-label>`
           : null}
       </div>
     `;

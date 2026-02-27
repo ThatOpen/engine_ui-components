@@ -12,13 +12,13 @@ export class Option extends LitElement {
    */
   static styles = css`
     :host {
-      --bim-label--c: var(--bim-ui_bg-contrast-100);
       display: block;
       box-sizing: border-box;
       flex: 1;
       padding: 0rem 0.5rem;
       border-radius: var(--bim-ui_size-4xs);
       transition: all 0.15s;
+      height: 100%;
     }
 
     :host(:hover) {

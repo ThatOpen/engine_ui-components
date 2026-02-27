@@ -20,7 +20,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
       position: relative;
       grid-area: Data;
       display: grid;
-      min-height: 2.25rem;
+      min-height: var(--bim-ui_size-20xl);
       transition: all 0.15s;
     }
 
@@ -35,6 +35,12 @@ export class TableRow<T extends TableRowData> extends LitElement {
         var(--bim-ui_bg-contrast-20) 30%,
         var(--bim-ui_accent-base) 10%
       );
+    }
+
+    :host([is-header]) {
+      min-height: auto;
+      height: var(--bim-ui_size-10xl);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-60);
     }
   `;
 

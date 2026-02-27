@@ -55,7 +55,6 @@ export class Grid<
 
     :host([floating]) {
       --bim-panel--bdrs: var(--bim-ui_size-4xs);
-      background-color: transparent;
       padding: 1rem;
       gap: 1rem;
       position: absolute;
@@ -66,7 +65,7 @@ export class Grid<
 
     :host(:not([floating])) {
       --bim-panel--bdrs: 0;
-      background-color: var(--bim-ui_bg-contrast-20);
+      /* background-color: var(--bim-ui_bg-base); */
       gap: 1px;
     }
 

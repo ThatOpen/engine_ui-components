@@ -12,7 +12,6 @@ export class Selector extends LitElement implements HasValue, HasName {
    */
   static styles = css`
     :host {
-      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
       --bim-input--g: 0;
       --bim-option--jc: center;
       flex: 1;
@@ -43,6 +42,39 @@ export class Selector extends LitElement implements HasValue, HasName {
 
     ::slotted(bim-option:not([checked]):hover) {
       background-color: #0003;
+    }
+
+    bim-input {
+      --bim-input--olw: 0px;
+    }
+
+    /* ── Underline variant ── */
+
+    :host([variant="underline"]) {
+      --bim-input--bgc: transparent;
+      --bim-input--olw: 0;
+    }
+
+    :host([variant="underline"]) .animated-background {
+      display: none;
+    }
+
+    :host([variant="underline"]) ::slotted(bim-option) {
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
+      border-bottom: 2px solid transparent;
+      transition:
+        border-color 0.15s,
+        color 0.15s;
+    }
+
+    :host([variant="underline"]) ::slotted(bim-option[checked]) {
+      --bim-label--c: var(--bim-ui_accent-base);
+      border-bottom-color: var(--bim-ui_accent-base);
+    }
+
+    :host([variant="underline"]) ::slotted(bim-option:not([checked]):hover) {
+      background-color: transparent;
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
     }
   `;
 

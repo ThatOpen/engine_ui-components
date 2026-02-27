@@ -9,10 +9,14 @@ export class TableCell<T extends TableRowData> extends LitElement {
    */
   static styles = css`
     :host {
+      --bim-label--c: var(--bim-ui_bg-contrast-100);
       padding: 0.375rem;
       display: flex;
       align-items: center;
-      justify-content: center;
+    }
+    
+    :host([data-cell-header]) {
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
     }
 
     :host([data-column-index="0"]) {

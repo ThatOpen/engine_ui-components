@@ -41,6 +41,10 @@ export class ContextMenu extends LitElement {
           transform 0.3s cubic-bezier(0.72, 0.1, 0.45, 2.35);
       }
 
+      ::slotted(bim-button) {
+        background-color: transparent;
+      }
+
       :host(:not([visible])) {
         transform: scale(0.8);
         clip-path: circle(0 at top left);

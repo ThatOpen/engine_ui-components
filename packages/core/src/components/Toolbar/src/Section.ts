@@ -12,8 +12,8 @@ export class ToolbarSection extends LitElement implements HasName {
    */
   static styles = css`
     :host {
-      --bim-label--fz: var(--bim-ui_size-xs);
-      --bim-label--c: var(--bim-ui_bg-contrast-60);
+      background-color: var(--bim-ui_bg-contrast-20);
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
       display: block;
       flex: 1;
     }
@@ -42,9 +42,15 @@ export class ToolbarSection extends LitElement implements HasName {
       writing-mode: tb;
     }
 
+    .name {
+      font-size: var(--bim-ui_size-sm);
+      flex-shrink: 0;
+    }
+
     .children {
       display: flex;
-      gap: 0.25rem;
+      gap: var(--bim-ui_size-2xs);
+      height: 100%;
     }
 
     :host([vertical]) .children {
@@ -109,7 +115,7 @@ export class ToolbarSection extends LitElement implements HasName {
           <slot @slotchange=${this.updateChildren}></slot>
         </div>
         ${!this.labelHidden && (this.label || this.icon)
-          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
+          ? html`<bim-label class="name" .icon=${this.icon}>${this.label}</bim-label>`
           : null}
       </div>
     `;

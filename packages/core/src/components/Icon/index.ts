@@ -9,14 +9,9 @@ export class Icon extends LitElement {
    * CSS styles for the component.
    */
   static styles = css`
-    :host {
-      height: var(--bim-icon--fz, var(--bim-ui_size-sm));
-      width: var(--bim-icon--fz, var(--bim-ui_size-sm));
-    }
-
     iconify-icon {
-      height: var(--bim-icon--fz, var(--bim-ui_size-sm));
-      width: var(--bim-icon--fz, var(--bim-ui_size-sm));
+      height: var(--bim-icon--fz, var(--bim-ui_size-base));
+      width: var(--bim-icon--fz, var(--bim-ui_size-base));
       color: var(--bim-icon--c);
       transition: all 0.15s;
       display: flex;

@@ -19,10 +19,6 @@ export class Dropdown extends Component implements HasValue, HasName {
     styles.scrollbar,
     css`
       :host {
-        --bim-input--bgc: var(
-          --bim-dropdown--bgc,
-          var(--bim-ui_bg-contrast-20)
-        );
         --bim-input--olw: 2px;
         --bim-input--olc: transparent;
         --bim-input--bdrs: var(--bim-ui_size-4xs);
@@ -35,7 +31,7 @@ export class Dropdown extends Component implements HasValue, HasName {
       }
 
       .input {
-        --bim-label--fz: var(--bim-drodown--fz, var(--bim-ui_size-xs));
+        --bim-label--fz: var(--bim-ui_size-sm);
         --bim-label--c: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
         height: 100%;
         display: flex;

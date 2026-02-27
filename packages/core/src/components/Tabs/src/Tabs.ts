@@ -18,7 +18,7 @@ export class Tabs extends LitElement {
       }
 
       :host {
-        background-color: var(--bim-ui_bg-base);
+        background-color: var(--bim-ui_bg-contrast-20);
         display: block;
         overflow: auto;
       }
@@ -36,17 +36,17 @@ export class Tabs extends LitElement {
       }
 
       .switchers {
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-60);
         position: relative;
         display: flex;
         flex-wrap: wrap;
         min-height: 2.25rem;
-        font-weight: 600;
         grid-area: switchers;
       }
-
+      
       .switcher {
         --bim-label--c: var(--bim-ui_bg-contrast-80);
-        background-color: transparent;
+        background-color: var(--bim-ui_bg-contrast-20);
         position: relative;
         cursor: pointer;
         pointer-events: auto;
@@ -58,19 +58,21 @@ export class Tabs extends LitElement {
         min-height: 2.25rem;
         min-width: 10rem;
       }
-
+      
       .switcher:not([data-active]):hover {
         filter: brightness(150%);
       }
-
+      
       :host([switchers-full]) .switcher {
         flex: 1;
       }
-
+      
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_main-contrast);
+        background-color: var(--bim-ui_bg-contrast-60);
+        font-weight: 600;
       }
-
+      
       .switchers bim-label {
         pointer-events: none;
       }

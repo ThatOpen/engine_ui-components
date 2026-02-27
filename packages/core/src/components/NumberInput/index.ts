@@ -12,10 +12,6 @@ export class NumberInput extends LitElement implements HasValue, HasName {
   */
   static styles = css`
     :host {
-      --bim-input--bgc: var(
-        --bim-number-input--bgc,
-        var(--bim-ui_bg-contrast-20)
-      );
       --bim-input--olw: var(--bim-number-input--olw, 2px);
       --bim-input--olc: var(--bim-number-input--olc, transparent);
       --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
@@ -33,14 +29,8 @@ export class NumberInput extends LitElement implements HasValue, HasName {
     }
 
     :host(:not([slider])) bim-label {
-      --bim-label--c: var(
-        --bim-number-input_affixes--c,
-        var(--bim-ui_bg-contrast-60)
-      );
-      --bim-label--fz: var(
-        --bim-number-input_affixes--fz,
-        var(--bim-ui_size-xs)
-      );
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
+      --bim-label--fz: var(--bim-ui_size-sm);
     }
 
     p {
@@ -58,7 +48,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       font-family: inherit;
       font-feature-settings: inherit;
       font-variation-settings: inherit;
-      font-size: var(--bim-number-input--fz, var(--bim-ui_size-xs));
+      font-size: var(--bim-ui_size-sm);
       color: var(--bim-number-input--c, var(--bim-ui_bg-contrast-100));
     }
 

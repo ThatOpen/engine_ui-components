@@ -13,7 +13,7 @@ export class Toolbar extends LitElement {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
-      background-color: var(--bim-ui_bg-base);
+      background-color: var(--bim-ui_bg-contrast-20);
       border-radius: var(--bim-ui_size-2xs);
       display: block;
     }
@@ -39,12 +39,12 @@ export class Toolbar extends LitElement {
     }
 
     ::slotted(bim-toolbar-section:not(:last-child)) {
-      border-right: 1px solid var(--bim-ui_bg-contrast-20);
+      border-right: 1px solid var(--bim-ui_bg-contrast-60);
       border-bottom: none;
     }
 
     :host([vertical]) ::slotted(bim-toolbar-section:not(:last-child)) {
-      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-60);
       border-right: none;
     }
   `;

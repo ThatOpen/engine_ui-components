@@ -15,8 +15,8 @@ export class Label extends LitElement {
     :host {
       --bim-icon--c: var(--bim-label--ic);
       overflow: auto;
-      color: var(--bim-label--c, var(--bim-ui_bg-contrast-60));
-      font-size: var(--bim-label--fz, var(--bim-ui_size-xs));
+      color: var(--bim-label--c, var(--bim-ui_bg-contrast-80));
+      font-size: var(--bim-label--fz, var(--bim-ui_size-base));
       display: block;
       white-space: nowrap;
       transition: all 0.15s;

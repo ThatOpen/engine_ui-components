@@ -16,13 +16,13 @@ export class TextInput extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
-        --bim-input--bgc: var(--bim-ui_bg-contrast-20);
         flex: 1;
         display: block;
       }
 
       input,
       textarea {
+        font-size: var(--bim-ui_size-sm);
         font-family: inherit;
         background-color: transparent;
         border: none;

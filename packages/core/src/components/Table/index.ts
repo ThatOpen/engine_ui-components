@@ -1080,17 +1080,8 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
           position: sticky;
           top: 0;
           z-index: 5;
-        "
-        >
-          ${when(
-            !this.headersHidden,
-            () =>
-              html`<bim-table-row
-                is-header
-                style="background-color: var(--bim-ui_bg-contrast-20);"
-                ${ref(onHeaderCreated)}
-              ></bim-table-row>`,
-          )}
+        ">
+          ${when(!this.headersHidden, () => html`<bim-table-row is-header ${ref(onHeaderCreated)}></bim-table-row>`)}
           ${this.getGroupingMessageTemplate()}
         </div>
         <div style="overflow-x: hidden; grid-area: Body">

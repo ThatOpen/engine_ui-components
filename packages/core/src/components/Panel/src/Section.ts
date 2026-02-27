@@ -37,10 +37,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       .header {
-        --bim-label--fz: var(--bim-ui_size-sm);
+        --bim-label--fz: var(--bim-ui_size-lg);
         --bim-label--c: var(
           --bim-panel-section_hc,
-          var(--bim-ui_bg-contrast-80)
+          var(--bim-ui_bg-contrast-100)
         );
         display: flex;
         justify-content: space-between;

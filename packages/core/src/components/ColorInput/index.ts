@@ -15,7 +15,6 @@ export class ColorInput extends LitElement implements HasValue, HasName {
    */
   static styles = css`
     :host {
-      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
       flex: 1;
       display: block;
     }
@@ -62,7 +61,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
       flex: 1;
       width: 3.25rem;
       text-transform: uppercase;
-      font-size: 0.75rem;
+      font-size: var(--bim-ui_size-sm);
       background-color: transparent;
       padding: 0%;
       outline: none;
