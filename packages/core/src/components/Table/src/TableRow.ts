@@ -20,7 +20,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
       position: relative;
       grid-area: Data;
       display: grid;
-      min-height: var(--bim-ui_size-20xl);
+      min-height: var(--bim-ui_size-16xl);
       transition: all 0.15s;
     }
 
