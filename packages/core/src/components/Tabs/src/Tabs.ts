@@ -43,10 +43,9 @@ export class Tabs extends LitElement {
         min-height: 2.25rem;
         grid-area: switchers;
       }
-      
+
       .switcher {
         --bim-label--c: var(--bim-ui_bg-contrast-80);
-        background-color: var(--bim-ui_bg-contrast-20);
         position: relative;
         cursor: pointer;
         pointer-events: auto;
@@ -58,21 +57,41 @@ export class Tabs extends LitElement {
         min-height: 2.25rem;
         min-width: 10rem;
       }
-      
+
       .switcher:not([data-active]):hover {
         filter: brightness(150%);
       }
-      
+
       :host([switchers-full]) .switcher {
         flex: 1;
       }
-      
+
+      :host([switchers-compact]) .switchers {
+        width: fit-content;
+        border-bottom: none;
+        padding: 0;
+        margin: var(--bim-ui_size-lg);
+        gap: 0;
+        overflow: auto;
+        border-radius: var(--bim-ui_size-2xs);
+      }
+
+      :host([switchers-compact]) .switcher {
+        min-width: unset;
+        padding: 0 var(--bim-ui_size-sm);
+        border-radius: 0;
+        background-color: var(--bim-ui_bg-contrast-40);
+      }
+
+      :host([switchers-compact]) .switcher[data-active] {
+        background-color: var(--bim-ui_bg-contrast-60);
+      }
+
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_main-contrast);
         background-color: var(--bim-ui_bg-contrast-60);
-        font-weight: 600;
       }
-      
+
       .switchers bim-label {
         pointer-events: none;
       }
@@ -95,15 +114,6 @@ export class Tabs extends LitElement {
         max-height: 0;
       }
 
-      .animated-background {
-        position: absolute;
-        background: var(--bim-ui_main-base);
-        width: 0;
-        height: 0;
-        top: 0;
-        left: 0;
-      }
-
       :host(:not([bottom])) .content {
         border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
@@ -119,7 +129,7 @@ export class Tabs extends LitElement {
       :host([floating]) .switchers {
         justify-self: center;
         overflow: hidden;
-        background-color: var(--bim-ui_bg-base);
+        background-color: var(--bim-ui_bg-contrast-20);
       }
 
       :host([floating]:not([bottom])) .switchers {
@@ -228,6 +238,9 @@ export class Tabs extends LitElement {
   @property({ type: Boolean, attribute: "switchers-full", reflect: true })
   switchersFull = false;
 
+  @property({ type: Boolean, attribute: "switchers-compact", reflect: true })
+  switchersCompact = false;
+
   private getTabSwitcher(name: string) {
     const switcher = this._switchers.find(
       (swticher) => swticher.getAttribute("data-name") === name,
@@ -255,7 +268,6 @@ export class Tabs extends LitElement {
         } else {
           this.tab = child.name;
         }
-        this.setAnimatedBackgound();
       });
       element.setAttribute("data-name", child.name);
       element.className = "switcher";
@@ -304,81 +316,10 @@ export class Tabs extends LitElement {
     }
   }
 
-  private doubleRequestAnimationFrames(callback: () => void) {
-    requestAnimationFrame(() => requestAnimationFrame(callback));
-  }
-
-  private setAnimatedBackgound(resetTransition = false) {
-    const bgElement = this.renderRoot.querySelector(
-      ".animated-background",
-    ) as HTMLElement;
-
-    const checkedElement = [
-      ...(this.renderRoot
-        .querySelector(".switchers")
-        ?.querySelectorAll(".switcher") || []),
-    ].filter((option) => option.hasAttribute("data-active"))[0] as HTMLElement;
-
-    requestAnimationFrame(() => {
-      const parentNode = checkedElement?.parentElement?.shadowRoot
-        ?.querySelector("bim-input")
-        ?.shadowRoot?.querySelector(".input");
-
-      const properties = {
-        width: checkedElement?.clientWidth,
-        height: checkedElement?.clientHeight,
-        top:
-          ((checkedElement as HTMLElement)?.offsetTop ?? 0) -
-          ((parentNode as HTMLElement)?.offsetTop ?? 0),
-        left:
-          ((checkedElement as HTMLElement)?.offsetLeft ?? 0) -
-          ((parentNode as HTMLElement)?.offsetLeft ?? 0),
-      };
-
-      if (checkedElement) {
-        bgElement?.style.setProperty("width", `${properties.width}px`);
-        bgElement?.style.setProperty("height", `${properties.height}px`);
-        bgElement?.style.setProperty("left", `${properties.left}px`);
-      } else {
-        bgElement?.style.setProperty("width", "0");
-      }
-
-      if (this.bottom) {
-        bgElement?.style.setProperty("top", "100%");
-        bgElement?.style.setProperty("transform", "translateY(-100%)");
-      } else {
-        bgElement?.style.setProperty("top", `${properties.top}px`);
-      }
-    });
-
-    if (resetTransition) {
-      this.doubleRequestAnimationFrames(() => {
-        const time = 0.3;
-        const ease = "ease";
-        bgElement?.style.setProperty(
-          "transition",
-          `width ${time}s ${ease}, height ${time}s ${ease}, top ${time}s ${ease}, left ${time}s ${ease}`,
-        );
-      });
-    }
-  }
-
-  protected firstUpdated() {
-    requestAnimationFrame(() => {
-      this.setAnimatedBackgound(true);
-    });
-
-    // To make sure it triggers when the element gets resized, too.
-    new ResizeObserver(() => {
-      this.setAnimatedBackgound();
-    }).observe(this);
-  }
-
   protected render() {
     return html`
       <div class="parent">
         <div class="switchers">
-          <div class="animated-background"></div>
           ${this._switchers}
         </div>
         <div class="content">
