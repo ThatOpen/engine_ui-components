@@ -17,8 +17,13 @@ export class Panel extends LitElement implements HasName, HasValue {
     css`
       :host {
         display: flex;
+        height: 100%;
         background-color: var(--bim-ui_bg-contrast-20);
         overflow: auto;
+        border: var(--bim-panel--border, 1px solid var(--bim-ui_bg-contrast-40));
+        --bim-panel-section--header-display: flex;
+        --bim-panel-section--border: none;
+        --bim-panel-section--bdrs: 0;
       }
 
       :host([hidden]) {
@@ -56,9 +61,6 @@ export class Panel extends LitElement implements HasName, HasValue {
         flex: 1;
       }
 
-      ::slotted(bim-panel-section:not(:last-child)) {
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
-      }
     `,
   ];
 
@@ -246,6 +248,48 @@ export class Panel extends LitElement implements HasName, HasValue {
     });
   }
 
+  private _sectionsObserver: MutationObserver | null = null;
+
+  private updateSectionsHeight() {
+    const slot = this.shadowRoot?.querySelector("slot");
+    if (!slot) return;
+
+    const sections = slot
+      .assignedElements({ flatten: true })
+      .filter((el) => el.tagName === "BIM-PANEL-SECTION") as HTMLElement[];
+
+    const nonCollapsed = sections.filter((s) => !s.hasAttribute("collapsed"));
+
+    for (const s of sections) s.style.height = "auto";
+
+    if (nonCollapsed.length > 0) {
+      nonCollapsed[nonCollapsed.length - 1].style.height = "100%";
+    } else if (sections.length > 0) {
+      sections[sections.length - 1].style.height = "100%";
+    }
+  }
+
+  private handleSlotChange(e: Event) {
+    const slot = e.target as HTMLSlotElement;
+    const sections = slot
+      .assignedElements({ flatten: true })
+      .filter((el) => el.tagName === "BIM-PANEL-SECTION") as HTMLElement[];
+
+    this._sectionsObserver?.disconnect();
+    this._sectionsObserver = new MutationObserver(() =>
+      this.updateSectionsHeight(),
+    );
+
+    for (const section of sections) {
+      this._sectionsObserver.observe(section, {
+        attributes: true,
+        attributeFilter: ["collapsed"],
+      });
+    }
+
+    this.updateSectionsHeight();
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.activationButton.active = !this.hidden;
@@ -257,6 +301,8 @@ export class Panel extends LitElement implements HasName, HasValue {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this._sectionsObserver?.disconnect();
+    this._sectionsObserver = null;
     this.activationButton.remove();
   }
 
@@ -293,7 +339,7 @@ export class Panel extends LitElement implements HasName, HasValue {
           ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="sections">
-          <slot></slot>
+          <slot @slotchange=${this.handleSlotChange}></slot>
         </div>
       </div>
     `;

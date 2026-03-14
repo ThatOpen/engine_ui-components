@@ -17,8 +17,11 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     css`
       :host {
         display: block;
+        height: 100%;
         pointer-events: auto;
         background-color: var(--bim-ui_bg-contrast-20);
+        border: var(--bim-panel-section--border, 1px solid var(--bim-ui_bg-contrast-40));
+        border-radius: var(--bim-panel-section--bdrs, var(--bim-ui_size-4xs));
       }
 
       :host .parent {
@@ -43,7 +46,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
           --bim-panel-section_hc,
           var(--bim-ui_bg-contrast-100)
         );
-        display: flex;
+        display: var(--bim-panel-section--header-display, flex);
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
@@ -70,12 +73,20 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         font-size: var(--bim-ui_size-sm);
       }
 
+      .header {
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
+      }
+
+      :host(:last-child[collapsed]) .header {
+        border-bottom: none;
+      }
+
       .components {
         display: flex;
         flex-direction: column;
         overflow: hidden;
         row-gap: 0.75rem;
-        padding: 0 1rem 1rem;
+        padding: 1rem;
         box-sizing: border-box;
         transition:
           height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
@@ -90,12 +101,8 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         overflow: auto;
       }
 
-      :host(:not([icon]):not([label])) .components {
-        padding: 1rem;
-      }
-
       :host(:not([fixed])[collapsed]) .components {
-        padding: 0 1rem 0;
+        padding: 0;
         height: 0px;
       }
 
@@ -213,6 +220,13 @@ export class PanelSection extends LitElement implements HasName, HasValue {
   @property({ type: Boolean, reflect: true })
   collapsed?: boolean;
 
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this.hasAttribute("fixed")) {
+      this.fixed = !this.closest("bim-panel");
+    }
+  }
+
   readonly onValueChange = new Event("change");
 
   /**
@@ -298,13 +312,13 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       if (!this.collapsed) {
         componentsElement.style.setProperty("transition", "none");
         componentsElement.style.setProperty("height", "auto");
-        componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
+        componentsElement.style.setProperty("padding", "1rem");
 
         this.componentHeight = componentsElement.clientHeight;
 
         requestAnimationFrame(() => {
           componentsElement.style.setProperty("height", "0px");
-          componentsElement.style.setProperty("padding", "0 1rem 0");
+          componentsElement.style.setProperty("padding", "0");
           componentsElement.style.setProperty(
             "transition",
             "height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1), padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1)",
@@ -323,17 +337,17 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       );
       requestAnimationFrame(() => {
         componentsElement.style.setProperty("height", "0px");
-        componentsElement.style.setProperty("padding", "0 1rem 0");
+        componentsElement.style.setProperty("padding", "0");
       });
     } else {
       componentsElement.style.setProperty("height", "0px");
-      componentsElement.style.setProperty("padding", "0 1rem 0");
+      componentsElement.style.setProperty("padding", "0");
       requestAnimationFrame(() => {
         componentsElement.style.setProperty(
           "height",
           `${this.componentHeight}px`,
         );
-        componentsElement.style.setProperty("padding", "0.125rem 1rem 1rem");
+        componentsElement.style.setProperty("padding", "1rem");
       });
     }
 
