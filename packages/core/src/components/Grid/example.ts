@@ -11,36 +11,50 @@ const tooltipTemplate = () => BUI.html`
   </bim-tooltip>
 `
 
-const leftPanel = BUI.Component.create<BUI.Panel>(() => {
+// Previously wrapped in bim-panel — now a bare bim-panel-section
+const leftPanelSettingsTemplate = (_state: Record<string, never>) => {
   const onBtnClick = () => {
     alert("You clicked me!");
   };
   return BUI.html`
-    <bim-panel label="My Panel" icon="mynaui:panel-left-solid" style="width: 24rem;">
-      <bim-panel-section label="Panel Section" icon="solar:settings-bold">
-        <bim-label>This is just a panel section... cool, right?</bim-label>
-        <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
-        <bim-selector label="Choose">
-          <bim-option label="Option A"></bim-option>
-          <bim-option label="Option B" checked>
-            ${BUI.Component.create(tooltipTemplate)}
-          </bim-option>
-        </bim-selector>
-        <bim-color-input></bim-color-input>
-        <bim-dropdown>
-          <bim-option label="Option A" checked></bim-option>
-          <bim-option label="Option B"></bim-option>
-          <bim-option label="Option C"></bim-option>
-        </bim-dropdown>
-        <bim-text-input label="Ultra nice text input" placeholder="Write something..."></bim-text-input>
-        <bim-checkbox label="Is That Open Company nice?" checked></bim-checkbox>
-        <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
-      </bim-panel-section>
-    </bim-panel>
+    <bim-panel-section label="Panel Section" icon="solar:settings-bold">
+      <bim-label>This is just a panel section... cool, right?</bim-label>
+      <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
+      <bim-selector label="Choose">
+        <bim-option label="Option A"></bim-option>
+        <bim-option label="Option B" checked>
+          ${BUI.Component.create(tooltipTemplate)}
+        </bim-option>
+      </bim-selector>
+      <bim-color-input></bim-color-input>
+      <bim-dropdown search-box>
+        ${Array.from({ length: 100 }, (_, i) =>
+          BUI.html`<bim-option style="width: 12rem;" label="Option ${i + 1}"></bim-option>`
+        )}
+      </bim-dropdown>
+      <bim-text-input label="Ultra nice text input" placeholder="Write something..."></bim-text-input>
+      <bim-checkbox label="Is That Open Company nice?" checked></bim-checkbox>
+      <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
+    </bim-panel-section>
   `;
-});
+};
 
-const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
+const leftPanelPropertiesTemplate = (_state: Record<string, never>) => {
+  return BUI.html`
+    <bim-panel-section label="Element Properties" icon="solar:bill-list-bold">
+      <bim-text-input label="Name" value="Wall:Basic Wall"></bim-text-input>
+      <bim-text-input label="Type" value="Basic Wall"></bim-text-input>
+      <bim-number-input label="Height" value="4" suffix="m"></bim-number-input>
+      <bim-number-input label="Width" value="0.3" suffix="m"></bim-number-input>
+      <bim-checkbox label="Load Bearing" checked></bim-checkbox>
+      <bim-checkbox label="Structural"></bim-checkbox>
+    </bim-panel-section>
+  `;
+};
+
+// Previously wrapped in bim-panel — now a bare bim-panel-section
+const bottomPanel = BUI.Component.create(() => {
+  let table: BUI.Table | undefined
   const onTableCreated = (element?: Element) => {
     if (!element) return;
     const table = element as BUI.Table;
@@ -97,7 +111,7 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
           <div style="display: flex; gap: 0.5rem">
             <bim-label>${value}</bim-label>
             <bim-button @click=${onClick} icon="mingcute:send-fill" tooltip-title="Send reminder!"></bim-button>
-          </div> 
+          </div>
         `;
       },
     };
@@ -330,50 +344,70 @@ const bottomPanel = BUI.Component.create<BUI.Panel>(() => {
           Status: "Completed",
         },
       },
+      {
+        data: {
+          Task: "Code Review",
+          Description: "Final review before release",
+          AssignedTo: "Alice",
+          DueDate: "2024-05-22",
+          Status: "Pending",
+        },
+      },
+      {
+        data: {
+          Task: "Bug Fixing",
+          Description: "Fix UI bugs reported by QA",
+          AssignedTo: "Hank",
+          DueDate: "2024-05-24",
+          Status: "In Progress",
+        },
+      },
+      {
+        data: {
+          Task: "Bug Fixing",
+          Description: "Fix backend bugs reported by QA",
+          AssignedTo: "Hank",
+          DueDate: "2024-05-25",
+          Status: "Pending",
+        },
+      },
+      {
+        data: {
+          Task: "Write Documentation",
+          Description: "Update API documentation",
+          AssignedTo: "Bob",
+          DueDate: "2024-05-26",
+          Status: "Pending",
+        },
+      },
+      {
+        data: {
+          Task: "Write Documentation",
+          Description: "Review documentation for accuracy",
+          AssignedTo: "Bob",
+          DueDate: "2024-05-27",
+          Status: "In Progress",
+        },
+      },
     ];
   };
 
   return BUI.html`
-    <bim-panel style="height: 25rem">
-      <bim-panel-section label="Assignments" fixed>
-        <bim-table ${BUI.ref(onTableCreated)}></bim-table>
-      </bim-panel-section>
-    </bim-panel> 
+    <bim-panel-section label="Assignments" fixed>
+      <div style="display: flex; align-self: end; width: fit-content; gap: 0.25rem;">
+        <bim-label>Group By:</bim-label>
+        <bim-button label="Task" @click=${onGroupByTask}></bim-button>
+        <bim-button label="Assignee" @click=${onGroupByAssignee}></bim-button>
+        <bim-button label="Status" @click=${onGroupByStatus}></bim-button>
+        <bim-button label="None" @click=${onUngroup}></bim-button>
+      </div>
+      <bim-table ${BUI.ref(onTableCreated)}></bim-table>
+    </bim-panel-section>
   `;
 });
 
-const rightPanel = BUI.Component.create<BUI.Panel>(() => {
-  const onBtnClick = () => {
-    alert("You are awesome 😏");
-  };
-  return BUI.html`
-    <bim-panel>
-      <bim-panel-section label="Panel Section" icon="solar:settings-bold">
-        <bim-button label="Button With Nestings">
-          <bim-context-menu>
-            <bim-button label="Nested Button A">
-              <bim-context-menu>
-                <bim-button label="Nested Button A-1">
-                  ${BUI.Component.create(tooltipTemplate)}
-                </bim-button>
-                <bim-button label="Nested Button A-2"></bim-button>
-              </bim-context-menu>
-            </bim-button>
-            <bim-button label="Nested Button B"></bim-button>
-            <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
-          </bim-context-menu>
-        </bim-button>
-        <bim-selector value="Option A">
-          <bim-option label="Option A" checked></bim-option>
-          <bim-option label="Option B"></bim-option>
-          <bim-option label="Option C"></bim-option>
-        </bim-selector>
-      </bim-panel-section>
-    </bim-panel>
-  `;
-});
-
-const ribbon = BUI.Component.create<BUI.Tabs>(() => {
+// Previously the "Toolbar A" tab inside bim-tabs (ribbon) — now a standalone toolbar template
+const toolbarATemplate = (_state: Record<string, never>) => {
   const onThatOpenPeopleClick = () =>
     window.open("https://people.thatopen.com/home");
 
@@ -387,9 +421,6 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
     }
   };
 
-  const { activationButton: leftPanelBtn } = leftPanel;
-  leftPanelBtn.vertical = true;
-
   const onTableBtnClick = ({ target }: { target: BUI.Button }) => {
     const isHidden = bottomPanel.style.display === "none";
     target.active = isHidden;
@@ -401,32 +432,82 @@ const ribbon = BUI.Component.create<BUI.Tabs>(() => {
   };
 
   return BUI.html`
-   <bim-tabs>
-    <bim-tab label="Toolbar A">
-      <bim-toolbar>
-        <bim-toolbar-section label="Some section">
-          <bim-button @click=${onToggleThemeClick} label="Toggle Theme" vertical icon="proicons:dark-theme"></bim-button>
-          <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
-          ${leftPanel.activationButton}
-          <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
-          <bim-button active @click=${onTableBtnClick} label="Table" vertical icon="material-symbols:table"></bim-button>
-          <bim-toolbar-group>
-            <bim-button icon="solar:settings-bold"></bim-button>
-            <bim-button icon="solar:settings-bold"></bim-button>
-            <bim-button icon="solar:settings-bold"></bim-button>
-            <bim-button icon="solar:settings-bold"></bim-button>
-          </bim-toolbar-group>
-        </bim-toolbar-section>
-      </bim-toolbar>
-    </bim-tab>
-    <bim-tab label="Toolbar B">
-      <bim-toolbar>
-        <bim-toolbar-section label="Some other section">
-          <bim-button label="Focus" vertical icon="material-symbols:center-focus-strong"></bim-button>
-        </bim-toolbar-section>
-      </bim-toolbar>
-    </bim-tab>
-   </bim-tabs> 
+    <bim-toolbar>
+      <bim-toolbar-section label="Import">
+        <bim-button label="IFC" vertical icon="bim:ifc"></bim-button>
+        <bim-button label="BCF" vertical icon="bim:bcf"></bim-button>
+        <bim-button label="IDS" vertical icon="bim:ids"></bim-button>
+        <bim-button label="DXF" vertical icon="bim:dxf"></bim-button>
+        <bim-button label="DWG" vertical icon="bim:dwg" ></bim-button>
+        <bim-button label="PDF" vertical icon="bim:pdf" ></bim-button>
+        <bim-button label="RVT" vertical icon="bim:rvt" ></bim-button>
+      </bim-toolbar-section>
+      <bim-toolbar-section label="Some section">
+        <bim-button @click=${onToggleThemeClick} label="Toggle Theme" vertical icon="proicons:dark-theme"></bim-button>
+        <bim-button label="Home" vertical icon="ic:round-home"></bim-button>
+        <bim-button label="That Open People" vertical icon="eva:people-fill" @click=${onThatOpenPeopleClick}></bim-button>
+        <bim-button active @click=${onTableBtnClick} label="Table" vertical icon="material-symbols:table"></bim-button>
+        <bim-toolbar-group>
+          <bim-button icon="solar:settings-bold"></bim-button>
+          <bim-button icon="solar:settings-bold"></bim-button>
+          <bim-button icon="solar:settings-bold"></bim-button>
+          <bim-button icon="solar:settings-bold"></bim-button>
+        </bim-toolbar-group>
+      </bim-toolbar-section>
+    </bim-toolbar>
+  `;
+};
+
+// Previously the "Toolbar B" tab inside bim-tabs (ribbon) — now a standalone toolbar template
+const toolbarBTemplate = (_state: Record<string, never>) => {
+  return BUI.html`
+    <bim-toolbar>
+      <bim-toolbar-section label="Some other section">
+        <bim-button label="Focus" vertical icon="material-symbols:center-focus-strong"></bim-button>
+      </bim-toolbar-section>
+    </bim-toolbar>
+  `;
+};
+
+// Previously wrapped in bim-panel — now a bare bim-panel-section
+const rightPanelControls = BUI.Component.create(() => {
+  const onBtnClick = () => {
+    alert("You are awesome 😏");
+  };
+  return BUI.html`
+    <bim-panel-section label="Controls" icon="solar:settings-bold">
+      <bim-button label="Button With Nestings">
+        <bim-context-menu>
+          <bim-button label="Nested Button A">
+            <bim-context-menu>
+              <bim-button label="Nested Button A-1">
+                ${BUI.Component.create(tooltipTemplate)}
+              </bim-button>
+              <bim-button label="Nested Button A-2"></bim-button>
+            </bim-context-menu>
+          </bim-button>
+          <bim-button label="Nested Button B"></bim-button>
+          <bim-button @click=${onBtnClick} label="Click me!"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+      <bim-selector value="Option A">
+        <bim-option label="Option A" checked></bim-option>
+        <bim-option label="Option B"></bim-option>
+        <bim-option label="Option C"></bim-option>
+      </bim-selector>
+    </bim-panel-section>
+  `;
+});
+
+const rightPanelInfo = BUI.Component.create(() => {
+  return BUI.html`
+    <bim-panel-section label="Scene Info" icon="solar:info-circle-bold">
+      <bim-text-input label="Project" value="My BIM Project"></bim-text-input>
+      <bim-text-input label="Author" value="That Open Company"></bim-text-input>
+      <bim-number-input label="Elements" value="1024" readonly></bim-number-input>
+      <bim-checkbox label="Show grid" checked></bim-checkbox>
+      <bim-checkbox label="Show axes"></bim-checkbox>
+    </bim-panel-section>
   `;
 });
 
@@ -475,7 +556,7 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
             <bim-button label="Edge"></bim-button>
             <bim-button label="Face"></bim-button>
           </bim-toolbar-section>
-        </bim-toolbar>      
+        </bim-toolbar>
       </bim-tab>
     </bim-tabs>
   `,
@@ -499,6 +580,7 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
 
   const grid = document.createElement("bim-grid");
   grid.floating = true;
+  grid.style.padding = "0"
   grid.layouts = {
     main: {
       template: `
@@ -522,7 +604,41 @@ type LayoutElements = {
   app: ["ribbon", "leftPanel", "viewport", "rightPanel", "bottomPanel"];
 };
 
-const grid = document.body.querySelector<BUI.Grid<LayoutElements>>("bim-grid")!;
+const grid = document.body.querySelector<BUI.Grid<Layouts>>("bim-grid")!;
+grid.elements = {
+  header: (() => {
+    const header = document.createElement("div");
+    header.style.backgroundColor = "#641b1b66";
+    return header;
+  })(),
+  sidebar: (() => {
+    const sidebar = document.createElement("div");
+    sidebar.style.backgroundColor = "#1b536466";
+    return sidebar;
+  })(),
+  content: (() => {
+    const content = document.createElement("div");
+    content.style.backgroundColor = "#1b644c66";
+    return content;
+  })(),
+  toolbarA: { template: toolbarATemplate, initialState: {}, label: "Toolbar A" },
+  toolbarB: { template: toolbarBTemplate, initialState: {}, label: "Toolbar B" },
+  leftPanelSettings: { template: leftPanelSettingsTemplate, initialState: {}, label: "Settings" },
+  leftPanelProperties: { template: leftPanelPropertiesTemplate, initialState: {}, label: "Properties" },
+  viewport,
+  bottomPanel,
+  rightPanelControls,
+  rightPanelInfo,
+}
+
+const ribbonArea = "tabs:ribbon(toolbarA,toolbarB)";
+const leftPanelArea = "tabs:left(leftPanelSettings,leftPanelProperties)";
+const rightPanelArea = "panel:right(rightPanelControls,rightPanelInfo)";
+
+grid.areaGroups = {
+  left: { switchersCompact: true },
+  right: { label: "Inspector" },
+};
 
 grid.layouts = {
   main: {
@@ -531,29 +647,12 @@ grid.layouts = {
       "sidebar content" 1fr
       / 80px 1fr
     `,
-    elements: {
-      header: (() => {
-        const header = document.createElement("div");
-        header.style.backgroundColor = "#641b1b66";
-        return header;
-      })(),
-      sidebar: (() => {
-        const sidebar = document.createElement("div");
-        sidebar.style.backgroundColor = "#1b536466";
-        return sidebar;
-      })(),
-      content: (() => {
-        const content = document.createElement("div");
-        content.style.backgroundColor = "#1b644c66";
-        return content;
-      })(),
-    },
   },
   app: {
     template: `
-      "ribbon ribbon ribbon" auto
-      "leftPanel viewport rightPanel" 1fr
-      "leftPanel bottomPanel bottomPanel" 20rem
+      "${ribbonArea} ${ribbonArea} ${ribbonArea}" auto
+      "${leftPanelArea} viewport ${rightPanelArea}" 1fr
+      "${leftPanelArea} bottomPanel bottomPanel" 20rem
       / 22rem 1fr 20rem
     `,
     elements: {
