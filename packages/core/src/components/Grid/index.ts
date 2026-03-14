@@ -12,6 +12,7 @@ import {
   GridComponents,
   GridLayoutsDefinition,
   GridComponentDefinition,
+  GridAreaGroupConfig,
   UpdateGridComponents,
   ElementCreatedEventDetail,
   GridResizeState,
@@ -196,6 +197,8 @@ export class Grid<
   get elements() {
     return this._elements
   }
+
+  areaGroups: Record<string, GridAreaGroupConfig> = {};
 
   private getLayoutAreas(layout: { template: string }) {
     return extractUniqueAreas(layout.template);
@@ -439,6 +442,12 @@ export class Grid<
 
   updateComponent = {} as UpdateGridComponents<E>;
 
+  private extractElementKeys(area: string): string[] {
+    const groupMatch = area.match(/^\w+:\w+\(([^)]+)\)$/);
+    if (groupMatch) return groupMatch[1].split(",").map(s => s.trim());
+    return [area];
+  }
+
   private cleanUpdateFunctions() {
     if (!this.layout) {
       this._updateFunctions = {};
@@ -446,14 +455,8 @@ export class Grid<
     }
 
     const layout = this.layouts[this.layout];
-    const areas = this
-      .getLayoutAreas(layout)
-      .map(area => {
-        const match = area.match(/\[([^\]]+)\]/);
-        return match ? match[1].split(":")[0].split(",").map(s => s.trim()) : [area];
-      })
-      .flat()
-    
+    const areas = this.getLayoutAreas(layout).flatMap(area => this.extractElementKeys(area));
+
     for (const name in this.elements) {
       if (areas.includes(name)) continue;
       delete this._updateFunctions[name];
@@ -487,9 +490,8 @@ export class Grid<
   }
 
   private getSanitizedLayoutTemplate(template: string) {
-    // Replace the entire area value that includes square brackets (e.g., space[elementA, elementB])
-    // with just the area name (the part before the brackets)
-    return template.replace(/\b(\w+)\[[^\]]+\]/g, '$1');
+    // Strip grouping syntax (e.g. tabs:ribbon(...), panel:right(...)) leaving only the CSS area name
+    return template.replace(/\w+:(\w+)\([^)]*\)/g, '$1');
   }
 
   private createElementFromDefinition(
@@ -575,125 +577,133 @@ export class Grid<
         }
 
         const areas = this.getLayoutAreas(layout);
+        const parseElementKeys = (elementsStr: string) =>
+          elementsStr.split(",").map(s => s.trim()).filter(Boolean);
+
+        const getElementDefinition = (elementKey: string) =>
+          (layout.elements?.[elementKey as keyof E] ||
+            this.elements[elementKey as keyof E]) as
+            | HTMLElement
+            | StatelessComponent
+            | { template: StatefullComponent<any>; initialState: Record<string, any>; label?: string };
+
+        const getElementLabel = (elementKey: string) => {
+          const def = getElementDefinition(elementKey);
+          if (def && typeof def === "object" && "label" in def && def.label) return def.label;
+          return elementKey;
+        };
+
         const elements = areas
           .map((area: string) => {
-            // Extract area name and element keys with optional labels
-            let areaName = area;
-            let elementSpecs: Array<{ key: string; label?: string }> = [];
-            const bracketMatch = area.match(/^([^\[]+)\[([^\]]+)\]$/);
-            const hasBrackets = !!bracketMatch;
-            
-            if (bracketMatch) {
-              areaName = bracketMatch[1];
-              const elementsStr = bracketMatch[2];
-              // Split by comma and parse each element for key:label format
-              elementSpecs = elementsStr.split(",").map(elem => {
-                const trimmed = elem.trim();
-                const colonIndex = trimmed.indexOf(":");
-                if (colonIndex > -1) {
-                  const key = trimmed.substring(0, colonIndex).trim();
-                  const label = trimmed.substring(colonIndex + 1).trim();
-                  return { key, label: label || undefined };
-                }
-                return { key: trimmed };
-              });
-            } else {
-              elementSpecs = [{ key: area }];
-            }
+            const tabsMatch = area.match(/^tabs:([^(]+)\(([^)]+)\)$/);
+            const panelMatch = area.match(/^panel:([^(]+)\(([^)]+)\)$/);
 
-            // If no brackets, render element directly (even if single element)
-            if (!hasBrackets) {
-              const elementKey = elementSpecs[0].key;
-              const elementDefinition = (layout.elements?.[elementKey as keyof E] ||
-                this.elements[elementKey as keyof E]) as
-                | HTMLElement
-                | StatelessComponent
-                | {
-                    template: StatefullComponent<any>;
-                    initialState: Record<string, any>;
-                  };
-
+            // No grouping: render element directly
+            if (!tabsMatch && !panelMatch) {
+              const elementDefinition = getElementDefinition(area);
               if (!elementDefinition) return null;
 
-              const component = this.createElementFromDefinition(
-                elementKey,
-                elementDefinition
-              );
-
+              const component = this.createElementFromDefinition(area, elementDefinition);
               if (!component) return null;
 
-              this.emitElementCreation({name: elementKey, element: component});
+              this.emitElementCreation({ name: area, element: component });
               component.style.gridArea = area;
               return component;
             }
 
-            // Has brackets: create tabs (even for single element)
-            const tabsId = `tabs-${areaName}`;
-            let tabsElement = this.querySelector(
-              `[data-grid-tabs-id="${tabsId}"]`,
-            ) as Tabs | null;
+            const areaName = tabsMatch ? tabsMatch[1] : panelMatch![1];
+            const elementKeys = parseElementKeys(tabsMatch ? tabsMatch[2] : panelMatch![2]);
 
-            if (!tabsElement) {
-              tabsElement = document.createElement("bim-tabs") as Tabs;
-              tabsElement.setAttribute("data-grid-tabs-id", tabsId);
-              tabsElement.setAttribute("switchers-full", "");
-            }
+            // bim-tabs
+            if (tabsMatch) {
+              const tabsId = `tabs-${areaName}`;
+              let tabsElement = this.querySelector(
+                `[data-grid-tabs-id="${tabsId}"]`,
+              ) as Tabs | null;
 
-            // Use the area name (without brackets) for grid-area
-            tabsElement.style.gridArea = areaName;
-
-            // Create a tab for each element
-            const tabs: Tab[] = [];
-            for (const elemSpec of elementSpecs) {
-              const elementKey = elemSpec.key;
-              const tabLabel = elemSpec.label || elementKey;
-
-              const elementDefinition = (layout.elements?.[elementKey as keyof E] ||
-                this.elements[elementKey as keyof E]) as
-                | HTMLElement
-                | StatelessComponent
-                | {
-                    template: StatefullComponent<any>;
-                    initialState: Record<string, any>;
-                  };
-
-              if (!elementDefinition) continue;
-
-              const component = this.createElementFromDefinition(
-                elementKey,
-                elementDefinition
-              );
-
-              if (!component) continue;
-
-              this.emitElementCreation({name: elementKey, element: component});
-
-              // Create or reuse tab
-              const tabId = `tab-${areaName}-${elementKey}`;
-              let tab = tabsElement.querySelector(
-                `[data-grid-tab-id="${tabId}"]`,
-              ) as Tab | null;
-
-              if (!tab) {
-                tab = document.createElement("bim-tab") as Tab;
-                tab.setAttribute("data-grid-tab-id", tabId);
-                tab.name = elementKey;
+              if (!tabsElement) {
+                tabsElement = document.createElement("bim-tabs") as Tabs;
+                tabsElement.setAttribute("data-grid-tabs-id", tabsId);
               }
 
-              // Update tab label (may have changed)
-              tab.label = tabLabel;
+              const groupConfig = this.areaGroups[areaName];
+              if (groupConfig?.switchersFull) {
+                tabsElement.setAttribute("switchers-full", "");
+              } else {
+                tabsElement.removeAttribute("switchers-full");
+              }
+              if (groupConfig?.switchersCompact) {
+                tabsElement.setAttribute("switchers-compact", "");
+              } else {
+                tabsElement.removeAttribute("switchers-compact");
+              }
 
-              // Clear and append component
-              tab.innerHTML = "";
-              tab.appendChild(component);
-              tabs.push(tab);
+              tabsElement.style.gridArea = areaName;
+
+              const tabs: Tab[] = [];
+              for (const key of elementKeys) {
+                const elementDefinition = getElementDefinition(key);
+                if (!elementDefinition) continue;
+
+                const component = this.createElementFromDefinition(key, elementDefinition);
+                if (!component) continue;
+
+                this.emitElementCreation({ name: key, element: component });
+
+                const tabId = `tab-${areaName}-${key}`;
+                let tab = tabsElement.querySelector(`[data-grid-tab-id="${tabId}"]`) as Tab | null;
+                if (!tab) {
+                  tab = document.createElement("bim-tab") as Tab;
+                  tab.setAttribute("data-grid-tab-id", tabId);
+                  tab.name = key;
+                }
+
+                tab.label = getElementLabel(key);
+                tab.innerHTML = "";
+                tab.appendChild(component);
+                tabs.push(tab);
+              }
+
+              tabsElement.innerHTML = "";
+              tabsElement.append(...tabs);
+              return tabsElement;
             }
 
-            // Update tabs element with new tabs
-            tabsElement.innerHTML = "";
-            tabsElement.append(...tabs);
+            // bim-panel
+            const panelId = `panel-${areaName}`;
+            let panelElement = this.querySelector(
+              `[data-grid-panel-id="${panelId}"]`,
+            ) as HTMLElement | null;
 
-            return tabsElement;
+            if (!panelElement) {
+              panelElement = document.createElement("bim-panel");
+              panelElement.setAttribute("data-grid-panel-id", panelId);
+            }
+
+            const panelGroupConfig = this.areaGroups[areaName];
+            if (panelGroupConfig?.label) {
+              panelElement.setAttribute("label", panelGroupConfig.label);
+            } else {
+              panelElement.removeAttribute("label");
+            }
+
+            panelElement.style.gridArea = areaName;
+
+            const sections: HTMLElement[] = [];
+            for (const key of elementKeys) {
+              const elementDefinition = getElementDefinition(key);
+              if (!elementDefinition) continue;
+
+              const component = this.createElementFromDefinition(key, elementDefinition);
+              if (!component) continue;
+
+              this.emitElementCreation({ name: key, element: component });
+              sections.push(component);
+            }
+
+            panelElement.innerHTML = "";
+            panelElement.append(...sections);
+            return panelElement;
           })
           .filter((element) => element !== null) as HTMLElement[];
         

@@ -29,6 +29,7 @@ export type GridComponents<T extends GridComponentDefinition> = {
     | {
         template: StatefullComponent<ExtractStateByElement<T[number], P>>;
         initialState: ExtractStateByElement<T[number], P>;
+        label?: string;
       };
 };
 
@@ -58,6 +59,15 @@ export type UpdateGridComponents<T extends GridComponentDefinition> = {
     >,
   ) => void;
 };
+
+export interface GridAreaGroupConfig {
+  /** Applies switchers-full attribute to bim-tabs groupers */
+  switchersFull?: boolean;
+  /** Applies switchers-compact attribute to bim-tabs groupers */
+  switchersCompact?: boolean;
+  /** Applies a label to bim-panel groupers */
+  label?: string;
+}
 
 export interface ElementCreatedEventDetail<T extends HTMLElement = HTMLElement> {
   name: string;

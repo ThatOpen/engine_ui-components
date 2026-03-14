@@ -1,6 +1,40 @@
 /**
+ * Splits a single grid row string into tokens, preserving content inside brackets or
+ * parentheses as a single token. Treats "." as a null (empty cell).
+ */
+function tokenizeLine(line: string): (string | null)[] {
+  const tokens: (string | null)[] = [];
+  let current = "";
+  let depth = 0;
+
+  for (const char of line) {
+    if (char === "[" || char === "(") {
+      depth++;
+      current += char;
+    } else if (char === "]" || char === ")") {
+      depth--;
+      current += char;
+    } else if (char === " " && depth === 0) {
+      if (current !== "") {
+        tokens.push(current === "." ? null : current);
+        current = "";
+      }
+    } else {
+      current += char;
+    }
+  }
+
+  if (current !== "") {
+    tokens.push(current === "." ? null : current);
+  }
+
+  return tokens;
+}
+
+/**
  * Parses a grid template string and returns a 2D matrix representation. Handles both quoted strings and newline-delimited formats.
- * 
+ * Content inside brackets (e.g. area names with grouping syntax) is treated as a single token.
+ *
  * @param template - The grid template string to parse
  * @returns A 2D array where each cell contains the area name or null for empty cells
  * 
@@ -26,8 +60,7 @@ export function parseGridTemplate(template: string): (string | null)[][] {
       gridMatrix.push([]);
       continue;
     }
-    const tokens = inside.split(/\s+/).map(t => (t === '.' ? null : t));
-    gridMatrix.push(tokens);
+    gridMatrix.push(tokenizeLine(inside));
   }
 
   // If no quoted strings found, try splitting by lines
@@ -40,7 +73,7 @@ export function parseGridTemplate(template: string): (string | null)[][] {
     for (const line of lines) {
       const cleaned = line.replace(/^["']|["']$/g, '').trim();
       if (!cleaned) continue;
-      gridMatrix.push(cleaned.split(/\s+/).map(t => (t === '.' ? null : t)));
+      gridMatrix.push(tokenizeLine(cleaned));
     }
   }
 
@@ -49,7 +82,8 @@ export function parseGridTemplate(template: string): (string | null)[][] {
 
 /**
  * Extracts unique area names from a grid template string. Filters out empty cells (dots) and returns only unique area names.
- * 
+ * Content inside brackets is preserved as part of the area name token.
+ *
  * @param template - The grid template string
  * @returns An array of unique area names
  * 
@@ -64,43 +98,12 @@ export function parseGridTemplate(template: string): (string | null)[][] {
  * ```
  */
 export function extractUniqueAreas(template: string): string[] {
-  const rows = template.split("\n").map((row) => row.trim());
-  const areas = rows
-    .map((row) => row.split('"')[1])
-    .filter((area) => area !== undefined);
-  
-  const words: string[] = [];
-  
-  for (const area of areas) {
-    // Split by spaces, but preserve content inside brackets
-    let current = "";
-    let bracketDepth = 0;
-    
-    for (let i = 0; i < area.length; i++) {
-      const char = area[i];
-      
-      if (char === "[") {
-        bracketDepth++;
-        current += char;
-      } else if (char === "]") {
-        bracketDepth--;
-        current += char;
-      } else if (char === " " && bracketDepth === 0) {
-        // Only split on spaces outside of brackets
-        if (current !== "") {
-          words.push(current);
-          current = "";
-        }
-      } else {
-        current += char;
-      }
-    }
-    
-    if (current !== "") {
-      words.push(current);
+  const matrix = parseGridTemplate(template);
+  const seen = new Set<string>();
+  for (const row of matrix) {
+    for (const cell of row) {
+      if (cell !== null && cell !== "") seen.add(cell);
     }
   }
-  
-  const uniqueAreas = [...new Set(words)].filter((area) => area !== "");
-  return uniqueAreas;
+  return [...seen];
 }
