@@ -16,7 +16,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       --bim-input--olc: var(--bim-number-input--olc, transparent);
       --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
       --bim-input--p: 0 0.375rem;
-      flex: 1;
+      /* flex: 1; */
       display: block;
     }
 

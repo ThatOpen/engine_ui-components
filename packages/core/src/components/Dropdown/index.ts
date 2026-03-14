@@ -22,7 +22,7 @@ export class Dropdown extends Component implements HasValue, HasName {
         --bim-input--olw: 2px;
         --bim-input--olc: transparent;
         --bim-input--bdrs: var(--bim-ui_size-4xs);
-        flex: 1;
+        /* flex: 1; */
         display: block;
       }
 

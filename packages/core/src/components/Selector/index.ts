@@ -14,7 +14,7 @@ export class Selector extends LitElement implements HasValue, HasName {
     :host {
       --bim-input--g: 0;
       --bim-option--jc: center;
-      flex: 1;
+      /* flex: 1; */
       display: block;
     }
 

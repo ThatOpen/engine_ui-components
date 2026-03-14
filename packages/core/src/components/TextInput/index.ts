@@ -16,7 +16,7 @@ export class TextInput extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
-        flex: 1;
+        /* flex: 1; */
         display: block;
       }
 

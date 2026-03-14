@@ -15,7 +15,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
    */
   static styles = css`
     :host {
-      flex: 1;
+      /* flex: 1; */
       display: block;
     }
 
