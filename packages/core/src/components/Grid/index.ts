@@ -442,10 +442,42 @@ export class Grid<
 
   updateComponent = {} as UpdateGridComponents<E>;
 
+  private parseTabToken(token: string): string | { name: string; keys: string[] } {
+    const subGroupMatch = token.match(/^(\w+)\[([^\]]+)\]$/);
+    if (subGroupMatch) {
+      return { name: subGroupMatch[1], keys: subGroupMatch[2].split(",").map(s => s.trim()) };
+    }
+    return token;
+  }
+
+  private parseTabElementTokens(elementsStr: string): Array<string | { name: string; keys: string[] }> {
+    const result: Array<string | { name: string; keys: string[] }> = [];
+    let current = "";
+    let depth = 0;
+
+    for (const char of elementsStr) {
+      if (char === "[") { depth++; current += char; }
+      else if (char === "]") { depth--; current += char; }
+      else if (char === "," && depth === 0) {
+        const token = current.trim();
+        if (token) result.push(this.parseTabToken(token));
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+
+    if (current.trim()) result.push(this.parseTabToken(current.trim()));
+    return result;
+  }
+
   private extractElementKeys(area: string): string[] {
     const groupMatch = area.match(/^\w+:\w+\(([^)]+)\)$/);
-    if (groupMatch) return groupMatch[1].split(",").map(s => s.trim());
-    return [area];
+    if (!groupMatch) return [area];
+    const tokens = this.parseTabElementTokens(groupMatch[1]);
+    return tokens.flatMap(token =>
+      typeof token === "string" ? [token] : token.keys
+    );
   }
 
   private cleanUpdateFunctions() {
@@ -593,6 +625,12 @@ export class Grid<
           return elementKey;
         };
 
+        const getElementIcon = (elementKey: string): string | undefined => {
+          const def = getElementDefinition(elementKey);
+          if (def && typeof def === "object" && "icon" in def && typeof def.icon === "string") return def.icon;
+          return undefined;
+        };
+
         const elements = areas
           .map((area: string) => {
             const tabsMatch = area.match(/^tabs:([^(]+)\(([^)]+)\)$/);
@@ -641,27 +679,70 @@ export class Grid<
               tabsElement.style.gridArea = areaName;
 
               const tabs: Tab[] = [];
-              for (const key of elementKeys) {
-                const elementDefinition = getElementDefinition(key);
-                if (!elementDefinition) continue;
+              const tabTokens = this.parseTabElementTokens(tabsMatch[2]);
 
-                const component = this.createElementFromDefinition(key, elementDefinition);
-                if (!component) continue;
+              for (const token of tabTokens) {
+                if (typeof token === "string") {
+                  // Single element — direct child of tab (existing behavior)
+                  const elementDefinition = getElementDefinition(token);
+                  if (!elementDefinition) continue;
 
-                this.emitElementCreation({ name: key, element: component });
+                  const component = this.createElementFromDefinition(token, elementDefinition);
+                  if (!component) continue;
 
-                const tabId = `tab-${areaName}-${key}`;
-                let tab = tabsElement.querySelector(`[data-grid-tab-id="${tabId}"]`) as Tab | null;
-                if (!tab) {
-                  tab = document.createElement("bim-tab") as Tab;
-                  tab.setAttribute("data-grid-tab-id", tabId);
-                  tab.name = key;
+                  this.emitElementCreation({ name: token, element: component });
+
+                  const tabId = `tab-${areaName}-${token}`;
+                  let tab = tabsElement.querySelector(`[data-grid-tab-id="${tabId}"]`) as Tab | null;
+                  if (!tab) {
+                    tab = document.createElement("bim-tab") as Tab;
+                    tab.setAttribute("data-grid-tab-id", tabId);
+                    tab.name = token;
+                  }
+
+                  tab.label = getElementLabel(token);
+                  tab.icon = getElementIcon(token);
+                  tab.innerHTML = "";
+                  tab.appendChild(component);
+                  tabs.push(tab);
+                } else {
+                  // Sub-group — elements wrapped in a bim-panel inside a tab
+                  const { name: groupName, keys } = token;
+                  const subGroupConfig = this.areaGroups[groupName];
+
+                  const tabId = `tab-${areaName}-${groupName}`;
+                  let tab = tabsElement.querySelector(`[data-grid-tab-id="${tabId}"]`) as Tab | null;
+                  if (!tab) {
+                    tab = document.createElement("bim-tab") as Tab;
+                    tab.setAttribute("data-grid-tab-id", tabId);
+                    tab.name = groupName;
+                  }
+                  tab.label = subGroupConfig?.label ?? groupName;
+                  tab.icon = subGroupConfig?.icon;
+
+                  const panelId = `panel-${areaName}-${groupName}`;
+                  let panelWrapper = tab.querySelector(`[data-grid-panel-id="${panelId}"]`) as HTMLElement | null;
+                  if (!panelWrapper) {
+                    panelWrapper = document.createElement("bim-panel");
+                    panelWrapper.setAttribute("data-grid-panel-id", panelId);
+                  }
+
+                  panelWrapper.innerHTML = "";
+                  for (const key of keys) {
+                    const elementDefinition = getElementDefinition(key);
+                    if (!elementDefinition) continue;
+
+                    const component = this.createElementFromDefinition(key, elementDefinition);
+                    if (!component) continue;
+
+                    this.emitElementCreation({ name: key, element: component });
+                    panelWrapper.appendChild(component);
+                  }
+
+                  tab.innerHTML = "";
+                  tab.appendChild(panelWrapper);
+                  tabs.push(tab);
                 }
-
-                tab.label = getElementLabel(key);
-                tab.innerHTML = "";
-                tab.appendChild(component);
-                tabs.push(tab);
               }
 
               tabsElement.innerHTML = "";
@@ -685,6 +766,11 @@ export class Grid<
               panelElement.setAttribute("label", panelGroupConfig.label);
             } else {
               panelElement.removeAttribute("label");
+            }
+            if (panelGroupConfig?.icon) {
+              panelElement.setAttribute("icon", panelGroupConfig.icon);
+            } else {
+              panelElement.removeAttribute("icon");
             }
 
             panelElement.style.gridArea = areaName;
