@@ -18,6 +18,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       :host {
         display: block;
         pointer-events: auto;
+        background-color: var(--bim-ui_bg-contrast-20);
       }
 
       :host .parent {

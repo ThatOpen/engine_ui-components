@@ -17,7 +17,6 @@ export class Panel extends LitElement implements HasName, HasValue {
     css`
       :host {
         display: flex;
-        border-radius: var(--bim-ui_size-base);
         background-color: var(--bim-ui_bg-contrast-20);
         overflow: auto;
       }
