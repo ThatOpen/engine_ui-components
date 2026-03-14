@@ -22,6 +22,11 @@ export class Tab extends LitElement {
         opacity 0.3s ease,
         max-height 0.6s ease,
         transform 0.3s ease;
+      --bim-panel-section--header-display: none;
+      --bim-panel-section--border: none;
+      --bim-panel--border: none;
+      --bim-tabs--border: none;
+
     }
 
     :host([hidden]) {

@@ -21,6 +21,7 @@ export class Tabs extends LitElement {
         background-color: var(--bim-ui_bg-contrast-20);
         display: block;
         overflow: auto;
+        border: var(--bim-tabs--border, 1px solid var(--bim-ui_bg-contrast-40));
       }
 
       .parent {
