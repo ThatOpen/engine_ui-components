@@ -514,7 +514,7 @@ const rightPanelInfo = BUI.Component.create(() => {
 const viewport = BUI.Component.create<BUI.Viewport>(() => {
   const bottomToolbar = BUI.Component.create(
     () => BUI.html`
-    <bim-tabs floating style="justify-self: center; border-radius: 0.5rem;">
+    <bim-tabs floating style="justify-self: center;">
       <bim-tab label="Import">
         <bim-toolbar>
           <bim-toolbar-section label="Open Formats">
@@ -566,7 +566,7 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
     () => BUI.html`
     <bim-toolbar vertical style="align-self: start;">
       <bim-toolbar-section>
-        <bim-button icon="solar:cursor-bold" tooltip-title="Element Selection" tooltip-text="💡 Change the selection mode to individual elements"></bim-button>
+        <bim-button icon="solar:cursor-bold"></bim-button>
         <bim-button icon="carbon:area"></bim-button>
         <bim-button icon="oui:vis-area-stacked"></bim-button>
       </bim-toolbar-section>
@@ -580,7 +580,6 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
 
   const grid = document.createElement("bim-grid");
   grid.floating = true;
-  grid.style.padding = "0"
   grid.layouts = {
     main: {
       template: `

@@ -38,7 +38,9 @@
 
     bim-panel,
     bim-panel-section,
-    bim-tabs {
+    bim-tabs:not([floating]),
+    bim-toolbar:not(bim-tabs bim-toolbar),
+    bim-viewport {
       border-radius: var(--bim-ui_size-base);
     }
   </style>
