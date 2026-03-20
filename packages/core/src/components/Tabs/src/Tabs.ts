@@ -58,7 +58,7 @@ export class Tabs extends LitElement {
         z-index: 2;
         transition: all 0.15s;
         min-height: 2.25rem;
-        min-width: 10rem;
+        min-width: 8rem;
       }
 
       .switcher:not([data-active]):hover {
@@ -99,7 +99,7 @@ export class Tabs extends LitElement {
       }
 
       :host([floating][switchers-compact]) .switcher {
-        min-width: 10rem;
+        min-width: 8rem;
         padding: 0rem 0.75rem;
         border-radius: 0;
         background-color: unset;
