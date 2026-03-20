@@ -1,4 +1,4 @@
-import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe,e as I,v as M,x as ee,V as te,C as ye,W as ge,S as $e,a as we,O as ve,G as he,F as Te,I as ke}from"./index-DPXt1yPz.js";import"./index-s8RoECTj.js";import{c as xe,d as D,a as E,b as V,t as Se,v as Ie,e as Ae}from"./index-COyobJWa.js";import{e as Y}from"./ref-B0YVjWyu.js";const Ce={dueDate:e=>{if(typeof e=="string"&&e.trim()!=="")return new Date(e)},status:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},type:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},priority:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},stage:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},assignedTo:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},labels:e=>{if(Array.isArray(e))return new Set(e)}},ne=e=>{const{components:l,topic:t,value:i,onCancel:n,onSubmit:s,styles:r}=e,m=s??(()=>{}),d=l.get(z),v=(i==null?void 0:i.title)??(t==null?void 0:t.title)??C.default.title,p=(i==null?void 0:i.status)??(t==null?void 0:t.status)??C.default.status,b=(i==null?void 0:i.type)??(t==null?void 0:t.type)??C.default.type,a=(i==null?void 0:i.priority)??(t==null?void 0:t.priority)??C.default.priority,y=(i==null?void 0:i.assignedTo)??(t==null?void 0:t.assignedTo)??C.default.assignedTo,u=(i==null?void 0:i.labels)??(t==null?void 0:t.labels)??C.default.labels,g=(i==null?void 0:i.stage)??(t==null?void 0:t.stage)??C.default.stage,k=(i==null?void 0:i.description)??(t==null?void 0:t.description)??C.default.description,$=t!=null&&t.dueDate?t.dueDate.toISOString().split("T")[0]:null,f=new Set([...d.config.statuses]);p&&f.add(p);const h=new Set([...d.config.types]);b&&h.add(b);const w=new Set([...d.config.priorities]);a&&w.add(a);const _=new Set([...d.config.users]);y&&_.add(y);const G=new Set([...d.config.labels]);if(u)for(const c of u)G.add(c);const H=new Set([...d.config.stages]);g&&H.add(g);const J=Y(),pe=async()=>{const{value:c}=J;if(!c)return;const x=fe(c,Ce);if(t)t.set(x),await m(t);else{const L=d.create(x);await m(L)}},N=Y(),be=c=>{const{value:x}=N;if(!x)return;const L=c.target;x.disabled=L.value.trim()===""},Q=`btn-${S.newRandomId()}`,U=`btn-${S.newRandomId()}`;return o`
+import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe,e as I,v as M,x as ee,V as te,C as ye,W as ge,S as $e,a as we,O as ve,G as he,F as Te,I as ke}from"./index-CIaHeOsI.js";import"./index-CZMoRK_M.js";import{c as xe,d as D,b as E,a as V,t as Se,v as Ie,e as Ae}from"./index-BCfDT3oC.js";import{e as Y}from"./ref-B0YVjWyu.js";const Ce={dueDate:e=>{if(typeof e=="string"&&e.trim()!=="")return new Date(e)},status:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},type:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},priority:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},stage:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},assignedTo:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},labels:e=>{if(Array.isArray(e))return new Set(e)}},ne=e=>{const{components:l,topic:t,value:i,onCancel:n,onSubmit:s,styles:r}=e,m=s??(()=>{}),d=l.get(z),v=(i==null?void 0:i.title)??(t==null?void 0:t.title)??C.default.title,p=(i==null?void 0:i.status)??(t==null?void 0:t.status)??C.default.status,b=(i==null?void 0:i.type)??(t==null?void 0:t.type)??C.default.type,a=(i==null?void 0:i.priority)??(t==null?void 0:t.priority)??C.default.priority,y=(i==null?void 0:i.assignedTo)??(t==null?void 0:t.assignedTo)??C.default.assignedTo,u=(i==null?void 0:i.labels)??(t==null?void 0:t.labels)??C.default.labels,g=(i==null?void 0:i.stage)??(t==null?void 0:t.stage)??C.default.stage,k=(i==null?void 0:i.description)??(t==null?void 0:t.description)??C.default.description,$=t!=null&&t.dueDate?t.dueDate.toISOString().split("T")[0]:null,f=new Set([...d.config.statuses]);p&&f.add(p);const h=new Set([...d.config.types]);b&&h.add(b);const w=new Set([...d.config.priorities]);a&&w.add(a);const _=new Set([...d.config.users]);y&&_.add(y);const G=new Set([...d.config.labels]);if(u)for(const c of u)G.add(c);const H=new Set([...d.config.stages]);g&&H.add(g);const J=Y(),pe=async()=>{const{value:c}=J;if(!c)return;const x=fe(c,Ce);if(t)t.set(x),await m(t);else{const B=d.create(x);await m(B)}},N=Y(),be=c=>{const{value:x}=N;if(!x)return;const B=c.target;x.disabled=B.value.trim()===""},Q=`btn-${S.newRandomId()}`,U=`btn-${S.newRandomId()}`;return o`
     <div ${X(J)} style="display: flex; flex-direction: column; gap: 0.75rem;">
       <div style="display: flex; gap: 0.375rem">
         <bim-text-input @input=${be} vertical label="Title" name="title" .value=${v}></bim-text-input>
@@ -20,7 +20,7 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
           ${[...G].map(c=>o`<bim-option label=${c} .checked=${u?[...u].includes(c):!1}></bim-option>`)}
         </bim-dropdown>
         <bim-dropdown vertical label="Assignee" name="assignedTo">
-          ${[..._].map(c=>{const x=r!=null&&r.users?r.users[c]:null,L=x?x.name:c,ue=x==null?void 0:x.picture;return o`<bim-option label=${L} value=${c} .img=${ue} .checked=${y===c}></bim-option>`})}
+          ${[..._].map(c=>{const x=r!=null&&r.users?r.users[c]:null,B=x?x.name:c,ue=x==null?void 0:x.picture;return o`<bim-option label=${B} value=${c} .img=${ue} .checked=${y===c}></bim-option>`})}
         </bim-dropdown>
       </div>
       <div style="display: flex; gap: 0.375rem">
@@ -91,14 +91,14 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Status</bim-label>
-        <bim-label .icon=${a==null?void 0:a.icon} style=${M({...V,...a==null?void 0:a.style})}
+        <bim-label .icon=${a==null?void 0:a.icon} style=${M({...E,...a==null?void 0:a.style})}
         >${n.status}
         </bim-label>
       </div>
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Type</bim-label>
-        <bim-label .icon=${b==null?void 0:b.icon} style=${M({...V,...b==null?void 0:b.style})}
+        <bim-label .icon=${b==null?void 0:b.icon} style=${M({...E,...b==null?void 0:b.style})}
         >${n.type}
         </bim-label>
       </div>
@@ -106,20 +106,20 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
       ${n.priority?o`
             <div style="display: flex; gap: 0.375rem">
               <bim-label>Priority</bim-label>
-              <bim-label .icon=${p==null?void 0:p.icon} style=${M({...V,...p==null?void 0:p.style})}
+              <bim-label .icon=${p==null?void 0:p.icon} style=${M({...E,...p==null?void 0:p.style})}
               >${n.priority}
               </bim-label>
             </div>`:null}
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Author</bim-label>
-        ${E(n.creationAuthor,(s==null?void 0:s.users)??D.users)}
+        ${V(n.creationAuthor,(s==null?void 0:s.users)??D.users)}
       </div>
 
       ${n.assignedTo?o`
           <div style="display: flex; gap: 0.375rem">
             <bim-label>Assignee</bim-label>
-            ${E(n.assignedTo,(s==null?void 0:s.users)??D.users)}
+            ${V(n.assignedTo,(s==null?void 0:s.users)??D.users)}
           </div>`:null}
 
       ${n.dueDate?o`
@@ -131,7 +131,7 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
       ${n.modifiedAuthor?o`
           <div style="display: flex; gap: 0.375rem">
             <bim-label>Modified By</bim-label>
-            ${E(n.modifiedAuthor,(s==null?void 0:s.users)??D.users)}
+            ${V(n.modifiedAuthor,(s==null?void 0:s.users)??D.users)}
           </div>`:null}
 
       ${n.modifiedDate?o`
@@ -153,7 +153,7 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
       ${i?y:u}
     </div>
-  `},_e=e=>I.create(oe,e),Le=Object.freeze(Object.defineProperty({__proto__:null,topicInformation:_e,topicInformationSectionTemplate:oe},Symbol.toStringTag,{value:"Module"})),le=(e,l)=>{const{components:t,topic:i,linking:n}=e,s=t.get(z),r={link:!0,...e.actions},[m,d]=Se({components:t,topics:[...i.relatedTopics].map(a=>s.list.get(a)).map(a=>a)});m.headersHidden=!0,m.hiddenColumns=["Guid","Status","Description","Author","Assignee","Date","DueDate","Type","Priority"];const v=()=>o`
+  `},_e=e=>I.create(oe,e),Be=Object.freeze(Object.defineProperty({__proto__:null,topicInformation:_e,topicInformationSectionTemplate:oe},Symbol.toStringTag,{value:"Module"})),le=(e,l)=>{const{components:t,topic:i,linking:n}=e,s=t.get(z),r={link:!0,...e.actions},[m,d]=Se({components:t,topics:[...i.relatedTopics].map(a=>s.list.get(a)).map(a=>a)});m.headersHidden=!0,m.hiddenColumns=["Guid","Status","Description","Author","Assignee","Date","DueDate","Type","Priority"];const v=()=>o`
       <bim-text-input placeholder="Search..." debounce="100" @input=${y=>{const u=y.target;u instanceof ee&&(m.queryString=u.value)}}></bim-text-input> 
     `;let p,b;if(n){m.selectableRows=!0,d({topics:void 0});const a=m.data.filter($=>{const{Guid:f}=$.data;return typeof f!="string"?!1:i.relatedTopics.has(f)}).map($=>$.data);m.selection.add(...a);const y=()=>{const $=[...m.selection].map(({Guid:f})=>typeof f!="string"?null:s.list.has(f)?f:null).map(f=>f);i.relatedTopics.clear(),i.relatedTopics.add(...$),l({linking:!1})},u=()=>{l({linking:!1})},g=`btn-${S.newRandomId()}`,k=`btn-${S.newRandomId()}`;p=o`
       <div style="display: flex; gap: 0.25rem">
@@ -187,7 +187,7 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
       ${p}
       ${m}
     </div> 
-  `},Be=e=>I.create(le,e),Re=Object.freeze(Object.defineProperty({__proto__:null,topicRelations:Be,topicRelationsSectionTemplate:le},Symbol.toStringTag,{value:"Module"})),se=(e,l)=>{const{components:t,topic:i,world:n,linking:s}=e,r={add:!0,link:!0,selectComponents:!0,colorizeComponent:!0,resetColors:!0,updateCamera:!0,delete:!0,unlink:!0,...e.actions},m=t.get(te),[d,v]=Ie({components:t,topic:i,actions:r}),p=()=>o`
+  `},Le=e=>I.create(le,e),Re=Object.freeze(Object.defineProperty({__proto__:null,topicRelations:Le,topicRelationsSectionTemplate:le},Symbol.toStringTag,{value:"Module"})),se=(e,l)=>{const{components:t,topic:i,world:n,linking:s}=e,r={add:!0,link:!0,selectComponents:!0,colorizeComponent:!0,resetColors:!0,updateCamera:!0,delete:!0,unlink:!0,...e.actions},m=t.get(te),[d,v]=Ie({components:t,topic:i,actions:r}),p=()=>o`
       <bim-text-input placeholder="Search..." debounce="100" @input=${u=>{const g=u.target;g instanceof ee&&(d.queryString=g.value)}}></bim-text-input> 
     `;let b,a;if(s){d.selectableRows=!0,v({topic:void 0,actions:{delete:!1,updateCamera:!1,colorizeComponent:!1,resetColors:!1}});const y=d.data.filter(f=>{const{Guid:h}=f.data;return typeof h!="string"?!1:i.viewpoints.has(h)}).map(f=>f.data);d.selection.add(...y);const u=()=>{const f=[...d.selection].map(({Guid:h})=>typeof h!="string"?null:m.list.has(h)?h:null).map(h=>h);i.viewpoints.clear(),i.viewpoints.add(...f),l({linking:!1})},g=()=>{l({linking:!1})},k=`btn-${S.newRandomId()}`,$=`btn-${S.newRandomId()}`;b=o`
       <div style="display: flex; gap: 0.25rem">
@@ -224,19 +224,19 @@ import"./lit-html-CgQwCkHV.js";import{B as z,T as C,l as S,c as X,d as o,n as fe
       ${b}
       ${d}
     </div> 
-  `},Fe=e=>I.create(se,e),Pe=Object.freeze(Object.defineProperty({__proto__:null,topicViewpoints:Fe,topicViewpointsSectionTemplate:se},Symbol.toStringTag,{value:"Module"})),F={...je,...Le,...Re,...Pe},Oe=e=>o`
+  `},Pe=e=>I.create(se,e),Fe=Object.freeze(Object.defineProperty({__proto__:null,topicViewpoints:Pe,topicViewpointsSectionTemplate:se},Symbol.toStringTag,{value:"Module"})),P={...je,...Be,...Re,...Fe},Oe=e=>o`
     <bim-panel-section fixed label="New Topic" name="topic">
       ${ne(e)}
     </bim-panel-section>
-  `,Ue=e=>I.create(Oe,e),Me=Object.freeze(Object.defineProperty({__proto__:null,topic:Ue},Symbol.toStringTag,{value:"Module"})),Ee={...Me};S.init();const q=document.createElement("bim-viewport"),T=new ye,Ve=T.get(ge),A=Ve.create(),ae=new $e(T);ae.setup();A.scene=ae;const re=new we(T,q);A.renderer=re;const K=new ve(T);A.camera=K;K.controls.setLookAt(10,5.5,5,-4,-1,-6.5);q.addEventListener("resize",()=>{re.resize(),K.updateAspect()});T.init();const ze=T.get(he);ze.create(A);const qe="https://thatopen.github.io/engine_fragment/resources/worker.mjs",Ke=await fetch(qe),We=await Ke.blob(),Ge=new File([We],"worker.mjs",{type:"text/javascript"}),He=URL.createObjectURL(Ge),B=T.get(Te);B.init(He);A.camera.controls.addEventListener("update",()=>B.core.update());B.list.onItemSet.add(async({value:e})=>{e.useCamera(A.camera.three),A.scene.three.add(e.object),await B.core.update(!0)});B.core.models.materials.list.onItemSet.add(({value:e})=>{"isLodMaterial"in e&&e.isLodMaterial||(e.polygonOffset=!0,e.polygonOffsetUnits=1,e.polygonOffsetFactor=Math.random())});const ce=T.get(ke);await ce.setup({autoSetWasm:!1,wasm:{path:"https://unpkg.com/web-ifc@0.0.74/",absolute:!0}});const Je=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),Ne=await Je.arrayBuffer(),Qe=new Uint8Array(Ne);await ce.load(Qe,!0,"small");const O={"jhon.doe@example.com":{name:"Jhon Doe",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Profile-Image-AI.jpg"},"user_a@something.com":{name:"User A",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Portrait-Photography.jpg"},"user_b@something.com":{name:"User B",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/AI-Portrait.jpg"}},j=T.get(z);j.setup({users:new Set(Object.keys(O)),labels:new Set(["Architecture","Structure","MEP"])});const Xe=T.get(te);j.list.onItemSet.add(({value:e})=>{const l=Xe.create();l.world=A,e.viewpoints.add(l.guid)});const[R]=Ae.topicsList({components:T,dataStyles:{users:O}});R.selectableRows=!0;const[me,Ye]=Ee.topic({components:T,styles:{users:O}}),Z=me.querySelector("bim-dropdown[name='assignedTo']");Z&&(Z.searchBox=!0);const P=I.create(()=>o`
+  `,Ue=e=>I.create(Oe,e),Me=Object.freeze(Object.defineProperty({__proto__:null,topic:Ue},Symbol.toStringTag,{value:"Module"})),Ee={...Me};S.init();const q=document.createElement("bim-viewport"),T=new ye,Ve=T.get(ge),A=Ve.create(),ae=new $e(T);ae.setup();A.scene=ae;const re=new we(T,q);A.renderer=re;const K=new ve(T);A.camera=K;K.controls.setLookAt(10,5.5,5,-4,-1,-6.5);q.addEventListener("resize",()=>{re.resize(),K.updateAspect()});T.init();const ze=T.get(he);ze.create(A);const qe="https://thatopen.github.io/engine_fragment/resources/worker.mjs",Ke=await fetch(qe),We=await Ke.blob(),Ge=new File([We],"worker.mjs",{type:"text/javascript"}),He=URL.createObjectURL(Ge),L=T.get(Te);L.init(He);A.camera.controls.addEventListener("update",()=>L.core.update());L.list.onItemSet.add(async({value:e})=>{e.useCamera(A.camera.three),A.scene.three.add(e.object),await L.core.update(!0)});L.core.models.materials.list.onItemSet.add(({value:e})=>{"isLodMaterial"in e&&e.isLodMaterial||(e.polygonOffset=!0,e.polygonOffsetUnits=1,e.polygonOffsetFactor=Math.random())});const ce=T.get(ke);await ce.setup({autoSetWasm:!1,wasm:{path:"https://unpkg.com/web-ifc@0.0.74/",absolute:!0}});const Je=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),Ne=await Je.arrayBuffer(),Qe=new Uint8Array(Ne);await ce.load(Qe,!0,"small");const O={"jhon.doe@example.com":{name:"Jhon Doe",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Profile-Image-AI.jpg"},"user_a@something.com":{name:"User A",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Portrait-Photography.jpg"},"user_b@something.com":{name:"User B",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/AI-Portrait.jpg"}},j=T.get(z);j.setup({users:new Set(Object.keys(O)),labels:new Set(["Architecture","Structure","MEP"])});const Xe=T.get(te);j.list.onItemSet.add(({value:e})=>{const l=Xe.create();l.world=A,e.viewpoints.add(l.guid)});const[R]=Ae.topicsList({components:T,dataStyles:{users:O}});R.selectableRows=!0;const[me,Ye]=Ee.topic({components:T,styles:{users:O}}),Z=me.querySelector("bim-dropdown[name='assignedTo']");Z&&(Z.searchBox=!0);const F=I.create(()=>o`
     <dialog class="form-dialog">
      <bim-panel style="border-radius: var(--bim-ui_size-base); width: 22rem;">
       ${me}
      </bim-panel> 
     </dialog>
-  `);document.body.append(P);const Ze=I.create(()=>o`
-    <bim-button style="flex: 0" @click=${()=>{P.showModal()}} label="Create Topic" icon="material-symbols:task"></bim-button>
-  `);Ye({onCancel:()=>{P.close()},onSubmit:()=>{P.close()}});const[et,de]=I.create(e=>{const{components:l,topic:t,world:i,actions:n,styles:s}=e;let r,m;if(t){const[d]=F.topicInformation({components:l,topic:t,actions:n==null?void 0:n.information,styles:s}),[v]=F.topicViewpoints({components:l,topic:t,world:i,actions:n==null?void 0:n.viewpoints}),[p]=F.topicRelations({components:l,topic:t,actions:n==null?void 0:n.relatedTopics}),[b]=F.topicComments({topic:t,actions:n==null?void 0:n.comments,styles:s==null?void 0:s.users}),a=()=>{window.alert(`An email will be sent to ${t.assignedTo}! (obviosuly not, this is just for demo purposes)`)};r=o`
+  `);document.body.append(F);const Ze=I.create(()=>o`
+    <bim-button style="flex: 0" @click=${()=>{F.showModal()}} label="Create Topic" icon="material-symbols:task"></bim-button>
+  `);Ye({onCancel:()=>{F.close()},onSubmit:()=>{F.close()}});const[et,de]=I.create(e=>{const{components:l,topic:t,world:i,actions:n,styles:s}=e;let r,m;if(t){const[d]=P.topicInformation({components:l,topic:t,actions:n==null?void 0:n.information,styles:s}),[v]=P.topicViewpoints({components:l,topic:t,world:i,actions:n==null?void 0:n.viewpoints}),[p]=P.topicRelations({components:l,topic:t,actions:n==null?void 0:n.relatedTopics}),[b]=P.topicComments({topic:t,actions:n==null?void 0:n.comments,styles:s==null?void 0:s.users}),a=()=>{window.alert(`An email will be sent to ${t.assignedTo}! (obviosuly not, this is just for demo purposes)`)};r=o`
         <bim-panel-section label="Information" icon="ph:info-bold">
           ${d}
         </bim-panel-section>
