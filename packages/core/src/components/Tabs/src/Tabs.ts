@@ -22,6 +22,8 @@ export class Tabs extends LitElement {
         display: block;
         overflow: auto;
         border: var(--bim-tabs--border, 1px solid var(--bim-ui_bg-contrast-40));
+        --bim-toolbar--border: none;
+        --bim-toolbar--bdrs: 0;
       }
 
       .parent {
@@ -88,6 +90,25 @@ export class Tabs extends LitElement {
         background-color: var(--bim-ui_bg-contrast-60);
       }
 
+      :host([floating][switchers-compact]) .switchers {
+        width: unset;
+        border-bottom: unset;
+        margin: 0;
+        gap: unset;
+        border-radius: unset;
+      }
+
+      :host([floating][switchers-compact]) .switcher {
+        min-width: 10rem;
+        padding: 0rem 0.75rem;
+        border-radius: 0;
+        background-color: unset;
+      }
+
+      :host([floating][switchers-compact]) .switcher[data-active] {
+        background-color: unset;
+      }
+
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_main-contrast);
         background-color: var(--bim-ui_bg-contrast-60);
@@ -125,6 +146,8 @@ export class Tabs extends LitElement {
 
       :host([floating]) {
         background-color: transparent;
+        border: none;
+        --bim-toolbar--w: 100%;
       }
 
       :host([floating]) .switchers {
@@ -135,29 +158,35 @@ export class Tabs extends LitElement {
 
       :host([floating]:not([bottom])) .switchers {
         border-radius: var(--bim-ui_size-2xs) var(--bim-ui_size-2xs) 0 0;
-        border-top: 1px solid var(--bim-ui_bg-contrast-20);
-        border-left: 1px solid var(--bim-ui_bg-contrast-20);
-        border-right: 1px solid var(--bim-ui_bg-contrast-20);
+        border-top: 1px solid var(--bim-ui_bg-contrast-40);
+        border-left: 1px solid var(--bim-ui_bg-contrast-40);
+        border-right: 1px solid var(--bim-ui_bg-contrast-40);
+        border-bottom: none;
       }
 
       :host([floating][bottom]) .switchers {
         border-radius: 0 0 var(--bim-ui_size-2xs) var(--bim-ui_size-2xs);
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
-        border-left: 1px solid var(--bim-ui_bg-contrast-20);
-        border-right: 1px solid var(--bim-ui_bg-contrast-20);
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
+        border-left: 1px solid var(--bim-ui_bg-contrast-40);
+        border-right: 1px solid var(--bim-ui_bg-contrast-40);
+        border-top: none;
       }
 
       :host([floating][tab="hidden"]) .switchers {
         border-radius: var(--bim-ui_size-2xs);
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
       }
 
       :host([floating][bottom][tab="hidden"]) .switchers {
-        border-top: 1px solid var(--bim-ui_bg-contrast-20);
+        border-top: 1px solid var(--bim-ui_bg-contrast-40);
+      }
+
+      :host([floating][tab="hidden"]) .content {
+        border: none;
       }
 
       :host([floating]) .content {
-        border: 1px solid var(--bim-ui_bg-contrast-20);
+        border: 1px solid var(--bim-ui_bg-contrast-40);
         border-radius: var(--bim-ui_size-2xs);
         background-color: var(--bim-ui_bg-base);
       }

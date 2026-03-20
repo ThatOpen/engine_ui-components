@@ -13,9 +13,10 @@ export class Toolbar extends LitElement {
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
-      background-color: var(--bim-ui_bg-contrast-20);
-      border-radius: var(--bim-ui_size-2xs);
+      overflow: auto;
       display: block;
+      border: var(--bim-toolbar--border, 1px solid var(--bim-ui_bg-contrast-40));
+      border-radius: var(--bim-toolbar--bdrs, 0);
     }
 
     :host([hidden]) {
@@ -24,7 +25,7 @@ export class Toolbar extends LitElement {
 
     .parent {
       display: flex;
-      width: max-content;
+      width: var(--bim-toolbar--w, max-content);
       pointer-events: auto;
     }
 
@@ -34,8 +35,6 @@ export class Toolbar extends LitElement {
 
     :host([vertical]) {
       width: min-content;
-      border-radius: var(--bim-ui_size-2xs);
-      border: 1px solid var(--bim-ui_bg-contrast-20);
     }
 
     ::slotted(bim-toolbar-section:not(:last-child)) {

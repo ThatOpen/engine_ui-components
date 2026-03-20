@@ -14,6 +14,7 @@ export class Viewport extends LitElement {
       min-width: 0;
       min-height: 0;
       height: 100%;
+      border: 1px solid var(--bim-ui_bg-contrast-40);
     }
 
     .parent {

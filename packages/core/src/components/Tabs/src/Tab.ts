@@ -26,6 +26,7 @@ export class Tab extends LitElement {
       --bim-panel-section--border: none;
       --bim-panel--border: none;
       --bim-tabs--border: none;
+      --bim-toolbar--border: none;
 
     }
 

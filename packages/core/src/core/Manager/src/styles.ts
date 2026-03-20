@@ -16,7 +16,7 @@ const scrollbar = css`
   }
 
   ::-webkit-scrollbar-track {
-    background-color: var(--bim-scrollbar--bgc, var(--bim-ui_bg-base));
+    background-color: var(--bim-scrollbar--bgc, var(--bim-ui_bg-contrast-40));
   }
 `;
 
