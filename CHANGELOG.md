@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.4](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.3...v3.3.4) (2026-03-20)
+
+
+### Bug Fixes
+
+* fixes filterFunction assignment in table component ([020ce95](https://github.com/ThatOpen/engine_ui-components/commit/020ce95e7b1c9ff1761d0d377e53bd8b5c3ce405))
+
 ## [3.3.3](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.1...v3.3.3) (2026-01-27)
 
 
