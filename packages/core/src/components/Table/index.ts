@@ -374,6 +374,17 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
   private _groupedBy: (keyof T)[] = [];
 
+  /** @internal Tracks the last directly-selected row for Ctrl+click range selection. */
+  _lastSelectedData: Partial<T> | null = null;
+
+  /**
+   * The modifier key used for range selection (click one row, hold key, click another to select all in between).
+   *
+   * @defaultValue "ctrlKey"
+   */
+  @property({ type: String, attribute: "range-select-key", reflect: true })
+  rangeSelectKey: "ctrlKey" | "shiftKey" | "altKey" | "metaKey" = "ctrlKey";
+
   @state()
   private _errorLoading = false;
 
