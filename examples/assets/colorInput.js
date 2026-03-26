@@ -1,1 +1,1 @@
-import"./lit-html-CgQwCkHV.js";import{M as n}from"./index-DNUBASOE.js";import"./ref-B0YVjWyu.js";n.init();const o=document.body.querySelector("bim-color-input");o.addEventListener("input",()=>{const{color:t}=o;console.log(t)});
+import"./lit-html-CgQwCkHV.js";import{M as n}from"./index-C-2ZJYsT.js";import"./ref-B0YVjWyu.js";n.init();const o=document.body.querySelector("bim-color-input");o.addEventListener("input",()=>{const{color:t}=o;console.log(t)});

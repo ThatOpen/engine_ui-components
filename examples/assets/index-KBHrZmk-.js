@@ -1,1 +1,0 @@
-import{l as e}from"./index-CIaHeOsI.js";import{V as i,W as m,a as o}from"./index-CZMoRK_M.js";class l{static init(){e.defineCustomElement("bim-view-cube",i),e.defineCustomElement("bim-world-2d",m),e.defineCustomElement("bim-world",o)}}export{l as M};

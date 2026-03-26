@@ -2,7 +2,8 @@
   "description": "Collection of web components meant to be used, but not limited to, BIM applications.",
   "author": "That Open Company",
   "contributors": [
-    "Juan Hoyos (https://github.com/HoyosJuan)"
+    "Juan Hoyos (https://github.com/HoyosJuan)",
+    "Pablo Aguilar (https://github.com/pabloaguilarv)"
   ],
   "scripts": {
     "dev": "vite --host",
