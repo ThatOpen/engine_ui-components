@@ -23,6 +23,7 @@
   "packages/core/src/components/Table/examples/Grouping/example.ts",
   "packages/core/src/components/Table/examples/ExportingData/example.ts",
   "packages/core/src/components/Table/examples/DataTransform/example.ts",
+  "packages/core/src/components/Slider/example.ts",
   "packages/core/src/components/Selector/example.ts",
   "packages/core/src/components/Panel/example.ts",
   "packages/core/src/components/NumberInput/example.ts",
