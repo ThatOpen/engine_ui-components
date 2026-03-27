@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slider</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .example-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .example-group h3 {
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0;
+      font-size: 0.875rem;
+    }
+
+    bim-slider {
+      width: 20rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Continuous slider -->
+  <div class="example-group">
+    <h3>Continuous</h3>
+    <bim-slider id="continuous" label="Volume" min="0" max="100" value-label-display="auto"></bim-slider>
+  </div>
+
+  <!-- Stepped slider with marks -->
+  <div class="example-group">
+    <h3>Stepped with marks</h3>
+    <bim-slider id="stepped" label="Temperature" min="0" max="40" step="10" show-marks></bim-slider>
+  </div>
+
+  <!-- Disabled slider -->
+  <div class="example-group">
+    <h3>Disabled</h3>
+    <bim-slider label="Disabled" min="0" max="100" disabled></bim-slider>
+  </div>
+
+  <!-- Always-visible value label -->
+  <div class="example-group">
+    <h3>Value label always on</h3>
+    <bim-slider id="always-on" label="Opacity" min="0" max="100" value-label-display="on"></bim-slider>
+  </div>
+
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>

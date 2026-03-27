@@ -138,6 +138,7 @@ export class Manager {
     Manager.defineCustomElement("bim-chart-legend", components.ChartLegend);
     Manager.defineCustomElement("bim-chart", components.Chart);
     Manager.defineCustomElement("bim-tooltip", components.Tooltip);
+    Manager.defineCustomElement("bim-slider", components.Slider);
 
     if (animateOnLoad) this.animateOnLoad(querySelectorElements);
   }

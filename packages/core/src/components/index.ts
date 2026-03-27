@@ -31,6 +31,7 @@ import { Viewport } from "./Viewport";
 import { ChartLegend } from "./ChartLegend";
 import { Chart, DataClickDetail } from "./Chart";
 import { Tooltip } from "./Tooltip";
+import { Slider, SliderChangedEventDetail } from "./Slider";
 
 /**
  * Extends the global HTMLElementTagNameMap interface to include custom element tags.
@@ -67,6 +68,7 @@ declare global {
     "bim-chart-legend": ChartLegend;
     "bim-chart": Chart;
     "bim-tooltip": Tooltip;
+    "bim-slider": Slider;
   }
 
   /**
@@ -89,6 +91,8 @@ declare global {
     sectionclick: CustomEvent<DataClickDetail>;
     dataselected: CustomEvent<DataSelectedEventDetail>;
     datadeselected: CustomEvent<DataSelectedEventDetail>;
+    sliderchange: CustomEvent<SliderChangedEventDetail>;
+    sliderchangecommitted: CustomEvent<SliderChangedEventDetail>;
   }
 }
 
@@ -116,3 +120,4 @@ export * from "./Viewport";
 export * from "./ChartLegend";
 export * from "./Chart";
 export * from "./Tooltip";
+export * from "./Slider";
