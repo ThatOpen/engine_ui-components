@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.4.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.3...v3.4.0) (2026-03-27)
+
+
+### Features
+
+* add parsing functions for tab tokens and enhance Grid component with icon support for tabs and panels ([c9773b7](https://github.com/ThatOpen/engine_ui-components/commit/c9773b771eb4e728945fd8c1fad625224c733337))
+* adds range selection in table ([64904cd](https://github.com/ThatOpen/engine_ui-components/commit/64904cd37d5f70fc5917a3385067b0f94cd9f527))
+* enhance Grid component with area grouping support and update parsing logic ([be74ece](https://github.com/ThatOpen/engine_ui-components/commit/be74ece622a17ac591fd77d107a31a47b591c188))
+* implements slider component ([7a0363c](https://github.com/ThatOpen/engine_ui-components/commit/7a0363c6a965362505919ddd7816f142504764a5))
+
+
+### Bug Fixes
+
+* fixes filterFunction assignment in table component ([020ce95](https://github.com/ThatOpen/engine_ui-components/commit/020ce95e7b1c9ff1761d0d377e53bd8b5c3ce405))
+
 ## [3.3.3](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.1...v3.3.3) (2026-01-27)
 
 
