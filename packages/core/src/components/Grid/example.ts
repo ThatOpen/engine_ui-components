@@ -1,7 +1,9 @@
 /* eslint-disable no-alert */
 import * as BUI from "../..";
+import { icons as customIcons } from "../../../../../resources/custom-icons.json";
 
 BUI.Manager.init();
+BUI.Manager.addIconsCollection({ ...customIcons });
 
 const tooltipTemplate = () => BUI.html`
   <bim-tooltip style="width: 18rem;">
@@ -57,11 +59,12 @@ const bottomPanel = BUI.Component.create(() => {
   let table: BUI.Table | undefined
   const onTableCreated = (element?: Element) => {
     if (!element) return;
-    const table = element as BUI.Table;
+    table = element as BUI.Table;
     const sharedStyles = {
       padding: "0.25rem 0.375rem",
       borderRadius: "0.25rem",
     };
+
     table.dataTransform = {
       Status: (value) => {
         if (typeof value !== "string") return value;
@@ -115,6 +118,7 @@ const bottomPanel = BUI.Component.create(() => {
         `;
       },
     };
+
     table.data = [
       {
         data: {
@@ -124,45 +128,42 @@ const bottomPanel = BUI.Component.create(() => {
           DueDate: "2024-05-20",
           Status: "In Progress",
         },
-        children: [
-          {
-            data: {
-              Task: "Code Review - Round 1",
-              Description: "First pass code review",
-              AssignedTo: "Alice",
-              DueDate: "2024-05-18",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Address Comments",
-              Description:
-                "Address the comments from the first round of review",
-              AssignedTo: "Author of Code",
-              DueDate: "2024-05-19",
-              Status: "In Progress",
-            },
-          },
-          {
-            data: {
-              Task: "Code Review - Round 2",
-              Description: "Second pass code review after addressing comments",
-              AssignedTo: "Alice",
-              DueDate: "2024-05-20",
-              Status: "Pending",
-            },
-          },
-          {
-            data: {
-              Task: "Merge Code",
-              Description: "Merge reviewed code after final approval",
-              AssignedTo: "Project Lead",
-              DueDate: "2024-05-21",
-              Status: "Not Started",
-            },
-          },
-        ],
+      },
+      {
+        data: {
+          Task: "Code Review",
+          Description: "First pass code review",
+          AssignedTo: "Alice",
+          DueDate: "2024-05-18",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Code Review",
+          Description: "Address the comments from the first round of review",
+          AssignedTo: "Author of Code",
+          DueDate: "2024-05-19",
+          Status: "In Progress",
+        },
+      },
+      {
+        data: {
+          Task: "Code Review",
+          Description: "Second pass code review after addressing comments",
+          AssignedTo: "Alice",
+          DueDate: "2024-05-20",
+          Status: "Pending",
+        },
+      },
+      {
+        data: {
+          Task: "Code Review",
+          Description: "Merge reviewed code after final approval",
+          AssignedTo: "Project Lead",
+          DueDate: "2024-05-21",
+          Status: "Pending",
+        },
       },
       {
         data: {
@@ -181,55 +182,51 @@ const bottomPanel = BUI.Component.create(() => {
           DueDate: "2024-05-22",
           Status: "Completed",
         },
-        children: [
-          {
-            data: {
-              Task: "Create Test Cases",
-              Description: "Identify and document all necessary test cases",
-              AssignedTo: "Charlie",
-              DueDate: "2024-05-19",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Implement Unit Tests",
-              Description:
-                "Write the actual unit tests based on the test cases",
-              AssignedTo: "Charlie",
-              DueDate: "2024-05-20",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Run Unit Tests",
-              Description: "Execute the unit tests and analyze the results",
-              AssignedTo: "Charlie",
-              DueDate: "2024-05-21",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Fix Failing Tests",
-              Description:
-                "Address any failing unit tests and correct the code",
-              AssignedTo: "Charlie",
-              DueDate: "2024-05-22",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Refactor Code",
-              Description: "Improve the code structure and readability",
-              AssignedTo: "Charlie",
-              DueDate: "2024-05-23",
-              Status: "Completed",
-            },
-          },
-        ],
+      },
+      {
+        data: {
+          Task: "Unit Testing",
+          Description: "Identify and document all necessary test cases",
+          AssignedTo: "Charlie",
+          DueDate: "2024-05-19",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Unit Testing",
+          Description: "Write the actual unit tests based on the test cases",
+          AssignedTo: "Charlie",
+          DueDate: "2024-05-20",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Unit Testing",
+          Description: "Execute the unit tests and analyze the results",
+          AssignedTo: "Charlie",
+          DueDate: "2024-05-21",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Unit Testing",
+          Description: "Address any failing unit tests and correct the code",
+          AssignedTo: "Charlie",
+          DueDate: "2024-05-22",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Unit Testing",
+          Description: "Improve the code structure and readability",
+          AssignedTo: "Charlie",
+          DueDate: "2024-05-23",
+          Status: "Completed",
+        },
       },
       {
         data: {
@@ -239,56 +236,51 @@ const bottomPanel = BUI.Component.create(() => {
           DueDate: "2024-05-18",
           Status: "Pending",
         },
-        children: [
-          {
-            data: {
-              Task: "Prepare Build Package",
-              Description: "Create the deployable package for the application",
-              AssignedTo: "David",
-              DueDate: "2024-05-16",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Configure Staging Environment",
-              Description:
-                "Set up the staging environment with necessary configurations",
-              AssignedTo: "David",
-              DueDate: "2024-05-17",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Upload Build Package",
-              Description: "Upload the build package to the staging server",
-              AssignedTo: "David",
-              DueDate: "2024-05-18",
-              Status: "Completed",
-            },
-          },
-          {
-            data: {
-              Task: "Run Deployment Script",
-              Description:
-                "Execute the deployment script to deploy the application",
-              AssignedTo: "David",
-              DueDate: "2024-05-18",
-              Status: "In Progress",
-            },
-          },
-          {
-            data: {
-              Task: "Verify Deployment",
-              Description:
-                "Check the application in the staging environment to ensure proper deployment",
-              AssignedTo: "David",
-              DueDate: "2024-05-19",
-              Status: "Pending",
-            },
-          },
-        ],
+      },
+      {
+        data: {
+          Task: "Deploy to Staging",
+          Description: "Create the deployable package for the application",
+          AssignedTo: "David",
+          DueDate: "2024-05-16",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Deploy to Staging",
+          Description: "Set up the staging environment with necessary configurations",
+          AssignedTo: "David",
+          DueDate: "2024-05-17",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Deploy to Staging",
+          Description: "Upload the build package to the staging server",
+          AssignedTo: "David",
+          DueDate: "2024-05-18",
+          Status: "Completed",
+        },
+      },
+      {
+        data: {
+          Task: "Deploy to Staging",
+          Description: "Execute the deployment script to deploy the application",
+          AssignedTo: "David",
+          DueDate: "2024-05-18",
+          Status: "In Progress",
+        },
+      },
+      {
+        data: {
+          Task: "Deploy to Staging",
+          Description: "Check the application in the staging environment to ensure proper deployment",
+          AssignedTo: "David",
+          DueDate: "2024-05-19",
+          Status: "Pending",
+        },
       },
       {
         data: {
@@ -391,6 +383,26 @@ const bottomPanel = BUI.Component.create(() => {
       },
     ];
   };
+
+  const onGroupByTask = () => {
+    if (!table) return
+    table.groupedBy = ["Task"]
+  }
+
+  const onGroupByAssignee = () => {
+    if (!table) return
+    table.groupedBy = ["AssignedTo"]
+  }
+
+  const onGroupByStatus = () => {
+    if (!table) return
+    table.groupedBy = ["Status"]
+  }
+
+  const onUngroup = () => {
+    if (!table) return
+    table.groupedBy = []
+  }
 
   return BUI.html`
     <bim-panel-section label="Assignments" fixed>
@@ -518,17 +530,17 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
       <bim-tab label="Import">
         <bim-toolbar>
           <bim-toolbar-section label="Open Formats">
-            <bim-button label="IFC"></bim-button>
-            <bim-button label="BCF"></bim-button>
-            <bim-button label="IDS"></bim-button>
-            <bim-button label="DXF"></bim-button>
+            <bim-button icon="bim:ifc" label="IFC"></bim-button>
+            <bim-button icon="bim:bcf" label="BCF"></bim-button>
+            <bim-button icon="bim:ids" label="IDS"></bim-button>
+            <bim-button icon="bim:dxf" label="DXF"></bim-button>
           </bim-toolbar-section>
           <bim-toolbar-section label="External">
-            <bim-button label="RVT">
+            <bim-button icon="bim:rvt" label="RVT">
               ${BUI.Component.create(tooltipTemplate)}
             </bim-button>
-            <bim-button label="PDF"></bim-button>
-            <bim-button label="DWG"></bim-button>
+            <bim-button icon="bim:pdf" label="PDF"></bim-button>
+            <bim-button icon="bim:dwg" label="DWG"></bim-button>
           </bim-toolbar-section>
         </bim-toolbar>
       </bim-tab>
@@ -578,7 +590,7 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
   `,
   );
 
-  const grid = document.createElement("bim-grid");
+  const grid = document.createElement("bim-grid") as BUI.Grid<["main"]>;
   grid.floating = true;
   grid.layouts = {
     main: {
@@ -598,10 +610,7 @@ const viewport = BUI.Component.create<BUI.Viewport>(() => {
   `;
 });
 
-type LayoutElements = {
-  main: ["header", "sidebar", "content"];
-  app: ["ribbon", "leftPanel", "viewport", "rightPanel", "bottomPanel"];
-};
+type Layouts = ["main", "app"];
 
 const grid = document.body.querySelector<BUI.Grid<Layouts>>("bim-grid")!;
 grid.elements = {
@@ -654,23 +663,16 @@ grid.layouts = {
       "${leftPanelArea} bottomPanel bottomPanel" 20rem
       / 22rem 1fr 20rem
     `,
-    elements: {
-      ribbon,
-      leftPanel,
-      viewport,
-      bottomPanel,
-      rightPanel,
-    },
   },
 };
 
-grid.addEventListener("layoutchange", () => {
-  if (grid.layout) {
-    alert(`Your have changed to "${grid.layout}" layout!`);
-  } else {
-    alert(`Your have cleaned up your layout!`);
-  }
-});
+// grid.addEventListener("layoutchange", () => {
+//   if (grid.layout) {
+//     alert(`Your have changed to "${grid.layout}" layout!`);
+//   } else {
+//     alert(`Your have cleaned up your layout!`);
+//   }
+// });
 
 const btn = document.body.querySelector<BUI.Button>("bim-button")!;
 btn.addEventListener("click", () => {
