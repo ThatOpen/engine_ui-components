@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawing Board</title>
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    bim-sheet-board {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <bim-sheet-board id="board">
+    <bim-paper-space id="paper-a" size="A1" orientation="landscape" label="Sheet A-01"></bim-paper-space>
+    <bim-paper-space id="paper-b" size="A2" orientation="portrait" label="Sheet A-02"></bim-paper-space>
+  </bim-sheet-board>
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>

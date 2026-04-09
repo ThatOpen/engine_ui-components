@@ -32,6 +32,7 @@ import { ChartLegend } from "./ChartLegend";
 import { Chart, DataClickDetail } from "./Chart";
 import { Tooltip } from "./Tooltip";
 import { Slider, SliderChangedEventDetail } from "./Slider";
+import { PaperSpace } from "./PaperSpace";
 
 /**
  * Extends the global HTMLElementTagNameMap interface to include custom element tags.
@@ -69,6 +70,7 @@ declare global {
     "bim-chart": Chart;
     "bim-tooltip": Tooltip;
     "bim-slider": Slider;
+    "bim-paper-space": PaperSpace;
   }
 
   /**
@@ -121,3 +123,4 @@ export * from "./ChartLegend";
 export * from "./Chart";
 export * from "./Tooltip";
 export * from "./Slider";
+export * from "./PaperSpace";

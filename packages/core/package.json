@@ -1,7 +1,7 @@
 {
   "name": "@thatopen/ui",
   "description": "Collection of web components (UI components) meant to be used, but not limited to, BIM applications.",
-  "version": "3.3.7",
+  "version": "3.4.0",
   "author": "That Open Company",
   "contributors": [
     "Juan Hoyos (https://github.com/HoyosJuan)",
@@ -33,7 +33,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc --p ./tsconfig-build.json && vite build",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "yarn build",
     "publish-repo": "npm publish"
   },
   "publishConfig": {

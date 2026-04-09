@@ -1,6 +1,7 @@
 import { World2D } from "./World2D";
 import { ViewCube } from "./ViewCube";
 import { World } from "./World";
+import { SheetBoard } from "./SheetBoard";
 
 declare global {
   /**
@@ -10,6 +11,7 @@ declare global {
     "bim-world-2d": World2D;
     "bim-view-cube": ViewCube;
     "bim-world": World;
+    "bim-sheet-board": SheetBoard;
   }
 
   /**
@@ -25,5 +27,5 @@ declare global {
   }
 }
 
-export { ViewCube, World2D, World };
+export { ViewCube, World2D, World, SheetBoard };
 export * from "./Manager";

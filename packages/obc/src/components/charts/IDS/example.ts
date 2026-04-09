@@ -77,7 +77,7 @@ components.init();
 const ifcLoader = components.get(OBC.IfcLoader);
 ifcLoader.settings.autoSetWasm = false;
 await ifcLoader.setup({
-  wasm: { absolute: false, path: "https://unpkg.com/web-ifc@0.0.74/" },
+  wasm: { absolute: false, path: "https://unpkg.com/web-ifc@0.0.77/" },
 });
 
 const githubUrl =

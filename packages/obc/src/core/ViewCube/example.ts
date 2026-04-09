@@ -7,8 +7,8 @@
 
   We'll need:
 
-  - `@thatopen-platform/ui-beta` for UI initialization.
-  - `@thatopen-platform/components-beta` for the 3D engine and scene management.
+  - `@thatopen/ui` for UI initialization.
+  - `@thatopen/components` for the 3D engine and scene management.
   - The local UI components package for extra UI features.
 */
 

@@ -37,7 +37,7 @@ function tokenizeLine(line: string): (string | null)[] {
  *
  * @param template - The grid template string to parse
  * @returns A 2D array where each cell contains the area name or null for empty cells
- * 
+ *
  * @example
  * ```ts
  * const template = `
@@ -56,7 +56,7 @@ export function parseGridTemplate(template: string): (string | null)[][] {
   // Try to parse using quoted strings
   while ((match = re.exec(template)) !== null) {
     const inside = match[2].trim();
-    if (inside === '') {
+    if (inside === "") {
       gridMatrix.push([]);
       continue;
     }
@@ -67,11 +67,11 @@ export function parseGridTemplate(template: string): (string | null)[][] {
   if (gridMatrix.length === 0) {
     const lines = template
       .split(/\r?\n/)
-      .map(l => l.trim())
+      .map((l) => l.trim())
       .filter(Boolean);
-    
+
     for (const line of lines) {
-      const cleaned = line.replace(/^["']|["']$/g, '').trim();
+      const cleaned = line.replace(/^["']|["']$/g, "").trim();
       if (!cleaned) continue;
       gridMatrix.push(tokenizeLine(cleaned));
     }
@@ -86,7 +86,7 @@ export function parseGridTemplate(template: string): (string | null)[][] {
  *
  * @param template - The grid template string
  * @returns An array of unique area names
- * 
+ *
  * @example
  * ```ts
  * const template = `

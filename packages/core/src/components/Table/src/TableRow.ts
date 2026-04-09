@@ -137,6 +137,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
     if (!this.table) return;
     const target = e.target as Checkbox;
     this.selected = target.value;
+
     if (target.value) {
       if (
         !this.isHeader &&

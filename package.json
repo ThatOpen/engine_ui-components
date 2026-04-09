@@ -1,4 +1,5 @@
 {
+  "private": true,
   "description": "Collection of web components meant to be used, but not limited to, BIM applications.",
   "author": "That Open Company",
   "contributors": [
@@ -7,13 +8,13 @@
   ],
   "scripts": {
     "dev": "vite --host",
-    "build-core": "npm run build -w @thatopen/ui",
-    "build-obc": "npm run build -w @thatopen/ui-obc",
-    "build-libraries": "npm run build-core && npm run build-obc",
+    "build-core": "yarn workspace @thatopen/ui build",
+    "build-obc": "yarn workspace @thatopen/ui-obc build",
+    "build-libraries": "yarn build-core && yarn build-obc",
     "build-examples": "vite build --config ./vite.config-examples.ts",
     "publish-repo": "yarn workspace @thatopen/ui publish-repo && yarn workspace @thatopen/ui-obc publish-repo",
     "copy-readme": "node resources/readme-copier.mjs",
-    "build": "npm run copy-readme && npm run build-libraries && npm run build-examples"
+    "build": "yarn copy-readme && yarn build-libraries && yarn build-examples"
   },
   "license": "MIT",
   "homepage": "https://github.com/ThatOpen/engine_ui-components#readme",
@@ -32,6 +33,7 @@
     "@types/node": "20.11.30",
     "@typescript-eslint/eslint-plugin": "7.2.0",
     "@typescript-eslint/parser": "7.2.0",
+    "camera-controls": "^3.1.2",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-prettier": "9.1.0",

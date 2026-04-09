@@ -90,6 +90,15 @@ export class Selector extends LitElement implements HasValue, HasName {
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
+  /**
+   * Sets the visual variant of the selector.
+   * - `undefined` (default): Filled animated background behind the active option.
+   * - `"underline"`: No background; the active option gets an accent-colored
+   *   bottom border and text, while inactive options are muted.
+   */
+  @property({ type: String, reflect: true })
+  variant?: "underline";
+
   readonly onValueChange = new Event("change");
   private _canEmitEvents = false;
 
