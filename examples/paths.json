@@ -1,40 +1,154 @@
 [
-  "packages/obc/src/core/World2D/example.ts",
-  "packages/obc/src/core/World/example.ts",
-  "packages/obc/src/core/ViewCube/example.ts",
-  "packages/obc/src/core/SheetBoard/example.ts",
-  "packages/obc/src/components/tables/WorldsConfiguration/example.ts",
-  "packages/obc/src/components/tables/TopicsList/example.ts",
-  "packages/obc/src/components/tables/SpatialTree/example.ts",
-  "packages/obc/src/components/tables/ModelsList/example.ts",
-  "packages/obc/src/components/tables/ItemsData/example.ts",
-  "packages/obc/src/components/charts/Topics/example.ts",
-  "packages/obc/src/components/charts/IDS/example.ts",
-  "packages/obc/src/components/charts/Categories/example.ts",
-  "packages/obc/src/components/charts/Attributes/example.ts",
-  "packages/obc/src/components/buttons/load-ifc/example.ts",
-  "packages/core/src/core/Component/example.ts",
-  "packages/core/src/components/Tooltip/example.ts",
-  "packages/core/src/components/Toolbar/example.ts",
-  "packages/core/src/components/TextInput/example.ts",
-  "packages/core/src/components/Tabs/example.ts",
-  "packages/core/src/components/Table/example.ts",
-  "packages/core/src/components/Table/examples/Searching/example.ts",
-  "packages/core/src/components/Table/examples/LoadFunction/example.ts",
-  "packages/core/src/components/Table/examples/Grouping/example.ts",
-  "packages/core/src/components/Table/examples/ExportingData/example.ts",
-  "packages/core/src/components/Table/examples/DataTransform/example.ts",
-  "packages/core/src/components/Slider/example.ts",
-  "packages/core/src/components/Selector/example.ts",
-  "packages/core/src/components/PaperSpace/example.ts",
-  "packages/core/src/components/Panel/example.ts",
-  "packages/core/src/components/NumberInput/example.ts",
-  "packages/core/src/components/Label/example.ts",
-  "packages/core/src/components/Grid/example.ts",
-  "packages/core/src/components/Dropdown/example.ts",
-  "packages/core/src/components/ContextMenu/example.ts",
-  "packages/core/src/components/ColorInput/example.ts",
-  "packages/core/src/components/Checkbox/example.ts",
-  "packages/core/src/components/Chart/example.ts",
-  "packages/core/src/components/Button/example.ts"
+  {
+    "path": "packages/obc/src/core/World2D/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/obc/src/core/World/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/obc/src/core/ViewCube/example.ts",
+    "description": "The ViewCube is a handy UI component that lets users quickly orient the camera in a 3D scene. In this tutorial, you'll learn how to add a ViewCube to your app, connect it to your camera, and let users interact with it to change their view."
+  },
+  {
+    "path": "packages/obc/src/core/SheetBoard/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/obc/src/components/tables/WorldsConfiguration/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/obc/src/components/tables/TopicsList/example.ts",
+    "description": "Integration with BIM Collaboration Format is probably one of those features you want to have in your app sooner than later. Problem is, many UIs are needed (one to display the topics, another to create them, another to edit everything, etc). Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish a fully working user interface for your next BCF integration!"
+  },
+  {
+    "path": "packages/obc/src/components/tables/SpatialTree/example.ts",
+    "description": "Among the most common things to do with BIM models, is to show their spatial structure. This is really important, because then you can know better the model and see how elements are hierarchized between them. 🔗 Let's learn how you can use the Spatial Tree!"
+  },
+  {
+    "path": "packages/obc/src/components/tables/ModelsList/example.ts",
+    "description": "What else can we say? The task is really simple: we need to see a list of the loaded models in the app. Let's get into it!"
+  },
+  {
+    "path": "packages/obc/src/components/tables/ItemsData/example.ts",
+    "description": "What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!"
+  },
+  {
+    "path": "packages/obc/src/components/charts/Topics/example.ts",
+    "description": "Effective project coordination relies on tracking issues, and the BIM Collaboration Format (BCF) is the industry standard for this. This tutorial will show you how to build a dynamic dashboard to visualize BCF topics, allowing you to easily analyze issue statuses, priorities, assignees, and more."
+  },
+  {
+    "path": "packages/obc/src/components/charts/IDS/example.ts",
+    "description": "Ensuring data quality is essential in BIM. The Information Delivery Specification (IDS) is a buildingSMART standard for defining data requirements. This tutorial will guide you through a complete workflow: defining an IDS rule, validating a BIM model against it, and visualizing the pass/fail results in a dynamic, interactive chart."
+  },
+  {
+    "path": "packages/obc/src/components/charts/Categories/example.ts",
+    "description": "Understanding the composition of a BIM model is crucial. How many walls are there? What's the count of doors versus windows? This tutorial will show you how to use the `categoriesChart` to automatically generate charts that answer these questions, giving you a clear overview of your model's contents."
+  },
+  {
+    "path": "packages/obc/src/components/charts/Attributes/example.ts",
+    "description": "A great BIM application isn't just about viewing models; it's about understanding the data within them. Charts are a powerful way to visualize complex information, and in this tutorial, you'll learn how to create charts that are directly linked to your model's data."
+  },
+  {
+    "path": "packages/obc/src/components/buttons/load-ifc/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/core/Component/example.ts",
+    "description": "One of the greatest things about the library is that you can create your own reactive and non reactive elements (statefull and stateless components respectively) in a very simple and efficient way, all thanks to the power of [lit-html](https://lit.dev/docs/libraries/standalone-templates/) 💪.  The `Component` class has a static method to create functional components (UI defined as a function) that can be updated anytime. The method is `Component.create`.  :::note  Despite the `Component` is a class that can be instantiated or extended, from a developer perspective using the library is most likely it will only use the create method.  :::"
+  },
+  {
+    "path": "packages/core/src/components/Tooltip/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Toolbar/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/TextInput/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Tabs/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Table/example.ts",
+    "description": "Let's be honest, BIM apps hold a lot of data. Knowing that, the most common (and also useful) way to display related information is by using a table. The bad news is you need to create a table and manage it to easily display any kind of data, while also having the possibility to search information, include interactions, exporting functionalities, loading data asynchronously, etc. The good news is we have created a really powerfull Web Component table with all those functionalities and more! You just need to put efforts in the data to display, and the table manages the rest. Let's see how it works 👇"
+  },
+  {
+    "path": "packages/core/src/components/Table/examples/Searching/example.ts",
+    "description": "Chances are low to say \"I have the best table in the internet\" without having the possibility to search information from it, right? Well, doing it with the bim-table Web Component is extremely simple! So let's dive in."
+  },
+  {
+    "path": "packages/core/src/components/Table/examples/LoadFunction/example.ts",
+    "description": "Manually setting data in a bim-table may be ok in some situations. However, there are cases where the data must be fetch from an external resource, or you need to do some heavy processing to compute the data and want to display a loading skeleton to inform users about an on-going computation. You should be happy as we got you covered! All of that is possible in the bim-table component and you will learn how in this tutorial."
+  },
+  {
+    "path": "packages/core/src/components/Table/examples/Grouping/example.ts",
+    "description": "The bim-table component supports grouping functionality that allows you to organize your data hierarchically. You can group by one or multiple columns to create nested structures. This is particularly useful when you want to organize large datasets by categories or when you need to show relationships between different data points.  :::tip Data Structure  The grouping functionality works with both flat data and already grouped data. When you apply grouping to already grouped data, it will first flatten the data and then apply the new grouping structure.  :::  Let's start by creating some sample data and a table:"
+  },
+  {
+    "path": "packages/core/src/components/Table/examples/ExportingData/example.ts",
+    "description": "There are some situations in which is convenient to export information from your table, because you probably want to process it further in other places. Well, exporting data with the bim-table component is extremely simple and you will learn how to do it!"
+  },
+  {
+    "path": "packages/core/src/components/Table/examples/DataTransform/example.ts",
+    "description": "Sooner than later you will need a way to manipulate your table data such that is displayed diferently in the cell; for example, what happens if you want to display a value always upper-cassed? Or display a number with its units without converting the number into a string? Or set some custom styling for the cell's value? Or include any other HTMLElement in the cell? Well, for all those questions there is a simple answer: `table.dataTransform`. Let's see how is used so you display data the advanced way!"
+  },
+  {
+    "path": "packages/core/src/components/Slider/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Selector/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/PaperSpace/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Panel/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/NumberInput/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Label/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Grid/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Dropdown/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/ContextMenu/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/ColorInput/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Checkbox/example.ts",
+    "description": ""
+  },
+  {
+    "path": "packages/core/src/components/Chart/example.ts",
+    "description": "Let's be real, BIM models are packed with overwhelming amounts of data. Trying to make sense of it all can feel like a chore. What if you could visualize all that information in a simple, clear, and interactive way? That's where charts come in! The downside? Building them from scratch, handling different data structures, and making them look good is a ton of work. But here's the great part: we've built an awesome Chart Web Component that does the heavy lifting for you. You bring the data, and we'll make it shine. Ready to see it in action? 👇"
+  },
+  {
+    "path": "packages/core/src/components/Button/example.ts",
+    "description": ""
+  }
 ]
