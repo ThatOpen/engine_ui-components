@@ -1,1 +1,1 @@
-import"./lit-html-CgQwCkHV.js";import{M as i}from"./index-BBmfVPxR.js";import"./ref-B0YVjWyu.js";i.init();const e=document.getElementById("context-container");e==null||e.addEventListener("click",()=>{const t=e.querySelector("bim-context-menu");t&&(t.visible=!t.visible)});
+import"./lit-html-CgQwCkHV.js";import{M as i}from"./index-CL5enH56.js";import"./ref-B0YVjWyu.js";i.init();const e=document.getElementById("context-container");e==null||e.addEventListener("click",()=>{const t=e.querySelector("bim-context-menu");t&&(t.visible=!t.visible)});
