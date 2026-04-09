@@ -114,6 +114,8 @@ const [barChart, updateBar] = BUIC.charts.topicsChart({
 
 pieChart.label = "Pie Chart Data";
 barChart.label = "Bar Chart Data";
+pieChart.borderColor = "#00000000";
+barChart.borderColor = "#00000000";
 
 /* MD
   ### 📑 Adding a Legend and a Details Table

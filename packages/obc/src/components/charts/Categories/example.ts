@@ -118,6 +118,9 @@ const [barChart, updateBar] = BUIC.charts.categoriesChart({
   components,
 });
 
+pieChart.borderColor = "#00000000";
+barChart.borderColor = "#00000000";
+
 /* MD
   ### 🗺️ Mapping the Model Data
   ---

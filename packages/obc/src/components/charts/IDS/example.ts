@@ -224,6 +224,9 @@ const [barChart] = BUIC.charts.idsChart({
   components,
 });
 
+pieChart.borderColor = "#00000000";
+barChart.borderColor = "#00000000";
+
 /* MD
   ### 🏷️ Adding Interactive Labels
   ---

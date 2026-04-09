@@ -16,19 +16,62 @@ BUI.Manager.init();
 /* MD
   ### 🎲 Preparing the Data
   ---
-  Charts are all about data visualization. This data can come from your BIM model, an external API, or, as we'll show in this example, a simple table. To get started, let's create a `bim-table` component that will generate some random data for us. This table will serve as the dynamic data source for one of our charts.
+  A dashboard of charts is only as good as the data behind it. To keep the tutorial
+  self-contained we use two small helpers that produce random numbers: one for the
+  cartesian charts (bar, line, radar) where negative values make sense, and one for
+  the part-of-a-whole charts (pie, doughnut, polarArea) where every slice must be
+  positive. The helpers return data in the shape `bim-chart` expects — a list of
+  labels and one or more named datasets.
+*/
+
+const signedValue = () => Math.round(Math.random() * 180 - 90);
+const positiveValue = () => Math.round(Math.random() * 90 + 10);
+
+const categoryLabels = ["Walls", "Slabs", "Columns", "Windows", "Doors"];
+
+const cartesianData = () => ({
+  labels: categoryLabels,
+  datasets: {
+    "Series A": categoryLabels.map(() => ({ value: signedValue() })),
+    "Series B": categoryLabels.map(() => ({ value: signedValue() })),
+  },
+});
+
+const positiveData = () => ({
+  labels: categoryLabels,
+  datasets: {
+    "Series A": categoryLabels.map(() => ({ value: positiveValue() })),
+  },
+});
+
+const scatterData = (radius: number) => {
+  const points: BUI.ChartInputValues[] = [];
+  const labels: string[] = [];
+  for (let i = 0; i < 12; i++) {
+    labels.push(`Point ${i + 1}`);
+    points.push({
+      x: Math.round(Math.random() * 100),
+      y: Math.round(Math.random() * 100),
+      r: radius,
+    });
+  }
+  return { labels, datasets: { "Series A": points } };
+};
+
+/* MD
+  ### ⚙️ Building the Controls
+  ---
+  The chart component exposes a handful of visual properties. To showcase them
+  interactively we'll wire them up to a small panel of BUI controls — dropdowns for
+  index axis, point shape and fill direction, sliders for radius, and checkboxes for
+  stacking and label visibility. Each control updates every chart in the dashboard
+  at once so you can compare how the same setting affects different chart types.
 */
 
 const panel = BUI.Component.create(() => {
-  /* MD
-    ### ⚙️ Building the Controls
-    ---
-    One of the most powerful features of our Chart component is its customizability. You can change everything from the chart type to the styling of points and lines. To demonstrate this, we'll create a set of UI controls. These dropdowns, checkboxes, and inputs will let you manipulate the chart's properties in real-time and see the changes instantly.
-  */
   const indexAxisDropdown = document.createElement("bim-dropdown");
   indexAxisDropdown.label = "Index Axis";
-  const axis = ["x", "y"];
-  for (const a of axis) {
+  for (const a of ["x", "y"]) {
     const option = document.createElement("bim-option");
     option.value = a;
     option.label = a.toUpperCase();
@@ -37,18 +80,7 @@ const panel = BUI.Component.create(() => {
 
   const pointStyleDropdown = document.createElement("bim-dropdown");
   pointStyleDropdown.label = "Point Style";
-  const styles = [
-    "circle",
-    "cross",
-    "crossRot",
-    "dash",
-    "line",
-    "rect",
-    "rectRounded",
-    "rectRot",
-    "triangle",
-    "star",
-  ];
+  const styles = ["circle", "cross", "crossRot", "dash", "line", "rect", "rectRounded", "rectRot", "triangle", "star"];
   for (const style of styles) {
     const option = document.createElement("bim-option");
     option.value = style;
@@ -58,8 +90,7 @@ const panel = BUI.Component.create(() => {
 
   const lineFillDropdown = document.createElement("bim-dropdown");
   lineFillDropdown.label = "Line Fill";
-  const fills = ["origin", "start", "end", "false"];
-  for (const fill of fills) {
+  for (const fill of ["origin", "start", "end", "false"]) {
     const option = document.createElement("bim-option");
     option.value = fill;
     option.label = fill[0].toUpperCase() + fill.slice(1);
@@ -68,6 +99,9 @@ const panel = BUI.Component.create(() => {
 
   const pointRadiusInput = document.createElement("bim-number-input");
   pointRadiusInput.label = "Point Radius";
+
+  const bubbleRadiusInput = document.createElement("bim-number-input");
+  bubbleRadiusInput.label = "Bubble Radius";
 
   const xStackedCheck = document.createElement("bim-checkbox");
   xStackedCheck.label = "X Stacked";
@@ -78,110 +112,67 @@ const panel = BUI.Component.create(() => {
   const transparentBackgroundCheck = document.createElement("bim-checkbox");
   transparentBackgroundCheck.label = "Transparent Background";
 
-  const dataLabelsColorInput = document.createElement("bim-color-input");
-  dataLabelsColorInput.label = "Data Labels Color";
-
-  const borderColorInput = document.createElement("bim-color-input");
-  borderColorInput.label = "Border Color";
-
   const lineSmoothingCheckbox = document.createElement("bim-checkbox");
   lineSmoothingCheckbox.label = "Line Smoothing";
 
   const displayLabelsCheckbox = document.createElement("bim-checkbox");
   displayLabelsCheckbox.label = "Display Labels";
 
-  const bubbleRadiusInput = document.createElement("bim-number-input");
-  bubbleRadiusInput.label = "Bubble Radius";
+  const dataLabelsColorInput = document.createElement("bim-color-input");
+  dataLabelsColorInput.label = "Data Labels Color";
+
+  const borderColorInput = document.createElement("bim-color-input");
+  borderColorInput.label = "Border Color";
 
   const toggleLoadingBtn = document.createElement("bim-button");
   toggleLoadingBtn.label = "Toggle Loading";
 
   /* MD
-    ### 🔗 Connecting Data and Controls
+    ### 📊 Creating the Chart Dashboard
     ---
-    Now for the exciting part: bringing the chart to life! In the following section, we'll create instances of all available `bim-chart` types and arrange them in a dashboard matrix. These charts will all share the same data and be controlled by a unified set of parameters.
-
-    Then, we'll set up all the event listeners. This is the core logic that connects the UI controls we just created to all the charts' properties. When you change a value in a dropdown or check a box, these listeners will update all applicable charts instantly.
-
-    We'll also introduce the `<bim-chart-legend>` component. This handy element automatically generates a legend for your charts. Clicking on a label will toggle the visibility of the corresponding dataset, providing a simple yet powerful way to filter the data across all charts.
-
-    Finally, we'll show you how to listen for a `sectionclick` event, which fires whenever a user clicks on a part of any chart (like a bar or a pie slice), giving you access to the underlying data.
+    The dashboard is a single CSS grid that auto-fits the available width: each
+    chart lives in its own sized card so rows and columns stay aligned no matter
+    how many charts we include. Every `bim-chart` is created with the same starting
+    configuration — a transparent background, white data labels, and no border —
+    so the charts feel like part of a single dashboard rather than nine independent
+    widgets. Pie-family charts get the positive-only data helper so their slices
+    always make sense; cartesian charts get the signed helper.
   */
-  const chartTypes = [
-    "bar",
-    "line",
-    "pie",
-    "radar",
-    "doughnut",
-    "polarArea",
-    "scatter",
-    "bubble",
+
+  const chartTypes: { type: BUI.Chart["type"]; title: string; positive: boolean }[] = [
+    { type: "bar",       title: "Bar",       positive: false },
+    { type: "line",      title: "Line",      positive: false },
+    { type: "radar",     title: "Radar",     positive: false },
+    { type: "pie",       title: "Pie",       positive: true  },
+    { type: "doughnut",  title: "Doughnut",  positive: true  },
+    { type: "polarArea", title: "Polar Area",positive: true  },
+    { type: "scatter",   title: "Scatter",   positive: true  },
+    { type: "bubble",    title: "Bubble",    positive: true  },
   ];
+
   const charts: BUI.Chart[] = [];
   let chartLegend: BUI.ChartLegend | undefined;
   let currentBubbleRadius = 10;
 
-  const randomValue = () => Math.floor(Math.random() * 200 - 100);
-
-  const generateChartData = () => ({
-    labels: ["Orange", "Green", "Red", "Blue", "Yellow"],
-    datasets: {
-      dataset1: [
-        { value: randomValue() },
-        { value: randomValue() },
-        { value: randomValue() },
-        { value: randomValue() },
-        { value: randomValue() },
-      ],
-      dataset2: [
-        { value: randomValue() },
-        { value: randomValue() },
-        { value: randomValue() },
-      ],
-    },
-  });
-
-  const onScatterCreated = () => {
-    const labels: string[] = [];
-    const datasets: { [datasetLabel: string]: BUI.ChartInputValues[] } = {};
-    const dataset: BUI.ChartInputValues[] = [];
-    for (let i = 0; i < 10; i++) {
-      labels.push(`Point ${i + 1}`);
-      dataset.push({
-        x: Math.floor(Math.random() * 100),
-        y: Math.floor(Math.random() * 100),
-        r: currentBubbleRadius,
-      });
-    }
-    datasets["dataset1"] = dataset;
-    return {
-      labels,
-      datasets,
-    };
-  };
-
-  const onChartCreated = (e?: Element, type?: string) => {
+  const onChartCreated = (e: Element | undefined, type: BUI.Chart["type"], positive: boolean) => {
     if (!e) return;
     const chart = e as BUI.Chart;
     chart.inputData =
       type === "scatter" || type === "bubble"
-        ? onScatterCreated()
-        : generateChartData();
-    chart.label = type ? type.charAt(0).toUpperCase() + type.slice(1) : "";
-
-    // Apply predetermined property values to the chart
+        ? scatterData(currentBubbleRadius)
+        : positive ? positiveData() : cartesianData();
+    chart.label = "";
     chart.indexAxis = "x";
     chart.linePointStyle = "circle";
     chart.lineFill = "origin";
     chart.pointRadius = 4;
     chart.xStacked = false;
     chart.yStacked = false;
-    chart.transparentBackground = false;
-    chart.dataLabelsColor = "#000000";
-    chart.borderColor = "#000000";
-    chart.smoothLine = false;
-    chart.displayLabels = false;
-
+    chart.transparentBackground = true;
+    chart.dataLabelsColor = "#ffffff";
+    chart.borderColor = "#00000000";
+    chart.smoothLine = true;
+    chart.displayLabels = true;
     charts.push(chart);
   };
 
@@ -195,93 +186,77 @@ const panel = BUI.Component.create(() => {
     console.log(data.detail);
   };
 
-  // Setup event listeners for all controls
+  /* MD
+    ### 🔌 Wiring Controls to Charts
+    ---
+    Each control broadcasts its change to every chart in the dashboard, so tweaking
+    one value updates the whole grid at once. This makes it easy to see how a single
+    setting affects every chart type side by side. We also listen for `sectionclick`
+    on each chart, which fires whenever the user clicks a bar, slice or point and
+    gives you the underlying data — perfect for drill-down UIs.
+  */
+
   indexAxisDropdown.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.indexAxis = indexAxisDropdown.value[0];
-    });
+    charts.forEach((c) => { c.indexAxis = indexAxisDropdown.value[0]; });
     BUI.ContextMenu.removeMenus();
   });
 
   xStackedCheck.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.xStacked = xStackedCheck.value;
-    });
+    charts.forEach((c) => { c.xStacked = xStackedCheck.value; });
   });
 
   yStackedCheck.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.yStacked = yStackedCheck.value;
-    });
+    charts.forEach((c) => { c.yStacked = yStackedCheck.value; });
   });
 
   pointStyleDropdown.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.linePointStyle = pointStyleDropdown
-        .value[0] as BUI.LinePointStyleType;
-    });
+    charts.forEach((c) => { c.linePointStyle = pointStyleDropdown.value[0] as BUI.LinePointStyleType; });
     BUI.ContextMenu.removeMenus();
   });
 
   pointRadiusInput.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.pointRadius = pointRadiusInput.value;
-    });
+    charts.forEach((c) => { c.pointRadius = pointRadiusInput.value; });
   });
 
   lineFillDropdown.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.lineFill = lineFillDropdown.value[0] as BUI.LineFillType;
-    });
+    charts.forEach((c) => { c.lineFill = lineFillDropdown.value[0] as BUI.LineFillType; });
     BUI.ContextMenu.removeMenus();
   });
 
   transparentBackgroundCheck.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.transparentBackground = transparentBackgroundCheck.value;
-    });
+    charts.forEach((c) => { c.transparentBackground = transparentBackgroundCheck.value; });
   });
 
   dataLabelsColorInput.addEventListener("input", () => {
-    charts.forEach((chart) => {
-      chart.dataLabelsColor = dataLabelsColorInput.value.color;
-    });
+    charts.forEach((c) => { c.dataLabelsColor = dataLabelsColorInput.value.color; });
   });
 
   lineSmoothingCheckbox.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.smoothLine = lineSmoothingCheckbox.value;
-    });
+    charts.forEach((c) => { c.smoothLine = lineSmoothingCheckbox.value; });
   });
 
   displayLabelsCheckbox.addEventListener("change", () => {
-    charts.forEach((chart) => {
-      chart.displayLabels = displayLabelsCheckbox.value;
-    });
+    charts.forEach((c) => { c.displayLabels = displayLabelsCheckbox.value; });
   });
 
   borderColorInput.addEventListener("input", () => {
-    charts.forEach((chart) => {
-      chart.borderColor = borderColorInput.value.color;
-    });
+    charts.forEach((c) => { c.borderColor = borderColorInput.value.color; });
   });
 
   toggleLoadingBtn.addEventListener("click", () => {
-    charts.forEach((chart) => {
-      chart.loading = !chart.loading;
-    });
+    charts.forEach((c) => { c.loading = !c.loading; });
   });
 
   bubbleRadiusInput.addEventListener("change", () => {
     currentBubbleRadius = bubbleRadiusInput.value;
-    charts.forEach((chart) => {
-      if (chart.type === "bubble") {
-        chart.inputData = onScatterCreated();
+    charts.forEach((c) => {
+      if (c.type === "bubble" || c.type === "scatter") {
+        c.inputData = scatterData(currentBubbleRadius);
       }
     });
   });
 
-  // Set initial values
+  // Set initial control values
   indexAxisDropdown.value = ["x"];
   pointStyleDropdown.value = ["circle"];
   lineFillDropdown.value = ["origin"];
@@ -289,76 +264,113 @@ const panel = BUI.Component.create(() => {
   bubbleRadiusInput.value = 10;
   xStackedCheck.checked = false;
   yStackedCheck.checked = false;
-  transparentBackgroundCheck.checked = false;
-  dataLabelsColorInput.value = { color: "#000000" };
-  borderColorInput.value = { color: "#000000" };
-  lineSmoothingCheckbox.checked = false;
-  displayLabelsCheckbox.checked = false;
-
-  /* MD
-    ### 📊 Chart Dashboard Matrix
-    ---
-    Here we create a responsive matrix layout that displays all available chart types side by side. Each chart is initialized with the same data, making it easy to compare different visualization styles for the same information.
-  */
-
-  const chartMatrixRows = [];
-  for (let i = 0; i < chartTypes.length; i += 2) {
-    const row = BUI.html`
-      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-        <bim-chart type="${chartTypes[i]}" @sectionclick=${onSectionClick} ${BUI.ref((e) => onChartCreated(e, chartTypes[i]))}></bim-chart>
-        ${i + 1 < chartTypes.length ? BUI.html`<bim-chart type="${chartTypes[i + 1]}" @sectionclick=${onSectionClick} ${BUI.ref((e) => onChartCreated(e, chartTypes[i + 1]))}></bim-chart>` : BUI.html`<div style="flex: 1;"></div>`}
-      </div>
-    `;
-    chartMatrixRows.push(row);
-  }
+  transparentBackgroundCheck.checked = true;
+  dataLabelsColorInput.value = { color: "#ffffff" };
+  borderColorInput.value = { color: "#00000000" };
+  lineSmoothingCheckbox.checked = true;
+  displayLabelsCheckbox.checked = true;
 
   /* MD
     ### 🤓 Putting Everything Together
     ---
-    As everything is already setup, let's create a comprehensive dashboard that combines the chart matrix, the unified legend, and all the control parameters in a single organized view.
+    The final layout is a two-column flex: on the left a scrollable CSS grid
+    that auto-fits chart cards so the dashboard reflows gracefully on narrow
+    screens, and on the right a fixed-width sidebar with the shared `bim-chart-legend`
+    (clicking an entry toggles that dataset across every chart at once) and the
+    control panel. Every chart card has a fixed height, so rows stay aligned
+    regardless of the chart type.
   */
 
-  return BUI.html`  <bim-panel label="Charts" style="height: 100vh; display: flex; flex-direction: row; width: 100%; height: 100%; gap: 1rem;">
-    <div style="display: flex; flex-direction: row; width: 100%; height: 100%; gap: 1rem;">
-      <!-- Left Column: Chart Matrix Dashboard -->
-      <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
-        <bim-panel-section label="📊 Chart Types Dashboard">
-          <div style="flex: 1; overflow: auto;">
-            ${chartMatrixRows}
-          </div>
-        </bim-panel-section>
-      </div>
-
-      <div style="width: 22rem; display: flex; flex-direction: column; gap: 1rem; overflow: auto;">
-        <bim-panel-section label="🔑 Legend" style="flex: 0 0 auto;">
-          <bim-chart-legend ${BUI.ref(onChartLegendCreated)}></bim-chart-legend>
-        </bim-panel-section>
-  
-        <!-- Control Parameters Section -->
-        <bim-panel-section label="⚙️ Control Parameters" style="flex: 1; overflow: auto;">
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
-            ${indexAxisDropdown}
-            ${pointStyleDropdown}
-            ${lineFillDropdown}
-            ${pointRadiusInput}
-            ${bubbleRadiusInput}
-            ${xStackedCheck}
-            ${yStackedCheck}
-            ${transparentBackgroundCheck}
-            ${dataLabelsColorInput}
-            ${borderColorInput}
-            ${lineSmoothingCheckbox}
-            ${displayLabelsCheckbox}
-            ${toggleLoadingBtn}
-          </div>
-        </bim-panel-section>
+  const chartCards = chartTypes.map(({ type, title, positive }) => BUI.html`
+    <div style="
+      display: flex;
+      flex-direction: column;
+      background: var(--bim-ui_bg-contrast-10);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      min-height: 18rem;
+    ">
+      <div style="
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--bim-ui_main-contrast);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        opacity: 0.7;
+      ">${title}</div>
+      <div style="flex: 1; min-height: 0;">
+        <bim-chart
+          type="${type}"
+          @sectionclick=${onSectionClick}
+          ${BUI.ref((e) => onChartCreated(e, type, positive))}
+        ></bim-chart>
       </div>
     </div>
-  </bim-panel>`;
+  `);
+
+  return BUI.html`
+    <bim-panel label="Charts" style="height: 100%; width: 100%;">
+      <div style="
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+        height: 100%;
+        padding: 1rem;
+        box-sizing: border-box;
+      ">
+        <!-- Chart grid (left) -->
+        <div style="flex: 1; min-width: 0; overflow: auto;">
+          <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+            gap: 1rem;
+          ">
+            ${chartCards}
+          </div>
+        </div>
+
+        <!-- Sidebar (right) -->
+        <div style="
+          width: 22rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          overflow: auto;
+        ">
+          <bim-panel-section label="🔑 Legend" style="flex: 0 0 auto;">
+            <bim-chart-legend ${BUI.ref(onChartLegendCreated)}></bim-chart-legend>
+          </bim-panel-section>
+
+          <bim-panel-section label="⚙️ Controls" style="flex: 1 1 auto;">
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              ${indexAxisDropdown}
+              ${pointStyleDropdown}
+              ${lineFillDropdown}
+              ${pointRadiusInput}
+              ${bubbleRadiusInput}
+              ${xStackedCheck}
+              ${yStackedCheck}
+              ${transparentBackgroundCheck}
+              ${lineSmoothingCheckbox}
+              ${displayLabelsCheckbox}
+              ${dataLabelsColorInput}
+              ${borderColorInput}
+              ${toggleLoadingBtn}
+            </div>
+          </bim-panel-section>
+        </div>
+      </div>
+    </bim-panel>
+  `;
 });
 
 document.body.append(panel);
 
 /* MD
-  And that's a wrap! As you can see, the Chart component is incredibly flexible, allowing you to create a wide variety of interactive and customizable data visualizations with minimal effort. This dashboard approach lets you compare different chart types side-by-side, all controlled by a unified set of parameters and a shared legend. Now you're ready to start turning your BIM data into beautiful, insightful charts displayed across multiple visualization styles. Happy coding!
+  And that's it! A single CSS grid, a unified legend, and one set of controls
+  drive the entire dashboard — change any setting and every chart updates at once.
+  From here, plug in real data from your BIM model and you have an interactive
+  analytics view with barely any code. Happy coding! 🚀
 */
