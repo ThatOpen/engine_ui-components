@@ -1,9 +1,9 @@
-import"./lit-html-CgQwCkHV.js";import{C,p as T,f as $,m as i,e as l,q as A,M as E}from"./index-Be3le0As.js";import{e as M}from"./index-CxGy2a8l.js";import{c as h}from"./index-DQ4IzPx3.js";const c=new C;T.init();const d=c.get($);d.setup();const B=["Inquiry","Remark","Fault","Request","Clash"],L=["Active","In Progress","Closed"],R=["Minor","Normal","Major"],b=["Alice","Bob","Charlie","David","Eve"],w=["Frank","Grace","Heidi","Ivan","Judy",void 0],P=["Coordination","Execution","Review","Done",void 0],k=["Structural","MEP","Architectural","Urgent","RFC","On-hold"],a=e=>e[Math.floor(Math.random()*e.length)],g=(e,t)=>new Date(e.getTime()+Math.random()*(t.getTime()-e.getTime())),x=Array.from({length:6},()=>g(new Date(2023,0,1),new Date)),f=e=>{const t=a(x),u=Math.random()>.5?g(t,new Date):void 0;return d.create({guid:E.generateUUID(),type:a(B),status:a(L),title:`Topic ${e+1}: Minor issue found on level ${e%3+1}`,priority:a(R),index:e,labels:new Set(k.filter(()=>Math.random()>.7)),creationDate:t,creationAuthor:a(b),modifiedDate:u,modifiedAuthor:u?a(b):void 0,assignedTo:a(w),description:`This is a detailed description for topic ${e+1}. It outlines the issue and the expected resolution.`,stage:a(P)})},F=Array.from({length:20},(e,t)=>f(t)),[o,y]=h.topicsChart({components:c,type:"pie",addLabels:!1}),[s,v]=h.topicsChart({components:c,type:"bar",addLabels:!1});o.label="Pie Chart Data";s.label="Bar Chart Data";const r=i.create(()=>l`
+import"./lit-html-CgQwCkHV.js";import{C as D,p as T,f as $,m as i,e as l,q as A,M as E}from"./index-Be3le0As.js";import{e as M}from"./index-CxGy2a8l.js";import{c as h}from"./index-DQ4IzPx3.js";const c=new D;T.init();const d=c.get($);d.setup();const B=["Inquiry","Remark","Fault","Request","Clash"],L=["Active","In Progress","Closed"],R=["Minor","Normal","Major"],b=["Alice","Bob","Charlie","David","Eve"],w=["Frank","Grace","Heidi","Ivan","Judy",void 0],P=["Coordination","Execution","Review","Done",void 0],k=["Structural","MEP","Architectural","Urgent","RFC","On-hold"],a=e=>e[Math.floor(Math.random()*e.length)],g=(e,t)=>new Date(e.getTime()+Math.random()*(t.getTime()-e.getTime())),x=Array.from({length:6},()=>g(new Date(2023,0,1),new Date)),f=e=>{const t=a(x),u=Math.random()>.5?g(t,new Date):void 0;return d.create({guid:E.generateUUID(),type:a(B),status:a(L),title:`Topic ${e+1}: Minor issue found on level ${e%3+1}`,priority:a(R),index:e,labels:new Set(k.filter(()=>Math.random()>.7)),creationDate:t,creationAuthor:a(b),modifiedDate:u,modifiedAuthor:u?a(b):void 0,assignedTo:a(w),description:`This is a detailed description for topic ${e+1}. It outlines the issue and the expected resolution.`,stage:a(P)})},F=Array.from({length:20},(e,t)=>f(t)),[o,y]=h.topicsChart({components:c,type:"pie",addLabels:!1}),[r,v]=h.topicsChart({components:c,type:"bar",addLabels:!1});o.label="Pie Chart Data";r.label="Bar Chart Data";o.borderColor="#00000000";r.borderColor="#00000000";const s=i.create(()=>l`
     <bim-chart-legend>
       <bim-label slot="missing-data">No data to display</bim-label>
       <bim-label slot="no-chart">No chart attached</bim-label>
     </bim-chart-legend>
-`);o.addEventListener("data-loaded",()=>{r.charts=[...r.charts,o]});s.addEventListener("data-loaded",()=>{r.charts=[...r.charts,s]});const[D,I]=M.topicsList({topics:F,components:c});D.hiddenColumns=["Guid","DueDate","Actions"];const q=({target:e})=>{e.loading=!0,o.highlight(t=>"value"in t?t.value>100:!1),e.loading=!1},U=i.create(()=>l`
+`);o.addEventListener("data-loaded",()=>{s.charts=[...s.charts,o]});r.addEventListener("data-loaded",()=>{s.charts=[...s.charts,r]});const[C,I]=M.topicsList({topics:F,components:c});C.hiddenColumns=["Guid","DueDate","Actions"];const q=({target:e})=>{e.loading=!0,o.highlight(t=>"value"in t?t.value>100:!1),e.loading=!1},U=i.create(()=>l`
     <bim-button label="Highlight" @click=${q}></bim-button>
 `),G=({target:e})=>{e.loading=!0,o.filterByValue(t=>"value"in t?t.value>100:!1),e.loading=!1},H=i.create(()=>l`
     <bim-button label="Filter" @click=${G}></bim-button>
@@ -15,10 +15,10 @@ import"./lit-html-CgQwCkHV.js";import{C,p as T,f as $,m as i,e as l,q as A,M as 
         ${o}
       </bim-panel-section>
       <bim-panel-section label="Topics Bar Chart" icon="raphael:barchart" style="flex: 1;">
-        ${s}
+        ${r}
       </bim-panel-section>
       <bim-panel-section label="Labels" icon="raphael:tag" style="flex: 0.1;">
-      ${r}
+      ${s}
       </bim-panel-section>
       <bim-panel-section label="Actions" style="display: flex; flex-direction: column; gap: 1.5rem;">
         ${n}
@@ -31,7 +31,7 @@ import"./lit-html-CgQwCkHV.js";import{C,p as T,f as $,m as i,e as l,q as A,M as 
   `),j=i.create(()=>l`
     <bim-panel>
       <bim-panel-section>
-        ${D}
+        ${C}
       </bim-panel-section>
     </bim-panel>
   `),p=document.createElement("bim-grid");p.layouts={main:{template:`
