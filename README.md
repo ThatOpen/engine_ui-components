@@ -148,3 +148,7 @@ grid.setLayout("main")
 ```
 
 To know more about the UIComponents, you can explore the README files in each repository under the packages folder and also explore the documentation. You can find the link at the top of this README file.
+
+## 🤝 Contributing
+
+Thinking of sending a PR? Awesome! Please read our [contributing guide](https://docs.thatopen.com/contributing) first — it covers the code conventions we follow (JSDoc, examples, resources, etc.) so your changes sail through review.
