@@ -32,12 +32,9 @@ function tokenizeLine(line: string): (string | null)[] {
 }
 
 /**
- * Parses a grid template string and returns a 2D matrix representation. Handles both quoted strings and newline-delimited formats.
- * Content inside brackets (e.g. area names with grouping syntax) is treated as a single token.
- *
+ * Parses a grid template string and returns a 2D matrix representation.
  * @param template - The grid template string to parse
  * @returns A 2D array where each cell contains the area name or null for empty cells
- *
  * @example
  * ```ts
  * const template = `
@@ -81,12 +78,9 @@ export function parseGridTemplate(template: string): (string | null)[][] {
 }
 
 /**
- * Extracts unique area names from a grid template string. Filters out empty cells (dots) and returns only unique area names.
- * Content inside brackets is preserved as part of the area name token.
- *
+ * Extracts unique area names from a grid template string.
  * @param template - The grid template string
  * @returns An array of unique area names
- *
  * @example
  * ```ts
  * const template = `

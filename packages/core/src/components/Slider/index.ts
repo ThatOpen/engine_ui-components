@@ -240,7 +240,7 @@ export class Slider extends LitElement implements HasValue, HasName {
   shiftStep = 10;
 
   /**
-   * An array of mark objects ({ value, label? }) that define snap points.
+   * An array of mark objects (`{ value, label? }`) that define snap points.
    * When step is null, the thumb snaps only to these marks.
    * @type {SliderMark[]}
    * @default []

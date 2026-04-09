@@ -21,23 +21,11 @@ interface _Slot {
 
 /**
  * An infinite pannable/zoomable canvas for arranging technical drawing sheets.
- * Accepts `bim-paper-space` elements as slotted children and renders
- * {@link DrawingViewport}s onto them via a shared WebGL scissor pass.
- *
- * Pan with right-click or middle-click drag; zoom with the mouse wheel.
- * Call {@link requestRender} whenever the drawing content changes.
- *
- * Single-click a viewport border to select it (enables move + resize handles).
- * Drag the border to reposition the viewport on the paper.
- * Drag a corner/edge handle to resize the viewport bounds.
- * Double-click to emit a `viewportactivate` event for the DrawingEditor.
- *
  * @fires viewportselect      - `{ paper, drawingId, viewportId }` on single-click selection
  * @fires viewportdeselect    - `{ paper, drawingId, viewportId }` on deselection
  * @fires viewportactivate    - `{ paper, drawingId, viewportId }` on double-click
  * @fires viewportdxfexport   - `{ drawingId, viewportId, dxf }` when the viewport Export DXF button is clicked
  * @fires paperdxfexport      - `{ paper, dxf }` when the paper Export DXF button is clicked
- *
  * @element bim-sheet-board
  */
 export class SheetBoard extends LitElement {

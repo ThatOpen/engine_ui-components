@@ -1,10 +1,7 @@
 import * as THREE from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
-/**
- * An infinite lightweight 2D grid that can be used for any
- * kind of 2d viewports.
- */
+/** An infinite lightweight 2D grid that can be used for any kind of 2d viewports. */
 export class Infinite2DGrid {
   private _group = new THREE.Group();
   private _frustum = new THREE.Frustum();
