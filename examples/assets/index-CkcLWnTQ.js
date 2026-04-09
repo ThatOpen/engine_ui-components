@@ -1,1 +1,0 @@
-import{p as e}from"./index-DNriEO-H.js";import{V as i,W as m,a as t,S as o}from"./index-UfPgfLXG.js";class d{static init(){e.defineCustomElement("bim-view-cube",i),e.defineCustomElement("bim-world-2d",m),e.defineCustomElement("bim-world",t),e.defineCustomElement("bim-sheet-board",o)}}export{d as M};
