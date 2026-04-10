@@ -1,16 +1,13 @@
 /* MD
   ## Data-Driven Charts for BIM  BIM 🚀
   ---
-  A great BIM application isn't just about viewing models; it's about understanding the data within them. Charts are a powerful way to visualize complex information, and in this tutorial, you'll learn how to create charts that are directly linked to your model's data.
+  BIM managers and project leads who want to understand model composition at a glance — how many column types exist, what names appear most — currently have to count or filter elements manually, with no direct link between the chart and the model itself.
 
-  ### 📚 Importing the Required Libraries
-  ---
-  To build our application, we'll need a few key libraries:
+  The attributes chart factory generates a live chart tied to a BIM model: it queries a category and attribute, groups the results, and returns both the chart element and an update function that can be re-targeted to any model or attribute after load.
 
-  - **`@thatopen/ui`**: Provides the UI components like panels, buttons, and grids that form our application's interface.
-  - **`@thatopen/components`**: The core library that gives us the fundamental building blocks, like the `Components` manager and the ability to create 3D worlds.
-  - **`@thatopen/components-front`**: Contains components tailored for frontend development, such as the `Highlighter`.
-  - **`@thatopen/ui-obc`**: Our library of specialized BIM components, including the powerful `attributesChart` we'll be using today.
+  This tutorial covers setting up a 3D world and loading a Fragment model; creating a pie chart and a bar chart from the attributes chart factory with initial empty filters; connecting a shared chart legend that shows entry labels and fires a visibility toggle when clicked; updating both charts on model load to query column names; highlighting chart entries that exceed a threshold value; filtering the chart to show only entries above that threshold; and resetting the chart to its original state.
+
+  By the end, you'll have a side-panel with two attribute-driven charts linked to the 3D model, a shared legend that toggles element visibility, and highlight, filter, and reset actions wired to chart data.
 */
 
 import * as OBC from "@thatopen/components";

@@ -1,16 +1,13 @@
 /* MD
   ## Visualizing BIM Data by Category 🏛️
   ---
-  Understanding the composition of a BIM model is crucial. How many walls are there? What's the count of doors versus windows? This tutorial will show you how to use the `categoriesChart` to automatically generate charts that answer these questions, giving you a clear overview of your model's contents.
+  Architects and project managers who need a quick breakdown of model composition — how many walls, doors, slabs, and columns are in the model — have no way to get that overview without manually querying each category or opening a spreadsheet.
 
-  ### 📚 Importing the Required Libraries
-  ---
-  To build our application, we'll need a few key libraries:
+  The categories chart factory counts elements by IFC category across a loaded model and populates a chart automatically, with no manual data preparation beyond providing the model ID map.
 
-  - **`@thatopen/ui`**: Provides the UI components like panels, buttons, and grids that form our application's interface.
-  - **`@thatopen/components`**: The core library that gives us the fundamental building blocks, like the `Components` manager and the ability to create 3D worlds.
-  - **`@thatopen/components-front`**: Contains components tailored for frontend development, such as the `Highlighter`.
-  - **`@thatopen/ui-obc`**: Our library of specialized BIM components, including the powerful `categoriesChart` we'll be using today.
+  This tutorial covers setting up a 3D world and configuring the Fragment loader; creating a pie chart and a bar chart from the categories chart factory; building a model ID map by collecting element IDs with geometry across all loaded models; updating both charts on model load with that map; connecting a shared chart legend that displays category labels; and wiring highlight, filter by threshold, and reset actions to the pie chart.
+
+  By the end, you'll have a side-panel with two category-distribution charts populated automatically from the loaded model, a shared legend, and interactive data actions.
 */
 
 import * as OBC from "@thatopen/components";

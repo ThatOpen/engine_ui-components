@@ -1,8 +1,14 @@
 /* MD
   ### One Table to Display All Data 🚀
   ---
-  Let's be honest, BIM apps hold a lot of data. Knowing that, the most common (and also useful) way to display related information is by using a table. The bad news is you need to create a table and manage it to easily display any kind of data, while also having the possibility to search information, include interactions, exporting functionalities, loading data asynchronously, etc. The good news is we have created a really powerfull Web Component table with all those functionalities and more! You just need to put efforts in the data to display, and the table manages the rest. Let's see how it works 👇
-  
+  Developers building BIM applications need to display structured data — element attributes, project hierarchies, team assignments — in a table that supports nested rows, live updates, and row-level operations, but assembling all of that from a native HTML table requires significant manual DOM management.
+
+  The table component takes a plain JavaScript array as its data source, generates all rows and cells internally, and exposes a single update request to reflect any data change — including additions, edits, deletions, and nested children.
+
+  This tutorial covers defining a typed data structure and setting it as the table's initial dataset; adding a new row to the existing array and triggering a re-render; updating a specific row's value through a prompt and requesting an update; deleting a row by filtering the array; creating a second table with nested children to represent hierarchical data; and dynamically adding a child row to an existing entry and refreshing both tables simultaneously.
+
+  By the end, you'll have two tables — one flat, one nested — with working add, update, delete, and add-child operations, demonstrating the full data lifecycle of the table component.
+
   ### 🖖 Initializing the Library and Making a Table
   ---
   The first thing to do when using the table component, is to initialize `@thatopen/ui` in your app. You just have to do it once in the entire app, and with it you have the chance to use any of the Web Components in the library. Doing it is as simple as the following:

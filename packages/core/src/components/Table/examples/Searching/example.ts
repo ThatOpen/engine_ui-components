@@ -1,12 +1,18 @@
 /* MD
   ### Searching Through Your Data 🔎
   ---
-  Chances are low to say "I have the best table in the internet" without having the possibility to search information from it, right? Well, doing it with the bim-table Web Component is extremely simple! So let's dive in.
+  Developers who expose large datasets in a table need to let users quickly find specific rows — but implementing search that works across all columns, respects nested structure, and supports structured queries like "age greater than 30" or "job includes Manager" requires building a filtering engine from scratch.
+
+  The table component's query string system filters rows across all columns with a single property assignment, and supports structured query syntax for comparisons, inclusion checks, and compound conditions without any additional configuration.
+
+  This tutorial covers wiring a debounced text input to the table's query string for instant full-text search; toggling a preserve-structure flag to control whether nested rows stay grouped or are flattened in filtered results; writing structured queries using column, operator, and value syntax (equals, includes, less than, greater than, starts with); combining multiple conditions with the `&` operator; and wiring quick-filter buttons that preset the search box and query simultaneously.
+
+  By the end, you'll have a searchable nested table with full-text search, structured query support, preserve-structure toggle, and one-click quick filters.
 
   ### 🖖 Initializing the Library and Setting the Table
   ---
   As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-  */
+*/
 
 // You have to import from "@thatopen/ui"
 import * as BUI from "../../../..";

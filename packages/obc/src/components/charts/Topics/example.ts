@@ -1,16 +1,13 @@
 /* MD
   ## Visualizing BCF Topics 📋
   ---
-  Effective project coordination relies on tracking issues, and the BIM Collaboration Format (BCF) is the industry standard for this. This tutorial will show you how to build a dynamic dashboard to visualize BCF topics, allowing you to easily analyze issue statuses, priorities, assignees, and more.
+  Project coordinators who track BCF issues across disciplines need to answer questions like "how many issues are still active?" or "who has the most items assigned?" — but scanning a flat list of topics gives no aggregate view of status, priority, or workload distribution.
 
-  ### 📚 Importing the Required Libraries
-  ---
-  To build our BCF dashboard, we'll need a few key libraries:
+  The topics chart factory reads BCF topic data directly and groups it by any topic property — status, priority, author, stage — returning a chart and an update function that can regroup the same data on demand without reloading.
 
-  - **`@thatopen/ui`**: Provides the UI components like panels, buttons, and grids.
-  - **`@thatopen/components`**: The core library that gives us access to components like the `BCFTopics` manager.
-  - **`uuid`**: A utility for generating unique identifiers, which are required for each BCF topic.
-  - **`@thatopen/ui-obc`**: Our library of specialized BIM components, including the `topicsChart` and `topicsList` table we'll be using.
+  This tutorial covers generating 20 randomized BCF topics with realistic properties (type, status, priority, author, assigned to, stage, labels, dates); creating a pie chart and a bar chart from the topics chart factory; connecting a shared legend; displaying the raw topic data in a side-by-side topics list table; wiring a grouper dropdown that switches both charts between any topic property; randomizing the full dataset and refreshing charts and table simultaneously; and wiring highlight, filter by threshold, and reset actions.
+
+  By the end, you'll have a two-panel BCF dashboard with dynamically regroupable charts, a synchronized topics table, and controls to explore the data from any angle.
 */
 
 import * as OBC from "@thatopen/components";

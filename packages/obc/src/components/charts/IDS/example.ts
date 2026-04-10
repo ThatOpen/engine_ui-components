@@ -1,18 +1,13 @@
 /* MD
   ## Visualizing IDS Validation Results 📊
   ---
-  Ensuring data quality is essential in BIM. The Information Delivery Specification (IDS) is a buildingSMART standard for defining data requirements. This tutorial will guide you through a complete workflow: defining an IDS rule, validating a BIM model against it, and visualizing the pass/fail results in a dynamic, interactive chart.
+  BIM managers and data quality teams need to verify that elements comply with project data requirements — such as all doors having a fire rating — but reviewing validation results element by element in a spreadsheet gives no spatial or quantitative overview of how many elements passed or failed.
 
-  ### 📚 Importing the Required Libraries
-  ---
-  To build our validation dashboard, we'll need a few key libraries:
+  The IDS chart factory takes a validation result object and generates a chart that breaks down pass, fail, and unchecked counts visually, with no manual data transformation required.
 
-  - **`@thatopen/ui`**: Provides the UI components like panels and buttons.
-  - **`@thatopen/components`**: The core library for the fundamental app structure.
-  - **`@thatopen/components-front`**: Contains frontend-specific components like the `Highlighter`.
-  - **`@thatopen/fragments-beta`**: The library that handles the geometry and data of the models.
-  - **`three`**: The underlying 3D library.
-  - **`@thatopen/ui-obc`**: Our library of specialized BIM components, including the `idsChart` we'll use.
+  This tutorial covers defining an IDS specification with an entity applicability facet (all doors) and a property requirement facet (FireRating in Pset_DoorCommon); running the validation against a loaded model; highlighting passing elements in green and failing elements in red directly in the viewport; creating a pie chart and a bar chart from the IDS result; connecting a shared legend; and wiring highlight, filter by threshold, and reset actions to the pie chart.
+
+  By the end, you'll have a validation dashboard with pass/fail charts linked to color-coded elements in the 3D model, giving an immediate spatial and quantitative view of IDS compliance.
 */
 
 import * as OBC from "@thatopen/components";

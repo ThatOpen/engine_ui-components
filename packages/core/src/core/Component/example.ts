@@ -1,7 +1,3 @@
-import * as BUI from "../..";
-
-BUI.Manager.init();
-
 /* MD
   ## Leveling up your app with custom components! 🔌
   ---
@@ -18,6 +14,10 @@ BUI.Manager.init();
   ### Creating an stateless component
   To start learning how to create custom components, let's create a custom component that uses the panel section:
 */
+
+import * as BUI from "../..";
+
+BUI.Manager.init();
 
 const statelessPanelSection = BUI.Component.create<BUI.PanelSection>(() => {
   return BUI.html`

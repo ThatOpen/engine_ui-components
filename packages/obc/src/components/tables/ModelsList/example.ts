@@ -1,14 +1,13 @@
 /* MD
    ## Managing your loaded models 🏢
   ---
-  What else can we say? The task is really simple: we need to see a list of the loaded models in the app. Let's get into it!
-  ### 🖖 Importing our Libraries
+  Developers building a multi-model BIM viewer need a panel that lists every loaded model with metadata and lets users remove them — but wiring the model list to load and dispose events, displaying schema tags, and adding a download action requires plumbing that distracts from the actual application logic.
 
-  In this tutorial, we will import:
+  The models list factory produces a table that stays in sync with the Fragment manager automatically, showing each loaded model's metadata and exposing configurable per-row actions.
 
-  - @thatopen/components to set up the barebone of our app.
-  - @thatopen/ui to add some simple and cool UI menus.
-  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
+  This tutorial covers setting up the Fragment loader and adding models to the scene on load; creating the models list with a schema metadata tag and a download action enabled; placing the list inside a panel alongside a load button; and composing everything into a grid layout next to the viewport.
+
+  By the end, you'll have a model management panel that lists every loaded model with its schema tag and a download button, updating automatically as models are loaded or removed.
 */
 
 import * as OBC from "@thatopen/components";

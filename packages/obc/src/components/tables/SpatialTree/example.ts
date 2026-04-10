@@ -1,16 +1,13 @@
 /* MD
   ## Showing your model tree 🌲
   ---
-  Among the most common things to do with BIM models, is to show their spatial structure. This is really important, because then you can know better the model and see how elements are hierarchized between them. 🔗 Let's learn how you can use the Spatial Tree!
+  Architects and BIM coordinators navigating a large model need to understand its spatial hierarchy — which elements belong to which floor, zone, or space — but the 3D viewport alone gives no structural overview, and building a tree view that stays in sync with loaded models requires significant custom logic.
 
-  ### 🖖 Importing our Libraries
+  The spatial tree factory reads the IFC spatial structure from any loaded Fragment model and renders it as an interactive nested table that updates automatically when models are added or removed.
 
-  In this tutorial, we will import:
+  This tutorial covers setting up the Fragment loader and Highlighter with zoom-to-selection; creating the spatial tree with an initially empty model list; enabling preserve-structure on filter so the hierarchy stays visible during search; placing the tree in a panel with a load button and a debounced search input; and wiring a grid layout alongside the viewport.
 
-  - @thatopen/components to set up the barebone of our app.
-  - @thatopen/components-front to use some frontend-oriented components.
-  - @thatopen/ui to add some simple and cool UI menus.
-  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
+  By the end, you'll have a spatial tree panel that populates automatically for every loaded model, stays synchronized with the scene, and supports live search across the hierarchy.
 */
 
 import * as OBC from "@thatopen/components";

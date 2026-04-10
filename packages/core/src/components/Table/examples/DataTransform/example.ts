@@ -1,12 +1,18 @@
 /* MD
   ### Displaying Data the Advanced Way 🚀
   ---
-  Sooner than later you will need a way to manipulate your table data such that is displayed diferently in the cell; for example, what happens if you want to display a value always upper-cassed? Or display a number with its units without converting the number into a string? Or set some custom styling for the cell's value? Or include any other HTMLElement in the cell? Well, for all those questions there is a simple answer: `table.dataTransform`. Let's see how is used so you display data the advanced way!
+  Developers building BIM data tables need to display values in context — areas with units, load-bearing status as a checkbox, IFC classes with color-coded badges — but a basic table renders raw values and offers no way to customize individual cells without rebuilding the component from scratch.
+
+  The table's data transform system lets developers define a per-column function that intercepts the raw value before rendering and returns anything — a formatted string, an HTML element, or a full interactive component — without altering the underlying data.
+
+  This tutorial covers appending unit labels to numeric area values; replacing boolean load-bearing values with interactive checkboxes that write back to the data; conditionally styling IFC class cells with color-coded pill badges based on their value; rendering an editable text input for door descriptions while leaving all other rows as plain text; and displaying the same dataset in two side-by-side tables to compare raw vs. transformed output.
+
+  By the end, you'll have two tables sharing the same dataset — one showing raw values and one with per-column transforms applied — demonstrating how cell rendering can be fully customized without touching the underlying data model.
 
   ### 🖖 Initializing the Library and Setting some Data
   ---
   As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-  */
+*/
 
 // You have to import from "@thatopen/ui"
 import * as BUI from "../../../..";

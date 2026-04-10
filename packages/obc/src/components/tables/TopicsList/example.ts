@@ -1,7 +1,13 @@
 /* MD 
   ## Showing BCF Topics the Easy Way ✨
   ---
-  Integration with BIM Collaboration Format is probably one of those features you want to have in your app sooner than later. Problem is, many UIs are needed (one to display the topics, another to create them, another to edit everything, etc). Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish a fully working user interface for your next BCF integration!
+  Teams collaborating on a BIM project need to create, review, and export BCF issues directly in the viewer — but building a complete BCF workflow UI (topic list, creation form, detail panel with comments, viewpoints, and related topics, plus BCF export) from scratch is a substantial frontend investment.
+
+  The UI components package provides ready-made functional pieces — topics list table, topic form, information section, comments section, viewpoints section, and relations section — that can be composed into a production-ready BCF interface without writing layout or data-binding logic.
+
+  This tutorial covers configuring BCFTopics with a user roster and discipline labels; auto-creating a viewpoint for every new topic; creating a topics list table with user avatar styles and selectable rows; building a topic creation form wrapped in a modal dialog with submit and cancel callbacks; composing a custom topic detail panel from information, comments, viewpoints, related topics, and a custom communication section; updating the detail panel on row click with hover feedback; and wiring a download button that exports selected topics (or all topics) as a BCF file.
+
+  By the end, you'll have a three-column BCF interface — topic list, 3D viewport, and topic detail panel — with topic creation, full detail view, and selective BCF export.
 
   ### 🏗 Scaffolding the Application
   First of all, let's import the dependencies we need to get this working:

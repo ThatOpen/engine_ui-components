@@ -1,13 +1,13 @@
 /* MD
   ### 🔗 Table Grouping
   ---
-  The bim-table component supports grouping functionality that allows you to organize your data hierarchically. You can group by one or multiple columns to create nested structures. This is particularly useful when you want to organize large datasets by categories or when you need to show relationships between different data points.
+  Reviewers and developers who explore large tabular datasets need to reorganize the same data by different dimensions on the fly — first by discipline, then by floor, then by status — but each regrouping requires restructuring the underlying data or running a new query.
 
-  :::tip Data Structure
+  The table component's grouping system reorganizes any flat dataset into a dynamic nested hierarchy by one or more columns, with an optional transform that maps raw values into multi-level category trees before the rows are placed.
 
-  The grouping functionality works with both flat data and already grouped data. When you apply grouping to already grouped data, it will first flatten the data and then apply the new grouping structure.
+  This tutorial covers defining an ISO 19650 CDE file dataset with state, discipline, type, location, and revision codes; writing multi-level grouping transforms that expand state codes into category trees (S1.1 → Shared Information States → S1 → S1.1) and revision codes into type buckets; applying data transforms that concatenate fields into ISO 19650 file names with document-type icons; building a drag-and-drop grouping panel where columns can be added from an available pool, reordered, toggled active/inactive by clicking, and removed by double-clicking; automatically applying the grouping on every interaction; and wiring a search box that filters across the grouped view.
 
-  :::
+  By the end, you'll have an interactive CDE document browser with a drag-and-drop grouping builder, multi-level hierarchy transforms, and live search — organized around an ISO 19650 file naming convention.
 
   Let's start by creating some sample data and a table:
 */

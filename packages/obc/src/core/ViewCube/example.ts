@@ -1,7 +1,13 @@
 /* MD
   ## 🧭 Navigating your 3D Scene with the ViewCube
   ---
-  The ViewCube is a handy UI component that lets users quickly orient the camera in a 3D scene. In this tutorial, you'll learn how to add a ViewCube to your app, connect it to your camera, and let users interact with it to change their view.
+  Users navigating a 3D BIM scene lose track of orientation as they orbit and pan — without a reference indicator, recovering a specific view like front or top requires manual camera adjustments.
+
+  The ViewCube is a compact 3D orientation indicator that stays in sync with the camera and lets users snap to predefined views by clicking its faces.
+
+  This tutorial covers creating a basic 3D world with scene, camera, and renderer; placing the ViewCube inside the viewport element and linking it to the camera; keeping it synchronized by calling the orientation update on every camera control event; and handling a face click event to reposition the camera to a specific look-at target with animation.
+
+  By the end, you'll have a viewport with a ViewCube that tracks camera orientation in real time and snaps the view on click.
 
   ### 🖖 Importing our Libraries
 

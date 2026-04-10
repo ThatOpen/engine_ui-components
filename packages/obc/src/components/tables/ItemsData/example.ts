@@ -1,16 +1,13 @@
 /* MD
   ## Displaying data the simplest way 🔥🔥
   ---
-  What is a good BIM app if you don't give users a nice way to visualize its model properties, right? Well, hold tight as here you will learn all you need to know in order to use the power of UI Components to accomplish that!
+  Users who click on an element in a BIM viewer expect to see its attributes and property sets immediately in a side panel — but querying the model data, formatting it into a hierarchy, and keeping the panel in sync with selection requires wiring several systems together manually.
 
-  ### 🖖 Importing our Libraries
+  The items data table factory produces a pre-structured properties panel that updates automatically when fed a model ID map, displaying all attributes and relations in a searchable, expandable tree.
 
-  In this tutorial, we will import:
+  This tutorial covers initializing the Fragment loader and adding loaded models to the scene; creating the properties table with an empty initial model ID map; wiring the Highlighter so the table updates on every selection change and clears on deselect; toggling row expansion; copying the current table contents as TSV to the clipboard; and filtering properties with a debounced search input.
 
-  - @thatopen/ui to add some simple and cool UI menus.
-  - @thatopen/components to set up the barebone of our app.
-  - @thatopen/components-front to use some frontend-oriented components.
-  - @thatopen/ui-obc to add some cool pre-made UI menus for components.
+  By the end, you'll have a properties panel that populates with the selected element's full data on every click, with expand, copy, and search controls.
 */
 
 import * as BUI from "@thatopen/ui";

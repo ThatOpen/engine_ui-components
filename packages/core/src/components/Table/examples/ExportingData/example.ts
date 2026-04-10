@@ -1,12 +1,18 @@
 /* MD
   ### Taking Your Data Elsewhere ⏬
   ---
-  There are some situations in which is convenient to export information from your table, because you probably want to process it further in other places. Well, exporting data with the bim-table component is extremely simple and you will learn how to do it!
+  Project managers and coordinators who review BIM data in a web viewer often need to take that data into other tools — spreadsheets, cost estimators, AI assistants — but copying rows manually or building a custom export pipeline requires extra code that has nothing to do with the BIM logic.
+
+  The table component exposes built-in export that serializes the current view — including any active search filter — to CSV, TSV, or JSON and either downloads it as a file or copies it to the clipboard with a single call.
+
+  This tutorial covers creating a hierarchical table with nested rows; wiring a search box so exported data reflects the active filter; selecting the export format from a dropdown (CSV, TSV, JSON); setting a custom file name; downloading the file; toggling an indentation column for nested rows in flat text formats; and copying the current table content to the clipboard.
+
+  By the end, you'll have a table with a full export toolbar — format selector, file name input, download button, indentation toggle, and clipboard copy — all operating on the filtered view.
 
   ### 🖖 Initializing the Library and Setting the Table
   ---
   As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-  */
+*/
 
 // You have to import from "@thatopen/ui"
 import * as BUI from "../../../..";

@@ -1,12 +1,18 @@
 /* MD
   ### Asynchronously Loading Data 🌐
   ---
-  Manually setting data in a bim-table may be ok in some situations. However, there are cases where the data must be fetch from an external resource, or you need to do some heavy processing to compute the data and want to display a loading skeleton to inform users about an on-going computation. You should be happy as we got you covered! All of that is possible in the bim-table component and you will learn how in this tutorial.
+  Developers building tables that display data fetched from a server or computed from a heavy BIM operation need to handle the loading state, show a placeholder when no data is available, and surface error messages if the fetch fails — wiring all of that manually adds boilerplate that has nothing to do with the actual data logic.
+
+  The table component's load function system handles the async lifecycle automatically: it shows a skeleton while waiting, a configurable empty state when data is absent, and an error slot when the operation throws — triggered by a single method call.
+
+  This tutorial covers defining a missing-data slot with a load button displayed when the table has no rows; writing an async load function that fetches JSON from a remote URL and returns it as table data; throwing errors inside the load function and displaying them through a configurable error-loading slot with a retry button; and clearing the table data to reset back to the empty state.
+
+  By the end, you'll have a table with on-demand async loading, an empty-state placeholder, and a user-facing error display with retry — all without managing loading state manually.
 
   ### 🖖 Initializing the Library and Setting the Table
   ---
   As always, let's first initialize the UI library. Remember you only have to do it once in your entire app.
-  */
+*/
 
 // You have to import from "@thatopen/ui"
 import * as BUI from "../../../..";

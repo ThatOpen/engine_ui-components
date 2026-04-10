@@ -1,11 +1,35 @@
+/* MD
+  ## Composing Technical Drawing Sheets 📐
+  ---
+  Architects and technical drafters who prepare construction document sheets need to arrange multiple drawing views — a full floor plan alongside room-scale details — on numbered sheets with title blocks, but wiring geometry projection, viewport scaling, sheet layout, annotation tools, and DXF export into a single coherent canvas requires assembling many independent systems by hand.
+
+  The SheetBoard component is a multi-sheet drawing canvas that hosts PaperSpace sheets, each containing positioned technical drawing viewports at configurable scales, with a built-in edit mode that activates annotation tools directly inside any viewport.
+
+  This tutorial covers creating a hidden 3D world as a geometry container for the drawing; defining floor plan geometry with outer walls and an interior partition with a doorway gap; creating three named viewports at different scales (1:100 full plan, two 1:50 room details); loading a font for annotation labels; configuring two PaperSpace sheets with title block templates, labels, and sheet numbers; placing viewports onto each sheet at specific pixel offsets after layout; wiring double-click to enter edit mode for a viewport; canceling with Escape; requesting re-renders on mouse move; and downloading DXF exports per viewport or per full sheet.
+
+  By the end, you'll have a two-sheet drawing board with a floor plan overview and two room detail viewports, wired for edit mode entry, real-time mouse feedback, and DXF export at the viewport and sheet level.
+
+  ### 🖖 Importing our Libraries
+*/
+
 import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components"
 import * as OBF from "@thatopen/components-front"
 import * as CUI from "../..";
 
+/* MD
+  ### 📋 Initializing the UI
+  As always, let's first initialize the UI libraries. Remember you only have to do this once in your entire app.
+*/
+
 BUI.Manager.init();
 CUI.Manager.init();
+
+/* MD
+  ### 🌎 Setting Up the 3D World
+  The SheetBoard needs a 3D world to project geometry from. We'll create one with a hidden renderer — it's never shown on screen, but it provides the scene container that the technical drawings system requires.
+*/
 
 // ── OBC world (hidden — only needed as scene container for the drawing) ────
 
@@ -28,6 +52,11 @@ world.camera = new OBC.SimpleCamera(components);
 // Layer 1 stays disabled on the world camera — the drawing is only visible
 // through the SheetBoard viewports, not in any 3D view.
 components.init();
+
+/* MD
+  ### ✏️ Creating the Technical Drawing
+  Now let's create the drawing geometry. We'll define a simple floor plan: an outer rectangular perimeter and an interior partition wall with a doorway gap. Three viewports are created from the same drawing — a 1:100 overview of the full plan, and two 1:50 detail views for each room.
+*/
 
 // ── TechnicalDrawings ─────────────────────────────────────────────────────
 
@@ -63,13 +92,21 @@ const vpA = drawing.viewports.create({ left: -10, right: 10, top: 8,  bottom: -8
 const vpB = drawing.viewports.create({ left:   0, right:  9, top: 7,  bottom: -7, scale:  50, name: "Right Room" });
 const vpC = drawing.viewports.create({ left: -9,  right:  0, top: 7,  bottom: -7, scale:  50, name: "Left Room" });
 
+/* MD
+  ### 🖊️ Setting Up the Drawing Editor
+  The DrawingEditor handles annotation interactions inside any active viewport. We load a font for dimension labels so any annotation tool registered later can render text correctly.
+*/
+
 // ── DrawingEditor ─────────────────────────────────────────────────────────
 
 const editor = components.get(OBF.DrawingEditor);
 // Font for dimension labels — adjust the path to match your dev server setup.
 await editor.fonts.load("/resources/fonts/PlusJakartaSans-Medium.ttf");
 
-const dimTool = editor.use(OBF.LinearAnnotationsTool);
+/* MD
+  ### 📄 Configuring Sheets and Title Blocks
+  Each PaperSpace element represents a numbered sheet. We assign a label, sheet number, and a title block template function to each one. The title block template receives a `mm` helper (converts millimetres to CSS pixels at the sheet's resolution), the drawing area element, and sheet metadata — and returns any HTML layout you need.
+*/
 
 // ── SheetBoard and papers ────────────────────────────────────────────────
 
@@ -111,6 +148,11 @@ paperB.label = "Details & Sections";
 paperB.sheetNumber = "A-02";
 paperB.titleBlockTemplate = makeTitleBlock("1:50 / 1:100");
 
+/* MD
+  ### 📐 Placing Viewports on Sheets
+  Viewports are positioned on each sheet in pixel coordinates relative to the sheet's drawing area. We wait for the layout to settle before reading sheet dimensions, then place the full floor plan and the right room detail on sheet A-01, and the left room detail on sheet A-02.
+*/
+
 paperA.style.position = "absolute";
 paperA.style.left = "0";
 paperA.style.top = "0";
@@ -130,6 +172,11 @@ requestAnimationFrame(() => {
     board.addViewport(paperB, drawing.uuid, vpC.uuid, { x: 10, y: 10 }); // Left Room 1:50
   });
 });
+
+/* MD
+  ### 🔌 Wiring SheetBoard and Editor Interactions
+  The SheetBoard fires events that connect user gestures to the DrawingEditor. Double-clicking a viewport enters edit mode for that viewport. Pressing Escape cancels any in-progress operation and exits edit mode. Mouse moves trigger re-renders so hover highlights appear in real time. DXF export events from the viewport toolbar and sheet toolbar trigger file downloads.
+*/
 
 // ── SheetBoard ↔ DrawingEditor wiring ───────────────────────────────────
 
@@ -156,32 +203,19 @@ board.addEventListener("viewportactivate", (e) => {
   const vpEl = board.getViewportElement(drawingId, viewportId);
   if (vpEl) editor.setSource(vpEl, vp);
 
-  editor.activeTool = OBF.LinearAnnotationsTool;
   board.enterEditMode(drawingId, viewportId);
 });
 
-// Click inside the active viewport → advance the tool state machine.
-board.addEventListener("click", () => {
-  if (editor.activeDrawing) {
-    editor.step();
-    board.requestRender();
-  }
-});
-
-// Escape → cancel any in-progress annotation and exit edit mode.
+// Escape → cancel any in-progress operation and exit edit mode.
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape" || !editor.activeDrawing) return;
   editor.cancel();
   exitEditMode();
 });
 
-// Re-render on every editor mousemove so hover highlights and placement
-// previews appear in real time (the board only renders on demand).
+// Re-render on every editor mousemove so hover highlights appear in real time
+// (the board only renders on demand).
 editor.onDrawingMouseMove.add(() => board.requestRender());
-
-// Re-render when a dimension is committed or deleted.
-dimTool.system.onCommit.add(() => board.requestRender());
-dimTool.system.onDelete.add(() => board.requestRender());
 
 // Download the DXF string as a file when the viewport toolbar triggers a single-viewport export.
 board.addEventListener("viewportdxfexport", (e) => {
@@ -208,3 +242,8 @@ board.addEventListener("paperdxfexport", (e) => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+/* MD
+  ### 🎉 Congratulations!
+  You've successfully built a multi-sheet technical drawing board with in-place annotation and DXF export. From here, you can add more drawings, viewports, and sheets — or connect real BIM geometry by projecting IFC elements through the TechnicalDrawings system.
+*/

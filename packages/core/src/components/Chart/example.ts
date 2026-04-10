@@ -1,7 +1,13 @@
 /* MD
   ### A Picture is Worth a Thousand BIM Elements 📊
   ---
-  Let's be real, BIM models are packed with overwhelming amounts of data. Trying to make sense of it all can feel like a chore. What if you could visualize all that information in a simple, clear, and interactive way? That's where charts come in! The downside? Building them from scratch, handling different data structures, and making them look good is a ton of work. But here's the great part: we've built an awesome Chart Web Component that does the heavy lifting for you. You bring the data, and we'll make it shine. Ready to see it in action? 👇
+  BIM application developers who want to present model data — element counts by category, cost breakdowns, schedule progress — as charts have to wire up a third-party charting library themselves, reconciling its data format with BIM data structures and styling it to match the rest of the UI.
+
+  The Chart web component wraps a full charting engine behind a single custom element that accepts BIM-shaped data directly and exposes visual properties as HTML attributes, so charts stay consistent with the rest of the component library without any extra configuration.
+
+  This tutorial covers preparing datasets in the expected shape for cartesian charts (bar, line, radar), part-of-a-whole charts (pie, doughnut, polar area), and scatter/bubble charts; creating a responsive CSS grid dashboard with eight chart types side by side; configuring shared visual properties (index axis, point style, line fill, smoothing, stacking, label visibility, colors, transparent background); wiring a shared legend that toggles datasets across all charts at once; listening for click events on individual chart sections; and toggling a loading state across the whole dashboard.
+
+  By the end, you'll have a fully interactive eight-chart dashboard driven by shared controls, where changing any visual setting updates every chart simultaneously.
 
   ### 🎨 Initializing the Library and Creating Your First Chart
   ---
