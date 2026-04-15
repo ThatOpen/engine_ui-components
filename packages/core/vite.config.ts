@@ -11,6 +11,9 @@ export default defineConfig({
       formats: ["es"],
       fileName: "index",
     },
+    rollupOptions: {
+      external: (id) => id === "lit" || id.startsWith("lit/"),
+    },
   },
   plugins: [
     dts({

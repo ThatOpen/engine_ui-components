@@ -13,7 +13,14 @@ export default defineConfig({
       fileName: "index",
     },
     rollupOptions: {
-      external: Object.keys(packageJson.peerDependencies),
+      external: (id) => {
+        const peers = [
+          ...Object.keys(packageJson.peerDependencies),
+          "lit",
+          "@thatopen/ui",
+        ];
+        return peers.some((p) => id === p || id.startsWith(`${p}/`));
+      },
       output: {
         globals: {
           three: "THREE",
