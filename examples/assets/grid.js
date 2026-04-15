@@ -1,4 +1,4 @@
-import{b as e}from"./lit-html-CgQwCkHV.js";import{M as T,C as o,o as m}from"./index-CL5enH56.js";import{b as k}from"./ref-B0YVjWyu.js";import{i as y}from"./custom-icons-D8b2bjjk.js";T.init();T.addIconsCollection({...y});const u=()=>e`
+import{n as k,b as e,o as m}from"./if-defined-DypSrBBK.js";import{M as T,C as o}from"./index-CKW6zj6D.js";import{i as y}from"./custom-icons-D8b2bjjk.js";T.init();T.addIconsCollection({...y});const u=()=>e`
   <bim-tooltip style="width: 18rem;">
     <bim-label style="font-weight: bold; font-size: 0.9rem;">Title</bim-label>
     <bim-label style="white-space: normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</bim-label>
