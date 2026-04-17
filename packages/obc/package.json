@@ -45,7 +45,7 @@
   "devDependencies": {
     "@thatopen/components": "~3.4.0",
     "@thatopen/components-front": "~3.4.0",
-    "@thatopen/fragments": "~3.4.2",
+    "@thatopen/fragments": "~3.4.3",
     "@types/node": "20.11.30",
     "@types/three": "0.183.1",
     "@typescript-eslint/eslint-plugin": "7.2.0",
