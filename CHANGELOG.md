@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.5.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.4.0...v3.5.0) (2026-04-18)
+
+
+### Features
+
+* add contributing guide ([d0db3d3](https://github.com/ThatOpen/engine_ui-components/commit/d0db3d33b19f632d15587fb675f29b34d835c797))
+
+
+### Bug Fixes
+
+* correct duplicate lit warning in examples ([4139aca](https://github.com/ThatOpen/engine_ui-components/commit/4139aca33fc18b3e8ce8ce062ad531fea83092ad))
+
 ## [3.4.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.3...v3.4.0) (2026-04-09)
 
 
