@@ -328,6 +328,9 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
   @property({ type: Boolean, attribute: "no-carets", reflect: true })
   noCarets = false;
 
+  @property({ type: Boolean, attribute: "groups-only", reflect: true })
+  groupsOnly = false;
+
   @property({ type: Boolean, reflect: true })
   loading = false;
 

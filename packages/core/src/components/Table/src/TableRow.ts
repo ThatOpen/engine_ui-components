@@ -20,8 +20,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
       position: relative;
       grid-area: Data;
       display: grid;
-      min-height: var(--bim-ui_size-16xl);
+      min-height: 35px;
       transition: all 0.15s;
+      gap: 4px;
     }
 
     ::slotted(.branch.branch-vertical) {
@@ -30,11 +31,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
     }
 
     :host([selected]) {
-      background-color: color-mix(
-        in lab,
-        var(--bim-ui_bg-contrast-20) 30%,
-        var(--bim-ui_accent-base) 10%
-      );
+      background-color: color-mix(in lab, var(--bim-ui_bg-contrast-20) 30%, var(--bim-ui_bg-contrast-70) 10%);
     }
 
     :host([is-header]) {
@@ -129,6 +126,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
   private _isRangeClick = false;
 
   private _onCheckboxClick = (e: MouseEvent) => {
+    e.stopPropagation()
     const key = this.table?.rangeSelectKey ?? "ctrlKey";
     this._isRangeClick = e[key];
   };
@@ -296,7 +294,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
           ? 0
           : this._columnNames.indexOf(column);
       if (columnIndex === 0)
-        cell.style.marginLeft = `${this.table.noIndentation ? 0 : indentation + 0.75}rem`;
+        cell.style.marginLeft = `${this.table.noIndentation ? 0 : indentation + 0.9375}rem`;
       cell.setAttribute("data-column-index", String(columnIndex));
       cell.toggleAttribute(
         "data-no-indentation",

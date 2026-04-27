@@ -357,8 +357,11 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       caretTemplate = html`<div @click=${onClick} style=${styleMap(styles)} class="caret">${toggleCaret}</div>`
     }
 
+    const hasComputedChildren = this.data.children?.some(c => c._isComputedGroup) ?? false;
+    const showChildren = !this._isChildrenEmpty && (!this.table?.groupsOnly || hasComputedChildren);
+
     let childrenTemplate: TemplateResult | undefined
-    if (!this._isChildrenEmpty && !this.childrenHidden) {
+    if (showChildren && !this.childrenHidden) {
       const onChildrenCreated = (e?: Element) => {
         if (!e) return
         const children = e as TableChildren<T>
@@ -386,9 +389,9 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     return html`
       <div class="parent">
         <bim-table-row ${ref(onRowCreated)}>
-          ${when(!this._isChildrenEmpty, () => verticalBranchTemplate)}
+          ${when(showChildren, () => verticalBranchTemplate)}
           ${when(indentation !== 0, () => horizontalBranchTemplate)}
-          ${when(!this.table.noIndentation && !this._isChildrenEmpty, () => caretTemplate)}
+          ${when(!this.table.noIndentation && showChildren, () => caretTemplate)}
         </bim-table-row>
         ${childrenTemplate}
       </div>
