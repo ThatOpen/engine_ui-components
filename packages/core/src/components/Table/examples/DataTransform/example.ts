@@ -209,6 +209,21 @@ advancedTable.dataTransform.Description = (value, rowData) => {
 // advancedTable.dataTransform = dataTransform
 
 /* MD
+  ### 🏷️ Transforming Headers
+  ---
+  Just like `dataTransform` customizes cell rendering, `headersTransform` lets you customize how each column header is displayed. The function receives the column name and returns any valid render value — a string, an HTML element, or a full template. Here we add icons to the headers of the transformed columns:
+  */
+
+advancedTable.headersTransform = {
+  Class: () => BUI.html`<bim-label icon="material-symbols:category">Class</bim-label>`,
+  PredefinedType: () => BUI.html`<bim-label icon="material-symbols:sell">Predefined Type</bim-label>`,
+  Name: () => BUI.html`<bim-label icon="material-symbols:badge">Name</bim-label>`,
+  Description: () => BUI.html`<bim-label icon="material-symbols:info">Description</bim-label>`,
+  LoadBearing: () => BUI.html`<bim-label icon="material-symbols:verified">Load Bearing</bim-label>`,
+  Area: () => BUI.html`<bim-label icon="material-symbols:straighten">Area</bim-label>`,
+};
+
+/* MD
   ### 🔗 Putting Everything Together
   ---
   As everything is already setup, let's create a new component to hold the tables together and display them in the page. You can do it very easily as follows:
