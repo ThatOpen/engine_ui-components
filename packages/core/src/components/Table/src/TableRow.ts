@@ -158,7 +158,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
       } else {
         let data = [this.data];
         if (this.isHeader) {
-          data = Table.flattenData<T>(this.table.data).map(
+          data = Table.flattenData<T>(this.table.value).map(
             (entry) => entry.data,
           );
         }
