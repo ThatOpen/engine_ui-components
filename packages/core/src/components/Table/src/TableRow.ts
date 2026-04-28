@@ -318,7 +318,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
         ? html`<bim-checkbox
             @click=${this._onCheckboxClick}
             @change=${this.onSelectionChange}
-            .checked=${this._isSelected ?? false}
+            .checked=${this.isHeader ? this.selected : (this._isSelected ?? false)}
             style="align-self: center; justify-self: center"
           ></bim-checkbox>`
         : null}
