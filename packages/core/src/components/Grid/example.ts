@@ -35,6 +35,7 @@ const leftPanelSettingsTemplate = (_state: Record<string, never>) => {
         )}
       </bim-dropdown>
       <bim-text-input label="Ultra nice text input" placeholder="Write something..."></bim-text-input>
+      <bim-text-input label="Another text input?" vertical placeholder="Write here..."></bim-text-input>
       <bim-checkbox label="Is That Open Company nice?" checked></bim-checkbox>
       <bim-number-input label="I'm a number input :)" pref="#" suffix="un"></bim-number-input>
     </bim-panel-section>
@@ -404,16 +405,21 @@ const bottomPanel = BUI.Component.create(() => {
     table.groupedBy = []
   }
 
+  const onRowCreated = ({ detail: { row } }: {detail: BUI.RowCreatedEventDetail}) => {
+    row.style.borderBottom = "1px solid var(--bim-ui_bg-contrast-60)";
+    row.addEventListener("click", () => console.log("hi there"))
+  }
+
   return BUI.html`
-    <bim-panel-section label="Assignments" fixed>
-      <div style="display: flex; align-self: end; width: fit-content; gap: 0.25rem;">
+    <bim-panel-section label="Assignments" fixed style="height: unset">
+      <div slot="header-end" style="display: flex; align-items: center; gap: 0.25rem;">
         <bim-label>Group By:</bim-label>
         <bim-button label="Task" @click=${onGroupByTask}></bim-button>
         <bim-button label="Assignee" @click=${onGroupByAssignee}></bim-button>
         <bim-button label="Status" @click=${onGroupByStatus}></bim-button>
         <bim-button label="None" @click=${onUngroup}></bim-button>
       </div>
-      <bim-table ${BUI.ref(onTableCreated)}></bim-table>
+      <bim-table selectable-rows @rowcreated=${onRowCreated} ${BUI.ref(onTableCreated)}></bim-table>
     </bim-panel-section>
   `;
 });
@@ -658,10 +664,10 @@ grid.layouts = {
   },
   app: {
     template: `
-      "${ribbonArea} ${ribbonArea} ${ribbonArea}" auto
+      "${ribbonArea} ${ribbonArea} ${ribbonArea}" max-content
       "${leftPanelArea} viewport ${rightPanelArea}" 1fr
-      "${leftPanelArea} bottomPanel bottomPanel" 20rem
-      / 22rem 1fr 20rem
+      "bottomPanel bottomPanel bottomPanel" 20rem
+      / 15rem 1fr 15rem
     `,
   },
 };
@@ -674,20 +680,22 @@ grid.layouts = {
 //   }
 // });
 
-const btn = document.body.querySelector<BUI.Button>("bim-button")!;
-btn.addEventListener("click", () => {
-  const { layout } = grid;
-  switch (layout) {
-    case undefined:
-      grid.layout = "main";
-      break;
-    case "main":
-      grid.layout = "app";
-      break;
-    case "app":
-      grid.layout = undefined;
-      break;
-    default:
-      console.log("No follow up action");
-  }
-});
+const btn = document.body.querySelector<BUI.Button>("bim-button");
+if (btn) {
+  btn.addEventListener("click", () => {
+    const { layout } = grid;
+    switch (layout) {
+      case undefined:
+        grid.layout = "main";
+        break;
+      case "main":
+        grid.layout = "app";
+        break;
+      case "app":
+        grid.layout = undefined;
+        break;
+      default:
+        console.log("No follow up action");
+    }
+  });
+}
