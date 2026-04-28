@@ -59,20 +59,39 @@ export class TableCell<T extends TableRowData> extends LitElement {
     return rowDataTransform || tableDataTransform || defaultDataTransform
   }
 
+  get headersTransform() {
+    return this.table?.headersTransform[this.column];
+  }
+
+  private _renderValue(result: unknown) {
+    if (
+      typeof result === "string" ||
+      typeof result === "boolean" ||
+      typeof result === "number"
+    ) {
+      return html`<bim-label>${result}</bim-label>`;
+    }
+    return result;
+  }
+
   get templateValue() {
     const { data, rowData, group } = this;
+
+    if (this.row?.isHeader) {
+      const headerTransformFn = this.headersTransform;
+      if (headerTransformFn && data !== null && data !== undefined) {
+        return this._renderValue(headerTransformFn(this.column));
+      }
+      if (data !== null && data !== undefined) {
+        return html`<bim-label>${data}</bim-label>`;
+      }
+      return nothing;
+    }
+
     const transformFn = this.dataTransform;
     if (transformFn && (data !== null && data !== undefined) && group) {
-      const result = transformFn(data, rowData, group)
-      if (
-        typeof result === "string" ||
-        typeof result === "boolean" ||
-        typeof result === "number"
-      ) {
-        return html`<bim-label>${result}</bim-label>`
-      } 
-      return result
-    };
+      return this._renderValue(transformFn(data, rowData, group));
+    }
     if (data !== null && data !== undefined) {
       return html`<bim-label>${data}</bim-label>`;
     }

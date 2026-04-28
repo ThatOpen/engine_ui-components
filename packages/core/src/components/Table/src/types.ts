@@ -50,6 +50,13 @@ export type TableDataTransform<T extends TableRowData = TableRowData> = {
 };
 
 /**
+ * Represents a transformation function for table headers.
+ */
+export type TableHeadersTransform<T extends TableRowData = TableRowData> = {
+  [K in keyof T]?: (columnName: K) => CellRenderValue;
+};
+
+/**
  * Represents a transformation function for grouping table data. Used to transform values before they are used for grouping logic. ALWAYS returns an array of strings representing the hierarchical path. Examples: Simple grouping: ["Architecture"], Two-level: ["Shared Information", "S1 - Coordination"], Multi-level: ["Shared Information", "S1 - Coordination", "S1.1 - Initial Coordination"]. The array length determines the hierarchy depth, independent of groupBy columns.
  */
 export type TableGroupingTransform<T extends TableRowData = TableRowData> = {

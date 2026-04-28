@@ -4,6 +4,7 @@ import { styles } from "../../core/Manager/src/styles";
 import {
   TableChildren,
   TableDataTransform,
+  TableHeadersTransform,
   TableGroupingTransform,
   TableGroupData,
   TableLoadFunction,
@@ -306,6 +307,9 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
    * @defaultValue An empty object.
    */
   dataTransform: TableDataTransform<T> = {};
+
+  @property({ attribute: false })
+  headersTransform: TableHeadersTransform<T> = {};
 
   /**
    * An object of functions used to transform data values before they are used for grouping logic.
