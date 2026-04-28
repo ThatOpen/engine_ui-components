@@ -17,10 +17,10 @@ export class Checkbox extends LitElement implements HasValue {
     }
 
     .parent-label {
-      --background: #fff;
-      --border: #dfdfe6;
-      --stroke: #fff;
-      --border-hover: var(--bim-ui_main-base);
+      --background: var(--bim-ui_bg-contrast-30);
+      --border:  var(--bim-ui_bg-contrast-50);
+      --stroke: var(--bim-ui_main-contrast);
+      --border-hover: var(--bim-ui_bg-contrast-70);
       --border-active: var(--bim-ui_main-base);
       display: flex;
       justify-content: space-between;
@@ -82,12 +82,14 @@ export class Checkbox extends LitElement implements HasValue {
       --b: var(--border-hover);
     }
 
-    input:checked {
+    input:checked,
+    input:indeterminate {
       --b: var(--border-active);
       --s: 11px;
     }
 
-    input:checked + svg {
+    input:checked + svg,
+    input:indeterminate + svg {
       -webkit-animation: bounce 0.4s linear forwards 0.2s;
       animation: bounce 0.4s linear forwards 0.2s;
     }
@@ -159,6 +161,9 @@ export class Checkbox extends LitElement implements HasValue {
   @property({ type: Boolean, reflect: true })
   checked = false;
 
+  @property({ type: Boolean, reflect: true })
+  indeterminate = false;
+
   /**
    * Indicates whether the checkbox is displayed with an inverted disposition.
    * @default false
@@ -202,15 +207,14 @@ export class Checkbox extends LitElement implements HasValue {
   private onChange(e: Event) {
     e.stopPropagation();
     this.checked = (e.target as HTMLInputElement).checked;
+    this.indeterminate = false;
     this.dispatchEvent(this.onValueChange);
   }
 
   protected render() {
-    const checkboxIcon = html`
-      <svg viewBox="0 0 21 21">
-        <polyline points="5 10.75 8.5 14.25 16 6"></polyline>
-      </svg>
-    `;
+    const checkboxIcon = this.indeterminate
+      ? html`<svg viewBox="0 0 21 21"><line x1="5" y1="10.5" x2="16" y2="10.5"></line></svg>`
+      : html`<svg viewBox="0 0 21 21"><polyline points="5 10.75 8.5 14.25 16 6"></polyline></svg>`;
 
     return html`
       <div class="parent">
@@ -224,6 +228,7 @@ export class Checkbox extends LitElement implements HasValue {
               aria-label=${this.label || this.name || "Checkbox Input"}
               @change="${this.onChange}"
               .checked="${this.checked}"
+              .indeterminate="${this.indeterminate}"
             />
             ${checkboxIcon}
           </div>

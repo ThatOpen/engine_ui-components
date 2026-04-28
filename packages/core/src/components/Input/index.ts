@@ -18,8 +18,7 @@ export class Input extends LitElement implements HasValue, HasName {
     .parent {
       display: flex;
       flex-wrap: wrap;
-      column-gap: 1rem;
-      row-gap: 0.375rem;
+      gap: 0.375rem;
       user-select: none;
       flex: 1;
     }
@@ -39,16 +38,15 @@ export class Input extends LitElement implements HasValue, HasName {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      min-height: var(--bim-ui_size-11xl);
+      min-height: 25px;
       min-width: 3rem;
       gap: var(--bim-input--g, var(--bim-ui_size-4xs));
-      padding: var(--bim-input--p, 0);
+      padding: var(--bim-input--p, 0 12px);
       background-color: var(--bim-input--bgc, var(--bim-ui_bg-contrast-50));
       border: var(--bim-input--olw, 2px) solid
         var(--bim-input--olc, transparent);
-      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
+      border-radius: 8px;
       transition: all 0.15s;
-      --bim-label--fz: var(--bim-ui_size-sm);
     }
 
     :host(:not([vertical])) .input {

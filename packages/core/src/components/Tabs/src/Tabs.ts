@@ -43,7 +43,6 @@ export class Tabs extends LitElement {
         position: relative;
         display: flex;
         flex-wrap: wrap;
-        min-height: 2.25rem;
         grid-area: switchers;
       }
 
@@ -57,8 +56,7 @@ export class Tabs extends LitElement {
         justify-content: center;
         z-index: 2;
         transition: all 0.15s;
-        min-height: 2.25rem;
-        min-width: 8rem;
+        min-height: 30px;
       }
 
       .switcher:not([data-active]):hover {
@@ -73,7 +71,7 @@ export class Tabs extends LitElement {
         width: fit-content;
         border-bottom: none;
         padding: 0;
-        margin: var(--bim-ui_size-lg);
+        margin: 10px;
         gap: 0;
         overflow: auto;
         border-radius: var(--bim-ui_size-2xs);

@@ -31,27 +31,32 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       :host(:not([fixed])) .header:hover {
-        --bim-label--c: var(--bim-ui_accent-base);
-        color: var(--bim-ui_accent-base);
         cursor: pointer;
+      }
+
+      :host(:not([fixed])) .header:hover > bim-label {
+        --bim-label--c: var(--bim-ui_accent-base);
       }
 
       :host(:not([fixed])) .header:hover .expand-icon {
         fill: var(--bim-ui_accent-base);
       }
 
-      .header {
+      .header > bim-label {
         --bim-label--fz: var(--bim-ui_size-lg);
         --bim-label--c: var(
           --bim-panel-section_hc,
           var(--bim-ui_bg-contrast-100)
         );
+      }
+
+      .header {
         display: var(--bim-panel-section--header-display, flex);
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
-        height: 1.5rem;
-        padding: 0.75rem 1rem;
+        height: 2rem;
+        padding: 5px 10px;
       }
 
       .expand-icon {
@@ -86,7 +91,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         flex-direction: column;
         overflow: hidden;
         row-gap: 0.75rem;
-        padding: 1rem;
+        padding: 10px;
         box-sizing: border-box;
         transition:
           height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
@@ -96,7 +101,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       .components > div {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 8px;
         flex: 1;
         overflow: auto;
       }
@@ -104,6 +109,12 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       :host(:not([fixed])[collapsed]) .components {
         padding: 0;
         height: 0px;
+      }
+
+      .header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
       }
 
       bim-label {
@@ -409,7 +420,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         ${this.label || this.icon || this.name
           ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
-        ${!this.fixed ? expandIcon : null}
+        <div class="header-end">
+          <slot name="header-end"></slot>
+          ${!this.fixed ? expandIcon : null}
+        </div>
       </div>
     `;
 

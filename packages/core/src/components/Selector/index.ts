@@ -22,7 +22,6 @@ export class Selector extends LitElement implements HasValue, HasName {
       position: relative;
       border-radius: 0;
       overflow: hidden;
-      min-width: min-content;
       min-height: min-content;
       transition: background-color 0.2s;
     }
@@ -46,6 +45,7 @@ export class Selector extends LitElement implements HasValue, HasName {
 
     bim-input {
       --bim-input--olw: 0px;
+      --bim-input--p: 0;
     }
 
     /* ── Underline variant ── */

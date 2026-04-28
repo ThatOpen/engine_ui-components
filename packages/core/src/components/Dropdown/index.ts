@@ -31,7 +31,6 @@ export class Dropdown extends Component implements HasValue, HasName {
       }
 
       .input {
-        --bim-label--fz: var(--bim-ui_size-sm);
         --bim-label--c: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
         height: 100%;
         display: flex;
@@ -42,7 +41,6 @@ export class Dropdown extends Component implements HasValue, HasName {
         cursor: pointer;
         align-items: center;
         justify-content: space-between;
-        padding: 0 0.5rem;
       }
 
       bim-label {

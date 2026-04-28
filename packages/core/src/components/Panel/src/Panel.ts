@@ -44,8 +44,9 @@ export class Panel extends LitElement implements HasName, HasValue {
         --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-lg));
         font-weight: 600;
-        padding: 1rem;
+        padding: 5px 10px;
         flex-shrink: 0;
+        height: 2rem;
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 

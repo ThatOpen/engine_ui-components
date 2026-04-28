@@ -11,7 +11,7 @@ const scrollbar = css`
     border-radius: 0.25rem;
     background-color: var(
       --bim-scrollbar--c,
-      color-mix(in lab, var(--bim-ui_main-base), white 15%)
+      var(--bim-ui_bg-contrast-60)
     );
   }
 
@@ -44,35 +44,35 @@ const globalStyles = css`
     --bim-ui_accent-contrast: var(--bim-ui_gray-0);
 
     /* Sizes */
-    --bim-ui_size-4xs: 0.375rem; /* 6px */
-    --bim-ui_size-3xs: 0.375rem; /* 6px */
-    --bim-ui_size-2xs: 0.5rem; /* 8px */
-    --bim-ui_size-xs: 0.625rem; /* 10px */
-    --bim-ui_size-sm: 0.75rem; /* 12px */
-    --bim-ui_size-base: 0.875rem; /* 14px */
-    --bim-ui_size-lg: 1rem; /* 16px */
-    --bim-ui_size-xl: 1.125rem; /* 18px */
-    --bim-ui_size-2xl: 1.25rem; /* 20px */
-    --bim-ui_size-3xl: 1.375rem; /* 22px */
-    --bim-ui_size-4xl: 1.5rem; /* 24px */
-    --bim-ui_size-5xl: 1.625rem; /* 26px */
-    --bim-ui_size-6xl: 1.75rem; /* 28px */
-    --bim-ui_size-7xl: 1.875rem; /* 30px */
-    --bim-ui_size-8xl: 2rem; /* 32px */
-    --bim-ui_size-9xl: 2.125rem; /* 34px */
-    --bim-ui_size-10xl: 2.25rem; /* 36px */
-    --bim-ui_size-11xl: 2.375rem; /* 38px */
-    --bim-ui_size-12xl: 2.5rem; /* 40px */
-    --bim-ui_size-13xl: 2.625rem; /* 42px */
-    --bim-ui_size-14xl: 2.75rem; /* 44px */
-    --bim-ui_size-15xl: 2.875rem; /* 46px */
-    --bim-ui_size-16xl: 3rem; /* 48px */
-    --bim-ui_size-17xl: 3.125rem; /* 50px */
-    --bim-ui_size-18xl: 3.25rem; /* 52px */
-    --bim-ui_size-19xl: 3.375rem; /* 54px */
-    --bim-ui_size-20xl: 3.5rem; /* 56px */
-    --bim-ui_size-21xl: 3.625rem; /* 58px */
-    --bim-ui_size-22xl: 3.75rem; /* 60px */
+    --bim-ui_size-4xs: 0.0625rem; /* 1px */
+    --bim-ui_size-3xs: 0.1875rem; /* 3px */
+    --bim-ui_size-2xs: 0.3125rem; /* 5px */
+    --bim-ui_size-xs: 0.4375rem; /* 7px */
+    --bim-ui_size-sm: 0.5625rem; /* 9px */
+    --bim-ui_size-base: 0.6875rem; /* 11px */
+    --bim-ui_size-lg: 0.8125rem; /* 13px */
+    --bim-ui_size-xl: 0.9375rem; /* 15px */
+    --bim-ui_size-2xl: 1.0625rem; /* 17px */
+    --bim-ui_size-3xl: 1.1875rem; /* 19px */
+    --bim-ui_size-4xl: 1.3125rem; /* 21px */
+    --bim-ui_size-5xl: 1.4375rem; /* 23px */
+    --bim-ui_size-6xl: 1.5625rem; /* 25px */
+    --bim-ui_size-7xl: 1.6875rem; /* 27px */
+    --bim-ui_size-8xl: 1.8125rem; /* 29px */
+    --bim-ui_size-9xl: 1.9375rem; /* 31px */
+    --bim-ui_size-10xl: 2.0625rem; /* 33px */
+    --bim-ui_size-11xl: 2.1875rem; /* 35px */
+    --bim-ui_size-12xl: 2.3125rem; /* 37px */
+    --bim-ui_size-13xl: 2.4375rem; /* 39px */
+    --bim-ui_size-14xl: 2.5625rem; /* 41px */
+    --bim-ui_size-15xl: 2.6875rem; /* 43px */
+    --bim-ui_size-16xl: 2.8125rem; /* 45px */
+    --bim-ui_size-17xl: 2.9375rem; /* 47px */
+    --bim-ui_size-18xl: 3.0625rem; /* 49px */
+    --bim-ui_size-19xl: 3.1875rem; /* 51px */
+    --bim-ui_size-20xl: 3.3125rem; /* 53px */
+    --bim-ui_size-21xl: 3.4375rem; /* 55px */
+    --bim-ui_size-22xl: 3.5625rem; /* 57px */
   }
 
   /* Background Colors */

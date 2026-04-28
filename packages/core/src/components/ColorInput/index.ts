@@ -234,7 +234,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
         >
           <div class="color-container">
             <div
-              style="display: flex; align-items: center; gap: .375rem; height: 100%; flex: 1; padding: 0 0.5rem;"
+              style="display: flex; align-items: center; gap: .375rem; height: 100%; flex: 1;"
             >
               <input
                 ${ref(this._colorInput)}

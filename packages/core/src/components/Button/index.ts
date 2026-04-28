@@ -57,8 +57,8 @@ export class Button extends LitElement {
       height: 100%;
       user-select: none;
       row-gap: 0.125rem;
-      min-height: var(--bim-ui_size-10xl);
-      min-width: var(--bim-ui_size-10xl);
+      min-height: 25px;
+      min-width: 25px;
     }
 
     .button,
@@ -122,7 +122,7 @@ export class Button extends LitElement {
     }
 
     :host(:not([label-hidden])[label]) .button {
-      padding: 0 var(--bim-ui_size-sm);
+      padding: 0 6px;
     }
 
     :host([disabled]) {
