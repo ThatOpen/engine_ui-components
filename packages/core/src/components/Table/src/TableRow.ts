@@ -103,18 +103,24 @@ export class TableRow<T extends TableRowData> extends LitElement {
   // private _cacheTimeout?: number
   private _intersectTimeout?: number;
   private _timeOutDelay = 250;
+  private _firstObservation = true;
 
   private _observer = new IntersectionObserver(
     (entries) => {
       window.clearTimeout(this._intersectTimeout);
       this._intersectTimeout = undefined;
       if (entries[0].isIntersecting) {
-        this._intersectTimeout = window.setTimeout(() => {
+        if (this._firstObservation) {
           this._intersecting = true;
-        }, this._timeOutDelay);
+        } else {
+          this._intersectTimeout = window.setTimeout(() => {
+            this._intersecting = true;
+          }, this._timeOutDelay);
+        }
       } else {
         this._intersecting = false;
       }
+      this._firstObservation = false;
     },
     { rootMargin: "36px" },
   );
@@ -134,7 +140,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
   private onSelectionChange(e: Event) {
     if (!this.table) return;
     const target = e.target as Checkbox;
-    this.selected = target.value;
+    if (!this.isHeader) this.selected = target.value;
 
     if (target.value) {
       if (
@@ -200,18 +206,27 @@ export class TableRow<T extends TableRowData> extends LitElement {
     this._observer.observe(this);
   }
 
+  private _updateHeaderCheckbox() {
+    const checkbox = this.renderRoot.querySelector<Checkbox>("bim-checkbox");
+    if (!checkbox || !this.table) return;
+    const visibleData = Table.flattenData(this.table.value).map(e => e.data);
+    const selectedCount = visibleData.filter(d => this.table!.selection.has(d)).length;
+    checkbox.checked = selectedCount > 0 && selectedCount === visibleData.length;
+    checkbox.indeterminate = selectedCount > 0 && !checkbox.checked;
+  }
+
   private _onDataSelected = () => {
-    if (this.isHeader) { this.requestUpdate(); return; }
+    if (this.isHeader) { this._updateHeaderCheckbox(); return; }
     this.toggleAttribute("selected", this.table?.selection.has(this.data));
   };
 
   private _onDataDeselected = () => {
-    if (this.isHeader) { this.requestUpdate(); return; }
+    if (this.isHeader) { this._updateHeaderCheckbox(); return; }
     if (!this.table?.selection.has(this.data)) this.removeAttribute("selected");
   };
 
   private _onDataSelectionCleared = () => {
-    if (this.isHeader) { this.requestUpdate(); return; }
+    if (this.isHeader) { this._updateHeaderCheckbox(); return; }
     this.removeAttribute("selected");
   };
 
