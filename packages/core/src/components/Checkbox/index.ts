@@ -42,6 +42,15 @@ export class Checkbox extends LitElement implements HasValue {
       justify-content: start;
     }
 
+    :host([disabled]) .parent-label {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+
+    :host([disabled]) input {
+      pointer-events: none;
+    }
+
     input,
     svg {
       width: 1rem;
@@ -164,6 +173,9 @@ export class Checkbox extends LitElement implements HasValue {
   @property({ type: Boolean, reflect: true })
   indeterminate = false;
 
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
   /**
    * Indicates whether the checkbox is displayed with an inverted disposition.
    * @default false
@@ -229,6 +241,7 @@ export class Checkbox extends LitElement implements HasValue {
               @change="${this.onChange}"
               .checked="${this.checked}"
               .indeterminate="${this.indeterminate}"
+              .disabled="${this.disabled}"
             />
             ${checkboxIcon}
           </div>
