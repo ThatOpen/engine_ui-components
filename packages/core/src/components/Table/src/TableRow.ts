@@ -204,13 +204,20 @@ export class TableRow<T extends TableRowData> extends LitElement {
     this._observer.observe(this);
   }
 
+  private _headerCheckboxUpdatePending = false;
+
   private _updateHeaderCheckbox() {
-    const checkbox = this.renderRoot.querySelector<Checkbox>("bim-checkbox");
-    if (!checkbox || !this.table) return;
-    const visibleData = Table.flattenData(this.table.value).map(e => e.data);
-    const selectedCount = visibleData.filter(d => this.table!.selection.has(d)).length;
-    checkbox.checked = selectedCount > 0 && selectedCount === visibleData.length;
-    checkbox.indeterminate = selectedCount > 0 && !checkbox.checked;
+    if (this._headerCheckboxUpdatePending) return;
+    this._headerCheckboxUpdatePending = true;
+    requestAnimationFrame(() => {
+      this._headerCheckboxUpdatePending = false;
+      const checkbox = this.renderRoot.querySelector<Checkbox>("bim-checkbox");
+      if (!checkbox || !this.table) return;
+      const visibleData = Table.flattenData(this.table.value).map(e => e.data);
+      const selectedCount = visibleData.filter(d => this.table!.selection.has(d)).length;
+      checkbox.checked = selectedCount > 0 && selectedCount === visibleData.length;
+      checkbox.indeterminate = selectedCount > 0 && !checkbox.checked;
+    });
   }
 
   private _onDataSelected = () => {
