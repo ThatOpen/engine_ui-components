@@ -326,6 +326,9 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
   selection = new DataSet<Partial<T>>();
 
+  @property({ type: Boolean, attribute: "rows-selection-disabled", reflect: true })
+  rowsSelectionDisabled = false;
+
   @property({ type: Boolean, attribute: "no-indentation", reflect: true })
   noIndentation = false;
 
@@ -560,6 +563,10 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
   constructor() {
     super();
+    this.selection.guard = (item) =>
+      !this.rowsSelectionDisabled &&
+      Table.flattenData(this.data).some((entry) => entry.data === item);
+    this.selection.deleteGuard = () => !this.rowsSelectionDisabled;
     this.selection.onItemAdded.add((data) => this.emitDataSelected({ data }));
     this.selection.onItemDeleted.add((data) =>
       this.emitDataDeselected({ data }),

@@ -201,14 +201,17 @@ export class TableRow<T extends TableRowData> extends LitElement {
   }
 
   private _onDataSelected = () => {
+    if (this.isHeader) { this.requestUpdate(); return; }
     this.toggleAttribute("selected", this.table?.selection.has(this.data));
   };
 
   private _onDataDeselected = () => {
+    if (this.isHeader) { this.requestUpdate(); return; }
     if (!this.table?.selection.has(this.data)) this.removeAttribute("selected");
   };
 
   private _onDataSelectionCleared = () => {
+    if (this.isHeader) { this.requestUpdate(); return; }
     this.removeAttribute("selected");
   };
 
@@ -264,6 +267,16 @@ export class TableRow<T extends TableRowData> extends LitElement {
     if (!(this.table && this._intersecting)) return html`${nothing}`;
     this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
     this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+
+    let headerChecked = false;
+    let headerIndeterminate = false;
+    if (this.isHeader && this.table.selectableRows) {
+      const visibleData = Table.flattenData(this.table.value).map(e => e.data);
+      const selectedCount = visibleData.filter(d => this.table!.selection.has(d)).length;
+      headerChecked = selectedCount > 0 && selectedCount === visibleData.length;
+      headerIndeterminate = selectedCount > 0 && !headerChecked;
+    }
+
     const indentation = this.table.getRowIndentation(this.data) ?? 0;
     const cells: Element[] = [];
     let data = this.data;
@@ -318,7 +331,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
         ? html`<bim-checkbox
             @click=${this._onCheckboxClick}
             @change=${this.onSelectionChange}
-            .checked=${this.isHeader ? this.selected : (this._isSelected ?? false)}
+            .checked=${this.isHeader ? headerChecked : (this._isSelected ?? false)}
+            .indeterminate=${headerIndeterminate}
+            .disabled=${this.table.rowsSelectionDisabled}
             style="align-self: center; justify-self: center"
           ></bim-checkbox>`
         : null}
