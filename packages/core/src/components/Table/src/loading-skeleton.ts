@@ -11,22 +11,22 @@ export const loadingSkeleton = () => {
       }
 
       [data-type="row"] {
-        background-color: var(--bim-ui_bg-contrast-10);
+        background-color: var(--bim-ui_bg-contrast-20);
         animation: row-loading 1s linear infinite alternate;
         padding: 0.5rem;
       }
 
       [data-type="cell"] {
-        background-color: var(--bim-ui_bg-contrast-20);
+        background-color: var(--bim-ui_bg-contrast-40);
         flex: 0.25;
       }
 
       @keyframes row-loading {
         0% {
-          background-color: var(--bim-ui_bg-contrast-10);
+          background-color: var(--bim-ui_bg-contrast-20);
         }
         100% {
-          background-color: var(--bim-ui_bg-contrast-20);
+          background-color: var(--bim-ui_bg-contrast-40);
         }
       }
     </style>
