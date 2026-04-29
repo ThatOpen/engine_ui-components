@@ -103,24 +103,18 @@ export class TableRow<T extends TableRowData> extends LitElement {
   // private _cacheTimeout?: number
   private _intersectTimeout?: number;
   private _timeOutDelay = 250;
-  private _firstObservation = true;
 
   private _observer = new IntersectionObserver(
     (entries) => {
       window.clearTimeout(this._intersectTimeout);
       this._intersectTimeout = undefined;
       if (entries[0].isIntersecting) {
-        if (this._firstObservation) {
+        this._intersectTimeout = window.setTimeout(() => {
           this._intersecting = true;
-        } else {
-          this._intersectTimeout = window.setTimeout(() => {
-            this._intersecting = true;
-          }, this._timeOutDelay);
-        }
+        }, this._timeOutDelay);
       } else {
         this._intersecting = false;
       }
-      this._firstObservation = false;
     },
     { rootMargin: "36px" },
   );
@@ -203,6 +197,10 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   protected firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
+    const rect = this.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      this._intersecting = true;
+    }
     this._observer.observe(this);
   }
 
