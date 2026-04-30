@@ -15,7 +15,8 @@
     "build-icons": "node resources/build-icons.js",
     "publish-repo": "yarn workspace @thatopen/ui publish-repo && yarn workspace @thatopen/ui-obc publish-repo",
     "copy-readme": "node resources/readme-copier.mjs",
-    "build": "yarn copy-readme && yarn build-libraries && yarn build-examples"
+    "build": "yarn copy-readme && yarn build-libraries && yarn build-examples",
+    "format": "prettier --write ."
   },
   "license": "MIT",
   "homepage": "https://github.com/ThatOpen/engine_ui-components#readme",
