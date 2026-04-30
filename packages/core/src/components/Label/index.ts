@@ -21,6 +21,8 @@ export class Label extends LitElement {
       white-space: nowrap;
       transition: all 0.15s;
       user-select: none;
+      text-overflow: ellipsis;
+      overflow: auto;
     }
 
     :host([icon]) {
