@@ -74,22 +74,6 @@ export class TableRow<T extends TableRowData> extends LitElement {
   @property({ type: Boolean, attribute: "is-header", reflect: true })
   isHeader = false;
 
-  private get _columnNames() {
-    const filteredColumns = this.columns.filter(
-      (column) => !this.hiddenColumns.includes(column.name as string),
-    );
-    const names = filteredColumns.map((column) => column.name);
-    return names;
-  }
-
-  private get _columnWidths() {
-    const columns = this.columns.filter(
-      (column) => !this.hiddenColumns.includes(column.name as string),
-    );
-    const widths = columns.map((column) => column.width);
-    return widths;
-  }
-
   table: Table<T> | null = null;
 
   private onTableColumnsChange = () => {
@@ -285,8 +269,11 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   protected render() {
     if (!(this.table && this._intersecting)) return html`${nothing}`;
-    this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${this._columnNames.join(" ")}"`;
-    this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${this._columnWidths.join(" ")}`;
+    const filtered = this.columns.filter(c => !this.hiddenColumns.includes(c.name as string));
+    const columnNames = filtered.map(c => c.name);
+    const columnWidths = filtered.map(c => c.width);
+    this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${columnNames.join(" ")}"`;
+    this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${columnWidths.join(" ")}`;
 
     let headerChecked = false;
     let headerIndeterminate = false;
@@ -305,7 +292,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
         (key) => !this.table?.hiddenColumns.includes(key),
       );
       for (const column of visibleColumns) {
-        if (this._columnNames.indexOf(column) === 0) continue;
+        if (columnNames.indexOf(column) === 0) continue;
         (data as any)[column] = "";
       }
     }
@@ -325,7 +312,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
         this.group?.data._isComputedGroup &&
         this.table.groupedBy.includes(column)
           ? 0
-          : this._columnNames.indexOf(column);
+          : columnNames.indexOf(column);
       if (columnIndex === 0)
         cell.style.marginLeft = `${this.table.noIndentation ? 0 : indentation + 0.9375}rem`;
       cell.setAttribute("data-column-index", String(columnIndex));

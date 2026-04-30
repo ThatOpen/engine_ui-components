@@ -13,6 +13,7 @@ export class TableCell<T extends TableRowData> extends LitElement {
       padding: 4px;
       display: flex;
       align-items: center;
+      overflow: hidden;
     }
     
     :host([data-cell-header]) {
