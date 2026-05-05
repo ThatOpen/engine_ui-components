@@ -136,7 +136,7 @@ export const itemsDataTemplate = (_state: ItemsDataState) => {
       relationsDefault: { attributes: false, relations: false },
       relations: {
         IsDefinedBy: { attributes: true, relations: true },
-        DefinesOcurrence: { attributes: false, relations: false },
+        DefinesOccurrence: { attributes: false, relations: false },
         ContainedInStructure: { attributes: true, relations: true },
         ContainsElements: { attributes: false, relations: false },
         Decomposes: { attributes: false, relations: false },
