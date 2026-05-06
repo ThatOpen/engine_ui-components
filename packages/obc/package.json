@@ -43,9 +43,9 @@
     "lit": "3.3.1"
   },
   "devDependencies": {
-    "@thatopen/components": "~3.4.0",
-    "@thatopen/components-front": "~3.4.0",
-    "@thatopen/fragments": "~3.4.3",
+    "@thatopen/components": "^3.4.5",
+    "@thatopen/components-front": "^3.4.3",
+    "@thatopen/fragments": "^3.4.5",
     "@types/node": "20.11.30",
     "@types/three": "0.183.1",
     "@typescript-eslint/eslint-plugin": "7.2.0",
