@@ -181,11 +181,14 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   protected firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
-    const rect = this.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      this._intersecting = true;
-    }
-    this._observer.observe(this);
+    queueMicrotask(() => {
+      if (!this.isConnected) return;
+      const rect = this.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        this._intersecting = true;
+      }
+      this._observer.observe(this);
+    });
   }
 
   private _headerCheckboxUpdatePending = false;

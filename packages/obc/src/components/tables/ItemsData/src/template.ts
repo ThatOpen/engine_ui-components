@@ -43,23 +43,31 @@ const getItemRow = (
 
   const localId = (propertyData._localId as FRAGS.ItemAttribute).value;
 
-  if (modelProcessings.has(localId)) {
-    return modelProcessings.get(localId)!;
-  }
-
   const name = (propertyData[state.defaultItemNameKey] as FRAGS.ItemAttribute)
     ?.value;
   const category = (propertyData._category as FRAGS.ItemAttribute).value;
+  const displayName =
+    name?.toString().length > 0
+      ? name.toString()
+      : category ?? String(localId);
+
+  if (modelProcessings.has(localId)) {
+    return {
+      data: {
+        modelId,
+        localId,
+        type: "item",
+        Name: displayName,
+      },
+    };
+  }
 
   const row: BUI.TableGroupData<ItemsDataTableData> = {
     data: {
       modelId,
       localId,
       type: "item",
-      Name:
-        name?.toString().length > 0
-          ? name.toString()
-          : category ?? String(localId),
+      Name: displayName,
     },
   };
 
@@ -140,6 +148,7 @@ export const itemsDataTemplate = (_state: ItemsDataState) => {
         ContainedInStructure: { attributes: true, relations: true },
         ContainsElements: { attributes: false, relations: false },
         Decomposes: { attributes: false, relations: false },
+        ObjectTypeOf: { attributes: false, relations: false },
       },
     },
     ..._state,
