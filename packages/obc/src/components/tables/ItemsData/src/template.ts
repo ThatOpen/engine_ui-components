@@ -52,7 +52,7 @@ const getItemRow = (
       : category ?? String(localId);
 
   if (modelProcessings.has(localId)) {
-    return {
+    const placeholder: BUI.TableGroupData<ItemsDataTableData> = {
       data: {
         modelId,
         localId,
@@ -60,6 +60,7 @@ const getItemRow = (
         Name: displayName,
       },
     };
+    return placeholder;
   }
 
   const row: BUI.TableGroupData<ItemsDataTableData> = {
