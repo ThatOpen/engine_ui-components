@@ -8,19 +8,39 @@ import { SpatialTreeState, SpatialTreeData } from "./types";
 const getModelTree = async (
   model: FRAGS.FragmentsModel,
   structure: SpatialTreeItem,
-) => {
+  collapseSingleChildCategories = false,
+): Promise<BUI.TableGroupData<SpatialTreeData> | null> => {
   const { localId, category, children } = structure;
   if (category && children) {
+    if (collapseSingleChildCategories && children.length === 1) {
+      const merged = await getModelTree(
+        model,
+        children[0],
+        collapseSingleChildCategories,
+      );
+      if (merged) {
+        merged.data = { ...merged.data, category };
+      }
+      return merged;
+    }
     const row: BUI.TableGroupData<SpatialTreeData> = {
       data: {
         Name: category,
+        category,
         modelId: model.modelId,
         children: JSON.stringify(children.map((item: any) => item.localId)),
       },
     };
     for (const child of children) {
-      const childRow = await getModelTree(model, child);
+      const childRow = await getModelTree(
+        model,
+        child,
+        collapseSingleChildCategories,
+      );
       if (!childRow) continue;
+      if (!childRow.data.category) {
+        childRow.data = { ...childRow.data, category };
+      }
       if (!row.children) row.children = [];
       row.children.push(childRow);
     }
@@ -38,7 +58,11 @@ const getModelTree = async (
       },
     };
     for (const child of children ?? []) {
-      const childRow = await getModelTree(model, child);
+      const childRow = await getModelTree(
+        model,
+        child,
+        collapseSingleChildCategories,
+      );
       if (!childRow) continue;
       if (!row.children) row.children = [];
       row.children.push(childRow);
@@ -48,11 +72,18 @@ const getModelTree = async (
   return null;
 };
 
-const computeRowData = async (models: Iterable<FRAGS.FragmentsModel>) => {
+const computeRowData = async (
+  models: Iterable<FRAGS.FragmentsModel>,
+  collapseSingleChildCategories = false,
+) => {
   const rows: BUI.TableGroupData[] = [];
   for (const model of models) {
     const structure = await model.getSpatialStructure();
-    const tree = await getModelTree(model, structure);
+    const tree = await getModelTree(
+      model,
+      structure,
+      collapseSingleChildCategories,
+    );
     if (!tree) continue;
     const modelData: BUI.TableGroupData<SpatialTreeData> = {
       data: {
@@ -67,7 +98,7 @@ const computeRowData = async (models: Iterable<FRAGS.FragmentsModel>) => {
 };
 
 export const spatialTreeTemplate = (state: SpatialTreeState) => {
-  const { components, models } = state;
+  const { components, models, collapseSingleChildCategories = false } = state;
 
   const selectHighlighterName = state.selectHighlighterName ?? "select";
 
@@ -133,7 +164,7 @@ export const spatialTreeTemplate = (state: SpatialTreeState) => {
     table.loadFunction = async () => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(computeRowData(models));
+          resolve(computeRowData(models, collapseSingleChildCategories));
         });
       });
     };

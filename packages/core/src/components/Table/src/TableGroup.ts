@@ -65,6 +65,14 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
   table: Table<T> | null = null
 
+  /**
+   * Zero-based depth of this group in the table tree. Set by the parent
+   * TableChildren when the group is constructed. Used together with
+   * {@link Table.expandedLevels} to decide whether the group initialises
+   * with its children expanded.
+   */
+  depth = 0;
+
   data: TableGroupData<T> = { data: {} };
 
   get rowElement() {
@@ -87,7 +95,14 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    if (this.table && this.table.expanded) {
+    if (!this.table) {
+      this.childrenHidden = true;
+      return;
+    }
+    const { expandedLevels } = this.table;
+    if (typeof expandedLevels === "number") {
+      this.childrenHidden = this.depth >= expandedLevels;
+    } else if (this.table.expanded) {
       this.childrenHidden = false;
     } else {
       this.childrenHidden = true;
@@ -289,7 +304,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
     let horizontalBranchTemplate: TemplateResult | undefined
     if (!this.table.noIndentation) {
-      const styles = { left: `${indentation - 1 + (this.table.selectableRows ? 2.05 : 0.5625)}rem` }
+      const styles = { left: `calc(${indentation - 1} * var(--bim-table--indent-step, 1rem) + ${this.table.selectableRows ? 2.05 : 0.5625}rem)` }
       horizontalBranchTemplate = html`<div style=${styleMap(styles)} class="branch branch-horizontal"></div>`
     }
 
@@ -298,8 +313,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
         ? html`
             <style>
               .branch-vertical {
-                left: ${indentation +
-                (this.table.selectableRows ? 1.9375 : 0.5625)}rem;
+                left: calc(${indentation} * var(--bim-table--indent-step, 1rem) + ${this.table.selectableRows ? 1.9375 : 0.5625}rem);
               }
             </style>
             <div class="branch branch-vertical"></div>
@@ -344,7 +358,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       }
 
       const styles = {
-        left: `${(this.table.selectableRows ? 1.5 : 0.125) + indentation}rem`,
+        left: `calc(${indentation} * var(--bim-table--indent-step, 1rem) + ${this.table.selectableRows ? 1.5 : 0.125}rem)`,
         cursor: `${this.table.noCarets ? "unset" : "pointer"}`
       }
 

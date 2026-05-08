@@ -10,7 +10,7 @@ export class TableCell<T extends TableRowData> extends LitElement {
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100);
-      padding: 4px;
+      padding: var(--bim-table-cell--padding, 4px);
       display: flex;
       align-items: center;
       overflow: hidden;

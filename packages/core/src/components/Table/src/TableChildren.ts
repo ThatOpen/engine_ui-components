@@ -62,6 +62,7 @@ export class TableChildren<T extends TableRowData> extends LitElement {
         this._groups.push(tableGroup);
         tableGroup.table = this.table;
         tableGroup.data = group;
+        tableGroup.depth = (this.group?.depth ?? -1) + 1;
         return tableGroup;
       })}
     `;

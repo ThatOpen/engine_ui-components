@@ -20,9 +20,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
       position: relative;
       grid-area: Data;
       display: grid;
-      min-height: 35px;
+      min-height: var(--bim-table-row--min-h, 35px);
       transition: all 0.15s;
-      gap: 4px;
+      gap: var(--bim-table-row--gap, 4px);
     }
 
     ::slotted(.branch.branch-vertical) {
@@ -317,7 +317,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
           ? 0
           : columnNames.indexOf(column);
       if (columnIndex === 0)
-        cell.style.marginLeft = `${this.table.noIndentation ? 0 : indentation + 0.9375}rem`;
+        cell.style.marginLeft = this.table.noIndentation
+          ? "0"
+          : `calc(${indentation} * var(--bim-table--indent-step, 1rem) + 0.9375rem)`;
       cell.setAttribute("data-column-index", String(columnIndex));
       cell.toggleAttribute(
         "data-no-indentation",

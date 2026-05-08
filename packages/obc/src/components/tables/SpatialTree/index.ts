@@ -24,7 +24,7 @@ export const spatialTree = (state: SpatialTreeState, autoUpdate = true) => {
   >(spatialTreeTemplate, state);
 
   const [table, update] = element;
-  table.hiddenColumns = ["modelId", "localId", "children"];
+  table.hiddenColumns = ["modelId", "localId", "children", "category"];
   table.columns = ["Name"];
   table.headersHidden = true;
 

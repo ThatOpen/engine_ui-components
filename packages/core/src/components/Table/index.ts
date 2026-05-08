@@ -275,6 +275,29 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
   expanded = false;
 
   /**
+   * Limits how many tree levels initialise expanded. Groups at depth
+   * `< expandedLevels` start with their children visible; deeper groups
+   * stay collapsed (and crucially, their children don't render until
+   * the user opens them, which keeps large hierarchies cheap).
+   *
+   * Takes precedence over {@link expanded} when set. Use `expanded` for
+   * an unbounded "expand everything" and `expandedLevels` to cap depth.
+   *
+   * @defaultValue undefined
+   *
+   * @example
+   * ```typescript
+   * table.expandedLevels = 3;
+   * ```
+   * @example
+   * ```html
+   * <bim-table expanded-levels="3"></bim-table>
+   * ```
+   */
+  @property({ type: Number, attribute: "expanded-levels", reflect: true })
+  expandedLevels?: number;
+
+  /**
    * A boolean property that determines whether the table preserves its structure when filtering.
    * When `true`, the table will preserve its structure, showing only the filtered rows and their parents.
    * When `false`, the table will not preserve its structure, showing only the filtered rows.
