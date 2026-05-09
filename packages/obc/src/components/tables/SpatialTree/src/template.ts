@@ -128,31 +128,25 @@ export const spatialTreeTemplate = (state: SpatialTreeState) => {
       if (!model) return;
       if (localId !== undefined) {
         const childrenLocalIds = await model.getItemsChildren([localId]);
-        const modelIdMap = {
-          [modelId]:
-            childrenLocalIds.length !== 0
-              ? new Set(childrenLocalIds)
-              : new Set([localId]),
-        };
-        highlighter.highlightByID(
-          selectHighlighterName,
-          modelIdMap,
-          true,
-          true,
-        );
+        const ids =
+          childrenLocalIds.length !== 0
+            ? new Set(childrenLocalIds)
+            : new Set([localId]);
+        const modelIdMap = { [modelId]: ids };
+        // Let the highlighter's `zoomToSelection` flag (or any onHighlight
+        // listener) decide whether to move the camera. The tree shouldn't
+        // force zoom because:
+        //  * multi-element rows would do thousands of bbox lookups, and
+        //  * forcing zoom here while the consumer also zooms in
+        //    `onHighlight` causes a double fitToSphere.
+        highlighter.highlightByID(selectHighlighterName, modelIdMap, true);
       } else if (children) {
         const localIds = JSON.parse(children);
         const childrenLocalIds = await model.getItemsChildren(localIds);
-        const modelIdMap = {
-          [modelId]:
-            childrenLocalIds.length !== 0 ? childrenLocalIds : localIds,
-        };
-        highlighter.highlightByID(
-          selectHighlighterName,
-          modelIdMap,
-          true,
-          true,
-        );
+        const ids =
+          childrenLocalIds.length !== 0 ? childrenLocalIds : localIds;
+        const modelIdMap = { [modelId]: ids };
+        highlighter.highlightByID(selectHighlighterName, modelIdMap, true);
       }
     };
   };
