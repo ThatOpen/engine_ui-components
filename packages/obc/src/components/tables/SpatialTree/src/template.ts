@@ -5,21 +5,70 @@ import * as BUI from "@thatopen/ui";
 import { SpatialTreeItem } from "@thatopen/fragments";
 import { SpatialTreeState, SpatialTreeData } from "./types";
 
+const toArray = <T>(v: T | T[] | null): T[] => {
+  if (v === null) return [];
+  return Array.isArray(v) ? v : [v];
+};
+
+// Returns either a single row, an array of rows (when this node is itself
+// removed and replaced by its expansion — `collapseCategories` case), or
+// null when the structure has nothing to render.
 const getModelTree = async (
   model: FRAGS.FragmentsModel,
   structure: SpatialTreeItem,
   collapseSingleChildCategories = false,
-): Promise<BUI.TableGroupData<SpatialTreeData> | null> => {
+  collapseCategories: Set<string> = new Set(),
+): Promise<
+  | BUI.TableGroupData<SpatialTreeData>
+  | BUI.TableGroupData<SpatialTreeData>[]
+  | null
+> => {
   const { localId, category, children } = structure;
   if (category && children) {
+    // Auto-collapse: drop this row, promote (and recursively expand) its
+    // children. The dropped category is stashed onto each promoted child
+    // unless the child already carries one — preserves the visible
+    // "IFCWALL (Living Room)" composite labelling regardless of which
+    // level was removed.
+    if (collapseCategories.has(category)) {
+      const result: BUI.TableGroupData<SpatialTreeData>[] = [];
+      for (const child of children) {
+        const sub = await getModelTree(
+          model,
+          child,
+          collapseSingleChildCategories,
+          collapseCategories,
+        );
+        for (const r of toArray(sub)) {
+          if (!r.data.category) {
+            r.data = { ...r.data, category };
+          }
+          result.push(r);
+        }
+      }
+      return result.length > 0 ? result : null;
+    }
     if (collapseSingleChildCategories && children.length === 1) {
       const merged = await getModelTree(
         model,
         children[0],
         collapseSingleChildCategories,
+        collapseCategories,
       );
-      if (merged) {
+      // The single child may itself have been auto-collapsed into a list.
+      // Fall through to the normal "build a row, recurse children" path
+      // for that case so we don't lose the parent category label.
+      if (merged && !Array.isArray(merged)) {
         merged.data = { ...merged.data, category };
+        return merged;
+      }
+      if (Array.isArray(merged)) {
+        for (const r of merged) {
+          if (!r.data.category) {
+            r.data = { ...r.data, category };
+          }
+        }
+        return merged;
       }
       return merged;
     }
@@ -32,17 +81,19 @@ const getModelTree = async (
       },
     };
     for (const child of children) {
-      const childRow = await getModelTree(
+      const sub = await getModelTree(
         model,
         child,
         collapseSingleChildCategories,
+        collapseCategories,
       );
-      if (!childRow) continue;
-      if (!childRow.data.category) {
-        childRow.data = { ...childRow.data, category };
+      for (const r of toArray(sub)) {
+        if (!r.data.category) {
+          r.data = { ...r.data, category };
+        }
+        if (!row.children) row.children = [];
+        row.children.push(r);
       }
-      if (!row.children) row.children = [];
-      row.children.push(childRow);
     }
     return row;
   }
@@ -58,14 +109,16 @@ const getModelTree = async (
       },
     };
     for (const child of children ?? []) {
-      const childRow = await getModelTree(
+      const sub = await getModelTree(
         model,
         child,
         collapseSingleChildCategories,
+        collapseCategories,
       );
-      if (!childRow) continue;
-      if (!row.children) row.children = [];
-      row.children.push(childRow);
+      for (const r of toArray(sub)) {
+        if (!row.children) row.children = [];
+        row.children.push(r);
+      }
     }
     return row;
   }
@@ -75,6 +128,7 @@ const getModelTree = async (
 const computeRowData = async (
   models: Iterable<FRAGS.FragmentsModel>,
   collapseSingleChildCategories = false,
+  collapseCategories: Set<string> = new Set(),
 ) => {
   const rows: BUI.TableGroupData[] = [];
   for (const model of models) {
@@ -83,14 +137,16 @@ const computeRowData = async (
       model,
       structure,
       collapseSingleChildCategories,
+      collapseCategories,
     );
-    if (!tree) continue;
+    const treeRows = toArray(tree);
+    if (treeRows.length === 0) continue;
     const modelData: BUI.TableGroupData<SpatialTreeData> = {
       data: {
         Name: model.modelId,
         modelId: model.modelId,
       },
-      children: [tree],
+      children: treeRows,
     };
     rows.push(modelData);
   }
@@ -98,7 +154,13 @@ const computeRowData = async (
 };
 
 export const spatialTreeTemplate = (state: SpatialTreeState) => {
-  const { components, models, collapseSingleChildCategories = false } = state;
+  const {
+    components,
+    models,
+    collapseSingleChildCategories = false,
+    collapseCategories = [],
+  } = state;
+  const collapseCategoriesSet = new Set(collapseCategories);
 
   const selectHighlighterName = state.selectHighlighterName ?? "select";
 
@@ -158,7 +220,13 @@ export const spatialTreeTemplate = (state: SpatialTreeState) => {
     table.loadFunction = async () => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(computeRowData(models, collapseSingleChildCategories));
+          resolve(
+            computeRowData(
+              models,
+              collapseSingleChildCategories,
+              collapseCategoriesSet,
+            ),
+          );
         });
       });
     };
