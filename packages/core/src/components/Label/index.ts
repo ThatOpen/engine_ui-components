@@ -20,7 +20,7 @@ export class Label extends LitElement {
       display: block;
       white-space: nowrap;
       transition: all 0.15s;
-      user-select: none;
+      user-select: var(--bim-label--us, none);
       text-overflow: ellipsis;
       overflow: auto;
     }

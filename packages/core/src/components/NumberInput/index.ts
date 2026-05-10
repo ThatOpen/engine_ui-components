@@ -445,10 +445,8 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       </style>
       <div class="slider" @mousedown=${this.onSliderMouseDown}>
         <div class="slider-indicator"></div>
-        ${this.pref || this.icon
-          ? html`<bim-label
-              style="z-index: 1; margin-right: 0.125rem"
-              .icon=${this.icon}
+        ${this.pref
+          ? html`<bim-label style="z-index: 1; margin-right: 0.125rem"
               >${`${this.pref}: `}</bim-label
             >`
           : null}

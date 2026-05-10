@@ -55,7 +55,7 @@ export class Input extends LitElement implements HasValue, HasName {
     }
 
     :host(:not([vertical])[label]) .input {
-      max-width: fit-content;
+      max-width: var(--bim-input--maxw, fit-content);
     }
   `;
 
