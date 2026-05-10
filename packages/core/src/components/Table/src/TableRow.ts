@@ -23,6 +23,10 @@ export class TableRow<T extends TableRowData> extends LitElement {
       min-height: var(--bim-table-row--min-h, 35px);
       transition: all 0.15s;
       gap: var(--bim-table-row--gap, 4px);
+      /* Off by default; consumers opt into row dividers by setting the
+         bim-table-row--border-bottom token on the bim-table host
+         (e.g. 1px solid #2d2d33). */
+      border-bottom: var(--bim-table-row--border-bottom, none);
     }
 
     ::slotted(.branch.branch-vertical) {

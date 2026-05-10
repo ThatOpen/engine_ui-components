@@ -25,11 +25,15 @@ const getModelTree = async (
 > => {
   const { localId, category, children } = structure;
   if (category && children) {
-    // Auto-collapse: drop this row, promote (and recursively expand) its
-    // children. The dropped category is stashed onto each promoted child
-    // unless the child already carries one — preserves the visible
-    // "IFCWALL (Living Room)" composite labelling regardless of which
-    // level was removed.
+    // Auto-collapse: drop the category-grouping row and promote its
+    // children straight up to whatever wraps us. Each promoted child
+    // (typically a named storey / space / etc.) keeps its own row;
+    // the user can click to expand it. The dropped category is
+    // stashed onto each promoted node that doesn't already carry one
+    // so composite labels like "IFCBUILDINGSTOREY (Level B3)" still
+    // render. We deliberately do NOT also flatten the named-instance
+    // level — collapsing the storeys' contents in-place would mount
+    // every wall/slab in the model the moment the tree loads.
     if (collapseCategories.has(category)) {
       const result: BUI.TableGroupData<SpatialTreeData>[] = [];
       for (const child of children) {
