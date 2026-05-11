@@ -10,19 +10,44 @@ const toArray = <T>(v: T | T[] | null): T[] => {
   return Array.isArray(v) ? v : [v];
 };
 
+/**
+ * Walks the spatial structure synchronously and pushes every node's
+ * `localId` (when set) into `out`. Used by `computeRowData` to gather
+ * every id up front so we can resolve names in a single batched
+ * `getItemsData` call instead of one worker round-trip per node.
+ */
+const collectLocalIds = (
+  structure: SpatialTreeItem,
+  out: number[],
+): void => {
+  if (structure.localId !== null && structure.localId !== undefined) {
+    out.push(structure.localId);
+  }
+  if (structure.children) {
+    for (const child of structure.children) {
+      collectLocalIds(child, out);
+    }
+  }
+};
+
 // Returns either a single row, an array of rows (when this node is itself
 // removed and replaced by its expansion — `collapseCategories` case), or
 // null when the structure has nothing to render.
-const getModelTree = async (
+//
+// Sync — names for every localId must be pre-resolved into `nameByLocalId`
+// before calling. Original implementation `await`-ed `item.getAttributes()`
+// for each node which scaled to thousands of serial worker round-trips
+// on real BIM models.
+const buildModelTree = (
   model: FRAGS.FragmentsModel,
   structure: SpatialTreeItem,
+  nameByLocalId: Map<number, string>,
   collapseSingleChildCategories = false,
   collapseCategories: Set<string> = new Set(),
-): Promise<
+):
   | BUI.TableGroupData<SpatialTreeData>
   | BUI.TableGroupData<SpatialTreeData>[]
-  | null
-> => {
+  | null => {
   const { localId, category, children } = structure;
   if (category && children) {
     // Auto-collapse: drop the category-grouping row and promote its
@@ -37,9 +62,10 @@ const getModelTree = async (
     if (collapseCategories.has(category)) {
       const result: BUI.TableGroupData<SpatialTreeData>[] = [];
       for (const child of children) {
-        const sub = await getModelTree(
+        const sub = buildModelTree(
           model,
           child,
+          nameByLocalId,
           collapseSingleChildCategories,
           collapseCategories,
         );
@@ -53,9 +79,10 @@ const getModelTree = async (
       return result.length > 0 ? result : null;
     }
     if (collapseSingleChildCategories && children.length === 1) {
-      const merged = await getModelTree(
+      const merged = buildModelTree(
         model,
         children[0],
+        nameByLocalId,
         collapseSingleChildCategories,
         collapseCategories,
       );
@@ -85,9 +112,10 @@ const getModelTree = async (
       },
     };
     for (const child of children) {
-      const sub = await getModelTree(
+      const sub = buildModelTree(
         model,
         child,
+        nameByLocalId,
         collapseSingleChildCategories,
         collapseCategories,
       );
@@ -101,21 +129,21 @@ const getModelTree = async (
     }
     return row;
   }
-  if (localId !== null) {
-    const item = model.getItem(localId);
-    const attrs = await item.getAttributes();
-    if (!attrs) return null;
+  if (localId !== null && localId !== undefined) {
+    const name = nameByLocalId.get(localId);
+    if (name === undefined) return null;
     const row: BUI.TableGroupData<SpatialTreeData> = {
       data: {
-        Name: String(attrs.getValue("Name")),
+        Name: name,
         modelId: model.modelId,
         localId,
       },
     };
     for (const child of children ?? []) {
-      const sub = await getModelTree(
+      const sub = buildModelTree(
         model,
         child,
+        nameByLocalId,
         collapseSingleChildCategories,
         collapseCategories,
       );
@@ -137,9 +165,37 @@ const computeRowData = async (
   const rows: BUI.TableGroupData[] = [];
   for (const model of models) {
     const structure = await model.getSpatialStructure();
-    const tree = await getModelTree(
+
+    // Resolve every node's Name in ONE batched worker call rather
+    // than one round-trip per node. For a BLOXHUB-sized model this
+    // is the difference between a single ~ms call and thousands of
+    // sequential awaits.
+    const localIds: number[] = [];
+    collectLocalIds(structure, localIds);
+    const nameByLocalId = new Map<number, string>();
+    if (localIds.length > 0) {
+      const data = await model.getItemsData(localIds, {
+        attributesDefault: false,
+        attributes: ["Name"],
+      });
+      for (let i = 0; i < localIds.length; i++) {
+        const entry = data[i];
+        if (!entry) continue;
+        const nameAttr = (entry as Record<string, unknown>).Name as
+          | { value?: unknown }
+          | undefined;
+        const raw = nameAttr && "value" in nameAttr ? nameAttr.value : undefined;
+        nameByLocalId.set(
+          localIds[i],
+          raw === undefined || raw === null ? "" : String(raw),
+        );
+      }
+    }
+
+    const tree = buildModelTree(
       model,
       structure,
+      nameByLocalId,
       collapseSingleChildCategories,
       collapseCategories,
     );
