@@ -360,8 +360,17 @@ export class Button extends LitElement {
     return this._mouseLeave;
   }
 
+  private onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.onClick(e as unknown as PointerEvent);
+    }
+  };
+
   constructor() {
     super();
+    if (!this.hasAttribute("role")) this.setAttribute("role", "button");
+    if (!this.hasAttribute("tabindex")) this.setAttribute("tabindex", "0");
     this.mouseLeave = true;
   }
 
@@ -457,11 +466,13 @@ export class Button extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener("click", this.showContextMenu);
+    this.addEventListener("keydown", this.onKeyDown);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener("click", this.showContextMenu);
+    this.removeEventListener("keydown", this.onKeyDown);
   }
 
   protected render() {
