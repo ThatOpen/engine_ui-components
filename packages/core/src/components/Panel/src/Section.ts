@@ -1,14 +1,14 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../../core/Manager/src/styles";
-import { HasName, HasValue } from "../../../core/types";
+import { HasName } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
 import { Panel } from "./Panel";
 
 /**
  * A custom panel section web component for BIM applications. HTML tag: bim-panel-section
  */
-export class PanelSection extends LitElement implements HasName, HasValue {
+export class PanelSection extends LitElement implements HasName {
   /**
    * CSS styles for the component.
    */
@@ -16,22 +16,40 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
+        /* flex: 1; */
         display: block;
-        height: 100%;
         pointer-events: auto;
-        background-color: var(--bim-ui_bg-contrast-20);
-        border: var(--bim-panel-section--border, 1px solid var(--bim-ui_bg-contrast-40));
-        border-radius: var(--bim-panel-section--bdrs, var(--bim-ui_size-4xs));
+        background-color: var(--bim-panel-section--bg, var(--bim-ui_bg-contrast-10));
+        border: var(--bim-panel-section--border, 1px solid var(--bim-ui_bg-contrast-20));
+        border-radius: var(--bim-panel-section--bdrs, 0.75rem);
+      }
+
+      :host(:last-child:not([collapsed])) {
+        flex: 1;
       }
 
       :host .parent {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template: "header" auto "content" minmax(0, 1fr);
         height: 100%;
+        /* display: flex; */
+        /* flex-direction: column; */
+        /* height: 100%; */
       }
 
       :host(:not([fixed])) .header:hover {
         cursor: pointer;
+      }
+
+      :host(:not([fixed])) .header:focus-visible {
+        outline: 2px solid var(--bim-ui_accent-base);
+        outline-offset: -2px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .expand-icon {
+          transition: none;
+        }
       }
 
       :host(:not([fixed])) .header:hover > bim-label {
@@ -51,6 +69,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       .header {
+        grid-area: "header";
         display: var(--bim-panel-section--header-display, flex);
         justify-content: space-between;
         align-items: center;
@@ -61,7 +80,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
       .expand-icon {
         fill: var(--bim-ui_bg-contrast-80);
-        transition: transform 0.2s;
+        transition: transform 0.2s, fill 0.15s;
       }
 
       :host([collapsed]) .expand-icon {
@@ -79,7 +98,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       .header {
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
       :host(:last-child[collapsed]) .header {
@@ -87,28 +106,18 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       }
 
       .components {
+        grid-area: content;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
-        row-gap: 0.75rem;
-        padding: 10px;
-        box-sizing: border-box;
-        transition:
-          height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
-          padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
-      }
-
-      .components > div {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
         flex: 1;
+        padding: 10px;
+        gap: 0.75rem;
+        box-sizing: border-box;
         overflow: auto;
       }
 
       :host(:not([fixed])[collapsed]) .components {
-        padding: 0;
-        height: 0px;
+        display: none;
       }
 
       .header-end {
@@ -121,48 +130,6 @@ export class PanelSection extends LitElement implements HasName, HasValue {
         pointer-events: none;
       }
 
-      ::slotted(*) {
-        transition:
-          transform 0.25s cubic-bezier(0.65, 0.05, 0.36, 1),
-          opacity 0.25s cubic-bezier(0.65, 0.05, 0.36, 1);
-      }
-
-      :host(:not([fixed])[collapsed]) ::slotted(*) {
-        transform: translateX(-20%);
-        opacity: 0;
-      }
-
-      @keyframes expandAnim {
-        0%,
-        100% {
-          transform: translateY(0%);
-        }
-        25% {
-          transform: translateY(-30%);
-        }
-        50% {
-          transform: translateY(10%);
-        }
-        75% {
-          transform: translateY(-30%);
-        }
-      }
-
-      @keyframes collapseAnim {
-        0%,
-        100% {
-          transform: translateY(0%) rotateZ(-180deg);
-        }
-        25% {
-          transform: translateY(30%) rotateZ(-180deg);
-        }
-        50% {
-          transform: translateY(-10%) rotateZ(-180deg);
-        }
-        75% {
-          transform: translateY(30%) rotateZ(-180deg);
-        }
-      }
     `,
   ];
 
@@ -233,12 +200,10 @@ export class PanelSection extends LitElement implements HasName, HasValue {
 
   connectedCallback() {
     super.connectedCallback();
-    if (!this.hasAttribute("fixed")) {
+    if (this.fixed === undefined) {
       this.fixed = !this.closest("bim-panel");
     }
   }
-
-  readonly onValueChange = new Event("change");
 
   /**
    * The `value` getter computes and returns the current state of the panel section's form elements as an object. This object's keys are the `name` or `label` attributes of the child elements, and the values are the corresponding values of these elements. This property is particularly useful for retrieving a consolidated view of the user's input or selections within the panel section. When the value of any child element changes, the returned object from this getter will reflect those changes, providing a dynamic snapshot of the panel section's state. Note that this property does not have a default value as it dynamically reflects the current state of the panel section's form elements.
@@ -251,7 +216,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     const parent = this.parentElement;
     let transform;
     if (parent instanceof Panel) transform = parent.valueTransform;
-    if (Object.values(this.valueTransform).length !== 0)
+    if (Object.keys(this.valueTransform).length !== 0)
       transform = this.valueTransform;
     const value = getElementValue(this, transform);
     return value;
@@ -266,19 +231,6 @@ export class PanelSection extends LitElement implements HasName, HasValue {
    * const section = document.createElement('bim-panel-section');
    * section.value = { 'user-settings': 'John Doe' }; // Programmatically sets the value of a child element named 'user-settings'
    */
-  set value(data: Record<string, any>) {
-    const children = [...this.children];
-    for (const key in data) {
-      const _input = children.find((_child) => {
-        const child = _child as any;
-        return child.name === key || child.label === key;
-      });
-      if (!_input) continue;
-      const input = _input as any;
-      input.value = data[key];
-    }
-  }
-
   /**
    * A record that maps element names or labels to transformation functions.
    * This record is used to transform the values from elements before they are returned as part of the `value` property.
@@ -297,102 +249,16 @@ export class PanelSection extends LitElement implements HasName, HasValue {
    */
   valueTransform: Record<string, (value: any) => any> = {};
 
-  private setFlexAfterTransition() {
-    const componentsElement = this.shadowRoot?.querySelector(
-      ".components",
-    ) as HTMLElement;
-    if (!componentsElement) return;
-    setTimeout(() => {
-      if (!this.collapsed) {
-        componentsElement.style.setProperty("flex", "1");
-      } else {
-        componentsElement.style.removeProperty("flex");
-      }
-    }, 150);
-  }
-
-  private componentHeight = -1;
-
-  private animateHeader() {
-    const componentsElement = this.shadowRoot?.querySelector(
-      ".components",
-    ) as HTMLElement;
-
-    // Save the component"s maximum height
-    if (this.componentHeight < 0) {
-      if (!this.collapsed) {
-        componentsElement.style.setProperty("transition", "none");
-        componentsElement.style.setProperty("height", "auto");
-        componentsElement.style.setProperty("padding", "1rem");
-
-        this.componentHeight = componentsElement.clientHeight;
-
-        requestAnimationFrame(() => {
-          componentsElement.style.setProperty("height", "0px");
-          componentsElement.style.setProperty("padding", "0");
-          componentsElement.style.setProperty(
-            "transition",
-            "height 0.25s cubic-bezier(0.65, 0.05, 0.36, 1), padding 0.25s cubic-bezier(0.65, 0.05, 0.36, 1)",
-          );
-        });
-      } else {
-        this.componentHeight = componentsElement.clientHeight;
-      }
-    }
-
-    // Animate the component
-    if (this.collapsed) {
-      componentsElement.style.setProperty(
-        "height",
-        `${this.componentHeight}px`,
-      );
-      requestAnimationFrame(() => {
-        componentsElement.style.setProperty("height", "0px");
-        componentsElement.style.setProperty("padding", "0");
-      });
-    } else {
-      componentsElement.style.setProperty("height", "0px");
-      componentsElement.style.setProperty("padding", "0");
-      requestAnimationFrame(() => {
-        componentsElement.style.setProperty(
-          "height",
-          `${this.componentHeight}px`,
-        );
-        componentsElement.style.setProperty("padding", "1rem");
-      });
-    }
-
-    this.setFlexAfterTransition();
-  }
-
   private onHeaderClick() {
     if (this.fixed) return;
     this.collapsed = !this.collapsed;
-    this.animateHeader();
   }
 
-  private handelSlotChange(e: Event) {
-    const slots = e.target as HTMLSlotElement;
-    const childNodes = slots.assignedElements({ flatten: true });
-
-    // Apply stagger effect to slotted elements
-    childNodes.forEach((element, index) => {
-      const delay = index * 0.05;
-      const child = element as HTMLElement;
-      child.style.setProperty("transition-delay", `${delay}s`);
-    });
-  }
-
-  private handlePointerEnter() {
-    const icon = this.renderRoot.querySelector(".expand-icon") as HTMLElement;
-    if (this.collapsed)
-      icon?.style.setProperty("animation", "collapseAnim 0.5s");
-    else icon?.style.setProperty("animation", "expandAnim 0.5s");
-  }
-
-  private handlePointerLeave() {
-    const icon = this.renderRoot.querySelector(".expand-icon") as HTMLElement;
-    icon?.style.setProperty("animation", "none");
+  private onHeaderKeydown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.onHeaderClick();
+    }
   }
 
   protected render() {
@@ -404,6 +270,7 @@ export class PanelSection extends LitElement implements HasName, HasValue {
       viewBox="0 0 24 24"
       width="1.125rem"
       class="expand-icon"
+      aria-hidden="true"
     >
       <path d="M0 0h24v24H0z" fill="none" />
       <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
@@ -412,13 +279,15 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     const headerTemplate = html`
       <div
         class="header"
-        title=${this.label ?? ""}
-        @pointerenter=${this.handlePointerEnter}
-        @pointerleave=${this.handlePointerLeave}
+        role="button"
+        tabindex=${this.fixed ? -1 : 0}
+        aria-expanded=${!this.collapsed}
+        title=${this.label || nothing}
         @click=${this.onHeaderClick}
+        @keydown=${this.onHeaderKeydown}
       >
         ${this.label || this.icon || this.name
-          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
+          ? html`<bim-label aria-hidden="true" .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="header-end">
           <slot name="header-end"></slot>
@@ -430,10 +299,8 @@ export class PanelSection extends LitElement implements HasName, HasValue {
     return html`
       <div class="parent">
         ${header ? headerTemplate : null}
-        <div class="components" style="flex: 1;">
-          <div>
-            <slot @slotchange=${this.handelSlotChange}></slot>
-          </div>
+        <div class="components">
+          <slot></slot>
         </div>
       </div>
     `;

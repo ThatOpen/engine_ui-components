@@ -1,14 +1,14 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../../core/Manager/src/styles";
-import { Button } from "../../Button";
-import { HasName, HasValue } from "../../../core/types";
+import { HasName } from "../../../core/types";
 import { getElementValue } from "../../../core/utils";
+import { PanelSection } from "./Section";
 
 /**
  * A custom panel web component for BIM applications. HTML tag: bim-panel
  */
-export class Panel extends LitElement implements HasName, HasValue {
+export class Panel extends LitElement implements HasName {
   /**
    * CSS styles for the component.
    */
@@ -16,14 +16,18 @@ export class Panel extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
-        display: flex;
+        flex: 1;
+        /* display: flex; */
+        display: block;
         height: 100%;
-        background-color: var(--bim-ui_bg-contrast-20);
+        background-color: var(--bim-panel--bg, var(--bim-ui_bg-contrast-10));
         overflow: auto;
-        border: var(--bim-panel--border, 1px solid var(--bim-ui_bg-contrast-40));
+        border-radius: 0.75rem;
+        border: var(--bim-panel--border, 1px solid var(--bim-ui_bg-contrast-20));
         --bim-panel-section--header-display: flex;
         --bim-panel-section--border: none;
         --bim-panel-section--bdrs: 0;
+        --bim-panel-section--bg: transparent;
       }
 
       :host([hidden]) {
@@ -33,28 +37,46 @@ export class Panel extends LitElement implements HasName, HasValue {
       }
 
       .parent {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        pointer-events: auto;
-        overflow: auto;
+        /* display: flex; */
+        display: grid;
+        grid-template: "header" auto "content" minmax(0, 1fr);
+        height: 100%;
+        /* flex: 1; */
+        /* flex-direction: column; */
+        /* pointer-events: auto; */
+        /* overflow: auto; */
       }
 
-      .parent bim-label {
-        --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
-        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-lg));
+      .header {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         font-weight: 600;
+        height: 2rem;
         padding: 5px 10px;
         flex-shrink: 0;
-        height: 2rem;
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      :host([header-hidden]) .parent bim-label {
+      .header bim-label {
+        --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
+        --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-lg));
+        pointer-events: none;
+      }
+
+      .header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+
+      :host([header-hidden]) .header {
         display: none;
       }
 
       .sections {
+        grid-area: content;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -117,8 +139,6 @@ export class Panel extends LitElement implements HasName, HasValue {
   @property({ type: String, reflect: true })
   label?: string;
 
-  readonly onValueChange = new Event("change");
-
   private _hidden = false;
 
   /**
@@ -130,8 +150,10 @@ export class Panel extends LitElement implements HasName, HasValue {
   @property({ type: Boolean, reflect: true })
   set hidden(value: boolean) {
     this._hidden = value;
-    this.activationButton.active = !value;
-    this.dispatchEvent(new Event("hiddenchange"));
+    if (this.isConnected) {
+      this.animatePanel();
+      this.dispatchEvent(new Event("hiddenchange"));
+    }
   }
 
   get hidden() {
@@ -163,19 +185,6 @@ export class Panel extends LitElement implements HasName, HasValue {
    * document.body.appendChild(panel);
    * panel.value = { 'input-name': 'John Doe', 'checkbox-name': true };
    */
-  set value(data: Record<string, any>) {
-    const children = [...this.children];
-    for (const key in data) {
-      const _input = children.find((_child) => {
-        const child = _child as any;
-        return child.name === key || child.label === key;
-      });
-      if (!_input) continue;
-      const input = _input as any;
-      input.value = data[key];
-    }
-  }
-
   /**
    * Represents a boolean property that controls the visibility of the panel's header.
    * When `true`, the header (containing the label and icon) is hidden.
@@ -220,9 +229,19 @@ export class Panel extends LitElement implements HasName, HasValue {
    */
   valueTransform: Record<string, (value: any) => any> = {};
 
-  readonly activationButton: Button = document.createElement("bim-button");
+  /**
+   * @deprecated Use a `bim-button` directly: `btn.onclick = () => (panel.hidden = !panel.hidden)`.
+   */
+  get activationButton(): undefined {
+    console.warn(
+      "[bim-panel] activationButton is deprecated. Wire up your own bim-button instead: btn.onclick = () => (panel.hidden = !panel.hidden).",
+    );
+    return undefined;
+  }
 
-  private animatePanles() {
+  private _animation: Animation | null = null;
+
+  private animatePanel() {
     const animationKeyframes = [
       {
         maxHeight: "100vh",
@@ -241,7 +260,8 @@ export class Panel extends LitElement implements HasName, HasValue {
       },
     ];
 
-    this.animate(animationKeyframes, {
+    this._animation?.cancel();
+    this._animation = this.animate(animationKeyframes, {
       duration: 300,
       easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
       direction: this.hidden ? "normal" : "reverse",
@@ -249,62 +269,8 @@ export class Panel extends LitElement implements HasName, HasValue {
     });
   }
 
-  private _sectionsObserver: MutationObserver | null = null;
-
-  private updateSectionsHeight() {
-    const slot = this.shadowRoot?.querySelector("slot");
-    if (!slot) return;
-
-    const sections = slot
-      .assignedElements({ flatten: true })
-      .filter((el) => el.tagName === "BIM-PANEL-SECTION") as HTMLElement[];
-
-    const nonCollapsed = sections.filter((s) => !s.hasAttribute("collapsed"));
-
-    for (const s of sections) s.style.height = "auto";
-
-    if (nonCollapsed.length > 0) {
-      nonCollapsed[nonCollapsed.length - 1].style.height = "100%";
-    } else if (sections.length > 0) {
-      sections[sections.length - 1].style.height = "100%";
-    }
-  }
-
-  private handleSlotChange(e: Event) {
-    const slot = e.target as HTMLSlotElement;
-    const sections = slot
-      .assignedElements({ flatten: true })
-      .filter((el) => el.tagName === "BIM-PANEL-SECTION") as HTMLElement[];
-
-    this._sectionsObserver?.disconnect();
-    this._sectionsObserver = new MutationObserver(() =>
-      this.updateSectionsHeight(),
-    );
-
-    for (const section of sections) {
-      this._sectionsObserver.observe(section, {
-        attributes: true,
-        attributeFilter: ["collapsed"],
-      });
-    }
-
-    this.updateSectionsHeight();
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.activationButton.active = !this.hidden;
-    this.activationButton.onclick = () => {
-      this.hidden = !this.hidden;
-      this.animatePanles();
-    };
-  }
-
   disconnectedCallback() {
     super.disconnectedCallback();
-    this._sectionsObserver?.disconnect();
-    this._sectionsObserver = null;
-    this.activationButton.remove();
   }
 
   /**
@@ -314,7 +280,7 @@ export class Panel extends LitElement implements HasName, HasValue {
    * within the panel, making the panel more compact or to hide details that are not immediately necessary.
    */
   collapseSections() {
-    const sections = this.querySelectorAll("bim-panel-section");
+    const sections = this.querySelectorAll<PanelSection>("bim-panel-section");
     for (const section of sections) section.collapsed = true;
   }
 
@@ -325,22 +291,24 @@ export class Panel extends LitElement implements HasName, HasValue {
    * making the panel more informative or to display details that are necessary for the user.
    */
   expandSections() {
-    const sections = this.querySelectorAll("bim-panel-section");
+    const sections = this.querySelectorAll<PanelSection>("bim-panel-section");
     for (const section of sections) section.collapsed = false;
   }
 
   protected render() {
-    this.activationButton.icon = this.icon;
-    this.activationButton.label = this.label || this.name;
-    this.activationButton.tooltipTitle = this.label || this.name;
-
     return html`
-      <div class="parent">
+      <div class="parent" role="region" aria-label=${this.label || this.name || nothing}>
         ${this.label || this.name || this.icon
-          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
+          ? html`
+            <div class="header">
+              <bim-label .icon=${this.icon}>${this.label || this.name}</bim-label>
+              <div class="header-end">
+                <slot name="header-end"></slot>
+              </div>
+            </div>`
           : null}
         <div class="sections">
-          <slot @slotchange=${this.handleSlotChange}></slot>
+          <slot></slot>
         </div>
       </div>
     `;
