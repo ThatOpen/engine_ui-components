@@ -10,25 +10,168 @@
       font-family: sans-serif;
     }
 
-    body {
-      background-color: var(--bim-ui_bg-base);
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
     }
 
-    bim-label {
-      width: 20rem;
-      white-space: normal;
+    body {
+      background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
     }
   </style>
 </head>
 
 <body>
-  <bim-label icon="mingcute:rocket-fill">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-    incididunt ut labore et dolore magna
-    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis
-    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-    occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </bim-label>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-label</h1>
+  <p class="subtitle">Etiqueta de texto con soporte para icono, imagen, orientación vertical y control de visibilidad.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">solo texto</span>
+      <bim-label>Structural Model</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">label (prop)</span>
+      <bim-label id="label-prop" icon="solar:layers-bold"></bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">icon</span>
+      <bim-label icon="solar:layers-bold">IFC Entities</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">solo icon</span>
+      <bim-label icon="solar:settings-bold"></bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">img</span>
+      <bim-label img="https://avatars.githubusercontent.com/u/7236353">That Open Company</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">solo img</span>
+      <bim-label img="https://avatars.githubusercontent.com/u/7236353"></bim-label>
+    </div>
+  </div>
+
+  <!-- 2. Layout -->
+  <div class="section">
+    <div class="section-title">Layout</div>
+    <div class="row">
+      <span class="row-label">horizontal (default)</span>
+      <bim-label icon="solar:layers-bold">Horizontal</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-label icon="solar:layers-bold" vertical>Vertical</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical + img</span>
+      <bim-label img="https://avatars.githubusercontent.com/u/7236353" vertical>That Open Company</bim-label>
+    </div>
+  </div>
+
+  <!-- 3. Visibility -->
+  <div class="section">
+    <div class="section-title">Visibility</div>
+    <div class="row">
+      <span class="row-label">label-hidden</span>
+      <bim-label icon="solar:layers-bold" label-hidden>Hidden text</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">icon-hidden</span>
+      <bim-label icon="solar:layers-bold" icon-hidden>Hidden icon</bim-label>
+    </div>
+  </div>
+
+  <!-- 4. Text overflow -->
+  <div class="section">
+    <div class="section-title">Text Overflow</div>
+    <div class="row">
+      <span class="row-label">truncate (default)</span>
+      <bim-label icon="solar:layers-bold" style="width: 10rem;">Long text that gets truncated automatically</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">wrap</span>
+      <bim-label icon="solar:layers-bold" style="width: 10rem; white-space: normal;">Long text that wraps onto multiple lines when needed</bim-label>
+    </div>
+  </div>
+
+  <!-- 5. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-label--c</span>
+      <bim-label icon="solar:palette-bold" style="--bim-label--c: rgb(251 191 36);">Amber text</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-label--fz</span>
+      <bim-label icon="solar:text-bold" style="--bim-label--fz: 1.25rem;">Large font size</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-label--ic</span>
+      <bim-label icon="solar:palette-bold" style="--bim-label--ic: rgb(239 75 75);">Colored icon</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-label_icon--sz</span>
+      <bim-label img="https://avatars.githubusercontent.com/u/7236353" style="--bim-label_icon--sz: 2rem;">Large avatar</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-label--gap</span>
+      <bim-label icon="solar:layers-bold" style="--bim-label--gap: 1rem;">Wide gap</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-label_img--bdrs</span>
+      <bim-label img="https://avatars.githubusercontent.com/u/7236353" style="--bim-label_img--bdrs: 4px;">Square avatar</bim-label>
+    </div>
+  </div>
+
   <script type="module" src="./example.ts"></script>
 </body>
 
