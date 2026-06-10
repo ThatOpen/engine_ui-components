@@ -1,49 +1,49 @@
-import { computePosition, flip, shift, offset, inline } from "@floating-ui/dom";
-import { LitElement, TemplateResult, css, html } from "lit";
+import { LitElement, PropertyValues, TemplateResult, css, html, render } from "lit";
 import { property } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { ref, createRef } from "lit/directives/ref.js";
 import "iconify-icon";
-import { Component, Manager } from "../../core";
-import { ContextMenu } from "../ContextMenu";
+import { Manager } from "../../core";
 
 /**
  * A custom button web component for BIM applications. HTML tag: bim-button
  *
- * @fires click - Fired when the button is clicked.
+ * @fires click - Fired when the button is clicked (not fired when disabled or loading).
+ * @fires hidden - Fired when a nested context menu closes.
  */
 export class Button extends LitElement {
-  /**
-   * CSS styles for the component.
-   */
+  private static readonly _chevron = html`<svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="1.125rem"
+    viewBox="0 0 24 24"
+    width="1.125rem"
+    class="chevron"
+  >
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+  </svg>`;
+
+  /** Registry of buttons with open menus — used for nested-menu coordination. */
+  private static _openMenuButtons = new Set<Button>();
+
   static styles = css`
     :host {
       --bim-label--c: var(--bim-ui_bg-contrast-100, white);
       position: relative;
       display: block;
       pointer-events: none;
-      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-60));
+      background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-2xs);
-      transition: all 0.15s;
+      transition: background-color 0.15s;
     }
 
-    :host(:not([disabled]))::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: inherit;
-      background-color: var(--bim-ui_main-base);
-      clip-path: circle(0 at center center);
-      box-sizing: border-box;
-      transition:
-        clip-path 0.3s cubic-bezier(0.65, 0.05, 0.36, 1),
-        transform 0.15s;
-    }
-
-    :host(:not([disabled]):hover) {
+    :host(:not([disabled]):not([loading]):hover) {
+      background-color: var(--bim-button--bgc-h, var(--bim-ui_bg-contrast-30));
       cursor: pointer;
+    }
+
+    :host(:focus-visible) {
+      outline: 2px solid var(--bim-ui_main-base);
+      outline-offset: 2px;
     }
 
     bim-label {
@@ -84,33 +84,15 @@ export class Button extends LitElement {
 
     .button {
       flex-grow: 1;
-      transition: transform 0.15s;
     }
 
     :host(:not([label-hidden])[label]) .button {
       justify-content: var(--bim-button--jc, center);
     }
 
-    :host(:hover)::before {
-      clip-path: circle(120% at center center);
-    }
-
-    :host(:hover) {
-      --bim-label--c: var(--bim-ui_main-contrast);
-      z-index: 2;
-    }
-
     :host([active]) {
+      --bim-label--c: var(--bim-ui_main-contrast);
       background-color: var(--bim-ui_main-base);
-    }
-
-    :host(:not([disabled]):active) {
-      background: transparent;
-    }
-
-    :host(:not([disabled]):active) .button,
-    :host(:not([disabled]):active)::before {
-      transform: scale(0.98);
     }
 
     :host(:not([label]):not([icon])) .children {
@@ -125,403 +107,357 @@ export class Button extends LitElement {
       padding: 0 6px;
     }
 
-    :host([disabled]) {
-      --bim-label--c: var(--bim-ui_bg-contrast-80) !important;
-      background-color: gray !important;
+    :host([disabled]),
+    :host([loading]) {
+      --bim-label--c: var(--bim-ui_bg-contrast-50);
+      background-color: var(--bim-button--disabled-bgc, var(--bim-ui_bg-contrast-10));
     }
 
-    ::slotted(bim-button) {
+    .chevron {
+      fill: var(--bim-label--c);
+      flex-shrink: 0;
+    }
+
+    /* Buttons inside the context menu dialog */
+    dialog bim-button {
       --bim-icon--fz: var(--bim-ui_size-base);
       --bim-button--bdrs: var(--bim-ui_size-4xs);
+      --bim-button--bgc: transparent;
+      --bim-button--bgc-h: var(--bim-ui_bg-contrast-20);
       --bim-button--olw: 0;
       --bim-button--olc: transparent;
     }
 
-    .tooltip {
-      position: absolute;
-      padding: 0.75rem;
-      z-index: 99;
-      display: flex;
-      flex-flow: column;
-      row-gap: 0.375rem;
-      box-shadow: 0 0 10px 3px rgba(0 0 0 / 20%);
-      outline: 1px solid var(--bim-ui_bg-contrast-40);
-      font-size: var(--bim-ui_size-xs);
-      border-radius: var(--bim-ui_size-4xs);
-      background-color: var(--bim-ui_bg-contrast-50);
-      color: var(--bim-ui_bg-contrast-100);
-      animation: openTooltips 0.15s ease-out forwards;
-      transition: visibility 0.2s;
-    }
-
-    .tooltip p {
+    dialog {
+      position: fixed;
       margin: 0;
-      padding: 0;
-    }
-
-    :host(:not([tooltip-visible])) .tooltip {
-      animation: closeTooltips 0.15s ease-in forwards;
-      visibility: hidden;
+      padding: 0.375rem;
+      border: none;
+      outline: none;
+      border-radius: 4px;
+      background-color: var(--bim-ui_bg-contrast-10);
+      box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+      overflow: auto;
+      max-height: 20rem;
+      min-width: 3rem;
       display: none;
+      flex-direction: column;
+      pointer-events: auto;
     }
 
-    @keyframes closeTooltips {
-      0% {
-        display: flex;
-        padding: 0.75rem;
-        transform: translateY(0);
-        opacity: 1;
-      }
-      90% {
-        padding: 0.75rem;
-      }
-      100% {
-        display: none;
-        padding: 0;
-        transform: translateY(-10px);
-        opacity: 0;
-      }
+    dialog[open] {
+      display: flex;
     }
 
-    @keyframes openTooltips {
-      0% {
-        display: flex;
-        transform: translateY(-10px);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
+    dialog::backdrop {
+      background: transparent;
+      pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :host {
+        transition: none;
       }
     }
   `;
 
-  /**
-   * The label to be displayed on the button.
-   * @type {string}
-   * @default undefined
-   * @example <bim-button label="Click me"></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   */
   @property({ type: String, reflect: true })
   label?: string;
 
-  /**
-   * A boolean attribute which, if present, indicates that the label should be hidden.
-   * @default false
-   * @example <bim-button label="Click me" label-hidden></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.labelHidden = true;
-   */
   @property({ type: Boolean, attribute: "label-hidden", reflect: true })
   labelHidden = false;
 
-  /**
-   * A boolean attribute which, if present, indicates that the button is active.
-   * @default false
-   * @example <bim-button label="Click me" active></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.active = true;
-   */
   @property({ type: Boolean, reflect: true })
   active = false;
 
-  /**
-   * A boolean attribute which, if present, indicates that the button is disabled.
-   * @default false
-   * @example <bim-button label="Click me" disabled></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.disabled = true;
-   */
   @property({ type: Boolean, reflect: true, attribute: "disabled" })
   disabled = false;
 
-  /**
-   * The icon to be displayed on the button.
-   * @type {string}
-   * @default undefined
-   * @example <bim-button icon="my-icon"></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.icon = 'my-icon';
-   */
   @property({ type: String, reflect: true })
   icon?: string;
 
-  /**
-   * A boolean attribute which, if present, indicates that the button should be displayed vertically.
-   * @default false
-   * @example <bim-button label="Click me" vertical></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.vertical = true;
-   */
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
-  /**
-   * The time (in milliseconds) to wait before showing the tooltip when hovering over the button.
-   * @type {number}
-   * @default 700
-   * @example <bim-button label="Click me" tooltip-time="1000"></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.tooltipTime = 1000;
-   */
+  /** @deprecated Use `<bim-tooltip>` inside the button instead. */
+  private _tooltipTime?: number;
+
   @property({ type: Number, attribute: "tooltip-time", reflect: true })
-  tooltipTime?: number;
+  get tooltipTime() { return this._tooltipTime; }
+  set tooltipTime(value: number | undefined) {
+    const old = this._tooltipTime;
+    this._tooltipTime = value;
+    if (value !== undefined) {
+      console.warn("[bim-button] tooltipTime is deprecated. Use <bim-tooltip timeout=\"...\"> inside the button instead.");
+    }
+    this.requestUpdate("tooltipTime", old);
+  }
 
-  /**
-   * A boolean attribute which, if present, indicates that the tooltip should be visible.
-   * @default false
-   * @example <bim-button label="Click me" tooltip-visible></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.tooltipVisible = true;
-   */
-  @property({ type: Boolean, attribute: "tooltip-visible", reflect: true })
-  tooltipVisible = false;
+  /** @deprecated Use `<bim-tooltip>` inside the button instead. */
+  private _tooltipTitle?: string;
 
-  /**
-   * The title of the tooltip to be displayed when hovering over the button.
-   * @type {string}
-   * @default undefined
-   * @example <bim-button label="Click me" tooltip-title="Button Tooltip"></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.tooltipTitle = 'Button Tooltip';
-   */
   @property({ type: String, attribute: "tooltip-title", reflect: true })
-  tooltipTitle?: string;
+  get tooltipTitle() { return this._tooltipTitle; }
+  set tooltipTitle(value: string | undefined) {
+    const old = this._tooltipTitle;
+    this._tooltipTitle = value;
+    if (value !== undefined) {
+      console.warn("[bim-button] tooltipTitle is deprecated. Use <bim-tooltip> inside the button instead.");
+    }
+    this.requestUpdate("tooltipTitle", old);
+  }
 
-  /**
-   * The text of the tooltip to be displayed when hovering over the button.
-   * @type {string}
-   * @default undefined
-   * @example <bim-button label="Click me" tooltip-text="This is a tooltip"></bim-button>
-   * @example const button = document.createElement('bim-button');
-   *          button.label = 'Click me';
-   *          button.tooltipText = 'This is a tooltip';
-   */
+  /** @deprecated Use `<bim-tooltip>` inside the button instead. */
+  private _tooltipText?: string;
+
   @property({ type: String, attribute: "tooltip-text", reflect: true })
-  tooltipText?: string;
-
-  private _stateBeforeLoading: { disabled: boolean; icon?: string } = {
-    disabled: false,
-    icon: "",
-  };
+  get tooltipText() { return this._tooltipText; }
+  set tooltipText(value: string | undefined) {
+    const old = this._tooltipText;
+    this._tooltipText = value;
+    if (value !== undefined) {
+      console.warn("[bim-button] tooltipText is deprecated. Use <bim-tooltip> inside the button instead.");
+    }
+    this.requestUpdate("tooltipText", old);
+  }
 
   private _loading = false;
 
-  /**
-   * Attribute to set the loading state of the button.
-   * When the loading state is set to true, the button is disabled and the icon is changed to a loading spinner.
-   * When the loading state is set to false, the button is reverted to its previous state.
-   */
   @property({ type: Boolean, reflect: true })
   set loading(value: boolean) {
+    const old = this._loading;
     this._loading = value;
-    if (value) {
-      this._stateBeforeLoading = {
-        disabled: this.disabled,
-        icon: this.icon,
-      };
-      this.disabled = value;
-      this.icon = "eos-icons:loading";
-    } else {
-      const { disabled, icon } = this._stateBeforeLoading;
-      this.disabled = disabled;
-      this.icon = icon;
-    }
+    this.requestUpdate("loading", old);
   }
 
   get loading() {
     return this._loading;
   }
 
-  private _parent = createRef<HTMLDivElement>();
-  private _tooltip = createRef<HTMLDivElement>();
-  private timeoutID?: number;
+  /**
+   * Optional function that returns a TemplateResult for a dynamically rendered
+   * context menu. More efficient than a declarative `<bim-context-menu>` child
+   * for high-frequency scenarios (e.g. table rows) because the template is only
+   * rendered when the menu is actually opened.
+   */
+  contextMenuTemplate?: () => TemplateResult;
 
-  private _mouseLeave = false;
+  private _menuDialog = createRef<HTMLDialogElement>();
+  private _movedChildren: Element[] = [];
 
-  private set mouseLeave(value: boolean) {
-    this._mouseLeave = value;
-    if (value) {
-      this.tooltipVisible = false;
-      clearTimeout(this.timeoutID);
+  private _hasContextMenu() {
+    return !!(this.querySelector("bim-context-menu") || this.contextMenuTemplate);
+  }
+
+  private _updateMenuPosition() {
+    const dialog = this._menuDialog.value;
+    if (!dialog) return;
+
+    const gap = 10;
+    const padding = 5;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const t = this.getBoundingClientRect();
+    const m = dialog.getBoundingClientRect();
+
+    // Default placement: right of the button
+    let x = t.right + gap;
+    let y = t.top;
+
+    // Flip horizontal: if no space to the right, open to the left
+    if (x + m.width > vw - padding) x = t.left - m.width - gap;
+
+    // Shift vertical: keep in viewport
+    if (y + m.height > vh - padding) y = vh - m.height - padding;
+    y = Math.max(padding, y);
+
+    dialog.style.left = `${x}px`;
+    dialog.style.top = `${y}px`;
+  }
+
+  private _openMenu() {
+    const dialog = this._menuDialog.value;
+    if (!dialog) return;
+
+    // Clear any stale content from a previous open
+    while (dialog.firstChild) dialog.removeChild(dialog.firstChild);
+    this._movedChildren = [];
+
+    const contextMenuEl = this.querySelector("bim-context-menu");
+
+    if (this.contextMenuTemplate) {
+      // Render template into a temp node, take children of the resulting
+      // bim-context-menu (or the node itself if it isn't one)
+      const temp = document.createElement("div");
+      render(this.contextMenuTemplate(), temp);
+      const source = temp.querySelector("bim-context-menu") ?? temp;
+      for (const child of [...source.children]) dialog.append(child);
+    } else if (contextMenuEl) {
+      this._movedChildren = [...contextMenuEl.children];
+      for (const child of this._movedChildren) dialog.append(child);
+    }
+
+    if (!dialog.children.length) return;
+
+    // Register for nested-menu coordination
+    const groupID = this.getAttribute("data-context-group");
+    if (groupID) {
+      this.closeNestedContexts();
+      // Assign a new group ID to children so their submenus can coordinate
+      const childID = Manager.newRandomId();
+      for (const child of dialog.children) {
+        if (child.tagName === "BIM-BUTTON") {
+          child.setAttribute("data-context-group", childID);
+        }
+      }
+    }
+
+    Button._openMenuButtons.add(this);
+    dialog.showModal();
+    this._updateMenuPosition();
+  }
+
+  private _closeMenu() {
+    const dialog = this._menuDialog.value;
+    if (!dialog || !dialog.open) return;
+
+    dialog.close();
+    Button._openMenuButtons.delete(this);
+    this.dispatchEvent(new Event("menuclose", { bubbles: true, composed: true }));
+
+    // Return moved children to bim-context-menu
+    const contextMenuEl = this.querySelector("bim-context-menu");
+    if (contextMenuEl && this._movedChildren.length) {
+      for (const child of this._movedChildren) contextMenuEl.append(child);
+    }
+    this._movedChildren = [];
+    // Clear any remaining content (template case or orphaned nodes)
+    while (dialog.firstChild) dialog.removeChild(dialog.firstChild);
+
+    // Clean up group IDs set on children
+    for (const child of [...dialog.children]) {
+      if (child.tagName === "BIM-BUTTON") child.removeAttribute("data-context-group");
+    }
+
+    this.dispatchEvent(new Event("hidden"));
+  }
+
+  /**
+   * Closes sibling context menus in the same data-context-group before
+   * opening this button's menu — enables correct nested-menu behaviour.
+   */
+  closeNestedContexts() {
+    const groupID = this.getAttribute("data-context-group");
+    if (!groupID) return;
+    for (const btn of Button._openMenuButtons) {
+      if (btn === this) continue;
+      if (btn.getAttribute("data-context-group") !== groupID) continue;
+      btn._closeMenu();
+      btn.removeAttribute("data-context-group");
     }
   }
 
-  private get mouseLeave() {
-    return this._mouseLeave;
+  click() {
+    if (!this.disabled && !this._loading) this.dispatchEvent(new Event("click"));
   }
 
-  private onKeyDown = (e: KeyboardEvent) => {
+  // Fires on the inner .parent div — stops propagation then re-dispatches
+  // a fresh click on the host so external listeners receive it cleanly.
+  private _onParentClick = (e: PointerEvent) => {
+    e.stopPropagation();
+    if (!this.disabled && !this._loading) this.dispatchEvent(new Event("click"));
+  };
+
+  // Fires on the host — opens the context menu if one is configured.
+  private _onHostClick = () => {
+    if (!this.disabled && !this._loading && this._hasContextMenu()) this._openMenu();
+  };
+
+  private _onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      this.onClick(e as unknown as PointerEvent);
+      this._onParentClick(e as unknown as PointerEvent);
     }
+  };
+
+  private _onDialogClick = (e: MouseEvent) => {
+    // Stop ALL clicks from bubbling out of the dialog to the host button,
+    // otherwise the host's _onHostClick would re-open the menu immediately.
+    e.stopPropagation();
+    if (e.target === this._menuDialog.value) this._closeMenu();
+  };
+
+  private _onDialogCancel = (e: Event) => {
+    e.preventDefault();
+    this._closeMenu();
   };
 
   constructor() {
     super();
     if (!this.hasAttribute("role")) this.setAttribute("role", "button");
     if (!this.hasAttribute("tabindex")) this.setAttribute("tabindex", "0");
-    this.mouseLeave = true;
   }
-
-  private computeTooltipPosition() {
-    const { value: parent } = this._parent;
-    const { value: tooltip } = this._tooltip;
-    if (!(parent && tooltip)) return;
-    computePosition(parent, tooltip, {
-      placement: "bottom",
-      middleware: [offset(10), inline(), flip(), shift({ padding: 5 })],
-    }).then((data: any) => {
-      const { x, y } = data;
-      Object.assign(tooltip.style, {
-        left: `${x}px`,
-        top: `${y}px`,
-      });
-    });
-  }
-
-  private onMouseEnter() {
-    if (!(this.tooltipTitle || this.tooltipText)) return;
-    this.mouseLeave = false;
-    const tooltipTime = this.tooltipTime ?? 700;
-    this.timeoutID = setTimeout(() => {
-      if (this.mouseLeave) return;
-      this.computeTooltipPosition();
-      this.tooltipVisible = true;
-    }, tooltipTime) as unknown as number;
-  }
-
-  private onClick = (e: PointerEvent) => {
-    e.stopPropagation();
-    if (!this.disabled) this.dispatchEvent(new Event("click"));
-  };
-
-  closeNestedContexts() {
-    const groupID = this.getAttribute("data-context-group");
-    if (!groupID) return;
-    for (const menu of ContextMenu.dialog.children) {
-      const menuGroup = menu.getAttribute("data-context-group");
-      if (!(menu instanceof ContextMenu && menuGroup === groupID)) continue;
-      menu.visible = false;
-      menu.removeAttribute("data-context-group");
-      for (const child of menu.children) {
-        if (!(child instanceof Button)) continue;
-        child.closeNestedContexts();
-        child.removeAttribute("data-context-group");
-      }
-    }
-  }
-
-  click() {
-    if (!this.disabled) super.click();
-  }
-
-  contextMenuTemplate?: () => TemplateResult
-
-  private get _contextMenu() {
-    return this.querySelector("bim-context-menu");
-  }
-
-  private showContextMenu = () => {
-    let contextMenu = this._contextMenu;
-    if (this.contextMenuTemplate) {
-      const previousDisabledValue = this.disabled
-      this.disabled = true
-      contextMenu = Component.create<ContextMenu>(() => {
-        const element = Component.create(this.contextMenuTemplate!)
-        if (element instanceof ContextMenu) return html`${element}`
-        return html`
-          <bim-context-menu>${element}</bim-context-menu>
-          `
-      })
-      this.append(contextMenu)
-      contextMenu.addEventListener("hidden", () => {
-        contextMenu?.remove()
-      })
-      this.disabled = previousDisabledValue
-    }
-    if (contextMenu) {
-      const id = this.getAttribute("data-context-group");
-      if (id) contextMenu.setAttribute("data-context-group", id);
-      this.closeNestedContexts();
-      const childID = Manager.newRandomId();
-      for (const child of contextMenu.children) {
-        if (!(child instanceof Button)) continue;
-        child.setAttribute("data-context-group", childID);
-      }
-      contextMenu.visible = true;
-    }
-  };
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener("click", this.showContextMenu);
-    this.addEventListener("keydown", this.onKeyDown);
+    this.addEventListener("click", this._onHostClick);
+    this.addEventListener("keydown", this._onKeyDown);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener("click", this.showContextMenu);
-    this.removeEventListener("keydown", this.onKeyDown);
+    this.removeEventListener("click", this._onHostClick);
+    this.removeEventListener("keydown", this._onKeyDown);
+    this._closeMenu();
+  }
+
+  protected updated(changedProperties: PropertyValues) {
+    super.updated(changedProperties);
+
+    if (changedProperties.has("disabled") || changedProperties.has("loading")) {
+      const isDisabled = this.disabled || this._loading;
+      if (isDisabled) {
+        this.setAttribute("aria-disabled", "true");
+      } else {
+        this.removeAttribute("aria-disabled");
+      }
+    }
+
+    if (
+      changedProperties.has("label") ||
+      changedProperties.has("labelHidden") ||
+      changedProperties.has("icon") ||
+      changedProperties.has("tooltipTitle")
+    ) {
+      if (this.labelHidden && this.label) {
+        this.setAttribute("aria-label", this.label);
+      } else if (!this.label && this.icon) {
+        this.setAttribute("aria-label", this._tooltipTitle ?? this.icon);
+      }
+    }
   }
 
   protected render() {
-    const tooltipTemplate = html`
-      <div ${ref(this._tooltip)} class="tooltip">
-        ${this.tooltipTitle
-          ? html`<bim-label style="text-wrap: nowrap;">
-              <strong>${this.tooltipTitle}</strong>
-            </bim-label>`
-          : null}
-        ${this.tooltipText
-          ? html`<bim-label style="width: 9rem; white-space: normal;">${this.tooltipText}</bim-label>`
-          : null}
-      </div>
-    `;
+    const hasMenu = this._hasContextMenu();
+    const effectiveIcon = this._loading ? "eos-icons:loading" : this.icon;
 
-    let labelContent = html`${this.label}`
-    if ((this._contextMenu || this.contextMenuTemplate) && this.label) {
-      const childrenSVG = html`<svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="1.125rem"
-        viewBox="0 0 24 24"
-        width="1.125rem"
-        style="fill: var(--bim-label--c)"
-      >
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-      </svg>`;
-
+    let labelContent = html`${this.label}`;
+    if (hasMenu && this.label) {
       labelContent = html`
         <div style="display: flex; align-items: center;">
           ${this.label}
-          ${childrenSVG}
+          ${Button._chevron}
         </div>
-      `
+      `;
     }
 
-
     return html`
-      <div ${ref(this._parent)} class="parent" @click=${this.onClick}>
-        ${this.label || this.icon
+      <div class="parent" @click=${this._onParentClick}>
+        ${this.label || effectiveIcon
           ? html`
-              <div
-                class="button"
-                @mouseenter=${this.onMouseEnter}
-                @mouseleave=${() => (this.mouseLeave = true)}
-              >
+              <div class="button">
                 <bim-label
-                  .icon=${this.icon}
+                  .icon=${effectiveIcon}
                   .vertical=${this.vertical}
                   .labelHidden=${this.labelHidden}
                   >${labelContent}</bim-label
@@ -529,9 +465,13 @@ export class Button extends LitElement {
               </div>
             `
           : null}
-        ${this.tooltipTitle || this.tooltipText ? tooltipTemplate : null}
       </div>
       <slot></slot>
+      <dialog
+        ${ref(this._menuDialog)}
+        @click=${this._onDialogClick}
+        @cancel=${this._onDialogCancel}
+      ></dialog>
     `;
   }
 }

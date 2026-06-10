@@ -1,45 +1,87 @@
-/* eslint-disable no-alert */
 import * as BUI from "../..";
 import { icons as customIcons } from "../../../../../resources/custom-icons.json";
 
 BUI.Manager.init();
 BUI.Manager.addIconsCollection({
-  // You can add icons by manually declaring the SVG
-  circle: {
-    body: '<circle fill="currentColor" cx="12" cy="12" r="10"/>',
-  },
-  // Or you can provide a set of IconifyJSON
-  // made with the Iconify utilities.
-  // Take a look at resources/build-icons
-  // and resources/custom-icons.json which is the result
-  // from running the script.
-  ...customIcons
+  circle: { body: '<circle fill="currentColor" cx="12" cy="12" r="10"/>' },
+  ...customIcons,
 });
 
-const btn = document.body.querySelector<BUI.Button>("bim-button")!;
-btn.addEventListener("click", () => {
-  alert("Your schedule has been created!");
+// --- theme toggle ---
+const themeToggle = document.getElementById("theme-toggle") as BUI.Button;
+const html = document.documentElement;
+themeToggle.addEventListener("click", () => {
+  const isDark = html.classList.contains("bim-ui-dark");
+  html.classList.toggle("bim-ui-dark", !isDark);
+  html.classList.toggle("bim-ui-light", isDark);
+  themeToggle.icon = isDark ? "solar:sun-bold" : "solar:moon-bold";
 });
 
-const contextBtn = document.getElementById("context-btn") as BUI.Button;
-contextBtn.addEventListener("click", () => {
-  console.log("asdasd");
+// --- toggle active ---
+const btnToggle = document.getElementById("btn-toggle") as BUI.Button;
+btnToggle.addEventListener("click", () => {
+  btnToggle.active = !btnToggle.active;
 });
 
-// Programatically context menu
-// Way better for performance, specially on heavy nestings on bim-tables dataTransform
+// --- simulated async: loading state ---
+const btnAsync = document.getElementById("btn-async") as BUI.Button;
+btnAsync.addEventListener("click", () => {
+  if (btnAsync.loading) return;
+  btnAsync.loading = true;
+  btnAsync.label = "Processing…";
+  setTimeout(() => {
+    btnAsync.loading = false;
+    btnAsync.label = "Run process";
+  }, 2500);
+});
 
-const contextMenuTemplate = () => {
-  const onCreated = (e?: Element) => {
-    if (!e) return
-    const btn = e as BUI.Button
-    btn.contextMenuTemplate = contextMenuTemplate
-  }
-  return BUI.html`<bim-context-menu style="gap: 0.5rem;">
-    <bim-label style="white-space: normal; width: 10rem; text-align: center;">This is way more efficient, specially on bim-tables dataTransforms where many rows will have the same menu inside. Keep clicking the button below 👇</bim-label>
-    <bim-button ${BUI.ref(onCreated)} label="Display more nestings"></bim-button>
-  </bim-context-menu>`
-}
+// --- programmatic context menu via contextMenuTemplate ---
+// More efficient than declarative menus inside bim-table dataTransforms,
+// because the template is only rendered when the menu is actually opened.
+const btnDynamicMenu = document.getElementById("btn-dynamic-menu") as BUI.Button;
+let openCount = 0;
+const dynamicMenuTemplate = () => {
+  openCount++;
+  return BUI.html`
+    <bim-context-menu>
+      <bim-label style="
+        display: block;
+        padding: 0.25rem 0.5rem 0.375rem;
+        --bim-label--c: var(--bim-ui_bg-contrast-60);
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+        margin-bottom: 0.125rem;
+      ">Render #${openCount}</bim-label>
+      <bim-button label="Favourite" icon="solar:star-bold"></bim-button>
+      <bim-button label="Bookmark" icon="solar:bookmark-bold"></bim-button>
+      <bim-button label="Share" icon="solar:share-bold"></bim-button>
+      <bim-button label="Delete" icon="solar:trash-bin-trash-bold"
+        style="--bim-label--c: var(--bim-ui_danger-base); --bim-icon--c: var(--bim-ui_danger-base);">
+      </bim-button>
+    </bim-context-menu>
+  `;
+};
+btnDynamicMenu.contextMenuTemplate = dynamicMenuTemplate;
 
-const testingBtn = document.getElementById("context-testing") as BUI.Button
-testingBtn.contextMenuTemplate = contextMenuTemplate
+// --- click event demo ---
+const btnEvent = document.getElementById("btn-event") as BUI.Button;
+const eventOutput = document.getElementById("event-output") as BUI.Label;
+let clickCount = 0;
+btnEvent.addEventListener("click", () => {
+  clickCount++;
+  eventOutput.textContent = `click fired ×${clickCount}`;
+});
+
+// --- disabled button: confirm no click fires ---
+const btnEventDisabled = document.getElementById("btn-event-disabled") as BUI.Button;
+const eventDisabledOutput = document.getElementById("event-disabled-output") as BUI.Label;
+btnEventDisabled.addEventListener("click", () => {
+  eventDisabledOutput.textContent = "fired (unexpected!)";
+});
+
+// --- menuclose event ---
+const btnMenuclose = document.getElementById("btn-menuclose") as BUI.Button;
+const menuclosOutput = document.getElementById("menuclose-output") as BUI.Label;
+let menucloseCount = 0;
+btnMenuclose.addEventListener("menuclose", () => {
+  menuclosOutput.textContent = `closed ${++menucloseCount} time(s)`;
+});
