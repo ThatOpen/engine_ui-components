@@ -1,8 +1,12 @@
 /**
  * Represents an object that has a value and an event for value changes.
  */
-export interface HasValue {
-  value: any;
+export interface HasValue<T = unknown> {
+  value: T;
+  /**
+   * @deprecated Storing a reused Event instance is an anti-pattern. Listen for
+   * the "input" event on the element instead: `el.addEventListener("input", fn)`.
+   */
   onValueChange: Event;
 }
 

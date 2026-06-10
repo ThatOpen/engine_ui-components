@@ -24,16 +24,16 @@ const globalStyles = css`
   :root {
     /* Grayscale Colors */
     --bim-ui_gray-0: #19191E; /* app background */
-    --bim-ui_gray-1: #262528; /* bg dark search */
-    --bim-ui_gray-2: #262629; /* card background */
-    --bim-ui_gray-3: #2E2E2E; /* dark background */
-    --bim-ui_gray-4: #323237; /* bg default tabs */
-    --bim-ui_gray-5: #353538; /* tooltip windows */
-    --bim-ui_gray-6: #3C3C41; /* button grey bg */
-    --bim-ui_gray-7: #787878; /* default */
-    --bim-ui_gray-8: #ADADAD; /* icon - secondary text */
-    --bim-ui_gray-9: #d5d5d5;
-    --bim-ui_gray-10: #f1f2f4;
+    --bim-ui_gray-1: #262629; /* card / elevated surface */
+    --bim-ui_gray-2: #3C3C41; /* button bg / component surface */
+    --bim-ui_gray-3: #46464B; /* button hover */
+    --bim-ui_gray-4: #5F5F64;
+    --bim-ui_gray-5: #76767B;
+    --bim-ui_gray-6: #909095;
+    --bim-ui_gray-7: #A7A7AB; /* icon / secondary text */
+    --bim-ui_gray-8: #BEBEC2;
+    --bim-ui_gray-9: #D7D7DA;
+    --bim-ui_gray-10: #F0F0F0; /* near-white text / light bg */
 
     /* Brand Colors */
     --bim-ui_main-base: #6528d7;
@@ -42,6 +42,16 @@ const globalStyles = css`
     /* Brand Colors Contrasts */
     --bim-ui_main-contrast: var(--bim-ui_gray-10);
     --bim-ui_accent-contrast: var(--bim-ui_gray-0);
+
+    /* Status Colors */
+    --bim-ui_danger-base: #f04f4f;
+    --bim-ui_danger-contrast: var(--bim-ui_gray-10);
+    --bim-ui_warning-base: #f0a030;
+    --bim-ui_warning-contrast: var(--bim-ui_gray-0);
+    --bim-ui_success-base: #4caf72;
+    --bim-ui_success-contrast: var(--bim-ui_gray-0);
+    --bim-ui_info-base: #4a90d9;
+    --bim-ui_info-contrast: var(--bim-ui_gray-10);
 
     /* Sizes */
     --bim-ui_size-4xs: 0.0625rem; /* 1px */

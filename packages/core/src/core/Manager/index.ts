@@ -164,7 +164,6 @@ export class Manager {
       bim-button,
       bim-checkbox,
       bim-selector,
-      bim-label,
       bim-table-row,
       bim-panel-section,
       bim-table-children .branch-vertical,
@@ -243,32 +242,38 @@ export class Manager {
           const animationDuration = 400;
           const animationDelay = 200 + delay * 1000;
 
-          child.animate(
-            [
-              {
-                transform: "translateY(-20px)",
-                opacity: "0",
-              },
-              {
-                transform: "translateY(0)",
-                opacity: "1",
-              },
-            ],
-            {
-              duration: animationDuration,
-              easing: "ease-in-out",
-              delay: animationDelay,
-            },
-          );
+          const prefersReduced = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
 
-          // Used a setTimeout to cleanup the updated css additions once the animation ends
-          setTimeout(() => {
-            child.style.removeProperty("opacity");
+          if (!prefersReduced) {
+            child.animate(
+              [
+                {
+                  transform: "translateY(-20px)",
+                  opacity: "0",
+                },
+                {
+                  transform: "translateY(0)",
+                  opacity: "1",
+                },
+              ],
+              {
+                duration: animationDuration,
+                easing: "ease-in-out",
+                delay: animationDelay,
+              },
+            );
 
-            if (oldTransforms !== "none")
-              child.style.setProperty("transform", oldTransforms);
-            else child.style.removeProperty("transform");
-          }, animationDelay + animationDuration);
+            // Used a setTimeout to cleanup the updated css additions once the animation ends
+            setTimeout(() => {
+              child.style.removeProperty("opacity");
+
+              if (oldTransforms !== "none")
+                child.style.setProperty("transform", oldTransforms);
+              else child.style.removeProperty("transform");
+            }, animationDelay + animationDuration);
+          }
         });
       };
 
