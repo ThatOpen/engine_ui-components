@@ -665,8 +665,8 @@ grid.layouts = {
   app: {
     template: `
       "${ribbonArea} ${ribbonArea} ${ribbonArea}" max-content
-      "${leftPanelArea} viewport ${rightPanelArea}" 1fr
-      "bottomPanel bottomPanel bottomPanel" 20rem
+      "${leftPanelArea} viewport ${rightPanelArea}" minmax(0, 1fr)
+      "bottomPanel bottomPanel bottomPanel" minmax(0, 20rem)
       / 15rem 1fr 15rem
     `,
   },
