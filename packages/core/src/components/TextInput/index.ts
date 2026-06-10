@@ -1,14 +1,29 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { styleMap } from "lit/directives/style-map.js";
 import { HasName, HasValue } from "../../core/types";
 import { getQuery } from "../../core/utils";
 import { styles } from "../../core/Manager/src/styles";
 
+export type TextInputType =
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "month"
+  | "password"
+  | "search"
+  | "tel"
+  | "text"
+  | "time"
+  | "url"
+  | "week"
+  | "area";
+
 /**
  * A custom text input web component for BIM applications. HTML tag: bim-text-input
  */
-export class TextInput extends LitElement implements HasName, HasValue {
+export class TextInput extends LitElement implements HasName, HasValue<string> {
   /**
    * CSS styles for the component.
    */
@@ -16,8 +31,77 @@ export class TextInput extends LitElement implements HasName, HasValue {
     styles.scrollbar,
     css`
       :host {
-        /* flex: 1; */
         display: block;
+      }
+
+      .parent {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        user-select: none;
+        flex: 1;
+        align-items: normal;
+      }
+
+      :host(:not([vertical])) .parent {
+        justify-content: space-between;
+      }
+
+      :host([vertical]) .parent {
+        flex-direction: column;
+      }
+
+      :host(:not([vertical])[type="area"]) .parent {
+        align-items: flex-start;
+      }
+
+      bim-label {
+        margin-top: var(--bim-input--label-mt, 0);
+      }
+
+      :host(:not([vertical])[type="area"]) bim-label {
+        margin-top: 4px;
+      }
+
+      .input {
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 25px;
+        min-width: 3rem;
+        gap: var(--bim-input--g, var(--bim-ui_size-4xs));
+        padding: 0 7px;
+        background-color: var(--bim-input--bgc, var(--bim-ui_bg-contrast-20));
+        border: var(--bim-input--olw, 2px) solid var(--bim-input--olc, transparent);
+        border-radius: var(--bim-input--bdrs, var(--bim-ui_size-2xs));
+        transition: border-color 0.15s;
+      }
+
+      :host([type="area"]) .input {
+        height: auto;
+        min-height: 25px;
+        align-items: flex-start;
+        padding: 4px 7px;
+      }
+
+      :host(:not([vertical])) .input {
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      :host(:not([vertical])[label]) .input {
+        max-width: var(--bim-input--maxw, fit-content);
+      }
+
+      :host(:focus-within) .input {
+        border-color: var(--bim-ui_bg-contrast-40);
+      }
+
+      :host([invalid]) .input {
+        border-color: var(--bim-ui_danger-base);
       }
 
       input,
@@ -32,32 +116,57 @@ export class TextInput extends LitElement implements HasName, HasValue {
 
       input {
         outline: none;
-        height: 100%;
-        border-radius: var(--bim-text-input--bdrs, var(--bim-ui_size-4xs));
+        color-scheme: dark;
+      }
+
+      :host-context(html.bim-ui-light) input {
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: light) {
+        input {
+          color-scheme: light;
+        }
       }
 
       :host([disabled]) input,
       :host([disabled]) textarea {
-        color: var(--bim-ui_bg-contrast-60);
+        color: var(--bim-text-input--disabled-c, var(--bim-ui_bg-contrast-60));
       }
 
       textarea {
         line-height: 1.1rem;
         outline: none;
+        resize: var(--bim-text-input--resize, vertical);
       }
 
-      :host(:focus) {
-        --bim-input--olc: var(--bim-ui_accent-base);
+      .validation-message {
+        display: block;
+        font-size: var(--bim-ui_size-base);
+        color: var(--bim-ui_danger-base);
+        padding: 2px var(--bim-ui_size-xs);
       }
 
-      /* :host([disabled]) {
-      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
-    } */
+      :host(:not([vertical])) .validation-message {
+        text-align: right;
+      }
+
+      :host([icon-inside]) input,
+      :host([icon-inside]) textarea {
+        width: auto;
+        flex: 1;
+        min-width: 0;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .input {
+          transition: none;
+        }
+      }
     `,
   ];
 
-  private _debounceTimeoutID?: number;
-  private _inputTypes = [
+  private static readonly _inputTypes: TextInputType[] = [
     "date",
     "datetime-local",
     "email",
@@ -71,6 +180,13 @@ export class TextInput extends LitElement implements HasName, HasValue {
     "week",
     "area",
   ];
+
+  private _debounceTimeoutID?: ReturnType<typeof setTimeout>;
+  private _type: TextInputType = "text";
+  private _cachedQuery: ReturnType<typeof getQuery> | undefined = undefined;
+  private _dirty = false;
+  private _currentValidation?: { valid: boolean; message?: string };
+  private _validation?: (value: string) => { valid: boolean; message?: string };
 
   /**
    * Represents the icon property of the TextInput component.
@@ -124,7 +240,7 @@ export class TextInput extends LitElement implements HasName, HasValue {
    * // Set a new value
    * textInput.value = "New Value";
    */
-  @property({ type: String, reflect: true })
+  @property({ type: String })
   value = "";
 
   /**
@@ -150,10 +266,10 @@ export class TextInput extends LitElement implements HasName, HasValue {
    * @example
    * <bim-text-input debounce="500"></bim-text-input>
    */
-  @property({ type: Number, reflect: true })
+  @property({ type: Number })
   debounce?: number;
 
-  @property({ type: Number, reflect: true })
+  @property({ type: Number })
   rows?: number;
 
   /**
@@ -169,6 +285,12 @@ export class TextInput extends LitElement implements HasName, HasValue {
   @property({ type: Boolean, reflect: true })
   disabled = false;
 
+  @property({ type: String, reflect: true })
+  autocomplete?: string;
+
+  @property({ type: Boolean, reflect: true, attribute: "icon-inside" })
+  iconInside = false;
+
   /**
    * Represents the resize property of the TextInput component.
    * This property controls how the textarea can be resized.
@@ -183,93 +305,129 @@ export class TextInput extends LitElement implements HasName, HasValue {
   resize: "none" | "both" | "horizontal" | "vertical" | "block" | "inline" =
     "vertical";
 
-  private _type = "text";
-
   /**
    * Sets the type of the input field.
-   * The type property determines the behavior of the input field.
-   * It can be any of the following: "date", "datetime-local", "email", "month", "password", "search", "tel", "text", "time", "url", "week".
-   * If an invalid type is provided, the type will not be changed.
+   * Accepted values: "date", "datetime-local", "email", "month", "password", "search", "tel", "text", "time", "url", "week", "area" (renders a textarea).
+   * If an invalid type is provided, the setter is ignored and a warning is logged.
    *
    * @example
-   * // Set the type to "email"
    * textInput.type = "email";
    */
   @property({ type: String, reflect: true })
-  set type(value: string) {
-    if (this._inputTypes.includes(value)) {
+  set type(value: TextInputType) {
+    if (TextInput._inputTypes.includes(value)) {
       this._type = value;
+    } else {
+      console.warn(`[bim-text-input] Unknown type "${value}". Ignored.`);
     }
   }
 
-  get type() {
+  get type(): TextInputType {
     return this._type;
   }
 
   /**
-   * Gets the query value derived from the current input value.
-   * The `getQuery` function is assumed to be a utility function that takes a string as input
-   * and returns a processed query value based on the input.
-   *
-   * @returns The processed query value derived from the current input value.
-   *
-   * @example
-   * ```typescript
-   * const textInput = new TextInput();
-   * textInput.value = "Key?Value";
-   * console.log(textInput.query);
-   * ```
+   * Returns the parsed query from the current value, or `null` if the value
+   * cannot be parsed. Result is cached and invalidated when `value` changes.
    */
   get query() {
-    return getQuery(this.value);
+    if (this._cachedQuery === undefined) {
+      this._cachedQuery = getQuery(this.value);
+    }
+    return this._cachedQuery;
   }
 
+  /** @deprecated Listen for the "input" event on the element instead. */
   onValueChange = new Event("input");
 
+  get validation() {
+    return this._validation;
+  }
+
+  set validation(fn: ((value: string) => { valid: boolean; message?: string }) | undefined) {
+    this._validation = fn;
+    this.requestUpdate();
+  }
+
+  get isValid(): boolean {
+    if (!this._dirty) return true;
+    return this._currentValidation?.valid ?? true;
+  }
+
+  protected override willUpdate(changed: PropertyValues) {
+    if (changed.has("value")) {
+      this._cachedQuery = undefined;
+    }
+    this._currentValidation = this._validation ? this._validation(this.value) : undefined;
+  }
+
+  protected override updated() {
+    this.toggleAttribute("invalid", !this.isValid);
+  }
+
   private onInputChange(e: Event) {
+    this._dirty = true;
     e.stopPropagation();
     const input = e.target as HTMLInputElement;
     clearTimeout(this._debounceTimeoutID);
-    this._debounceTimeoutID = setTimeout(() => {
+    if (this.debounce == null) {
       this.value = input.value;
-      this.dispatchEvent(this.onValueChange);
-    }, this.debounce) as unknown as number;
+      this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+    } else {
+      this._debounceTimeoutID = setTimeout(() => {
+        this.value = input.value;
+        this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+      }, this.debounce);
+    }
   }
 
-  focus() {
-    setTimeout(() => {
-      const input = this.shadowRoot?.querySelector("input");
-      input?.focus();
-    });
+  async focus() {
+    await this.updateComplete;
+    const el = this.shadowRoot?.querySelector<HTMLElement>("input, textarea");
+    el?.focus();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    clearTimeout(this._debounceTimeoutID);
   }
 
   protected render() {
+    const useIconInside = this.iconInside && this.type !== "area";
+    const labelIcon = useIconInside ? undefined : this.icon;
     return html`
-      <bim-input
-        .name=${this.name}
-        .icon=${this.icon}
-        .label=${this.label}
-        .vertical=${this.vertical}
-      >
-        ${this.type === "area"
-          ? html` <textarea
-              aria-label=${this.label || this.name || "Text Input"}
-              .value=${this.value}
-              .rows=${this.rows ?? 5}
-              ?disabled=${this.disabled}
-              placeholder=${ifDefined(this.placeholder)}
-              @input=${this.onInputChange}
-              style="resize: ${this.resize};"
-            ></textarea>`
-          : html` <input
-              aria-label=${this.label || this.name || "Text Input"}
-              .type=${this.type}
-              .value=${this.value}
-              ?disabled=${this.disabled}
-              placeholder=${ifDefined(this.placeholder)}
-              @input=${this.onInputChange}
-            />`}
-      </bim-input>
+      <div class="parent">
+        ${this.label || labelIcon
+          ? html`<bim-label .icon=${labelIcon}>${this.label}</bim-label>`
+          : nothing}
+        <div class="input">
+          ${useIconInside && this.icon
+            ? html`<bim-label .icon=${this.icon}></bim-label>`
+            : nothing}
+          ${this.type === "area"
+            ? html`<textarea
+                aria-label=${this.label || "Text Input"}
+                .value=${this.value}
+                .rows=${this.rows ?? 5}
+                ?disabled=${this.disabled}
+                placeholder=${ifDefined(this.placeholder)}
+                @input=${this.onInputChange}
+                style=${styleMap({ "--bim-text-input--resize": this.resize })}
+              ></textarea>`
+            : html`<input
+                aria-label=${this.label || "Text Input"}
+                .type=${this.type}
+                .value=${this.value}
+                ?disabled=${this.disabled}
+                placeholder=${ifDefined(this.placeholder)}
+                autocomplete=${ifDefined(this.autocomplete)}
+                @input=${this.onInputChange}
+              />`}
+        </div>
+      </div>
+      ${!this.isValid && this._currentValidation?.message
+        ? html`<span class="validation-message">${this._currentValidation.message}</span>`
+        : nothing}
     `;
   }
 }
