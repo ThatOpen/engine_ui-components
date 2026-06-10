@@ -1,13 +1,19 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, PropertyValues, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { HasValue } from "../../core/types";
+
+const ICON_CHECK = html`<svg part="checkmark" viewBox="0 0 21 21"><polyline points="5 10.75 8.5 14.25 16 6"></polyline></svg>`;
+const ICON_INDETERMINATE = html`<svg part="checkmark" viewBox="0 0 21 21"><line x1="5" y1="10.5" x2="16" y2="10.5"></line></svg>`;
 
 /**
  * A custom checkbox web component for BIM applications. HTML tag: bim-checkbox
  *
  * @fires change - Fired when the checkbox changes.
  */
-export class Checkbox extends LitElement implements HasValue {
+export class Checkbox extends LitElement implements HasValue<boolean> {
+  static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
   /**
    * CSS styles for the component.
    */
@@ -17,11 +23,11 @@ export class Checkbox extends LitElement implements HasValue {
     }
 
     .parent-label {
-      --background: var(--bim-ui_bg-contrast-30);
-      --border:  var(--bim-ui_bg-contrast-50);
-      --stroke: var(--bim-ui_main-contrast);
-      --border-hover: var(--bim-ui_bg-contrast-70);
-      --border-active: var(--bim-ui_main-base);
+      --background: var(--bim-checkbox--bg, var(--bim-ui_bg-contrast-30));
+      --border: var(--bim-checkbox--bd-c, var(--bim-ui_bg-contrast-50));
+      --stroke: var(--bim-checkbox--stroke-c, var(--bim-ui_main-contrast));
+      --border-hover: var(--bim-checkbox--bd-h-c, var(--bim-ui_bg-contrast-70));
+      --border-active: var(--bim-checkbox--bd-active-c, var(--bim-ui_main-base));
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -30,7 +36,6 @@ export class Checkbox extends LitElement implements HasValue {
       height: 1.75rem;
       column-gap: 0.25rem;
       position: relative;
-      cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -42,13 +47,13 @@ export class Checkbox extends LitElement implements HasValue {
       justify-content: start;
     }
 
-    :host([disabled]) .parent-label {
+    :host([disabled]) {
       cursor: not-allowed;
-      opacity: 0.4;
     }
 
-    :host([disabled]) input {
+    :host([disabled]) .parent-label {
       pointer-events: none;
+      opacity: 0.4;
     }
 
     input,
@@ -58,19 +63,30 @@ export class Checkbox extends LitElement implements HasValue {
       display: block;
     }
 
+    .input-container {
+      position: relative;
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
     input {
       -webkit-appearance: none;
       -moz-appearance: none;
-      position: relative;
       outline: none;
       background: var(--background);
       border: none;
       margin: 0;
       padding: 0;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: var(--bim-checkbox--bdrs, 4px);
       transition: box-shadow 0.3s;
       box-shadow: inset 0 0 0 var(--s, 1px) var(--b, var(--border));
+    }
+
+    input:focus-visible {
+      outline: 2px solid var(--bim-ui_main-base);
+      outline-offset: 2px;
     }
 
     svg {
@@ -117,6 +133,14 @@ export class Checkbox extends LitElement implements HasValue {
         transform: translateY(-100%) scale(1);
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      input:checked + svg,
+      input:indeterminate + svg {
+        animation: none;
+        transform: translateY(-100%) scale(1);
+      }
+    }
   `;
 
   /**
@@ -142,7 +166,7 @@ export class Checkbox extends LitElement implements HasValue {
    * checkbox.name = 'agreement';
    * document.body.appendChild(checkbox);
    */
-  @property({ type: String, reflect: true })
+  @property({ type: String })
   name?: string;
 
   /**
@@ -167,12 +191,22 @@ export class Checkbox extends LitElement implements HasValue {
    * checkbox.checked = true;
    * document.body.appendChild(checkbox);
    */
-  @property({ type: Boolean, reflect: true })
+  @property({ type: Boolean })
   checked = false;
 
-  @property({ type: Boolean, reflect: true })
+  /**
+   * Indicates whether the checkbox is in an indeterminate (mixed) state. Typically used when a checkbox represents a group where some but not all items are checked. Cleared automatically when the user interacts with the checkbox.
+   * @default false
+   * @example <bim-checkbox indeterminate></bim-checkbox>
+   */
+  @property({ type: Boolean })
   indeterminate = false;
 
+  /**
+   * Disables the checkbox, preventing user interaction. When disabled, the checkbox is visually dimmed and ignores all pointer and keyboard events.
+   * @default false
+   * @example <bim-checkbox disabled></bim-checkbox>
+   */
   @property({ type: Boolean, reflect: true })
   disabled = false;
 
@@ -199,54 +233,55 @@ export class Checkbox extends LitElement implements HasValue {
    * document.body.appendChild(checkbox);
    * console.log(checkbox.value); // false initially
    */
-  get value() {
+  get value(): boolean {
     return this.checked;
   }
 
+  set value(v: boolean) {
+    this.checked = v;
+  }
+
+  override updated(changed: PropertyValues) {
+    super.updated(changed);
+    if (changed.has("disabled")) {
+      this.setAttribute("aria-disabled", String(this.disabled));
+    }
+  }
+
   /**
-   * Event that is dispatched when the checkbox's checked state changes.
-   * This event can be used to listen for changes to the checkbox's value and perform
-   * necessary actions when the value changes.
-   *
-   * @event change
-   * @example
-   * checkbox.addEventListener('change', (event) => {
-   *   console.log('Checkbox value changed:', event.target.checked);
-   * });
+   * @deprecated Use `addEventListener("change", fn)` instead.
    */
   readonly onValueChange = new Event("change");
 
   private onChange(e: Event) {
     e.stopPropagation();
-    this.checked = (e.target as HTMLInputElement).checked;
+    const input = e.target as HTMLInputElement | null;
+    if (!input) return;
+    this.checked = input.checked;
     this.indeterminate = false;
-    this.dispatchEvent(this.onValueChange);
+    this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
   }
 
   protected render() {
-    const checkboxIcon = this.indeterminate
-      ? html`<svg viewBox="0 0 21 21"><line x1="5" y1="10.5" x2="16" y2="10.5"></line></svg>`
-      : html`<svg viewBox="0 0 21 21"><polyline points="5 10.75 8.5 14.25 16 6"></polyline></svg>`;
-
     return html`
-      <div class="parent">
-        <label class="parent-label">
-          ${this.label
-            ? html`<bim-label .icon="${this.icon}">${this.label}</bim-label> `
-            : null}
-          <div class="input-container">
-            <input
-              type="checkbox"
-              aria-label=${this.label || this.name || "Checkbox Input"}
-              @change="${this.onChange}"
-              .checked="${this.checked}"
-              .indeterminate="${this.indeterminate}"
-              .disabled="${this.disabled}"
-            />
-            ${checkboxIcon}
-          </div>
-        </label>
-      </div>
+      <label class="parent-label">
+        ${this.icon || this.label
+          ? html`<bim-label .icon="${this.icon}">${this.label ?? ""}</bim-label>`
+          : nothing}
+        <div class="input-container">
+          <input
+            part="input"
+            type="checkbox"
+            name=${ifDefined(this.name)}
+            aria-label=${this.label || this.name || "Checkbox Input"}
+            @change="${this.onChange}"
+            .checked="${this.checked}"
+            .indeterminate="${this.indeterminate}"
+            .disabled="${this.disabled}"
+          />
+          ${this.indeterminate ? ICON_INDETERMINATE : ICON_CHECK}
+        </div>
+      </label>
     `;
   }
 }
