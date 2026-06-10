@@ -72,10 +72,6 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
       .parent > bim-table-row[is-header] {
         color: var(--bim-table_header--c, var(--bim-ui_bg-contrast-100));
-        background-color: var(
-          --bim-table_header--bgc,
-          var(--bim-ui_bg-contrast-20)
-        );
       }
 
       .controls {
@@ -1123,7 +1119,6 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
             () =>
               html`<bim-table-row
                 is-header
-                style="background-color: var(--bim-ui_bg-contrast-20);"
                 ${ref(onHeaderCreated)}
               ></bim-table-row>`,
           )}

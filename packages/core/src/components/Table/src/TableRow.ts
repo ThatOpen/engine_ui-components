@@ -20,7 +20,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
       position: relative;
       grid-area: Data;
       display: grid;
-      min-height: var(--bim-table-row--min-h, 35px);
+      min-height: var(--bim-table-row--min-h, 30px);
       transition: all 0.15s;
       gap: var(--bim-table-row--gap, 4px);
       /* Off by default; consumers opt into row dividers by setting the
@@ -41,7 +41,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
     :host([is-header]) {
       min-height: auto;
       height: var(--bim-ui_size-10xl);
-      border-bottom: 1px solid var(--bim-ui_bg-contrast-60);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
     }
   `;
 
