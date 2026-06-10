@@ -5,31 +5,313 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Text Input</title>
-
   <style>
     html {
       font-family: sans-serif;
     }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      width: 40rem;
+    body {
       background-color: var(--bim-ui_bg-base);
-      padding: 1rem;
-      border-radius: 0.375rem;
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+    }
+
+    bim-text-input {
+      width: 18rem;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <bim-text-input vertical name="name" label="Name" placeholder="How people call you?"></bim-text-input>
-    <bim-text-input vertical name="bio" label="Bio" type="area"></bim-text-input>
-    <bim-text-input vertical name="email" label="Email" type="email"></bim-text-input>
-    <bim-text-input vertical name="password" label="Password" type="password"></bim-text-input>
+  <bim-button id="theme-toggle" icon="tabler:moon" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-text-input</h1>
+  <p class="subtitle">Input de texto con soporte para múltiples tipos nativos, textarea, debounce y layout vertical.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-text-input placeholder="Type something…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">label</span>
+      <bim-text-input label="Project name" placeholder="My BIM project"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-text-input label="Search" icon="tabler:search" placeholder="Search elements…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">name</span>
+      <bim-text-input name="author" label="Author" placeholder="Juan Hoyos"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">value</span>
+      <bim-text-input label="Pre-filled" value="Structural Model v3"></bim-text-input>
+    </div>
   </div>
+
+  <!-- 2. Layout -->
+  <div class="section">
+    <div class="section-title">Layout</div>
+    <div class="row">
+      <span class="row-label">horizontal (default)</span>
+      <bim-text-input label="Horizontal" placeholder="Type here…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-text-input label="Vertical" placeholder="Type here…" vertical></bim-text-input>
+    </div>
+  </div>
+
+  <!-- 3. Types -->
+  <div class="section">
+    <div class="section-title">Types</div>
+    <div class="row">
+      <span class="row-label">text (default)</span>
+      <bim-text-input label="Text" type="text" placeholder="Free text…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">email</span>
+      <bim-text-input label="Email" type="email" placeholder="user@example.com"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">password</span>
+      <bim-text-input label="Password" type="password" placeholder="••••••••"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">search</span>
+      <bim-text-input label="Search" type="search" icon="tabler:search" placeholder="Search…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">tel</span>
+      <bim-text-input label="Phone" type="tel" placeholder="+1 555 000 0000"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">url</span>
+      <bim-text-input label="URL" type="url" placeholder="https://example.com"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">date</span>
+      <bim-text-input label="Date" type="date"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">datetime-local</span>
+      <bim-text-input label="Date & time" type="datetime-local"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">time</span>
+      <bim-text-input label="Time" type="time"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">month</span>
+      <bim-text-input label="Month" type="month"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">week</span>
+      <bim-text-input label="Week" type="week"></bim-text-input>
+    </div>
+  </div>
+
+  <!-- 4. Area -->
+  <div class="section">
+    <div class="section-title">Area (textarea)</div>
+    <div class="row">
+      <span class="row-label">area (default rows)</span>
+      <bim-text-input label="Description" type="area" placeholder="Write a description…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">rows</span>
+      <bim-text-input label="Notes (3 rows)" type="area" rows="3" placeholder="Short note…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">resize: none</span>
+      <bim-text-input label="No resize" type="area" resize="none" placeholder="Cannot be resized."></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">resize: both</span>
+      <bim-text-input label="Both directions" type="area" resize="both" placeholder="Drag to resize."></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">resize: horizontal</span>
+      <bim-text-input label="Horizontal only" type="area" resize="horizontal" placeholder="Drag to resize."></bim-text-input>
+    </div>
+  </div>
+
+  <!-- 5. Disabled -->
+  <div class="section">
+    <div class="section-title">Disabled</div>
+    <div class="row">
+      <span class="row-label">disabled</span>
+      <bim-text-input label="Disabled" value="Read-only value" disabled></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">disabled area</span>
+      <bim-text-input label="Disabled area" type="area" value="Cannot be edited." disabled></bim-text-input>
+    </div>
+  </div>
+
+  <!-- 6. Debounce -->
+  <div class="section">
+    <div class="section-title">Debounce</div>
+    <div class="row">
+      <span class="row-label">debounce 500 ms</span>
+      <bim-text-input id="ti-debounce" label="Debounced" icon="tabler:clock"
+        placeholder="Type fast…" debounce="500"></bim-text-input>
+      <bim-label id="debounce-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
+  <!-- 7. Icon Inside -->
+  <div class="section">
+    <div class="section-title">Icon Inside</div>
+    <div class="row">
+      <span class="row-label">icon outside (default)</span>
+      <bim-text-input label="Search" icon="tabler:search" placeholder="Search elements…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">text</span>
+      <bim-text-input label="Search" icon="tabler:search" icon-inside placeholder="Search elements…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-text-input icon="tabler:search" icon-inside placeholder="Search…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">email</span>
+      <bim-text-input label="Email" icon="tabler:mail" type="email" icon-inside placeholder="user@example.com"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">url</span>
+      <bim-text-input label="URL" icon="tabler:link" type="url" icon-inside placeholder="https://…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">password</span>
+      <bim-text-input label="Password" icon="tabler:lock" type="password" icon-inside placeholder="••••••••"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">date</span>
+      <bim-text-input label="Date" icon="tabler:calendar" type="date" icon-inside></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">area (ignora icon-inside)</span>
+      <bim-text-input label="Notes" icon="tabler:notes" type="area" icon-inside placeholder="El icono vuelve al label…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-text-input label="Search" icon="tabler:search" icon-inside vertical placeholder="Search…"></bim-text-input>
+    </div>
+  </div>
+
+  <!-- 8. Validation -->
+  <div class="section">
+    <div class="section-title">Validation</div>
+    <div class="row">
+      <span class="row-label">required</span>
+      <bim-text-input id="ti-required" label="Name" placeholder="Type something…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">min. 3 caracteres</span>
+      <bim-text-input id="ti-minlen" label="Username" placeholder="At least 3 chars…"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">email</span>
+      <bim-text-input id="ti-email" label="Email" type="email" placeholder="user@example.com"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">isValid</span>
+      <bim-label id="validation-output" style="color: var(--bim-ui_bg-contrast-80);">—</bim-label>
+    </div>
+  </div>
+
+  <!-- 9. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-text-input--c</span>
+      <bim-text-input label="Amber text" value="Custom color"
+        style="--bim-text-input--c: rgb(251 191 36);"></bim-text-input>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-text-input--bdrs</span>
+      <bim-text-input label="Pill shape" placeholder="Rounded…"
+        style="--bim-text-input--bdrs: 100px;"></bim-text-input>
+    </div>
+  </div>
+
+  <!-- 10. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">set value</span>
+      <bim-text-input id="ti-prog" label="Set value" placeholder="Empty…"></bim-text-input>
+    </div>
+    <div class="row" style="padding-left: 10.5rem;">
+      <bim-button id="btn-set" label="Set value" icon="tabler:pencil"></bim-button>
+      <bim-button id="btn-clear" label="Clear" icon="tabler:circle-x"></bim-button>
+      <bim-button id="btn-focus" label="Focus" icon="tabler:cursor-text"></bim-button>
+    </div>
+  </div>
+
+  <!-- 11. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">input</span>
+      <bim-text-input id="ti-event" label="Type here" placeholder="…"></bim-text-input>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
   <script type="module" src="./example.ts"></script>
 </body>
 
