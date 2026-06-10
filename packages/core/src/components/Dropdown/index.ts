@@ -1,28 +1,25 @@
-import { css, html, nothing } from "lit";
+import { LitElement, css, html, nothing, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ref, createRef } from "lit/directives/ref.js";
-import { Component } from "../../core/Component";
+import { repeat } from "lit/directives/repeat.js";
+import { classMap } from "lit/directives/class-map.js";
 import { styles } from "../../core/Manager/src/styles";
 import { Option } from "../Option";
 import { HasName, HasValue } from "../../core/types";
-import { ContextMenu } from "../ContextMenu";
 import { TextInput } from "../TextInput";
 
 /**
  * A custom dropdown web component for BIM applications.
  */
-export class Dropdown extends Component implements HasValue, HasName {
-  /**
-   * CSS styles for the component.
-   */
+export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName {
   static styles = [
     styles.scrollbar,
     css`
       :host {
         --bim-input--olw: 2px;
         --bim-input--olc: transparent;
-        --bim-input--bdrs: var(--bim-ui_size-4xs);
-        /* flex: 1; */
+        --bim-input--bdrs: var(--bim-ui_size-2xs);
+        --bim-input--bgc: var(--bim-ui_bg-contrast-20);
         display: block;
       }
 
@@ -30,6 +27,11 @@ export class Dropdown extends Component implements HasValue, HasName {
         --bim-input--olc: var(--bim-ui_accent-base);
       }
 
+      :host(:focus-within:not([visible])) {
+        --bim-input--olc: var(--bim-ui_bg-contrast-40);
+      }
+
+      /* --bim-dropdown--c: color of the trigger label and chevron. Default: --bim-ui_bg-contrast-100 */
       .input {
         --bim-label--c: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
         height: 100%;
@@ -43,209 +45,387 @@ export class Dropdown extends Component implements HasValue, HasName {
         justify-content: space-between;
       }
 
-      bim-label {
+      .input bim-label {
         pointer-events: none;
+        overflow: hidden;
+      }
+
+      .input svg {
+        flex-shrink: 0;
+        fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
+      }
+
+      dialog {
+        position: fixed;
+        margin: 0;
+        padding: 0.375rem 0;
+        border: none;
+        outline: none;
+        border-radius: 4px;
+        background-color: var(--bim-ui_bg-contrast-10);
+        box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+        overflow: auto;
+        max-height: 20rem;
+        min-width: 3rem;
+        display: none;
+        flex-direction: column;
+        transform-origin: top left;
+      }
+
+      dialog[open] {
+        display: flex;
+        animation: bim-dropdown-open 0.15s cubic-bezier(0.72, 0.1, 0.45, 2.35);
+      }
+
+      dialog::backdrop {
+        background: transparent;
+      }
+
+      dialog bim-text-input {
+        --bim-input--bgc: var(--bim-ui_bg-contrast-30);
+        margin: 0 0.375rem 0.125rem;
+      }
+
+      .option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        column-gap: 0.5rem;
+        padding: 0 0.5rem;
+        min-height: 1.75rem;
+        cursor: pointer;
+        user-select: none;
+        box-sizing: border-box;
+      }
+
+      .option:hover {
+        background-color: var(--bim-ui_bg-contrast-20);
+      }
+
+      .option:focus-visible {
+        outline: 2px solid var(--bim-ui_accent-base);
+        outline-offset: -2px;
+      }
+
+      .option.checked {
+        --bim-label--c: color-mix(in lab, var(--bim-ui_main-base), white 30%);
+      }
+
+      .option.checked svg {
+        flex-shrink: 0;
+        fill: color-mix(in lab, var(--bim-ui_main-base), white 30%);
+      }
+
+      .no-options {
+        --bim-label--c: var(--bim-ui_bg-contrast-60);
+        padding: 0.25rem 0.5rem;
+      }
+
+      :host([invalid]) {
+        --bim-input--olc: var(--bim-ui_danger-base);
+      }
+
+      .validation-message {
+        display: block;
+        font-size: var(--bim-ui_size-base);
+        color: var(--bim-ui_danger-base);
+        padding: 2px var(--bim-ui_size-xs);
+      }
+
+      :host(:not([vertical])) .validation-message {
+        text-align: right;
+      }
+
+      @keyframes bim-dropdown-open {
+        from { opacity: 0; transform: scale(0.95); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        dialog[open] { animation: none; }
       }
     `,
   ];
 
-  /**
-   * The name of the dropdown.
-   * @type {string}
-   * @default undefined
-   * @example
-   * <bim-dropdown name="exampleName"></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.name = 'exampleName';
-   */
   @property({ type: String, reflect: true })
   name?: string;
 
-  /**
-   * The icon to be displayed in the dropdown.
-   * @type {string}
-   * @default undefined
-   * @example
-   * <bim-dropdown icon="exampleIcon"></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.icon = 'exampleIcon';
-   */
   @property({ type: String, reflect: true })
   icon?: string;
 
-  /**
-   * The label to be displayed in the dropdown.
-   * @type {string}
-   * @default undefined
-   * @example
-   * <bim-dropdown label="Example Label"></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.label = 'Example Label';
-   */
   @property({ type: String, reflect: true })
   label?: string;
 
-  /**
-   * Indicates whether multiple options can be selected in the dropdown.
-   * @default false
-   * @example
-   * <bim-dropdown multiple></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.multiple = true;
-   */
   @property({ type: Boolean, reflect: true })
   multiple = false;
 
-  /**
-   * Indicates whether a selection is required in the dropdown.
-   * @default false
-   * @example
-   * <bim-dropdown required></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.required = true;
-   */
   @property({ type: Boolean, reflect: true })
   required = false;
 
-  /**
-   * Indicates whether the dropdown should be displayed vertically.
-   * @default false
-   * @example
-   * <bim-dropdown vertical></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.vertical = true;
-   */
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
-  /**
-   * Represents the placeholder property of the component.
-   * This property is used to display a hint or a placeholder text inside the input field.
-   * The placeholder text is displayed when the input field is empty and loses focus.
-   *
-   * @example
-   * <bim-dropdown placeholder="Select something.."></bim-dropdown>
-   */
   @property({ type: String, reflect: true })
   placeholder?: string;
 
-  private _visible = false;
+  multipleLabel?: (count: number) => string;
 
   @property({ type: Boolean, reflect: true, attribute: "search-box" })
-  searchBox?: boolean;
+  searchBox = false;
+
+  private _visible = false;
 
   /**
-   * Indicates whether the dropdown it-self (not the component) is visible.
-   * @type {boolean}
-   * @default false
-   * @example
-   * <bim-dropdown visible></bim-dropdown>
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.visible = true;
+   * Whether the dropdown list is open.
+   * @example <bim-dropdown visible></bim-dropdown>
    */
-
   @property({ type: Boolean, reflect: true })
   set visible(value: boolean) {
+    const old = this._visible;
+    if (value === old) return;
+    this._visible = value;
     if (value) {
-      const { value: contextMenu } = this._contextMenu;
-      if (!contextMenu) return;
-      for (const element of this.elements) {
-        contextMenu.append(element);
-      }
-      this._visible = true;
+      const dialog = this._dialog.value;
+      if (!dialog) { this._visible = false; return; }
+      dialog.showModal();
+      this._updatePosition();
     } else {
-      for (const element of this.elements) {
-        this.append(element);
-      }
-      this._visible = false;
-      this.resetVisibleElements();
-      // Reset display of all options
-      for (const option of this._options) {
-        if (!(option instanceof Option)) continue;
-        (option as HTMLElement).style.display = "";
-      }
-      // Reset search input
-      const searchInput = this._contextMenu.value?.querySelector("bim-text-input")
-      if (searchInput) searchInput.value = "";
-      this._hasVisibleOptions = true;
+      this._dialog.value?.close();
+      this._resetState();
+      this._trigger.value?.focus();
+      this.dispatchEvent(new Event("close", { bubbles: true, composed: true }));
     }
+    this.requestUpdate("visible", old);
   }
 
   get visible() {
     return this._visible;
   }
 
-  @state()
-  private _value: Set<Option> = new Set();
+  @state() private _options: Option[] = [];
+  @state() private _value: Set<Option> = new Set();
+  @state() private _searchValue = "";
 
-  @state()
-  private _hasVisibleOptions = true;
+  private _dirty = false;
+  private _currentValidation?: { valid: boolean; message?: string };
+  private _validation?: (value: any[]) => { valid: boolean; message?: string };
+
+  get validation() {
+    return this._validation;
+  }
+
+  set validation(fn: ((value: any[]) => { valid: boolean; message?: string }) | undefined) {
+    this._validation = fn;
+    this.requestUpdate();
+  }
+
+  get isValid(): boolean {
+    if (!this._dirty) return true;
+    if (this.required && this.value.length === 0) return false;
+    return this._currentValidation?.valid ?? true;
+  }
+
+  private get _validationMessage(): string | undefined {
+    if (this.required && this.value.length === 0) return "This field is required.";
+    return this._currentValidation?.message;
+  }
+
+  private get _hasVisibleOptions() {
+    if (!this._searchValue) return this._options.length > 0;
+    return this._options.some((o) =>
+      (o.label ?? String(o.value) ?? "").toLowerCase().includes(this._searchValue),
+    );
+  }
 
   /**
    * The selected values in the dropdown.
-   * @type {any[]}
-   * @example
-   * const dropdown = document.createElement('bim-dropdown');
-   * dropdown.value = ['option1', 'option2'];
+   * @example dropdown.value = ['IfcWall', 'IfcSlab'];
    */
-
-  set value(value: any[]) {
-    if (this.required && Object.keys(value).length === 0) return;
+  set value(value: unknown[]) {
     const _value: Set<Option> = new Set();
-    for (const option of value) {
-      const existingOption = this.findOption(option);
-      if (!existingOption) continue;
-      _value.add(existingOption);
-      if (!this.multiple && Object.keys(value).length === 1) break;
+    for (const v of value) {
+      // Read children directly — avoids timing issues with _options state
+      const opt = this._findOption(v);
+      if (!opt) continue;
+      _value.add(opt);
+      if (!this.multiple && value.length === 1) break;
     }
     this._value = _value;
-    this.updateOptionsState();
-    this.dispatchEvent(this.onValueChange);
+    this._updateOptionsState();
+    this.dispatchEvent(new Event("change"));
   }
 
   get value() {
-    const options = [...this._value].filter(
-      (option) => option instanceof Option && option.checked,
-    );
-    return options.map((option) => option.value);
-  }
-
-  private get _options() {
-    const options = new Set([...this.elements]);
-    for (const child of this.children) {
-      if (child instanceof Option) options.add(child);
-    }
-    return [...options];
+    return [...this._value]
+      .filter((o) => o instanceof Option && o.checked)
+      .map((o) => o.value);
   }
 
   /**
-   * Event that is fired when the value of the dropdown changes.
-   * This event is fired when the user selects or deselects an option.
-   *
-   * @event change
-   * @example
-   * dropdown.addEventListener('change', (event) => {
-   *   console.log('Dropdown value changed:', event.target.value);
-   * });
+   * @deprecated Listen to the "change" event instead:
+   * `dropdown.addEventListener("change", () => { ... })`
    */
   onValueChange = new Event("change");
 
-  private _contextMenu = createRef<ContextMenu>();
+  private _dialog = createRef<HTMLDialogElement>();
+  private _trigger = createRef<HTMLDivElement>();
+  private _mutationObserver = new MutationObserver(() => this._syncOptions());
 
-  constructor() {
-    super();
-    this.useObserver = true;
+  connectedCallback() {
+    super.connectedCallback();
+    this._mutationObserver.observe(this, { childList: true });
+    customElements.whenDefined("bim-option").then(() => this._syncOptions());
   }
 
-  private onOptionClick = (e: MouseEvent) => {
-    const option = e.target as Option;
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._mutationObserver.disconnect();
+  }
+
+  protected override willUpdate(_changed: PropertyValues) {
+    this._currentValidation = this._validation
+      ? this._validation(this.value)
+      : undefined;
+  }
+
+  protected override updated() {
+    this.toggleAttribute("invalid", !this.isValid);
+  }
+
+  protected firstUpdated() {
+    if (this._visible) {
+      this._dialog.value?.showModal();
+      this._updatePosition();
+    }
+  }
+
+  private _syncOptions() {
+    const options = Array.from(this.children).filter(
+      (c) => c.tagName === "BIM-OPTION",
+    ) as Option[];
+    this._options = options;
+    const newValue = new Set(options.filter((o) => o.hasAttribute("checked")));
+    const valueChanged = [...this._value].some((o) => !newValue.has(o));
+    this._value = newValue;
+    if (valueChanged) this.dispatchEvent(new Event("change"));
+  }
+
+  private _findOption(value: any): Option | undefined {
+    // Reads this.children directly so it works before _syncOptions fires
+    for (const child of Array.from(this.children)) {
+      if (!(child instanceof Option)) continue;
+      if (child.label === value || child.value === value) return child;
+    }
+    return undefined;
+  }
+
+  private _updateOptionsState() {
+    for (const child of Array.from(this.children)) {
+      if (child instanceof Option) child.checked = this._value.has(child);
+    }
+  }
+
+  private _updatePosition() {
+    const dialog = this._dialog.value;
+    const trigger = this._trigger.value;
+    if (!dialog || !trigger) return;
+
+    const gap = 4;
+    const padding = 5;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const t = trigger.getBoundingClientRect();
+    const m = dialog.getBoundingClientRect();
+
+    let x = t.left;
+    let y = t.bottom + gap;
+
+    if (y + m.height > vh - padding) y = t.top - m.height - gap;
+    if (x + m.width > vw - padding) x = t.right - m.width;
+
+    x = Math.max(padding, Math.min(x, vw - m.width - padding));
+    y = Math.max(padding, Math.min(y, vh - m.height - padding));
+
+    dialog.style.minWidth = `${t.width}px`;
+    dialog.style.left = `${x}px`;
+    dialog.style.top = `${y}px`;
+  }
+
+  private _resetState() {
+    this._searchValue = "";
+    for (const child of Array.from(this.children)) {
+      if (child instanceof Option) (child as HTMLElement).style.display = "";
+    }
+  }
+
+  private _focusOption(index: number) {
+    const options = [
+      ...(this._dialog.value?.querySelectorAll<HTMLElement>(".option") ?? []),
+    ];
+    if (!options.length) return;
+    const i = index < 0 ? options.length + index : index;
+    options[Math.max(0, Math.min(i, options.length - 1))]?.focus();
+  }
+
+  private _openWithFocus() {
+    this.visible = true;
+    requestAnimationFrame(() => {
+      const dialog = this._dialog.value;
+      if (!dialog) return;
+      const checked = dialog.querySelector<HTMLElement>(".option.checked");
+      const first = dialog.querySelector<HTMLElement>(".option");
+      (checked ?? first)?.focus();
+    });
+  }
+
+  private _onTriggerKeydown = (e: KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (this.visible) this.visible = false;
+      else this._openWithFocus();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (!this.visible) this._openWithFocus();
+      else this._focusOption(0);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!this.visible) this._openWithFocus();
+      else this._focusOption(-1);
+    }
+  };
+
+  private _onOptionKeydown = (e: KeyboardEvent, option: Option, index: number) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this._onOptionClick(option);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      this._focusOption(index + 1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      this._focusOption(index - 1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      this._focusOption(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      this._focusOption(-1);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      this.visible = false;
+    }
+  };
+
+  private _onDialogClick = (e: MouseEvent) => {
+    if (e.target === this._dialog.value) this.visible = false;
+  };
+
+  private _onCancel = (e: Event) => {
+    e.preventDefault();
+    this.visible = false;
+  };
+
+  private _onOptionClick = (option: Option) => {
     const selected = this._value.has(option);
     if (!this.multiple && !this.required && !selected) {
       this._value = new Set([option]);
@@ -253,67 +433,58 @@ export class Dropdown extends Component implements HasValue, HasName {
       this._value = new Set([]);
     } else if (!this.multiple && this.required && !selected) {
       this._value = new Set([option]);
+    } else if (!this.multiple && this.required && selected) {
+      this._value = new Set([]);
     } else if (this.multiple && !this.required && !selected) {
       this._value = new Set([...this._value, option]);
     } else if (this.multiple && !this.required && selected) {
-      const values = [...this._value].filter((v) => v !== option);
-      this._value = new Set(values);
+      this._value = new Set([...this._value].filter((v) => v !== option));
     } else if (this.multiple && this.required && !selected) {
       this._value = new Set([...this._value, option]);
     } else if (this.multiple && this.required && selected) {
-      const options = [...this._value].filter((v) => v !== option);
-      const rest = new Set(options);
-      if (rest.size !== 0) this._value = rest;
+      this._value = new Set([...this._value].filter((v) => v !== option));
     }
-    this.updateOptionsState();
-    this.dispatchEvent(this.onValueChange);
+    this._dirty = true;
+    this._updateOptionsState();
+    this.dispatchEvent(new Event("change"));
   };
 
-  private onSearch = ({target}: {target: TextInput}) => {
-    const searchValue = target.value.toLowerCase();
-    let visibleCount = 0;
-    for (const option of this._options) {
-      if (!(option instanceof Option)) continue;
-      const optionLabel = (option.label || option.value || "").toLowerCase();
-      if (optionLabel.includes(searchValue)) {
-        (option as HTMLElement).style.display = "";
-        visibleCount++;
-      } else {
-        (option as HTMLElement).style.display = "none";
-      }
-    }
-    this._hasVisibleOptions = visibleCount > 0;
+  private _onSearch = (e: Event) => {
+    this._searchValue = ((e.target as TextInput).value ?? "").toLowerCase();
   };
 
-  private onSlotChange(e: any) {
-    const children = e.target.assignedElements();
-    this.observe(children);
-    const checkedOptions = new Set<Option>();
-    for (const child of this.elements) {
-      if (!(child instanceof Option)) {
-        child.remove();
-        continue;
-      }
-      if (child.checked) checkedOptions.add(child);
-      child.removeEventListener("click", this.onOptionClick);
-      child.addEventListener("click", this.onOptionClick);
-    }
-    this._value = checkedOptions;
-  }
+  private _renderOption(option: Option, index: number) {
+    const checked = this._value.has(option);
+    const hidden = this._searchValue
+      ? !(option.label ?? String(option.value) ?? "")
+          .toLowerCase()
+          .includes(this._searchValue)
+      : false;
 
-  private updateOptionsState() {
-    for (const element of this._options) {
-      if (!(element instanceof Option)) continue;
-      element.checked = this._value.has(element);
-    }
-  }
+    if (hidden) return nothing;
 
-  private findOption(value: any) {
-    const element = this._options.find((option) => {
-      if (!(option instanceof Option)) return false;
-      return option.label === value || option.value === value;
-    }) as Option;
-    return element;
+    return html`
+      <div
+        class=${classMap({ option: true, checked })}
+        role="option"
+        aria-selected=${checked}
+        tabindex="-1"
+        @click=${() => this._onOptionClick(option)}
+        @keydown=${(e: KeyboardEvent) => this._onOptionKeydown(e, option, index)}
+      >
+        <bim-label
+          .icon=${option.icon}
+          .img=${option.img}
+          .vertical=${option.vertical}
+        >${option.label}</bim-label>
+        ${checked && !option.noMark
+          ? html`<svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>`
+          : nothing}
+      </div>
+    `;
   }
 
   protected render() {
@@ -325,11 +496,13 @@ export class Dropdown extends Component implements HasValue, HasName {
       inputLabel = this.placeholder ?? "Select an option...";
     } else if (this._value.size === 1) {
       const option = [...this._value][0];
-      inputLabel = option?.label || option?.value;
+      inputLabel = option?.label ?? String(option?.value ?? "");
       inputImg = option?.img;
       inputIcon = option?.icon;
     } else {
-      inputLabel = `Multiple (${this._value.size})`;
+      inputLabel = this.multipleLabel
+        ? this.multipleLabel(this._value.size)
+        : `Multiple (${this._value.size})`;
     }
 
     return html`
@@ -339,37 +512,49 @@ export class Dropdown extends Component implements HasValue, HasName {
         .icon=${this.icon}
         .vertical=${this.vertical}
       >
-        <div class="input" @click=${() => (this.visible = !this.visible)}>
-          <bim-label
-            .img=${inputImg}
-            .icon=${inputIcon}
-            style="overflow: hidden;"
-            >${inputLabel}</bim-label
-          >
-          <svg
-            style="flex-shrink: 0; fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100))"
-            xmlns="http://www.w3.org/2000/svg"
-            height="1.125rem"
-            viewBox="0 0 24 24"
-            width="1.125rem"
-            fill="#9ca3af"
-          >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+        <div
+          ${ref(this._trigger)}
+          class="input"
+          tabindex="0"
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded=${this.visible}
+          aria-controls="bim-dropdown-listbox"
+          aria-label=${this.label ?? "Dropdown"}
+          @click=${() => (this.visible = !this.visible)}
+          @keydown=${this._onTriggerKeydown}
+        >
+          <bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>
+          <svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem">
+            <path d="M0 0h24v24H0V0z" fill="none"/>
+            <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
           </svg>
-          <bim-context-menu
-            ${ref(this._contextMenu)}
-            .visible=${this.visible}
-            @hidden=${() => {
-              if (this.visible) this.visible = false;
-            }}
-          >
-            ${this.searchBox ? html`<bim-text-input @input=${this.onSearch} placeholder="Search..." debounce=200 style="--bim-input--bgc: var(--bim-ui_bg-contrast-30)"></bim-text-input>` : nothing}
-            <slot @slotchange=${this.onSlotChange}></slot>
-            ${!this._hasVisibleOptions ? html`<bim-label style="--bim-label--c: var(--bim-ui_bg-contrast-60); padding: 0.5rem;">No options found...</bim-label>` : nothing}
-          </bim-context-menu>
         </div>
       </bim-input>
+      ${!this.isValid && this._validationMessage
+        ? html`<span class="validation-message">${this._validationMessage}</span>`
+        : nothing}
+      <dialog
+        id="bim-dropdown-listbox"
+        role="listbox"
+        aria-label=${this.label ?? "Options"}
+        aria-multiselectable=${this.multiple}
+        ${ref(this._dialog)}
+        @click=${this._onDialogClick}
+        @cancel=${this._onCancel}
+      >
+        ${this.searchBox
+          ? html`<bim-text-input
+              @input=${this._onSearch}
+              placeholder="Search..."
+              debounce="200"
+            ></bim-text-input>`
+          : nothing}
+        ${repeat(this._options, (o) => o, (o, i) => this._renderOption(o, i))}
+        ${!this._hasVisibleOptions
+          ? html`<bim-label class="no-options">No options found...</bim-label>`
+          : nothing}
+      </dialog>
     `;
   }
 }
