@@ -1,4 +1,4 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, PropertyValues, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { ToolbarSection } from "./Section";
 import { Manager } from "../../../core/Manager";
@@ -7,16 +7,15 @@ import { Manager } from "../../../core/Manager";
  * A custom toolbar web component for BIM applications. HTML tag: bim-toolbar
  */
 export class Toolbar extends LitElement {
-  /**
-   * CSS styles for the component.
-   */
   static styles = css`
     :host {
       --bim-button--bgc: transparent;
       overflow: auto;
       display: block;
-      border: var(--bim-toolbar--border, 1px solid var(--bim-ui_bg-contrast-40));
-      border-radius: var(--bim-toolbar--bdrs, 0);
+      contain: layout style;
+      background-color: var(--bim-toolbar--bgc, var(--bim-ui_bg-contrast-10));
+      border: var(--bim-toolbar--border, 1px solid var(--bim-ui_bg-contrast-20));
+      border-radius: var(--bim-toolbar--bdrs, var(--bim-ui_size-2xs));
     }
 
     :host([hidden]) {
@@ -34,105 +33,93 @@ export class Toolbar extends LitElement {
     }
 
     :host([vertical]) {
-      width: min-content;
+      width: var(--bim-toolbar--vertical-w, min-content);
     }
 
     ::slotted(bim-toolbar-section:not(:last-child)) {
-      border-right: 1px solid var(--bim-ui_bg-contrast-60);
+      border-right: var(--bim-toolbar--divider, 1px solid var(--bim-ui_bg-contrast-20));
       border-bottom: none;
     }
 
     :host([vertical]) ::slotted(bim-toolbar-section:not(:last-child)) {
-      border-bottom: 1px solid var(--bim-ui_bg-contrast-60);
+      border-bottom: var(--bim-toolbar--divider, 1px solid var(--bim-ui_bg-contrast-20));
       border-right: none;
     }
   `;
 
-  @property({ type: String, reflect: true })
-  icon?: string;
-
   /**
-   * Property indicating whether labels are hidden in the toolbar.
-   * When `labelsHidden` is `true`, labels in the toolbar sections will be hidden.
-   * When `labelsHidden` is `false`, labels in the toolbar sections will be visible.
-   *
+   * When `true`, section name labels are hidden across all sections.
    * @defaultValue false
    */
   @property({ type: Boolean, attribute: "labels-hidden", reflect: true })
   labelsHidden = false;
 
-  private _vertical = false;
-
   /**
-   * Sets the vertical property of the toolbar.
-   * When vertical is true, the toolbar will be displayed in a vertical layout.
-   * When vertical is false, the toolbar will be displayed in a horizontal layout.
+   * When `true`, the toolbar renders vertically.
+   * @defaultValue false
    */
   @property({ type: Boolean, reflect: true })
-  set vertical(value: boolean) {
-    this._vertical = value;
-    this.updateSections();
-  }
+  vertical = false;
 
-  get vertical() {
-    return this._vertical;
-  }
-
-  // private _managerID = Manager.newRandomId();
-
-  private _hidden = false;
-
-  set hidden(value: boolean) {
-    this._hidden = value;
+  override set hidden(value: boolean) {
+    super.hidden = value;
     this.dispatchEvent(new Event("hiddenchange"));
   }
 
-  get hidden() {
-    return this._hidden;
+  override get hidden() {
+    return super.hidden;
   }
 
-  // private setActivationButton() {
-  //   this.activationButton.draggable = Manager.config.draggableToolbars;
-  //   this.activationButton.addEventListener(
-  //     "click",
-  //     () => (this.hidden = !this.hidden),
-  //   );
-  //   this.activationButton.setAttribute("data-ui-manager-id", this._managerID);
-  //   this.activationButton.addEventListener("dragstart", (e) => {
-  //     const id = this.getAttribute("data-ui-manager-id");
-  //     if (e.dataTransfer && id) {
-  //       e.dataTransfer.setData("id", id);
-  //       e.dataTransfer.effectAllowed = "move";
-  //     }
-  //     const containers = document.querySelectorAll("bim-toolbars-container");
-  //     for (const container of containers) {
-  //       if (container === this.parentElement) continue;
-  //       container.dropping = true;
-  //     }
-  //   });
-  //   this.activationButton.addEventListener("dragend", (e) => {
-  //     if (e.dataTransfer) e.dataTransfer.clearData();
-  //     const containers = document.querySelectorAll("bim-toolbars-container");
-  //     for (const container of containers) {
-  //       container.dropping = false;
-  //     }
-  //   });
-  // }
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this.hasAttribute("role")) this.setAttribute("role", "toolbar");
+    this.addEventListener("keydown", this._onKeyDown);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener("keydown", this._onKeyDown);
+  }
+
+  private _onKeyDown = (e: KeyboardEvent) => {
+    const items = Array.from(
+      this.querySelectorAll<HTMLElement>("bim-button:not([disabled])"),
+    );
+    if (!items.length) return;
+    const idx = items.indexOf(document.activeElement as HTMLElement);
+    if (
+      !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(
+        e.key,
+      )
+    )
+      return;
+    e.preventDefault();
+    let target: HTMLElement | undefined;
+    if (e.key === "Home") target = items[0];
+    else if (e.key === "End") target = items[items.length - 1];
+    else if (e.key === "ArrowRight" || e.key === "ArrowDown")
+      target = items[(idx + 1) % items.length];
+    else target = items[(idx - 1 + items.length) % items.length];
+    target?.focus();
+  };
+
+  protected updated(changed: PropertyValues) {
+    this.setAttribute("aria-orientation", this.vertical ? "vertical" : "horizontal");
+    if (changed.has("vertical") || changed.has("labelsHidden")) {
+      this.updateSections();
+    }
+  }
 
   private updateSections() {
-    const children = this.children;
-    for (const child of children) {
+    for (const child of this.children) {
       if (child instanceof ToolbarSection) {
         child.labelHidden =
-          this.vertical && !Manager.config.sectionLabelOnVerticalToolbar;
+          this.labelsHidden ||
+          (this.vertical && !Manager.config.sectionLabelOnVerticalToolbar);
         child.vertical = this.vertical;
       }
     }
   }
-
-  // firstUpdated() {
-  //   this.setAttribute("data-ui-manager-id", this._managerID);
-  // }
 
   protected render() {
     return html`

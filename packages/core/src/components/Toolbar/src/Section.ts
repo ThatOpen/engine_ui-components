@@ -7,15 +7,16 @@ import { HasName } from "../../../core/types";
  * A custom toolbar section web component for BIM applications. HTML tag: bim-toolbar-section
  */
 export class ToolbarSection extends LitElement implements HasName {
-  /**
-   * CSS styles for the component.
-   */
   static styles = css`
     :host {
-      background-color: var(--bim-ui_bg-contrast-20);
       --bim-label--c: var(--bim-ui_bg-contrast-80);
       display: block;
       flex: 1;
+    }
+
+    :host(:focus-visible) {
+      outline: 2px solid var(--bim-ui_accent-base);
+      outline-offset: -2px;
     }
 
     :host(:not([vertical])) ::slotted(bim-button[vertical]) {
@@ -38,19 +39,21 @@ export class ToolbarSection extends LitElement implements HasName {
     }
 
     :host([vertical]) .parent > bim-label {
-      writing-mode: tb;
+      writing-mode: vertical-rl;
     }
 
     .name {
+      height: 20px;
+      padding: 0 10px;
       font-size: var(--bim-ui_size-sm);
       flex-shrink: 0;
     }
 
     .children {
       display: flex;
-      gap: 6px;
+      gap: var(--bim-toolbar-section--gap, 6px);
       height: 100%;
-      padding: 4px;
+      padding: var(--bim-toolbar-section--p, 4px);
     }
 
     :host([vertical]) .children {
@@ -62,12 +65,16 @@ export class ToolbarSection extends LitElement implements HasName {
   label?: string;
 
   @property({ type: String, reflect: true })
+  name?: string;
+
+  @property({ type: String, reflect: true })
   icon?: string;
 
   private _vertical = false;
 
   @property({ type: Boolean, reflect: true })
   set vertical(value: boolean) {
+    if (value === this._vertical) return;
     this._vertical = value;
     this.updateChildren();
   }
@@ -79,7 +86,7 @@ export class ToolbarSection extends LitElement implements HasName {
   private _labelHidden = false;
 
   /**
-   * Sets the value of the `labelHidden` property and updates the children accordingly.
+   * When `true`, the section name label is hidden.
    *
    * @example
    * ```typescript
@@ -92,6 +99,7 @@ export class ToolbarSection extends LitElement implements HasName {
    */
   @property({ type: Boolean, attribute: "label-hidden", reflect: true })
   set labelHidden(value: boolean) {
+    if (value === this._labelHidden) return;
     this._labelHidden = value;
     this.updateChildren();
   }
@@ -100,9 +108,30 @@ export class ToolbarSection extends LitElement implements HasName {
     return this._labelHidden;
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this.hasAttribute("role")) this.setAttribute("role", "group");
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    cancelAnimationFrame(this._rafId);
+  }
+
+  protected updated() {
+    if (this.label) this.setAttribute("aria-label", this.label);
+  }
+
+  private _rafId = 0;
+
+  private _scheduleUpdateChildren = () => {
+    cancelAnimationFrame(this._rafId);
+    this._rafId = requestAnimationFrame(() => this.updateChildren());
+  };
+
   private updateChildren() {
-    const children = this.children;
-    for (const child of children) {
+    for (const child of this.children) {
+      if (!child.tagName.startsWith("BIM-")) continue;
       if (child instanceof ToolbarGroup) child.vertical = this.vertical;
       child.toggleAttribute("label-hidden", this.vertical);
     }
@@ -112,10 +141,10 @@ export class ToolbarSection extends LitElement implements HasName {
     return html`
       <div class="parent">
         <div class="children">
-          <slot @slotchange=${this.updateChildren}></slot>
+          <slot @slotchange=${this._scheduleUpdateChildren}></slot>
         </div>
         ${!this.labelHidden && (this.label || this.icon)
-          ? html`<bim-label style="height: 20px; padding: 0 10px;" class="name" .icon=${this.icon}>${this.label}</bim-label>`
+          ? html`<bim-label class="name" .icon=${this.icon}>${this.label}</bim-label>`
           : null}
       </div>
     `;
