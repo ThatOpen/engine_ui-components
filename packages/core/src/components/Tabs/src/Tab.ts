@@ -1,63 +1,45 @@
 import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
-import { Tabs } from "./Tabs";
+
+/** Emitted when a tab's hidden state changes. */
+export type HiddenChangeEvent = CustomEvent<{ hidden: boolean }>;
 
 /**
  * A custom tab web component for BIM applications. HTML tag: bim-tab
  */
 export class Tab extends LitElement {
-  /**
-  * CSS styles for the component.
-  */
   static styles = css`
     :host {
       display: block;
       height: 100%;
       grid-row-start: 1;
       grid-column-start: 1;
-      animation: openAnim 3s forwards;
-      transform: translateY(0);
-      max-height: 100vh;
-      transition:
-        opacity 0.3s ease,
-        max-height 0.6s ease,
-        transform 0.3s ease;
-      --bim-panel-section--header-display: none;
-      --bim-panel-section--border: none;
-      --bim-panel--border: none;
-      --bim-tabs--border: none;
-      --bim-toolbar--border: none;
-
     }
 
     :host([hidden]) {
-      transform: translateY(-20px);
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      visibility: hidden;
+      display: none;
     }
   `;
 
-  private _defaultName = "__unnamed__";
+  constructor() {
+    super();
+    this.setAttribute("role", "tabpanel");
+  }
 
-  /**
-   * The name of the tab. If not provided, a default name will be assigned based on its position in the parent element.
-   */
+  private _defaultName = "__unnamed__";
+  private _autoNamed = false;
+
+  /** The name of the tab, used as its identifier. */
   @property({ type: String, reflect: true })
   name = this._defaultName;
 
   private _label?: string;
 
-  /**
-   * The label of the tab. This property is optional and can be used to display a custom label instead of the tab's name.
-   */
+  /** The label displayed in the tab switcher. */
   @property({ type: String, reflect: true })
   set label(value: string | undefined) {
     this._label = value;
-    const parent = this.parentElement;
-    if (!(parent instanceof Tabs)) return;
-    parent.updateSwitchers();
+    this.dispatchEvent(new CustomEvent("tab-update", { bubbles: true }));
   }
 
   get label() {
@@ -66,15 +48,11 @@ export class Tab extends LitElement {
 
   private _icon?: string;
 
-  /**
-   * The icon of the tab. This property is optional and can be used to display an icon next to the tab's label or name.
-   */
+  /** The icon displayed in the tab switcher. */
   @property({ type: String, reflect: true })
   set icon(value: string | undefined) {
     this._icon = value;
-    const parent = this.parentElement;
-    if (!(parent instanceof Tabs)) return;
-    parent.updateSwitchers();
+    this.dispatchEvent(new CustomEvent("tab-update", { bubbles: true }));
   }
 
   get icon() {
@@ -85,20 +63,18 @@ export class Tab extends LitElement {
 
   /**
    * Sets the hidden state of the tab.
-   *
-   * @param value - The new hidden state. If `true`, the tab will be hidden. If `false`, the tab will be visible.
-   * @fires hiddenchange - Dispatched when the hidden state changes.
-   *
-   * @example
-   * ```typescript
-   * const tab = document.querySelector('bim-tab');
-   * tab.hidden = true; // hides the tab
-   * ```
+   * @fires hiddenchange
    */
   @property({ type: Boolean, reflect: true })
   set hidden(value: boolean) {
+    const old = this._hidden;
     this._hidden = value;
-    this.dispatchEvent(new Event("hiddenchange"));
+    this.requestUpdate("hidden", old);
+    this.dispatchEvent(
+      new CustomEvent<{ hidden: boolean }>("hiddenchange", {
+        detail: { hidden: value },
+      }),
+    );
   }
 
   get hidden() {
@@ -109,13 +85,14 @@ export class Tab extends LitElement {
     super.connectedCallback();
     const { parentElement } = this;
     if (!parentElement) return;
-    if (this.name === this._defaultName) {
+    if (this.name === this._defaultName || this._autoNamed) {
       const index = [...parentElement.children].indexOf(this);
       this.name = `${this._defaultName}${index}`;
+      this._autoNamed = true;
     }
   }
 
   protected render() {
-    return html` <slot></slot> `;
+    return html`<slot></slot>`;
   }
 }

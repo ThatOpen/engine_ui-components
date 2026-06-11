@@ -1,15 +1,19 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Tab } from "./Tab";
 import { styles } from "../../../core/Manager/src/styles";
+
+type SwitcherData = {
+  name: string;
+  label?: string;
+  icon?: string;
+  panelId: string;
+};
 
 /**
  * A custom tabs web component for BIM applications. HTML tag: bim-tabs
  */
 export class Tabs extends LitElement {
-  /**
-   * CSS styles for the component.
-   */
   static styles = [
     styles.scrollbar,
     css`
@@ -18,10 +22,19 @@ export class Tabs extends LitElement {
       }
 
       :host {
-        background-color: var(--bim-ui_bg-contrast-20);
+        flex: 1;
         display: block;
+        height: 100%;
+        background-color: var(--bim-tabs--bg, var(--bim-ui_bg-contrast-10));
         overflow: auto;
-        border: var(--bim-tabs--border, 1px solid var(--bim-ui_bg-contrast-40));
+        border: var(--bim-tabs--border, 1px solid var(--bim-ui_bg-contrast-20));
+        border-radius: 0.75rem;
+        --bim-panel--header-display: none;
+        --bim-panel-section--header-display: none;
+        --bim-panel-section--border: none;
+        --bim-panel-section--bdrs: 0;
+        --bim-panel-section--bg: transparent;
+        --bim-panel--border: none;
         --bim-toolbar--border: none;
         --bim-toolbar--bdrs: 0;
       }
@@ -39,11 +52,16 @@ export class Tabs extends LitElement {
       }
 
       .switchers {
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-60);
+        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
         position: relative;
         display: flex;
         flex-wrap: wrap;
         grid-area: switchers;
+      }
+
+      :host([bottom]) .switchers {
+        border-bottom: none;
+        border-top: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
       .switcher {
@@ -51,27 +69,46 @@ export class Tabs extends LitElement {
         position: relative;
         cursor: pointer;
         pointer-events: auto;
-        padding: 0rem 0.75rem;
+        padding: 0 0.75rem;
         display: flex;
+        align-items: center;
         justify-content: center;
-        z-index: 2;
-        transition: all 0.15s;
-        min-height: 30px;
+        z-index: var(--bim-tabs-switcher--z, 2);
+        transition: background-color 0.15s;
+        min-height: var(--bim-tabs-switcher--minh, 30px);
       }
 
       .switcher:not([data-active]):hover {
-        filter: brightness(150%);
+        background-color: var(--bim-ui_bg-contrast-20);
+      }
+
+      .switcher[data-active] {
+        --bim-label--c: var(--bim-ui_bg-contrast-100);
+        background-color: var(--bim-ui_bg-contrast-30);
+      }
+
+      .switcher:focus-visible {
+        outline: 2px solid var(--bim-ui_accent-base);
+        outline-offset: -2px;
+      }
+
+      .switchers bim-label {
+        pointer-events: none;
       }
 
       :host([switchers-full]) .switcher {
         flex: 1;
       }
 
+      :host([switchers-hidden]) .switchers {
+        display: none;
+      }
+
       :host([switchers-compact]) .switchers {
         width: fit-content;
         border-bottom: none;
         padding: 0;
-        margin: 10px;
+        margin: var(--bim-ui_size-sm);
         gap: 0;
         overflow: auto;
         border-radius: var(--bim-ui_size-2xs);
@@ -81,43 +118,11 @@ export class Tabs extends LitElement {
         min-width: unset;
         padding: 0 var(--bim-ui_size-sm);
         border-radius: 0;
-        background-color: var(--bim-ui_bg-contrast-40);
+        background-color: var(--bim-ui_bg-contrast-20);
       }
 
       :host([switchers-compact]) .switcher[data-active] {
-        background-color: var(--bim-ui_bg-contrast-60);
-      }
-
-      :host([floating][switchers-compact]) .switchers {
-        width: unset;
-        border-bottom: unset;
-        margin: 0;
-        gap: unset;
-        border-radius: unset;
-      }
-
-      :host([floating][switchers-compact]) .switcher {
-        min-width: 8rem;
-        padding: 0rem 0.75rem;
-        border-radius: 0;
-        background-color: unset;
-      }
-
-      :host([floating][switchers-compact]) .switcher[data-active] {
-        background-color: unset;
-      }
-
-      .switcher[data-active] {
-        --bim-label--c: var(--bim-ui_main-contrast);
-        background-color: var(--bim-ui_bg-contrast-60);
-      }
-
-      .switchers bim-label {
-        pointer-events: none;
-      }
-
-      :host([switchers-hidden]) .switchers {
-        display: none;
+        background-color: var(--bim-ui_bg-contrast-40);
       }
 
       .content {
@@ -125,27 +130,22 @@ export class Tabs extends LitElement {
         display: grid;
         grid-template-columns: 1fr;
         grid-area: content;
-        max-height: 100vh;
         overflow: auto;
-        transition: max-height 0.2s;
       }
 
       :host([tab="hidden"]) .content {
-        max-height: 0;
-      }
-
-      :host(:not([bottom])) .content {
-        border-top: 1px solid var(--bim-ui_bg-contrast-20);
-      }
-
-      :host([bottom]) .content {
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+        display: none;
       }
 
       :host([floating]) {
         background-color: transparent;
         border: none;
         --bim-toolbar--w: 100%;
+        overflow: visible;
+      }
+
+      :host([floating]) .parent {
+        overflow: visible;
       }
 
       :host([floating]) .switchers {
@@ -156,31 +156,19 @@ export class Tabs extends LitElement {
 
       :host([floating]:not([bottom])) .switchers {
         border-radius: var(--bim-ui_size-2xs) var(--bim-ui_size-2xs) 0 0;
-        border-top: 1px solid var(--bim-ui_bg-contrast-40);
-        border-left: 1px solid var(--bim-ui_bg-contrast-40);
-        border-right: 1px solid var(--bim-ui_bg-contrast-40);
+        border: 1px solid var(--bim-ui_bg-contrast-40);
         border-bottom: none;
       }
 
       :host([floating][bottom]) .switchers {
         border-radius: 0 0 var(--bim-ui_size-2xs) var(--bim-ui_size-2xs);
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
-        border-left: 1px solid var(--bim-ui_bg-contrast-40);
-        border-right: 1px solid var(--bim-ui_bg-contrast-40);
+        border: 1px solid var(--bim-ui_bg-contrast-40);
         border-top: none;
       }
 
       :host([floating][tab="hidden"]) .switchers {
         border-radius: var(--bim-ui_size-2xs);
-        border-bottom: 1px solid var(--bim-ui_bg-contrast-40);
-      }
-
-      :host([floating][bottom][tab="hidden"]) .switchers {
-        border-top: 1px solid var(--bim-ui_bg-contrast-40);
-      }
-
-      :host([floating][tab="hidden"]) .content {
-        border: none;
+        border: 1px solid var(--bim-ui_bg-contrast-40);
       }
 
       :host([floating]) .content {
@@ -188,75 +176,64 @@ export class Tabs extends LitElement {
         border-radius: var(--bim-ui_size-2xs);
         background-color: var(--bim-ui_bg-base);
       }
+
+      :host([floating][tab="hidden"]) .content {
+        border: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .switcher {
+          transition: none;
+        }
+      }
     `,
   ];
 
   @state()
-  private _switchers: HTMLDivElement[] = [];
+  private _switcherData: SwitcherData[] = [];
 
   private _tab?: string;
+  private _pendingTab?: string;
+  private _initialized = false;
+  private _updatingTab = false;
 
-  /**
-   * Indicates whether the tabs are positioned at the bottom of the container.
-   *
-   * @default false
-   */
+  /** Indicates whether the tabs are positioned at the bottom of the container. */
   @property({ type: Boolean, reflect: true })
   bottom = false;
 
-  /**
-   * Indicates whether the tab switchers are hidden or not.
-   *
-   * @default false
-   */
+  /** Hides the tab switcher bar. */
   @property({ type: Boolean, attribute: "switchers-hidden", reflect: true })
   switchersHidden = false;
 
   @property({ type: Boolean, reflect: true })
   floating = false;
 
+  /** Accessible label forwarded as `aria-label` on the tablist. */
+  @property({ type: String, reflect: true })
+  label?: string;
+
   /**
-   * Sets the active tab based on the provided name.
-   *
-   * @param value - The name of the tab to be set as active. If `undefined`, no tab will be selected.
-   *
-   * @remarks
-   * This method iterates through all child elements, finds the matching tab by name,
-   * and sets its `hidden` property to `false`. It also updates the corresponding tab switcher's
-   * `data-active` attribute to reflect the active state.
-   *
-   * If the provided `value` does not match any tab name, no tab will be selected.
-   *
-   * If the `tab` property is already set to the provided `value`, this method will deselect all tabs
-   * by setting the `tab` property to `undefined`.
-   *
-   * @example
-   * ```typescript
-   * // Set the active tab to "tab1"
-   * tabs.tab = "tab1";
-   *
-   * // Deselect all tabs
-   * tabs.tab = undefined;
-   * ```
+   * The name of the currently active tab. Set to `undefined` to deselect all tabs.
    */
   @property({ type: String, reflect: true })
   set tab(value: string | undefined) {
-    this._tab = value;
+    if (!this._initialized && value && value !== "hidden") {
+      this._pendingTab = value;
+      return;
+    }
+    const oldTab = this._tab;
     const children = [...this.children];
     const matchingTab = children.find(
       (child) => child instanceof Tab && child.name === value,
     );
+    this._tab = matchingTab ? value : "hidden";
+    this._updatingTab = true;
     for (const child of children) {
       if (!(child instanceof Tab)) continue;
       child.hidden = matchingTab !== child;
-      const switcher = this.getTabSwitcher(child.name);
-      if (!switcher) continue;
-      switcher.toggleAttribute("data-active", !child.hidden);
     }
-    if (!matchingTab) {
-      this._tab = "hidden";
-      this.setAttribute("tab", "hidden");
-    }
+    this._updatingTab = false;
+    this.requestUpdate("tab", oldTab);
   }
 
   get tab() {
@@ -269,89 +246,144 @@ export class Tabs extends LitElement {
   @property({ type: Boolean, attribute: "switchers-compact", reflect: true })
   switchersCompact = false;
 
-  private getTabSwitcher(name: string) {
-    const switcher = this._switchers.find(
-      (swticher) => swticher.getAttribute("data-name") === name,
-    );
-    return switcher;
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("tab-update", this._updateSwitchers);
   }
 
-  private onTabHiddenChange = (e: Event) => {
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener("tab-update", this._updateSwitchers);
+    for (const child of this.children) {
+      if (child instanceof Tab)
+        child.removeEventListener("hiddenchange", this._onTabHiddenChange);
+    }
+  }
+
+  private _onTabHiddenChange = (e: Event) => {
+    if (this._updatingTab) return;
     const element = e.target;
     if (!(element instanceof Tab && !element.hidden)) return;
-    element.removeEventListener("hiddenchange", this.onTabHiddenChange);
     this.tab = element.name;
-    element.addEventListener("hiddenchange", this.onTabHiddenChange);
   };
 
-  private createSwitchers() {
-    this._switchers = [];
+  private _createSwitchers() {
+    this._switcherData = [];
     for (const child of this.children) {
       if (!(child instanceof Tab)) continue;
-      const element = document.createElement("div");
-      element.addEventListener("click", () => {
-        const alreadySelected = this.tab === child.name;
-        if (alreadySelected) {
-          this.toggleAttribute("tab", false);
-        } else {
-          this.tab = child.name;
-        }
+      if (!child.id) child.id = `bim-tab-panel-${child.name}`;
+      this._switcherData.push({
+        name: child.name,
+        label: child.label,
+        icon: child.icon,
+        panelId: child.id,
       });
-      element.setAttribute("data-name", child.name);
-      element.className = "switcher";
-      const label = document.createElement("bim-label");
-      label.textContent = child.label ?? null;
-      label.icon = child.icon;
-      element.append(label);
-      this._switchers.push(element);
     }
   }
 
-  updateSwitchers() {
+  private _updateSwitchers = () => {
     for (const child of this.children) {
       if (!(child instanceof Tab)) continue;
-      const switcher = this._switchers.find(
-        (el) => el.getAttribute("data-name") === child.name,
-      );
-      if (!switcher) continue;
-      const label = switcher.querySelector("bim-label");
-      if (!label) continue;
-      label.textContent = child.label ?? null;
-      label.icon = child.icon;
+      const entry = this._switcherData.find((s) => s.name === child.name);
+      if (!entry) continue;
+      entry.label = child.label;
+      entry.icon = child.icon;
     }
-  }
+    this.requestUpdate();
+  };
 
-  private onSlotChange(e: any) {
-    this.createSwitchers();
-    const children = e.target.assignedElements() as HTMLElement[];
+  private _onSwitchersKeyDown = (e: KeyboardEvent) => {
+    const switchers = [
+      ...this.renderRoot.querySelectorAll<HTMLElement>(".switcher"),
+    ];
+    const count = switchers.length;
+    if (!count) return;
+    const activeIdx = switchers.findIndex(
+      (s) => s.getAttribute("data-name") === this._tab,
+    );
+    let nextIdx = activeIdx;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      nextIdx = (activeIdx + 1) % count;
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      nextIdx = (activeIdx - 1 + count) % count;
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      nextIdx = 0;
+    } else if (e.key === "End") {
+      e.preventDefault();
+      nextIdx = count - 1;
+    } else {
+      return;
+    }
+    const next = switchers[nextIdx];
+    if (next) {
+      this.tab = next.getAttribute("data-name") ?? undefined;
+      next.focus();
+    }
+  };
+
+  private _onSlotChange(e: Event) {
+    this._initialized = true;
+    this._createSwitchers();
+    const slot = e.target as HTMLSlotElement;
+    const children = slot.assignedElements() as HTMLElement[];
+    const targetName = this._pendingTab ?? this._tab;
+    this._pendingTab = undefined;
     const anyVisibleTab = children.find((child) => {
       if (!(child instanceof Tab)) return false;
-      if (this.tab) {
-        return child.name === this.tab;
-      }
+      if (targetName && targetName !== "hidden") return child.name === targetName;
       return !child.hidden;
     });
-    if (anyVisibleTab && anyVisibleTab instanceof Tab)
-      this.tab = anyVisibleTab.name;
+    if (anyVisibleTab instanceof Tab) this.tab = anyVisibleTab.name;
     for (const child of children) {
       if (!(child instanceof Tab)) {
+        console.warn(
+          "[bim-tabs] Only bim-tab elements are allowed as children. Removing:",
+          child,
+        );
         child.remove();
         continue;
       }
-      child.removeEventListener("hiddenchange", this.onTabHiddenChange);
+      child.setAttribute("aria-label", child.label || child.name || "");
+      child.removeEventListener("hiddenchange", this._onTabHiddenChange);
       if (anyVisibleTab !== child) child.hidden = true;
-      child.addEventListener("hiddenchange", this.onTabHiddenChange);
+      child.addEventListener("hiddenchange", this._onTabHiddenChange);
     }
   }
 
   protected render() {
     return html`
       <div class="parent">
-        <div class="switchers">
-          ${this._switchers}
+        <div
+          class="switchers"
+          role="tablist"
+          aria-label=${this.label ?? nothing}
+          @keydown=${this._onSwitchersKeyDown}
+        >
+          ${this._switcherData.map((s) => {
+            const isActive = this._tab === s.name;
+            return html`<div
+              class="switcher"
+              data-name=${s.name}
+              role="tab"
+              aria-selected=${isActive}
+              tabindex=${isActive ? 0 : -1}
+              aria-controls=${s.panelId}
+              ?data-active=${isActive}
+              @click=${() => {
+                if (this._tab === s.name) {
+                  if (this.floating) this.tab = undefined;
+                  return;
+                }
+                this.tab = s.name;
+              }}
+            ><bim-label .icon=${s.icon}>${s.label ?? ""}</bim-label></div>`;
+          })}
         </div>
         <div class="content">
-          <slot @slotchange=${this.onSlotChange}></slot>
+          <slot @slotchange=${this._onSlotChange}></slot>
         </div>
       </div>
     `;
