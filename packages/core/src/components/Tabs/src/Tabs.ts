@@ -1,5 +1,6 @@
-import { LitElement, css, html, nothing } from "lit";
+import { LitElement, css, html, nothing, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
+import { ref, createRef } from "lit/directives/ref.js";
 import { Tab } from "./Tab";
 import { styles } from "../../../core/Manager/src/styles";
 
@@ -57,6 +58,7 @@ export class Tabs extends LitElement {
         display: flex;
         flex-wrap: wrap;
         grid-area: switchers;
+        overflow: hidden;
       }
 
       :host([bottom]) .switchers {
@@ -123,6 +125,94 @@ export class Tabs extends LitElement {
 
       :host([switchers-compact]) .switcher[data-active] {
         background-color: var(--bim-ui_bg-contrast-40);
+      }
+
+      /* Invisible measure strip — always rendered to detect overflow */
+      .switchers-measure {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 0;
+        visibility: hidden;
+        pointer-events: none;
+        display: flex;
+        flex-wrap: nowrap;
+      }
+
+      .switcher-ghost {
+        padding: 0 0.75rem;
+        display: flex;
+        align-items: center;
+        min-height: var(--bim-tabs-switcher--minh, 30px);
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+
+      /* Overflow dropdown trigger */
+      .tab-trigger {
+        --bim-label--c: var(--bim-ui_bg-contrast-80);
+        all: unset;
+        box-sizing: border-box;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.375rem;
+        padding: 0 0.75rem;
+        cursor: pointer;
+        min-height: var(--bim-tabs-switcher--minh, 30px);
+        user-select: none;
+      }
+
+      .tab-trigger svg {
+        flex-shrink: 0;
+      }
+
+      .tab-trigger:hover {
+        background-color: var(--bim-ui_bg-contrast-20);
+      }
+
+      .tab-trigger:focus-visible {
+        outline: 2px solid var(--bim-ui_accent-base);
+        outline-offset: -2px;
+      }
+
+      /* Overflow dropdown dialog */
+      dialog {
+        position: fixed;
+        margin: 0;
+        padding: 0.25rem 0;
+        border: 1px solid var(--bim-ui_bg-contrast-20);
+        border-radius: var(--bim-ui_size-2xs);
+        background-color: var(--bim-ui_bg-contrast-10);
+        box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.15);
+        overflow: auto;
+        max-height: 20rem;
+        min-width: 8rem;
+      }
+
+      dialog::backdrop {
+        background: transparent;
+      }
+
+      .tab-option {
+        --bim-label--c: var(--bim-ui_bg-contrast-80);
+        display: flex;
+        align-items: center;
+        padding: 0 0.75rem;
+        min-height: var(--bim-tabs-switcher--minh, 30px);
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+      }
+
+      .tab-option:hover {
+        background-color: var(--bim-ui_bg-contrast-20);
+      }
+
+      .tab-option[data-active] {
+        --bim-label--c: var(--bim-ui_bg-contrast-100);
+        background-color: var(--bim-ui_bg-contrast-30);
       }
 
       .content {
@@ -192,10 +282,16 @@ export class Tabs extends LitElement {
   @state()
   private _switcherData: SwitcherData[] = [];
 
+  @state()
+  private _useDropdown = false;
+
   private _tab?: string;
   private _pendingTab?: string;
   private _initialized = false;
   private _updatingTab = false;
+  private _ro?: ResizeObserver;
+  private _dialogRef = createRef<HTMLDialogElement>();
+  private _triggerRef = createRef<HTMLButtonElement>();
 
   /** Indicates whether the tabs are positioned at the bottom of the container. */
   @property({ type: Boolean, reflect: true })
@@ -257,6 +353,68 @@ export class Tabs extends LitElement {
     for (const child of this.children) {
       if (child instanceof Tab)
         child.removeEventListener("hiddenchange", this._onTabHiddenChange);
+    }
+    this._ro?.disconnect();
+    this._dialogRef.value?.close();
+  }
+
+  firstUpdated() {
+    this._ro = new ResizeObserver(() => this._checkOverflow());
+    this._ro.observe(this);
+    requestAnimationFrame(() => this._checkOverflow());
+  }
+
+  protected updated(changed: PropertyValues) {
+    super.updated(changed);
+    if (changed.has("_switcherData")) {
+      requestAnimationFrame(() => this._checkOverflow());
+    }
+  }
+
+  private _checkOverflow() {
+    const measure = this.renderRoot.querySelector<HTMLElement>(
+      ".switchers-measure",
+    );
+    if (!measure) return;
+    const needed = measure.offsetWidth;
+    const available = this.clientWidth;
+    const shouldUse = needed > available;
+    if (shouldUse !== this._useDropdown) this._useDropdown = shouldUse;
+  }
+
+  private _onTriggerClick() {
+    const dialog = this._dialogRef.value;
+    const trigger = this._triggerRef.value;
+    if (!dialog || !trigger) return;
+    if (dialog.open) {
+      dialog.close();
+      return;
+    }
+    const rect = trigger.getBoundingClientRect();
+    dialog.style.top = `${rect.top}px`;
+    dialog.style.left = `${rect.right + 4}px`;
+    dialog.showModal();
+    // Flip to left side if it overflows the right edge
+    const dRect = dialog.getBoundingClientRect();
+    if (dRect.right > window.innerWidth - 4) {
+      dialog.style.left = `${rect.left - dRect.width - 4}px`;
+    }
+    // Clip vertically if taller than remaining space
+    if (dRect.bottom > window.innerHeight - 4) {
+      dialog.style.top = `${Math.max(4, window.innerHeight - dRect.height - 4)}px`;
+    }
+  }
+
+  private _onDialogClick(e: MouseEvent) {
+    const dialog = e.currentTarget as HTMLDialogElement;
+    const rect = dialog.getBoundingClientRect();
+    if (
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom
+    ) {
+      dialog.close();
     }
   }
 
@@ -354,33 +512,85 @@ export class Tabs extends LitElement {
   }
 
   protected render() {
+    const activeData = this._switcherData.find((s) => s.name === this._tab);
+
     return html`
       <div class="parent">
+        <div class="switchers-measure" aria-hidden="true">
+          ${this._switcherData.map(
+            (s) => html`
+              <div class="switcher-ghost">
+                <bim-label .icon=${s.icon}>${s.label ?? ""}</bim-label>
+              </div>
+            `,
+          )}
+        </div>
         <div
           class="switchers"
-          role="tablist"
+          role=${this._useDropdown ? nothing : "tablist"}
           aria-label=${this.label ?? nothing}
-          @keydown=${this._onSwitchersKeyDown}
+          @keydown=${this._useDropdown ? nothing : this._onSwitchersKeyDown}
         >
-          ${this._switcherData.map((s) => {
-            const isActive = this._tab === s.name;
-            return html`<div
-              class="switcher"
-              data-name=${s.name}
-              role="tab"
-              aria-selected=${isActive}
-              tabindex=${isActive ? 0 : -1}
-              aria-controls=${s.panelId}
-              ?data-active=${isActive}
-              @click=${() => {
-                if (this._tab === s.name) {
-                  if (this.floating) this.tab = undefined;
-                  return;
-                }
-                this.tab = s.name;
-              }}
-            ><bim-label .icon=${s.icon}>${s.label ?? ""}</bim-label></div>`;
-          })}
+          ${this._useDropdown
+            ? html`
+                <button
+                  class="tab-trigger"
+                  ${ref(this._triggerRef)}
+                  @click=${this._onTriggerClick}
+                  aria-haspopup="listbox"
+                >
+                  <bim-label .icon=${activeData?.icon}
+                    >${activeData?.label ?? ""}</bim-label
+                  >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="10"
+                    height="10"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M3 6l5 5 5-5" />
+                  </svg>
+                </button>
+                <dialog ${ref(this._dialogRef)} @click=${this._onDialogClick}>
+                  ${this._switcherData.map((s) => {
+                    const isActive = this._tab === s.name;
+                    return html`<div
+                      class="tab-option"
+                      ?data-active=${isActive}
+                      @click=${() => {
+                        this.tab = s.name;
+                        this._dialogRef.value?.close();
+                      }}
+                    >
+                      <bim-label .icon=${s.icon}>${s.label ?? ""}</bim-label>
+                    </div>`;
+                  })}
+                </dialog>
+              `
+            : this._switcherData.map((s) => {
+                const isActive = this._tab === s.name;
+                return html`<div
+                  class="switcher"
+                  data-name=${s.name}
+                  role="tab"
+                  aria-selected=${isActive}
+                  tabindex=${isActive ? 0 : -1}
+                  aria-controls=${s.panelId}
+                  ?data-active=${isActive}
+                  @click=${() => {
+                    if (this._tab === s.name) {
+                      if (this.floating) this.tab = undefined;
+                      return;
+                    }
+                    this.tab = s.name;
+                  }}
+                ><bim-label .icon=${s.icon}>${s.label ?? ""}</bim-label></div>`;
+              })}
         </div>
         <div class="content">
           <slot @slotchange=${this._onSlotChange}></slot>
