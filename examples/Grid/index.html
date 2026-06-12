@@ -12,11 +12,15 @@
     }
 
     html {
-      font-family: sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
       background-color: var(--bim-ui_bg-base);
+      background-image:
+        linear-gradient(var(--bim-ui_bg-contrast-20) 1px, transparent 1px),
+        linear-gradient(90deg, var(--bim-ui_bg-contrast-20) 1px, transparent 1px);
+      background-size: 1.5rem 1.5rem;
       display: flex;
       flex-direction: column;
       width: 100vw;
@@ -28,8 +32,12 @@
     }
 
     bim-grid {
-      gap: 1rem;
+      gap: 0.75rem;
       padding: 1rem;
+    }
+
+    bim-viewport>bim-grid {
+      padding: 0;
     }
 
     bim-button {
@@ -44,14 +52,18 @@
       border-radius: var(--bim-ui_size-base);
     }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+    rel="stylesheet">
   <script type="module" crossorigin src="../assets/grid.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
-  <link rel="modulepreload" crossorigin href="../assets/custom-icons-D8b2bjjk.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
+  <link rel="modulepreload" crossorigin href="../assets/custom-icons-BJvlg01G.js">
 </head>
 
 <body>
-  <bim-button label="Change Layout" icon="mingcute:layout-fill"></bim-button>
+  <!-- <bim-button label="Change Layout" icon="mingcute:layout-fill"></bim-button> -->
   <bim-grid areas-resizeable layout="app">
     <bim-label slot="not-allowed">You're not allowed to see this page</bim-label>
     <bim-label slot="not-found">404</bim-label>

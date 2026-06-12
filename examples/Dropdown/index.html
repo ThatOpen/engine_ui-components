@@ -12,38 +12,358 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
     }
 
-    .dropdown-1 {
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+    }
+
+    bim-dropdown {
+      width: 15rem;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    /* CSS custom property demos */
+    .dd-danger {
       --bim-dropdown--c: rgb(239, 75, 75);
       --bim-input--bgc: rgb(182 19 19 / 50%);
       --bim-input--bdrs: 100px;
     }
 
-    .dropdown-1[visible] {
+    .dd-danger[visible] {
       --bim-input--olc: rgb(239, 75, 75);
     }
   </style>
   <script type="module" crossorigin src="../assets/dropdown.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
 </head>
 
 <body>
-  <div style="display: flex; flex-direction: column; gap: 0.35rem; width: 15rem;">
-    <bim-dropdown id="my-dropdown-1" label="IFC Entity" multiple icon="iconamoon:home-fill">
-      <bim-option label-hidden label="IfcWindow" checked icon="iconamoon:home-fill"></bim-option>
-      <bim-option label="IfcWall"></bim-option>
-      <bim-option label="IfcSlab"></bim-option>
-    </bim-dropdown>
-    <bim-dropdown class="dropdown-1">
-      <bim-option label="IfcSlab"></bim-option>
-    </bim-dropdown>
-    <bim-dropdown label="Vertical Layout" vertical>
-      <bim-option label="IfcSlab"></bim-option>
-    </bim-dropdown>
-    <bim-dropdown id="my-dropdown-2" required search-box></bim-dropdown>
-  </div>
+  <bim-button id="theme-toggle" icon="tabler:moon" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-dropdown</h1>
+  <p class="subtitle">Selector desplegable con opciones simples o múltiples, búsqueda integrada y soporte para label e icono.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-dropdown>
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">label</span>
+      <bim-dropdown label="IFC Entity">
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-dropdown label="IFC Entity" icon="solar:layers-bold">
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">placeholder</span>
+      <bim-dropdown label="Classifier" placeholder="Pick a category…">
+        <bim-option label="Architecture"></bim-option>
+        <bim-option label="Structure"></bim-option>
+        <bim-option label="MEP"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">name</span>
+      <bim-dropdown name="ifcEntity" label="IFC Entity">
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 2. Layout -->
+  <div class="section">
+    <div class="section-title">Layout</div>
+    <div class="row">
+      <span class="row-label">horizontal (default)</span>
+      <bim-dropdown label="Horizontal">
+        <bim-option label="Option A"></bim-option>
+        <bim-option label="Option B"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-dropdown label="Vertical" vertical>
+        <bim-option label="Option A"></bim-option>
+        <bim-option label="Option B"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 3. Selection modes -->
+  <div class="section">
+    <div class="section-title">Selection Modes</div>
+    <div class="row">
+      <span class="row-label">single (default)</span>
+      <bim-dropdown label="Single">
+        <bim-option label="IfcWall" checked></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">multiple</span>
+      <bim-dropdown label="Multiple" multiple>
+        <bim-option label="IfcWall" checked></bim-option>
+        <bim-option label="IfcSlab" checked></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+        <bim-option label="IfcColumn"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">required</span>
+      <bim-dropdown label="Required" required>
+        <bim-option label="IfcWall" checked></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">multiple + required</span>
+      <bim-dropdown label="Multiple + Required" multiple required>
+        <bim-option label="IfcWall" checked></bim-option>
+        <bim-option label="IfcSlab" checked></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 4. Options content -->
+  <div class="section">
+    <div class="section-title">Options Content</div>
+    <div class="row">
+      <span class="row-label">con iconos</span>
+      <bim-dropdown label="Visibility">
+        <bim-option label="Visible" icon="solar:eye-bold"></bim-option>
+        <bim-option label="Hidden" icon="solar:eye-closed-bold"></bim-option>
+        <bim-option label="X-Ray" icon="solar:ghost-bold"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 5. Search box -->
+  <div class="section">
+    <div class="section-title">Search Box</div>
+    <div class="row">
+      <span class="row-label">search-box</span>
+      <bim-dropdown id="dd-search" label="IFC Entity" search-box required></bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 6. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-dropdown--c</span>
+      <bim-dropdown label="Custom color" style="--bim-dropdown--c: rgb(251 191 36);">
+        <bim-option label="Option A"></bim-option>
+        <bim-option label="Option B"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-input--bgc</span>
+      <bim-dropdown label="Custom bg" style="--bim-input--bgc: rgb(59 130 246 / 20%);">
+        <bim-option label="Option A"></bim-option>
+        <bim-option label="Option B"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">danger class</span>
+      <bim-dropdown class="dd-danger" label="Danger">
+        <bim-option label="Delete all"></bim-option>
+        <bim-option label="Reset model"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 7. Validation -->
+  <div class="section">
+    <div class="section-title">Validation</div>
+    <div class="row">
+      <span class="row-label">required</span>
+      <bim-dropdown label="IFC Entity" required placeholder="Pick one…">
+        <bim-option label="IfcWall" checked></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">custom: min 2</span>
+      <bim-dropdown id="dd-val-min" label="Categories" multiple placeholder="Pick at least 2…">
+        <bim-option label="Architecture"></bim-option>
+        <bim-option label="Structure"></bim-option>
+        <bim-option label="MEP"></bim-option>
+        <bim-option label="Site"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">required + custom</span>
+      <bim-dropdown id="dd-val-combo" label="Visibility" required placeholder="Pick one…">
+        <bim-option label="Visible" icon="solar:eye-bold"></bim-option>
+        <bim-option label="Hidden" icon="solar:eye-closed-bold"></bim-option>
+        <bim-option label="X-Ray" icon="solar:ghost-bold"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 8. Dynamic options -->
+  <div class="section">
+    <div class="section-title">Dynamic Options</div>
+    <div class="row">
+      <span class="row-label">checked desde HTML</span>
+      <bim-dropdown label="Pre-selected">
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab" checked></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">checked múltiple HTML</span>
+      <bim-dropdown label="Pre-selected multiple" multiple>
+        <bim-option label="Architecture" checked></bim-option>
+        <bim-option label="Structure" checked></bim-option>
+        <bim-option label="MEP"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row">
+      <span class="row-label">añadir / quitar</span>
+      <bim-dropdown id="dd-dynamic" label="Dynamic" multiple>
+        <bim-option label="Option A" checked></bim-option>
+        <bim-option label="Option B"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row" style="padding-left: 10.5rem;">
+      <bim-button id="btn-add-opt" label="Add option"></bim-button>
+      <bim-button id="btn-remove-opt" label="Remove last"></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">valor actual</span>
+      <bim-label id="dynamic-output" style="color: var(--bim-ui_bg-contrast-80);">—</bim-label>
+    </div>
+  </div>
+
+  <!-- 9. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">set value</span>
+      <bim-dropdown id="dd-prog" label="Set value" multiple>
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+        <bim-option label="IfcColumn"></bim-option>
+      </bim-dropdown>
+    </div>
+    <div class="row" style="padding-left: 10.5rem;">
+      <bim-button id="btn-set-one" label="Select IfcWall"></bim-button>
+      <bim-button id="btn-set-multi" label="Select two"></bim-button>
+      <bim-button id="btn-clear" label="Clear"></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">lista grande</span>
+      <bim-dropdown id="dd-large" label="300 options" search-box></bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 10. multipleLabel -->
+  <div class="section">
+    <div class="section-title">Multiple Label</div>
+    <div class="row">
+      <span class="row-label">multipleLabel</span>
+      <bim-dropdown id="dd-multiple-label" label="IFC Entities" multiple>
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+        <bim-option label="IfcColumn"></bim-option>
+      </bim-dropdown>
+    </div>
+  </div>
+
+  <!-- 11. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">change</span>
+      <bim-dropdown id="dd-event" label="Pick one" multiple>
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">close</span>
+      <bim-dropdown id="dd-close" label="Open and close me">
+        <bim-option label="IfcWall"></bim-option>
+        <bim-option label="IfcSlab"></bim-option>
+        <bim-option label="IfcBeam"></bim-option>
+      </bim-dropdown>
+      <bim-label id="close-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
 </body>
 
 </html>

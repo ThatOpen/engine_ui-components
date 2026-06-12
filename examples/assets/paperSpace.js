@@ -1,4 +1,4 @@
-import{b as d}from"./if-defined-DypSrBBK.js";import{M as t}from"./index-CKW6zj6D.js";t.init();const o=(i,e)=>d`
+import{b as d}from"./when-D9oPOCfO.js";import{M as t}from"./index-CICXNLO4.js";t.init();const o=(i,e)=>d`
     <div style="width:100%;height:100%;display:flex;flex-direction:column;font-family:Arial,sans-serif;color:#1a1a1a;">
 
       <!-- Drawing area -->

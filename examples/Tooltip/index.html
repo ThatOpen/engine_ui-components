@@ -12,24 +12,258 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
-      height: 100dvh;
-      margin: 0;
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 56rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
       display: flex;
-      justify-content: center;
       align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+    }
+
+    .placement-grid {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 0.5rem;
+      justify-content: start;
     }
   </style>
   <script type="module" crossorigin src="../assets/tooltip.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
 </head>
 
 <body>
-  <bim-button label="Hello" style="margin: auto; flex: 0;">
-    <bim-tooltip>
-      <bim-label>This is a tooltip!</bim-label>
-    </bim-tooltip>
-  </bim-button>
+  <h1>bim-tooltip</h1>
+  <p class="subtitle">Tooltip flotante activado por hover en el elemento padre, con posicionamiento automático via floating-ui.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">texto simple</span>
+      <bim-button label="Hover me" icon="solar:info-circle-bold">
+        <bim-tooltip>
+          <bim-label>IFC entity selected</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">label con icon</span>
+      <bim-button label="Properties" icon="solar:document-bold">
+        <bim-tooltip>
+          <bim-label icon="solar:document-bold">Show element properties</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">contenido rico</span>
+      <bim-button label="Camera" icon="solar:camera-bold">
+        <bim-tooltip>
+          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <bim-label icon="solar:camera-bold" style="font-weight: 600;">Reset Camera</bim-label>
+            <bim-label style="opacity: 0.7; font-size: 0.75rem;">Returns the camera to its default position and orientation.</bim-label>
+          </div>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">multi-línea</span>
+      <bim-button label="Explode" icon="solar:layers-minimalistic-bold">
+        <bim-tooltip>
+          <div style="display: flex; flex-direction: column; gap: 0.25rem; max-width: 14rem;">
+            <bim-label icon="solar:layers-minimalistic-bold" style="font-weight: 600;">Explode Model</bim-label>
+            <bim-label style="opacity: 0.7; font-size: 0.75rem;">Separates all building elements outward from the center to inspect internal structure.</bim-label>
+          </div>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+  </div>
+
+  <!-- 2. Trigger (elemento padre) -->
+  <div class="section">
+    <div class="section-title">Trigger</div>
+    <div class="row">
+      <span class="row-label">bim-button</span>
+      <bim-button label="Wall" icon="solar:walls-bold">
+        <bim-tooltip>
+          <bim-label>Draw a wall element</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">bim-button vertical</span>
+      <bim-button vertical label="Classify" icon="solar:tag-bold">
+        <bim-tooltip>
+          <bim-label>Classify elements by IFC type</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">bim-label</span>
+      <bim-label icon="solar:info-circle-bold" style="cursor: default;">IfcBeam — Level 3</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">div</span>
+      <div style="padding: 0.5rem 1rem; background: var(--bim-ui_bg-contrast-10); border-radius: 4px; cursor: default; font-size: 0.8rem; color: var(--bim-ui_bg-contrast-80); position: relative;">
+        Hover this div
+        <bim-tooltip>
+          <bim-label>Tooltips work on any parent element</bim-label>
+        </bim-tooltip>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Placement -->
+  <div class="section">
+    <div class="section-title">Placement</div>
+    <div class="placement-grid">
+      <bim-button label="top (default)">
+        <bim-tooltip placement="top">
+          <bim-label>placement: top</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="top-start">
+        <bim-tooltip placement="top-start">
+          <bim-label>placement: top-start</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="top-end">
+        <bim-tooltip placement="top-end">
+          <bim-label>placement: top-end</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="bottom">
+        <bim-tooltip placement="bottom">
+          <bim-label>placement: bottom</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="bottom-start">
+        <bim-tooltip placement="bottom-start">
+          <bim-label>placement: bottom-start</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="bottom-end">
+        <bim-tooltip placement="bottom-end">
+          <bim-label>placement: bottom-end</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="left">
+        <bim-tooltip placement="left">
+          <bim-label>placement: left</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="left-start">
+        <bim-tooltip placement="left-start">
+          <bim-label>placement: left-start</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="left-end">
+        <bim-tooltip placement="left-end">
+          <bim-label>placement: left-end</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="right">
+        <bim-tooltip placement="right">
+          <bim-label>placement: right</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="right-start">
+        <bim-tooltip placement="right-start">
+          <bim-label>placement: right-start</bim-label>
+        </bim-tooltip>
+      </bim-button>
+      <bim-button label="right-end">
+        <bim-tooltip placement="right-end">
+          <bim-label>placement: right-end</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+  </div>
+
+  <!-- 4. Timeout -->
+  <div class="section">
+    <div class="section-title">Timeout</div>
+    <div class="row">
+      <span class="row-label">default (800 ms)</span>
+      <bim-button label="Hover — 800 ms delay" icon="solar:clock-bold">
+        <bim-tooltip>
+          <bim-label>Apareció después de 800 ms</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">timeout="200"</span>
+      <bim-button label="Hover — 200 ms delay" icon="solar:clock-bold">
+        <bim-tooltip timeout="200">
+          <bim-label>Apareció después de 200 ms</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">timeout="0"</span>
+      <bim-button label="Hover — sin delay" icon="solar:bolt-bold">
+        <bim-tooltip timeout="0">
+          <bim-label>Apareció inmediatamente</bim-label>
+        </bim-tooltip>
+      </bim-button>
+    </div>
+  </div>
+
+  <!-- 5. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">visible setter</span>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <div style="position: relative;">
+          <bim-button id="tooltip-target" label="Target" icon="solar:target-bold"></bim-button>
+          <bim-tooltip id="prog-tooltip" timeout="0">
+            <bim-label icon="solar:target-bold">Visibility toggled programmatically</bim-label>
+          </bim-tooltip>
+        </div>
+        <bim-button id="btn-toggle-visible" label="Toggle visible" icon="solar:eye-bold"></bim-button>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

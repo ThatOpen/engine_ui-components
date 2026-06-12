@@ -12,30 +12,208 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
     }
 
     bim-selector {
-      width: 26rem;
+      width: 22rem;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
     }
   </style>
   <script type="module" crossorigin src="../assets/selector.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
 </head>
 
 <body>
-  <bim-selector label="Camera Projection">
-    <bim-option icon="solar:settings-bold" label="Orthographic" value="0" checked></bim-option>
-    <bim-option label="Perspective" value="1"></bim-option>
-    <bim-option label="Custom"></bim-option>
-  </bim-selector>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-selector</h1>
+  <p class="subtitle">Selector de opción única con fondo animado o variante underline. Solo una opción puede estar activa.</p>
 
-  <h3 style="color: var(--bim-ui_bg-contrast-80); margin-top: 2rem"> </h3>
-  <bim-selector variant="underline" style="width: 26rem">
-    <bim-option label="Models" checked></bim-option>
-    <bim-option label="Objects"></bim-option>
-    <bim-option label="Structure"></bim-option>
-  </bim-selector>
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-selector>
+        <bim-option label="Orthographic" checked></bim-option>
+        <bim-option label="Perspective"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">label</span>
+      <bim-selector label="Camera Projection">
+        <bim-option label="Orthographic" checked></bim-option>
+        <bim-option label="Perspective"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-selector label="View Mode" icon="tabler:eye">
+        <bim-option label="Solid" checked></bim-option>
+        <bim-option label="Wireframe"></bim-option>
+        <bim-option label="X-Ray"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">name</span>
+      <bim-selector name="projection" label="Projection">
+        <bim-option label="Orthographic" checked></bim-option>
+        <bim-option label="Perspective"></bim-option>
+      </bim-selector>
+    </div>
+  </div>
+
+  <!-- 2. Layout -->
+  <div class="section">
+    <div class="section-title">Layout</div>
+    <div class="row">
+      <span class="row-label">horizontal (default)</span>
+      <bim-selector label="Horizontal">
+        <bim-option label="Option A" checked></bim-option>
+        <bim-option label="Option B"></bim-option>
+        <bim-option label="Option C"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-selector label="Vertical" vertical>
+        <bim-option label="Option A" checked></bim-option>
+        <bim-option label="Option B"></bim-option>
+        <bim-option label="Option C"></bim-option>
+      </bim-selector>
+    </div>
+  </div>
+
+  <!-- 3. Variants -->
+  <div class="section">
+    <div class="section-title">Variants</div>
+    <div class="row">
+      <span class="row-label">default (filled)</span>
+      <bim-selector label="Render Mode">
+        <bim-option label="Solid" checked></bim-option>
+        <bim-option label="Wireframe"></bim-option>
+        <bim-option label="X-Ray"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">underline</span>
+      <bim-selector label="Tab" variant="underline">
+        <bim-option label="Models" checked></bim-option>
+        <bim-option label="Objects"></bim-option>
+        <bim-option label="Structure"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">underline + icons</span>
+      <bim-selector variant="underline">
+        <bim-option label="Overview" icon="tabler:home" checked></bim-option>
+        <bim-option label="Details" icon="tabler:file"></bim-option>
+        <bim-option label="History" icon="tabler:clock"></bim-option>
+      </bim-selector>
+    </div>
+  </div>
+
+  <!-- 4. Options content -->
+  <div class="section">
+    <div class="section-title">Options Content</div>
+    <div class="row">
+      <span class="row-label">con iconos</span>
+      <bim-selector label="Tool">
+        <bim-option label="Select" icon="tabler:pointer" checked></bim-option>
+        <bim-option label="Move" icon="tabler:arrows-move"></bim-option>
+        <bim-option label="Measure" icon="tabler:ruler"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row">
+      <span class="row-label">con value propio</span>
+      <bim-selector id="sel-value" label="Camera">
+        <bim-option label="Orthographic" value="0" checked></bim-option>
+        <bim-option label="Perspective" value="1"></bim-option>
+        <bim-option label="Custom" value="custom"></bim-option>
+      </bim-selector>
+    </div>
+  </div>
+
+  <!-- 5. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">set value</span>
+      <bim-selector id="sel-prog" label="Set value">
+        <bim-option label="Option A" value="a" checked></bim-option>
+        <bim-option label="Option B" value="b"></bim-option>
+        <bim-option label="Option C" value="c"></bim-option>
+      </bim-selector>
+    </div>
+    <div class="row" style="padding-left: 10.5rem;">
+      <bim-button id="btn-a" label="Select A"></bim-button>
+      <bim-button id="btn-b" label="Select B"></bim-button>
+      <bim-button id="btn-c" label="Select C"></bim-button>
+    </div>
+  </div>
+
+  <!-- 6. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">change</span>
+      <bim-selector id="sel-event" label="Pick one">
+        <bim-option label="Solid" value="solid" checked></bim-option>
+        <bim-option label="Wireframe" value="wireframe"></bim-option>
+        <bim-option label="X-Ray" value="xray"></bim-option>
+      </bim-selector>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
 
 </body>
 

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 60rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
+  </style>
+  <script type="module" crossorigin src="../assets/icon.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-DQFDb4ne.js">
+</head>
+
+<body>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-icon</h1>
+  <p class="subtitle">Wrapper sobre iconify-icon con tokens de tamaño y color.</p>
+
+  <!-- 1. Básico -->
+  <div class="section">
+    <div class="section-title">Básico</div>
+    <div class="row">
+      <span class="row-label">default</span>
+      <bim-icon icon="solar:settings-bold"></bim-icon>
+      <bim-icon icon="solar:home-bold"></bim-icon>
+      <bim-icon icon="solar:user-bold"></bim-icon>
+      <bim-icon icon="solar:layers-bold"></bim-icon>
+    </div>
+  </div>
+
+  <!-- 2. Tamaño -->
+  <div class="section">
+    <div class="section-title">Tamaño — <code>--bim-icon--sz</code></div>
+    <div class="row">
+      <span class="row-label">small (1rem)</span>
+      <bim-icon icon="solar:settings-bold" style="--bim-icon--sz: 1rem;"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">default</span>
+      <bim-icon icon="solar:settings-bold"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">large (2rem)</span>
+      <bim-icon icon="solar:settings-bold" style="--bim-icon--sz: 2rem;"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">xlarge (3rem)</span>
+      <bim-icon icon="solar:settings-bold" style="--bim-icon--sz: 3rem;"></bim-icon>
+    </div>
+  </div>
+
+  <!-- 3. Color -->
+  <div class="section">
+    <div class="section-title">Color — <code>--bim-icon--c</code></div>
+    <div class="row">
+      <span class="row-label">default (currentColor)</span>
+      <bim-icon icon="solar:star-bold"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">accent</span>
+      <bim-icon icon="solar:star-bold" style="--bim-icon--c: var(--bim-ui_accent-base);"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">danger</span>
+      <bim-icon icon="solar:danger-triangle-bold" style="--bim-icon--c: var(--bim-ui_danger-base);"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">success</span>
+      <bim-icon icon="solar:check-circle-bold" style="--bim-icon--c: var(--bim-ui_success-base);"></bim-icon>
+    </div>
+  </div>
+
+  <!-- 4. Accesibilidad -->
+  <div class="section">
+    <div class="section-title">Accesibilidad</div>
+    <div class="row">
+      <span class="row-label">decorativo (aria-hidden)</span>
+      <bim-icon icon="solar:info-circle-bold"></bim-icon>
+    </div>
+    <div class="row">
+      <span class="row-label">informativo (aria-label)</span>
+      <bim-icon icon="solar:info-circle-bold" aria-label="Información"></bim-icon>
+    </div>
+  </div>
+
+</body>
+
+</html>

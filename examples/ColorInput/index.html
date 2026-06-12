@@ -12,19 +12,170 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
     }
 
     bim-color-input {
       width: 15rem;
     }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
   </style>
   <script type="module" crossorigin src="../assets/colorInput.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
 </head>
 
 <body>
-  <bim-color-input label="Selection Color" color="#DF4E4E" opacity="20"></bim-color-input>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-color-input</h1>
+  <p class="subtitle">Selector de color con campo hex editable, slider de opacidad opcional y soporte para label e icono.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-color-input color="#bcf124"></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">label</span>
+      <bim-color-input label="Selection Color" color="#DF4E4E"></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-color-input label="Highlight Color" icon="solar:palette-bold" color="#4E8FDF"></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">name</span>
+      <bim-color-input name="backgroundColor" label="Background" color="#1a1a2e"></bim-color-input>
+    </div>
+  </div>
+
+  <!-- 2. Layout -->
+  <div class="section">
+    <div class="section-title">Layout</div>
+    <div class="row">
+      <span class="row-label">horizontal (default)</span>
+      <bim-color-input label="Horizontal" color="#bcf124"></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-color-input label="Vertical" color="#bcf124" vertical></bim-color-input>
+    </div>
+  </div>
+
+  <!-- 3. Opacity -->
+  <div class="section">
+    <div class="section-title">Opacity</div>
+    <div class="row">
+      <span class="row-label">sin opacidad</span>
+      <bim-color-input label="Sin opacity" color="#DF4E4E"></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">con opacity</span>
+      <bim-color-input label="Con opacity" color="#DF4E4E" opacity="100"></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">opacity parcial</span>
+      <bim-color-input label="50% opacity" color="#4E8FDF" opacity="50"></bim-color-input>
+    </div>
+  </div>
+
+  <!-- 4. Disabled -->
+  <div class="section">
+    <div class="section-title">Disabled</div>
+    <div class="row">
+      <span class="row-label">disabled</span>
+      <bim-color-input label="Disabled" color="#DF4E4E" disabled></bim-color-input>
+    </div>
+    <div class="row">
+      <span class="row-label">disabled + opacity</span>
+      <bim-color-input label="Disabled + opacity" color="#4E8FDF" opacity="60" disabled></bim-color-input>
+    </div>
+  </div>
+
+  <!-- 5. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-color-input--c</span>
+      <bim-color-input label="Custom text color" color="#bcf124"
+        style="--bim-color-input--c: rgb(251 191 36);"></bim-color-input>
+    </div>
+  </div>
+
+  <!-- 6. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">set value</span>
+      <bim-color-input id="ci-prog" label="Programmatic" color="#ffffff"></bim-color-input>
+    </div>
+    <div class="row" style="padding-left: 10.5rem;">
+      <bim-button id="btn-red" label="Red" style="--bim-button--bgc: rgb(182 19 19 / 40%);"></bim-button>
+      <bim-button id="btn-green" label="Green" style="--bim-button--bgc: rgb(19 110 19 / 40%);"></bim-button>
+      <bim-button id="btn-blue" label="Blue" style="--bim-button--bgc: rgb(19 50 182 / 40%);"></bim-button>
+    </div>
+  </div>
+
+  <!-- 7. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">input</span>
+      <bim-color-input id="ci-event" label="Change me" color="#bcf124" opacity="100"></bim-color-input>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
 </body>
 
 </html>

@@ -12,15 +12,166 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
     }
   </style>
   <script type="module" crossorigin src="../assets/checkbox.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
 </head>
 
 <body>
-  <bim-checkbox label="Convert to BIM Tiles" checked></bim-checkbox>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-checkbox</h1>
+  <p class="subtitle">Checkbox con soporte para estado indeterminado, icono, layout invertido y nombre de formulario.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">label</span>
+      <bim-checkbox label="Convert to BIM Tiles"></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-checkbox label="Use fragments cache" icon="solar:database-bold"></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-checkbox></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">name</span>
+      <bim-checkbox name="autoSave" label="Auto-save"></bim-checkbox>
+    </div>
+  </div>
+
+  <!-- 2. States -->
+  <div class="section">
+    <div class="section-title">States</div>
+    <div class="row">
+      <span class="row-label">unchecked</span>
+      <bim-checkbox label="Unchecked"></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">checked</span>
+      <bim-checkbox label="Checked" checked></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">indeterminate</span>
+      <bim-checkbox label="Indeterminate" indeterminate></bim-checkbox>
+    </div>
+  </div>
+
+  <!-- 3. Disabled -->
+  <div class="section">
+    <div class="section-title">Disabled</div>
+    <div class="row">
+      <span class="row-label">unchecked</span>
+      <bim-checkbox label="Disabled unchecked" disabled></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">checked</span>
+      <bim-checkbox label="Disabled checked" checked disabled></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">indeterminate</span>
+      <bim-checkbox label="Disabled indeterminate" indeterminate disabled></bim-checkbox>
+    </div>
+  </div>
+
+  <!-- 4. Inverted -->
+  <div class="section">
+    <div class="section-title">Inverted</div>
+    <div class="row">
+      <span class="row-label">normal</span>
+      <bim-checkbox label="Normal layout" checked></bim-checkbox>
+    </div>
+    <div class="row">
+      <span class="row-label">inverted</span>
+      <bim-checkbox label="Inverted layout" checked inverted></bim-checkbox>
+    </div>
+  </div>
+
+  <!-- 5. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">toggle checked</span>
+      <bim-checkbox id="cb-toggle" label="Toggle me"></bim-checkbox>
+      <bim-button id="btn-toggle" label="Toggle" icon="solar:refresh-bold"></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">set indeterminate</span>
+      <bim-checkbox id="cb-indet" label="Watch my state" checked></bim-checkbox>
+      <bim-button id="btn-indet" label="Set indeterminate" icon="solar:minus-square-bold"></bim-button>
+    </div>
+  </div>
+
+  <!-- 6. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">change</span>
+      <bim-checkbox id="cb-event" label="Check me"></bim-checkbox>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">value getter</span>
+      <bim-checkbox id="cb-value" label="Check for value" checked></bim-checkbox>
+      <bim-label id="value-output" style="color: var(--bim-ui_bg-contrast-80);">value: true</bim-label>
+    </div>
+  </div>
+
 </body>
 
 </html>

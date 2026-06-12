@@ -1,7 +1,7 @@
-import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,g as C,r as S,N as fe,h as I,w as ee,V as te,C as ye,W as ge,S as $e,a as we,O as ve,G as he,F as Te,I as ke}from"./index-6HcFeNjn.js";import"./index-CjHsJT1k.js";import{c as xe,d as D,b as E,a as V,t as Se,v as Ie,e as Ae}from"./index-BEcl2n9U.js";const Ce={dueDate:e=>{if(typeof e=="string"&&e.trim()!=="")return new Date(e)},status:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},type:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},priority:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},stage:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},assignedTo:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},labels:e=>{if(Array.isArray(e))return new Set(e)}},ne=e=>{const{components:l,topic:t,value:i,onCancel:n,onSubmit:s,styles:r}=e,m=s??(()=>{}),d=l.get(z),v=(i==null?void 0:i.title)??(t==null?void 0:t.title)??C.default.title,p=(i==null?void 0:i.status)??(t==null?void 0:t.status)??C.default.status,b=(i==null?void 0:i.type)??(t==null?void 0:t.type)??C.default.type,a=(i==null?void 0:i.priority)??(t==null?void 0:t.priority)??C.default.priority,y=(i==null?void 0:i.assignedTo)??(t==null?void 0:t.assignedTo)??C.default.assignedTo,u=(i==null?void 0:i.labels)??(t==null?void 0:t.labels)??C.default.labels,g=(i==null?void 0:i.stage)??(t==null?void 0:t.stage)??C.default.stage,k=(i==null?void 0:i.description)??(t==null?void 0:t.description)??C.default.description,$=t!=null&&t.dueDate?t.dueDate.toISOString().split("T")[0]:null,f=new Set([...d.config.statuses]);p&&f.add(p);const h=new Set([...d.config.types]);b&&h.add(b);const w=new Set([...d.config.priorities]);a&&w.add(a);const _=new Set([...d.config.users]);y&&_.add(y);const W=new Set([...d.config.labels]);if(u)for(const c of u)W.add(c);const G=new Set([...d.config.stages]);g&&G.add(g);const H=Y(),pe=async()=>{const{value:c}=H;if(!c)return;const x=fe(c,Ce);if(t)t.set(x),await m(t);else{const L=d.create(x);await m(L)}},J=Y(),be=c=>{const{value:x}=J;if(!x)return;const L=c.target;x.disabled=L.value.trim()===""},Q=`btn-${S.newRandomId()}`,U=`btn-${S.newRandomId()}`;return o`
-    <div ${X(H)} style="display: flex; flex-direction: column; gap: 0.75rem;">
+import{n as X,b as o,e as Y,o as U}from"./when-D9oPOCfO.js";import{a as S,H as ye,Q as I,U as ee}from"./index-DQFDb4ne.js";import{e as z,f as C,V as te,C as ge,W as $e,S as we,a as ve,O as he,G as Te,F as ne,I as ke}from"./index-PQQfjRhF.js";import"./index-BRKjHmSP.js";import{c as xe,d as D,b as E,a as V,t as Se,v as Ie,e as Ae}from"./index-B7cNthKr.js";const Ce={dueDate:e=>{if(typeof e=="string"&&e.trim()!=="")return new Date(e)},status:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},type:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},priority:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},stage:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},assignedTo:e=>{if(Array.isArray(e)&&e.length!==0)return e[0]},labels:e=>{if(Array.isArray(e))return new Set(e)}},ie=e=>{const{components:l,topic:t,value:i,onCancel:n,onSubmit:s,styles:r}=e,m=s??(()=>{}),d=l.get(z),v=(i==null?void 0:i.title)??(t==null?void 0:t.title)??C.default.title,p=(i==null?void 0:i.status)??(t==null?void 0:t.status)??C.default.status,b=(i==null?void 0:i.type)??(t==null?void 0:t.type)??C.default.type,a=(i==null?void 0:i.priority)??(t==null?void 0:t.priority)??C.default.priority,y=(i==null?void 0:i.assignedTo)??(t==null?void 0:t.assignedTo)??C.default.assignedTo,u=(i==null?void 0:i.labels)??(t==null?void 0:t.labels)??C.default.labels,g=(i==null?void 0:i.stage)??(t==null?void 0:t.stage)??C.default.stage,k=(i==null?void 0:i.description)??(t==null?void 0:t.description)??C.default.description,$=t!=null&&t.dueDate?t.dueDate.toISOString().split("T")[0]:null,f=new Set([...d.config.statuses]);p&&f.add(p);const h=new Set([...d.config.types]);b&&h.add(b);const w=new Set([...d.config.priorities]);a&&w.add(a);const j=new Set([...d.config.users]);y&&j.add(y);const K=new Set([...d.config.labels]);if(u)for(const c of u)K.add(c);const G=new Set([...d.config.stages]);g&&G.add(g);const Q=Y(),be=async()=>{const{value:c}=Q;if(!c)return;const x=ye(c,Ce);if(t)t.set(x),await m(t);else{const L=d.create(x);await m(L)}},J=Y(),ue=c=>{const{value:x}=J;if(!x)return;const L=c.target;x.disabled=L.value.trim()===""},N=`btn-${S.newRandomId()}`,M=`btn-${S.newRandomId()}`;return o`
+    <div ${X(Q)} style="display: flex; flex-direction: column; gap: 0.75rem;">
       <div style="display: flex; gap: 0.375rem">
-        <bim-text-input @input=${be} vertical label="Title" name="title" .value=${v}></bim-text-input>
+        <bim-text-input @input=${ue} vertical label="Title" name="title" .value=${v}></bim-text-input>
         ${t?o`
             <bim-dropdown vertical label="Status" name="status" required>
               ${[...f].map(c=>o`<bim-option label=${c} .checked=${p===c}></bim-option>`)}
@@ -17,10 +17,10 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
       </div>
       <div style="display: flex; gap: 0.375rem">
         <bim-dropdown vertical label="Labels" name="labels" multiple>
-          ${[...W].map(c=>o`<bim-option label=${c} .checked=${u?[...u].includes(c):!1}></bim-option>`)}
+          ${[...K].map(c=>o`<bim-option label=${c} .checked=${u?[...u].includes(c):!1}></bim-option>`)}
         </bim-dropdown>
         <bim-dropdown vertical label="Assignee" name="assignedTo">
-          ${[..._].map(c=>{const x=r!=null&&r.users?r.users[c]:null,L=x?x.name:c,ue=x==null?void 0:x.picture;return o`<bim-option label=${L} value=${c} .img=${ue} .checked=${y===c}></bim-option>`})}
+          ${[...j].map(c=>{const x=r!=null&&r.users?r.users[c]:null,L=x?x.name:c,fe=x==null?void 0:x.picture;return o`<bim-option label=${L} value=${c} .img=${fe} .checked=${y===c}></bim-option>`})}
         </bim-dropdown>
       </div>
       <div style="display: flex; gap: 0.375rem">
@@ -32,23 +32,23 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
       <bim-text-input vertical label="Description" name="description" type="area" .value=${k??null}></bim-text-input>
       <div style="justify-content: right; display: flex; gap: 0.375rem">
         <style>
-          #${U} {
+          #${M} {
             background-color: transparent;
           }
 
-          #${U}:hover {
+          #${M}:hover {
             --bim-label--c: #FF5252;
           }
 
-          #${Q}:hover {
+          #${N}:hover {
             background-color: #329936;
           }
         </style>
-        <bim-button id=${U} style="flex: 0" @click=${n} label="Cancel"></bim-button>
-        <bim-button id=${Q} style="flex: 0" @click=${pe} ${X(J)} label=${t?"Update Topic":"Add Topic"} icon=${t?"tabler:refresh":"mi:add"}></bim-button>
+        <bim-button id=${M} style="flex: 0" @click=${n} label="Cancel"></bim-button>
+        <bim-button id=${N} style="flex: 0" @click=${be} ${X(J)} label=${t?"Update Topic":"Add Topic"} icon=${t?"tabler:refresh":"mi:add"}></bim-button>
       </div>
     </div>
-  `},ie=(e,l)=>{const{showInput:t,topic:i,styles:n}=e,s={add:!0,delete:!0,...e.actions},r=`input-${S.newRandomId()}`,m=`btn-${S.newRandomId()}`,d=`btn-${S.newRandomId()}`,v=()=>document.getElementById(m),p=()=>document.getElementById(r),b=()=>{const w=p();return w?w.value.trim().length>0:!1},a=()=>{l({showInput:!0})},y=()=>{const w=p(),_=b();w&&_&&(i.createComment(w.value),l({showInput:!1}))},u=()=>{l({showInput:!1})},g=()=>{const w=v();if(!w)return;if(!p()){w.disabled=!0;return}w.disabled=!b()},k=o`
+  `},oe=(e,l)=>{const{showInput:t,topic:i,styles:n}=e,s={add:!0,delete:!0,...e.actions},r=`input-${S.newRandomId()}`,m=`btn-${S.newRandomId()}`,d=`btn-${S.newRandomId()}`,v=()=>document.getElementById(m),p=()=>document.getElementById(r),b=()=>{const w=p();return w?w.value.trim().length>0:!1},a=()=>{l({showInput:!0})},y=()=>{const w=p(),j=b();w&&j&&(i.createComment(w.value),l({showInput:!1}))},u=()=>{l({showInput:!1})},g=()=>{const w=v();if(!w)return;if(!p()){w.disabled=!0;return}w.disabled=!b()},k=o`
     ${s.add?o`<bim-button @click=${a} label="Add Comment" icon="majesticons:comment-line"></bim-button>`:null}
   `,f=o`
     <bim-text-input id=${r} @input=${g} @keypress=${w=>{w.code==="Enter"&&w.ctrlKey&&y()}} type="area"></bim-text-input>
@@ -76,7 +76,7 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
       ${h}
       ${t?f:k}
     </div>
-  `},De=e=>I.create(ie,e),je=Object.freeze(Object.defineProperty({__proto__:null,topicComments:De,topicCommentsSectionTemplate:ie},Symbol.toStringTag,{value:"Module"})),oe=(e,l)=>{const{components:t,editing:i,topic:n,styles:s}=e,r={update:!0,...e.actions},m=(s==null?void 0:s.priorities)??D.priorities,d=(s==null?void 0:s.statuses)??D.statuses,v=(s==null?void 0:s.types)??D.types;let p;n!=null&&n.priority&&(p=m[n.priority]);let b;n!=null&&n.type&&(b=v[n.type]);let a;n!=null&&n.type&&(a=d[n.status]);let y,u;return i?y=ne({components:t,topic:n,styles:s,onSubmit:()=>{l({editing:!1})},onCancel:()=>{l({editing:!1})}}):u=o`
+  `},De=e=>I.create(oe,e),_e=Object.freeze(Object.defineProperty({__proto__:null,topicComments:De,topicCommentsSectionTemplate:oe},Symbol.toStringTag,{value:"Module"})),le=(e,l)=>{const{components:t,editing:i,topic:n,styles:s}=e,r={update:!0,...e.actions},m=(s==null?void 0:s.priorities)??D.priorities,d=(s==null?void 0:s.statuses)??D.statuses,v=(s==null?void 0:s.types)??D.types;let p;n!=null&&n.priority&&(p=m[n.priority]);let b;n!=null&&n.type&&(b=v[n.type]);let a;n!=null&&n.type&&(a=d[n.status]);let y,u;return i?y=ie({components:t,topic:n,styles:s,onSubmit:()=>{l({editing:!1})},onCancel:()=>{l({editing:!1})}}):u=o`
       <div>
         <bim-label>Title</bim-label>
         <bim-label style="--bim-label--c: var(--bim-ui_bg-contrast-100)">${n.title}</bim-label>
@@ -91,14 +91,14 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Status</bim-label>
-        <bim-label .icon=${a==null?void 0:a.icon} style=${M({...E,...a==null?void 0:a.style})}
+        <bim-label .icon=${a==null?void 0:a.icon} style=${U({...E,...a==null?void 0:a.style})}
         >${n.status}
         </bim-label>
       </div>
 
       <div style="display: flex; gap: 0.375rem">
         <bim-label>Type</bim-label>
-        <bim-label .icon=${b==null?void 0:b.icon} style=${M({...E,...b==null?void 0:b.style})}
+        <bim-label .icon=${b==null?void 0:b.icon} style=${U({...E,...b==null?void 0:b.style})}
         >${n.type}
         </bim-label>
       </div>
@@ -106,7 +106,7 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
       ${n.priority?o`
             <div style="display: flex; gap: 0.375rem">
               <bim-label>Priority</bim-label>
-              <bim-label .icon=${p==null?void 0:p.icon} style=${M({...E,...p==null?void 0:p.style})}
+              <bim-label .icon=${p==null?void 0:p.icon} style=${U({...E,...p==null?void 0:p.style})}
               >${n.priority}
               </bim-label>
             </div>`:null}
@@ -153,7 +153,7 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
       ${i?y:u}
     </div>
-  `},_e=e=>I.create(oe,e),Le=Object.freeze(Object.defineProperty({__proto__:null,topicInformation:_e,topicInformationSectionTemplate:oe},Symbol.toStringTag,{value:"Module"})),le=(e,l)=>{const{components:t,topic:i,linking:n}=e,s=t.get(z),r={link:!0,...e.actions},[m,d]=Se({components:t,topics:[...i.relatedTopics].map(a=>s.list.get(a)).map(a=>a)});m.headersHidden=!0,m.hiddenColumns=["Guid","Status","Description","Author","Assignee","Date","DueDate","Type","Priority"];const v=()=>o`
+  `},je=e=>I.create(le,e),Le=Object.freeze(Object.defineProperty({__proto__:null,topicInformation:je,topicInformationSectionTemplate:le},Symbol.toStringTag,{value:"Module"})),se=(e,l)=>{const{components:t,topic:i,linking:n}=e,s=t.get(z),r={link:!0,...e.actions},[m,d]=Se({components:t,topics:[...i.relatedTopics].map(a=>s.list.get(a)).map(a=>a)});m.headersHidden=!0,m.hiddenColumns=["Guid","Status","Description","Author","Assignee","Date","DueDate","Type","Priority"];const v=()=>o`
       <bim-text-input placeholder="Search..." debounce="100" @input=${y=>{const u=y.target;u instanceof ee&&(m.queryString=u.value)}}></bim-text-input> 
     `;let p,b;if(n){m.selectableRows=!0,d({topics:void 0});const a=m.data.filter($=>{const{Guid:f}=$.data;return typeof f!="string"?!1:i.relatedTopics.has(f)}).map($=>$.data);m.selection.add(...a);const y=()=>{const $=[...m.selection].map(({Guid:f})=>typeof f!="string"?null:s.list.has(f)?f:null).map(f=>f);i.relatedTopics.clear(),i.relatedTopics.add(...$),l({linking:!1})},u=()=>{l({linking:!1})},g=`btn-${S.newRandomId()}`,k=`btn-${S.newRandomId()}`;p=o`
       <div style="display: flex; gap: 0.25rem">
@@ -187,7 +187,7 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
       ${p}
       ${m}
     </div> 
-  `},Be=e=>I.create(le,e),Re=Object.freeze(Object.defineProperty({__proto__:null,topicRelations:Be,topicRelationsSectionTemplate:le},Symbol.toStringTag,{value:"Module"})),se=(e,l)=>{const{components:t,topic:i,world:n,linking:s}=e,r={add:!0,link:!0,selectComponents:!0,colorizeComponent:!0,resetColors:!0,updateCamera:!0,delete:!0,unlink:!0,...e.actions},m=t.get(te),[d,v]=Ie({components:t,topic:i,actions:r}),p=()=>o`
+  `},Be=e=>I.create(se,e),Re=Object.freeze(Object.defineProperty({__proto__:null,topicRelations:Be,topicRelationsSectionTemplate:se},Symbol.toStringTag,{value:"Module"})),ae=(e,l)=>{const{components:t,topic:i,world:n,linking:s}=e,r={add:!0,link:!0,selectComponents:!0,colorizeComponent:!0,resetColors:!0,updateCamera:!0,delete:!0,unlink:!0,...e.actions},m=t.get(te),[d,v]=Ie({components:t,topic:i,actions:r}),p=()=>o`
       <bim-text-input placeholder="Search..." debounce="100" @input=${u=>{const g=u.target;g instanceof ee&&(d.queryString=g.value)}}></bim-text-input> 
     `;let b,a;if(s){d.selectableRows=!0,v({topic:void 0,actions:{delete:!1,updateCamera:!1,colorizeComponent:!1,resetColors:!1}});const y=d.data.filter(f=>{const{Guid:h}=f.data;return typeof h!="string"?!1:i.viewpoints.has(h)}).map(f=>f.data);d.selection.add(...y);const u=()=>{const f=[...d.selection].map(({Guid:h})=>typeof h!="string"?null:m.list.has(h)?h:null).map(h=>h);i.viewpoints.clear(),i.viewpoints.add(...f),l({linking:!1})},g=()=>{l({linking:!1})},k=`btn-${S.newRandomId()}`,$=`btn-${S.newRandomId()}`;b=o`
       <div style="display: flex; gap: 0.25rem">
@@ -224,19 +224,19 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
       ${b}
       ${d}
     </div> 
-  `},Pe=e=>I.create(se,e),Fe=Object.freeze(Object.defineProperty({__proto__:null,topicViewpoints:Pe,topicViewpointsSectionTemplate:se},Symbol.toStringTag,{value:"Module"})),P={...je,...Le,...Re,...Fe},Oe=e=>o`
+  `},Pe=e=>I.create(ae,e),Fe=Object.freeze(Object.defineProperty({__proto__:null,topicViewpoints:Pe,topicViewpointsSectionTemplate:ae},Symbol.toStringTag,{value:"Module"})),P={..._e,...Le,...Re,...Fe},Oe=e=>o`
     <bim-panel-section fixed label="New Topic" name="topic">
-      ${ne(e)}
+      ${ie(e)}
     </bim-panel-section>
-  `,Ue=e=>I.create(Oe,e),Me=Object.freeze(Object.defineProperty({__proto__:null,topic:Ue},Symbol.toStringTag,{value:"Module"})),Ee={...Me};S.init();const q=document.createElement("bim-viewport"),T=new ye,Ve=T.get(ge),A=Ve.create(),ae=new $e(T);ae.setup();A.scene=ae;const re=new we(T,q);A.renderer=re;const K=new ve(T);A.camera=K;K.controls.setLookAt(10,5.5,5,-4,-1,-6.5);q.addEventListener("resize",()=>{re.resize(),K.updateAspect()});T.init();const ze=T.get(he);ze.create(A);const qe="https://thatopen.github.io/engine_fragment/resources/worker.mjs",Ke=await fetch(qe),Ne=await Ke.blob(),We=new File([Ne],"worker.mjs",{type:"text/javascript"}),Ge=URL.createObjectURL(We),B=T.get(Te);B.init(Ge);A.camera.controls.addEventListener("update",()=>B.core.update());B.list.onItemSet.add(async({value:e})=>{e.useCamera(A.camera.three),A.scene.three.add(e.object),await B.core.update(!0)});B.core.models.materials.list.onItemSet.add(({value:e})=>{"isLodMaterial"in e&&e.isLodMaterial||(e.polygonOffset=!0,e.polygonOffsetUnits=1,e.polygonOffsetFactor=Math.random())});const ce=T.get(ke);await ce.setup({autoSetWasm:!1,wasm:{path:"https://unpkg.com/web-ifc@0.0.77/",absolute:!0}});const He=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),Je=await He.arrayBuffer(),Qe=new Uint8Array(Je);await ce.load(Qe,!0,"small");const O={"jhon.doe@example.com":{name:"Jhon Doe",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Profile-Image-AI.jpg"},"user_a@something.com":{name:"User A",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Portrait-Photography.jpg"},"user_b@something.com":{name:"User B",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/AI-Portrait.jpg"}},j=T.get(z);j.setup({users:new Set(Object.keys(O)),labels:new Set(["Architecture","Structure","MEP"])});const Xe=T.get(te);j.list.onItemSet.add(({value:e})=>{const l=Xe.create();l.world=A,e.viewpoints.add(l.guid)});const[R]=Ae.topicsList({components:T,dataStyles:{users:O}});R.selectableRows=!0;const[me,Ye]=Ee.topic({components:T,styles:{users:O}}),Z=me.querySelector("bim-dropdown[name='assignedTo']");Z&&(Z.searchBox=!0);const F=I.create(()=>o`
+  `,Me=e=>I.create(Oe,e),Ue=Object.freeze(Object.defineProperty({__proto__:null,topic:Me},Symbol.toStringTag,{value:"Module"})),Ee={...Ue};S.init();const q=document.createElement("bim-viewport"),T=new ge,Ve=T.get($e),A=Ve.create(),re=new we(T);re.setup();A.scene=re;const ce=new ve(T,q);A.renderer=ce;const W=new he(T);A.camera=W;W.controls.setLookAt(10,5.5,5,-4,-1,-6.5);q.addEventListener("resize",()=>{ce.resize(),W.updateAspect()});T.init();const ze=T.get(Te);ze.create(A);const qe=await ne.getWorker(),B=T.get(ne);B.init(qe);A.camera.controls.addEventListener("update",()=>B.core.update());B.list.onItemSet.add(async({value:e})=>{e.useCamera(A.camera.three),A.scene.three.add(e.object),await B.core.update(!0)});B.core.models.materials.list.onItemSet.add(({value:e})=>{"isLodMaterial"in e&&e.isLodMaterial||(e.polygonOffset=!0,e.polygonOffsetUnits=1,e.polygonOffsetFactor=Math.random())});const me=T.get(ke);await me.setup({autoSetWasm:!1,wasm:{path:"https://unpkg.com/web-ifc@0.0.77/",absolute:!0}});const We=await fetch("https://thatopen.github.io/engine_ui-components/resources/small.ifc"),He=await We.arrayBuffer(),Ke=new Uint8Array(He);await me.load(Ke,!0,"small");const O={"jhon.doe@example.com":{name:"Jhon Doe",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Profile-Image-AI.jpg"},"user_a@something.com":{name:"User A",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/Portrait-Photography.jpg"},"user_b@something.com":{name:"User B",picture:"https://www.profilebakery.com/wp-content/uploads/2023/04/AI-Portrait.jpg"}},_=T.get(z);_.setup({users:new Set(Object.keys(O)),labels:new Set(["Architecture","Structure","MEP"])});const Ge=T.get(te);_.list.onItemSet.add(({value:e})=>{const l=Ge.create();l.world=A,e.viewpoints.add(l.guid)});const[R]=Ae.topicsList({components:T,dataStyles:{users:O}});R.selectableRows=!0;const[de,Qe]=Ee.topic({components:T,styles:{users:O}}),Z=de.querySelector("bim-dropdown[name='assignedTo']");Z&&(Z.searchBox=!0);const F=I.create(()=>o`
     <dialog class="form-dialog">
      <bim-panel style="border-radius: var(--bim-ui_size-base); width: 22rem;">
-      ${me}
+      ${de}
      </bim-panel> 
     </dialog>
-  `);document.body.append(F);const Ze=I.create(()=>o`
+  `);document.body.append(F);const Je=I.create(()=>o`
     <bim-button style="flex: 0" @click=${()=>{F.showModal()}} label="Create Topic" icon="material-symbols:task"></bim-button>
-  `);Ye({onCancel:()=>{F.close()},onSubmit:()=>{F.close()}});const[et,de]=I.create(e=>{const{components:l,topic:t,world:i,actions:n,styles:s}=e;let r,m;if(t){const[d]=P.topicInformation({components:l,topic:t,actions:n==null?void 0:n.information,styles:s}),[v]=P.topicViewpoints({components:l,topic:t,world:i,actions:n==null?void 0:n.viewpoints}),[p]=P.topicRelations({components:l,topic:t,actions:n==null?void 0:n.relatedTopics}),[b]=P.topicComments({topic:t,actions:n==null?void 0:n.comments,styles:s==null?void 0:s.users}),a=()=>{window.alert(`An email will be sent to ${t.assignedTo}! (obviosuly not, this is just for demo purposes)`)};r=o`
+  `);Qe({onCancel:()=>{F.close()},onSubmit:()=>{F.close()}});const[Ne,pe]=I.create(e=>{const{components:l,topic:t,world:i,actions:n,styles:s}=e;let r,m;if(t){const[d]=P.topicInformation({components:l,topic:t,actions:n==null?void 0:n.information,styles:s}),[v]=P.topicViewpoints({components:l,topic:t,world:i,actions:n==null?void 0:n.viewpoints}),[p]=P.topicRelations({components:l,topic:t,actions:n==null?void 0:n.relatedTopics}),[b]=P.topicComments({topic:t,actions:n==null?void 0:n.comments,styles:s==null?void 0:s.users}),a=()=>{window.alert(`An email will be sent to ${t.assignedTo}! (obviosuly not, this is just for demo purposes)`)};r=o`
         <bim-panel-section label="Information" icon="ph:info-bold">
           ${d}
         </bim-panel-section>
@@ -266,25 +266,25 @@ import{n as X,b as o,e as Y,o as M}from"./if-defined-DypSrBBK.js";import{f as z,
         ${m}
         ${r}
       </bim-panel> 
-    `},{components:T,world:A,styles:{users:O}});j.list.onItemUpdated.add(()=>de());R.addEventListener("rowcreated",e=>{const{row:l}=e.detail;l.addEventListener("click",()=>{const{Guid:t}=l.data;if(!t)return;const i=j.list.get(t);i&&de({topic:i})}),l.style.cursor="pointer",l.addEventListener("mouseover",()=>{l.style.backgroundColor=`color-mix(
+    `},{components:T,world:A,styles:{users:O}});_.list.onItemUpdated.add(()=>pe());R.addEventListener("rowcreated",e=>{const{row:l}=e.detail;l.addEventListener("click",()=>{const{Guid:t}=l.data;if(!t)return;const i=_.list.get(t);i&&pe({topic:i})}),l.style.cursor="pointer",l.addEventListener("mouseover",()=>{l.style.backgroundColor=`color-mix(
         in lab,
         var(--bim-ui_bg-contrast-20) 30%,
         var(--bim-ui_main-base) 10%
-      )`}),l.addEventListener("mouseout",()=>{l.style.removeProperty("background-color")})});const tt=I.create(()=>o`<bim-button style="flex: 0" @click=${async()=>{const l=[...R.selection].map(({Guid:r})=>r&&typeof r=="string"?j.list.get(r):null).filter(r=>r),t=l.length>0?l:[...j.list.values()];if(t.length===0)return;const i=await j.export(t),n=new File([i],"topics.bcf"),s=document.createElement("a");s.href=URL.createObjectURL(n),s.download=n.name,s.click(),URL.revokeObjectURL(s.href)}} label="Download BCF" icon="material-symbols:download"></bim-button> `),nt=I.create(()=>o`
+      )`}),l.addEventListener("mouseout",()=>{l.style.removeProperty("background-color")})});const Xe=I.create(()=>o`<bim-button style="flex: 0" @click=${async()=>{const l=[...R.selection].map(({Guid:r})=>r&&typeof r=="string"?_.list.get(r):null).filter(r=>r),t=l.length>0?l:[..._.list.values()];if(t.length===0)return;const i=await _.export(t),n=new File([i],"topics.bcf"),s=document.createElement("a");s.href=URL.createObjectURL(n),s.download=n.name,s.click(),URL.revokeObjectURL(s.href)}} label="Download BCF" icon="material-symbols:download"></bim-button> `),Ye=I.create(()=>o`
     <bim-panel>
       <bim-panel-section label="BCF" fixed>
         <div style="display: flex; justify-content: space-between; gap: 0.5rem">
           <bim-text-input style="flex-grow: 0; flex-basis: 15rem" @input=${l=>{const t=l.target;R.queryString=t.value}} placeholder="Search a topic..." debounce="100"></bim-text-input>
           <div style="display: flex; gap: 0.5rem">
-            ${Ze}
-            ${tt}
+            ${Je}
+            ${Xe}
           </div> 
         </div> 
         ${R}
       </bim-panel-section>
     </bim-panel>
-  `),N=document.createElement("bim-grid");N.layouts={main:{template:`
+  `),H=document.createElement("bim-grid");H.layouts={main:{template:`
     "customTopicPanel viewport"
     "customTopicPanel bcfPanel" 25rem
     /24rem 1fr
-    `,elements:{bcfPanel:nt,viewport:q,customTopicPanel:et}}};N.layout="main";document.body.append(N);
+    `,elements:{bcfPanel:Ye,viewport:q,customTopicPanel:Ne}}};H.layout="main";document.body.append(H);

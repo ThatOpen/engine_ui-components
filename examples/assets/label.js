@@ -1,1 +1,1 @@
-import"./if-defined-DypSrBBK.js";import{M as i}from"./index-CKW6zj6D.js";i.init();
+import"./when-D9oPOCfO.js";import{M as l}from"./index-CICXNLO4.js";l.init();const i=document.getElementById("label-prop");i.label="Set via .label property";const o=document.getElementById("theme-toggle"),e=document.documentElement;o.addEventListener("click",()=>{const t=e.classList.contains("bim-ui-dark");e.classList.toggle("bim-ui-dark",!t),e.classList.toggle("bim-ui-light",t),o.icon=t?"solar:sun-bold":"solar:moon-bold"});

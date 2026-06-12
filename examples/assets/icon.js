@@ -1,0 +1,1 @@
+import"./when-D9oPOCfO.js";import{a as e}from"./index-DQFDb4ne.js";e.init();const i=document.getElementById("theme-toggle"),o=document.documentElement;i.addEventListener("click",()=>{const t=o.classList.contains("bim-ui-dark");o.classList.toggle("bim-ui-dark",!t),o.classList.toggle("bim-ui-light",t),i.icon=t?"solar:sun-bold":"solar:moon-bold"});

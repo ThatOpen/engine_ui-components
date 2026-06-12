@@ -124,6 +124,10 @@
     "description": ""
   },
   {
+    "path": "packages/core/src/components/Icon/example.ts",
+    "description": ""
+  },
+  {
     "path": "packages/core/src/components/Grid/example.ts",
     "description": ""
   },

@@ -1,4 +1,4 @@
-import{b as t}from"./if-defined-DypSrBBK.js";import{M as n,C as a}from"./index-CKW6zj6D.js";n.init();const e=document.createElement("bim-table"),r=a.create(()=>t`
+import{b as t}from"./when-D9oPOCfO.js";import{M as n,C as a}from"./index-CICXNLO4.js";n.init();const e=document.createElement("bim-table"),r=a.create(()=>t`
     <!-- The most important thing is to have the slot attribute set as missing-data -->
     <!-- Other than that, the element can hold anything inside -->
     <!-- Be aware you can use this missing-data slot no matter if you are not loading data asynchronously -->

@@ -1,1 +1,1 @@
-import"./if-defined-DypSrBBK.js";import{M as i}from"./index-CKW6zj6D.js";i.init();
+import"./when-D9oPOCfO.js";import{M as i}from"./index-CICXNLO4.js";i.init();const t=document.getElementById("prog-tooltip");var e;(e=document.getElementById("btn-toggle-visible"))==null||e.addEventListener("click",()=>{t.visible=!t.visible});

@@ -1,42 +1,356 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bim-ui-dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Toolbar</title>
   <style>
-    * {
-      margin: 0;
-    }
-
     html {
       font-family: sans-serif;
     }
 
-    bim-toolbar {
-      border-radius: 0;
+    body {
+      background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 56rem;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+      padding-top: 0.5rem;
     }
   </style>
   <script type="module" crossorigin src="../assets/toolbar.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/if-defined-DypSrBBK.js">
-  <link rel="modulepreload" crossorigin href="../assets/index-CKW6zj6D.js">
+  <link rel="modulepreload" crossorigin href="../assets/when-D9oPOCfO.js">
+  <link rel="modulepreload" crossorigin href="../assets/index-CICXNLO4.js">
 </head>
 
 <body>
-  <bim-toolbar>
-    <bim-toolbar-section label="Walls">
-      <bim-button vertical label="Click me!" icon="solar:settings-bold" active></bim-button>
-      <bim-toolbar-group>
-        <bim-button icon="solar:settings-bold" label="Longer Button Label Here"></bim-button>
-        <bim-button icon="solar:settings-bold" label="Button Label"></bim-button>
-        <bim-button icon="solar:settings-bold"></bim-button>
-        <bim-button icon="solar:settings-bold"></bim-button>
-        <bim-button icon="solar:settings-bold"></bim-button>
-        <bim-button icon="solar:settings-bold"></bim-button>
-      </bim-toolbar-group>
-    </bim-toolbar-section>
-  </bim-toolbar>
+  <bim-button id="theme-toggle" icon="tabler:moon" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+
+  <h1>bim-toolbar / bim-toolbar-section / bim-toolbar-group</h1>
+  <p class="subtitle">Barra de herramientas horizontal o vertical con secciones, grupos en grid y botones verticales.</p>
+
+  <!-- 1. Básico -->
+  <div class="section">
+    <div class="section-title">Básico</div>
+    <div class="row">
+      <span class="row-label">una sección</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Draw">
+          <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+          <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+          <bim-button vertical label="Column" icon="tabler:ruler"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">varias secciones</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Draw">
+          <bim-button vertical label="Wall" icon="tabler:wall" active></bim-button>
+          <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="Manage">
+          <bim-button vertical label="Properties" icon="tabler:file-description"></bim-button>
+          <bim-button vertical label="Classify" icon="tabler:tag"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="View">
+          <bim-button vertical label="Camera" icon="tabler:camera"></bim-button>
+          <bim-button vertical label="Explode" icon="tabler:stack"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">sección con icon</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Selection" icon="tabler:pointer">
+          <bim-button vertical label="Select" icon="tabler:pointer" active></bim-button>
+          <bim-button vertical label="Box select" icon="tabler:square"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+  </div>
+
+  <!-- 2. Horizontal buttons (no vertical prop) -->
+  <div class="section">
+    <div class="section-title">Botones horizontales</div>
+    <div class="row">
+      <span class="row-label">una sección</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Edit">
+          <bim-button label="Undo" icon="tabler:arrow-back-up"></bim-button>
+          <bim-button label="Redo" icon="tabler:arrow-forward-up"></bim-button>
+          <bim-button label="Cut" icon="tabler:cut"></bim-button>
+          <bim-button label="Copy" icon="tabler:copy"></bim-button>
+          <bim-button label="Paste" icon="tabler:clipboard"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">varias secciones</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="File">
+          <bim-button label="New" icon="tabler:file-plus"></bim-button>
+          <bim-button label="Open" icon="tabler:folder-open"></bim-button>
+          <bim-button label="Save" icon="tabler:device-floppy"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="View">
+          <bim-button label="Zoom In" icon="tabler:zoom-in"></bim-button>
+          <bim-button label="Zoom Out" icon="tabler:zoom-out"></bim-button>
+          <bim-button label="Fit" icon="tabler:maximize"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="Help">
+          <bim-button label="Docs" icon="tabler:book"></bim-button>
+          <bim-button label="About" icon="tabler:info-circle"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">solo iconos (label-hidden)</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Actions" label-hidden>
+          <bim-button label="Move" icon="tabler:arrows-move" label-hidden></bim-button>
+          <bim-button label="Rotate" icon="tabler:rotate" label-hidden></bim-button>
+          <bim-button label="Scale" icon="tabler:resize" label-hidden></bim-button>
+          <bim-button label="Mirror" icon="tabler:flip-horizontal" label-hidden></bim-button>
+          <bim-button label="Array" icon="tabler:layout-grid" label-hidden></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">mixed: icon-only + con label</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Snap">
+          <bim-button label="Endpoint" icon="tabler:point" label-hidden></bim-button>
+          <bim-button label="Midpoint" icon="tabler:circle-half" label-hidden></bim-button>
+          <bim-button label="Intersection" icon="tabler:asterisk" label-hidden></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="Measure">
+          <bim-button label="Distance" icon="tabler:ruler-measure"></bim-button>
+          <bim-button label="Angle" icon="tabler:angle"></bim-button>
+          <bim-button label="Area" icon="tabler:vector-triangle"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+  </div>
+
+  <!-- 3. Vertical toolbar -->
+  <div class="section">
+    <div class="section-title">Vertical</div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-toolbar vertical>
+        <bim-toolbar-section label="Draw">
+          <bim-button label="Wall" icon="tabler:wall"></bim-button>
+          <bim-button label="Slab" icon="tabler:layers-intersect"></bim-button>
+          <bim-button label="Column" icon="tabler:ruler"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="View">
+          <bim-button label="Camera" icon="tabler:camera"></bim-button>
+          <bim-button label="Explode" icon="tabler:stack"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+  </div>
+
+  <!-- 4. labels-hidden -->
+  <div class="section">
+    <div class="section-title">labels-hidden</div>
+    <div class="row">
+      <span class="row-label">labels-hidden</span>
+      <bim-toolbar labels-hidden>
+        <bim-toolbar-section label="Draw">
+          <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+          <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+          <bim-button vertical label="Column" icon="tabler:ruler"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="View">
+          <bim-button vertical label="Camera" icon="tabler:camera"></bim-button>
+          <bim-button vertical label="Explode" icon="tabler:stack"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">section label-hidden</span>
+      <bim-toolbar>
+        <bim-toolbar-section label-hidden>
+          <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+          <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+        </bim-toolbar-section>
+        <bim-toolbar-section label="View">
+          <bim-button vertical label="Camera" icon="tabler:camera"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+  </div>
+
+  <!-- 5. bim-toolbar-group -->
+  <div class="section">
+    <div class="section-title">bim-toolbar-group</div>
+    <div class="row">
+      <span class="row-label">group (rows=2)</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Elements">
+          <bim-button vertical label="Draw" icon="tabler:pencil"></bim-button>
+          <bim-toolbar-group>
+            <bim-button icon="tabler:wall" label="Wall"></bim-button>
+            <bim-button icon="tabler:layers-intersect" label="Slab"></bim-button>
+            <bim-button icon="tabler:ruler" label="Column"></bim-button>
+            <bim-button icon="tabler:door" label="Door"></bim-button>
+            <bim-button icon="tabler:window" label="Window"></bim-button>
+            <bim-button icon="tabler:stairs" label="Stair"></bim-button>
+          </bim-toolbar-group>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">group rows=3</span>
+      <bim-toolbar>
+        <bim-toolbar-section label="Filters">
+          <bim-toolbar-group rows="3">
+            <bim-button icon="tabler:eye" label="Show"></bim-button>
+            <bim-button icon="tabler:eye-off" label="Hide"></bim-button>
+            <bim-button icon="tabler:ghost" label="X-Ray"></bim-button>
+            <bim-button icon="tabler:layers-intersect" label="Isolate"></bim-button>
+            <bim-button icon="tabler:filter" label="Filter"></bim-button>
+            <bim-button icon="tabler:refresh" label="Reset"></bim-button>
+          </bim-toolbar-group>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical + group</span>
+      <bim-toolbar vertical>
+        <bim-toolbar-section label="Tools">
+          <bim-toolbar-group>
+            <bim-button icon="tabler:pointer" label="Select"></bim-button>
+            <bim-button icon="tabler:arrows-move" label="Move"></bim-button>
+            <bim-button icon="tabler:rotate" label="Rotate"></bim-button>
+            <bim-button icon="tabler:resize" label="Scale"></bim-button>
+          </bim-toolbar-group>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+  </div>
+
+  <!-- 6. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-toolbar--bdrs: 0</span>
+      <bim-toolbar style="--bim-toolbar--bdrs: 0;">
+        <bim-toolbar-section label="Draw">
+          <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+          <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-toolbar--border</span>
+      <bim-toolbar style="--bim-toolbar--border: 2px solid var(--bim-ui_accent-base);">
+        <bim-toolbar-section label="Draw">
+          <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+          <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+        </bim-toolbar-section>
+      </bim-toolbar>
+    </div>
+  </div>
+
+  <!-- 7. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">toggle hidden</span>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <bim-toolbar id="tb-prog">
+          <bim-toolbar-section label="Actions">
+            <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+            <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+          </bim-toolbar-section>
+        </bim-toolbar>
+        <bim-button id="btn-toggle-hidden" label="Toggle hidden" icon="tabler:eye" style="width: min-content;"></bim-button>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">toggle labels-hidden</span>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <bim-toolbar id="tb-labels">
+          <bim-toolbar-section label="Draw">
+            <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+            <bim-button vertical label="Slab" icon="tabler:layers-intersect"></bim-button>
+            <bim-button vertical label="Column" icon="tabler:ruler"></bim-button>
+          </bim-toolbar-section>
+        </bim-toolbar>
+        <bim-button id="btn-toggle-labels" label="Toggle labels" icon="tabler:typography" style="width: min-content;"></bim-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">hiddenchange</span>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <bim-toolbar id="tb-event">
+          <bim-toolbar-section label="Draw">
+            <bim-button vertical label="Wall" icon="tabler:wall"></bim-button>
+          </bim-toolbar-section>
+        </bim-toolbar>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <bim-button id="btn-event-toggle" label="Toggle hidden" style="width: min-content;"></bim-button>
+          <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
