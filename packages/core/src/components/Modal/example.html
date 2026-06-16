@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .conflict-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .conflict-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background-color: var(--bim-ui_bg-contrast-5, rgba(255,255,255,0.05));
+      border: 1px solid var(--bim-ui_bg-contrast-20);
+    }
+
+    .conflict-item bim-label:first-child {
+      font-weight: 600;
+    }
+
+    .conflict-item bim-label:last-child {
+      --bim-label--c: var(--bim-ui_bg-contrast-60);
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden></bim-button>
+  <h1>bim-modal</h1>
+  <p class="subtitle">Modal dialog with header, slot content, and confirm/cancel actions.</p>
+
+  <!-- 1. Basic -->
+  <div class="section">
+    <div class="section-title">Basic</div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-button id="btn-basic" label="Open modal" icon="solar:dialog-bold"></bim-button>
+      <bim-modal id="modal-basic" label="Confirm action" icon="solar:dialog-bold">
+        <bim-label style="white-space: normal;">Are you sure you want to proceed?</bim-label>
+      </bim-modal>
+    </div>
+    <div class="row">
+      <span class="row-label">no header</span>
+      <bim-button id="btn-no-header" label="Open modal" icon="solar:dialog-bold"></bim-button>
+      <bim-modal id="modal-no-header">
+        <bim-label style="white-space: normal;">No header — just content and actions.</bim-label>
+      </bim-modal>
+    </div>
+  </div>
+
+  <!-- 2. Custom labels -->
+  <div class="section">
+    <div class="section-title">Custom button labels</div>
+    <div class="row">
+      <span class="row-label">confirm-label / cancel-label</span>
+      <bim-button id="btn-custom-labels" label="Delete file" icon="solar:trash-bin-trash-bold"
+        style="--bim-label--c: rgb(239 75 75);"></bim-button>
+      <bim-modal
+        id="modal-custom-labels"
+        label="Delete file"
+        icon="solar:trash-bin-trash-bold"
+        confirm-label="Delete"
+        cancel-label="Keep it">
+        <bim-label style="white-space: normal;">
+          This action cannot be undone. The file will be permanently removed.
+        </bim-label>
+      </bim-modal>
+    </div>
+  </div>
+
+  <!-- 3. Rich content (file conflict use case) -->
+  <div class="section">
+    <div class="section-title">Rich slot content</div>
+    <div class="row">
+      <span class="row-label">file conflict</span>
+      <bim-button id="btn-conflict" label="Simulate upload conflict" icon="solar:upload-bold"></bim-button>
+      <bim-modal
+        id="modal-conflict"
+        label="File conflict"
+        icon="solar:danger-triangle-bold"
+        confirm-label="Create new version"
+        cancel-label="Upload as new file">
+        <div class="conflict-list">
+          <bim-label style="white-space: normal; margin-bottom: 0.5rem;">
+            The following files already exist in this project. Choose how to handle them:
+          </bim-label>
+          <div class="conflict-item">
+            <bim-label icon="bim:ifc">column.ifc</bim-label>
+            <bim-label icon="tabler:folder">Structures / Models</bim-label>
+          </div>
+          <div class="conflict-item">
+            <bim-label icon="vscode-icons:file-type-pdf2">report.pdf</bim-label>
+            <bim-label icon="tabler:folder">Documentation</bim-label>
+          </div>
+        </div>
+      </bim-modal>
+    </div>
+  </div>
+
+  <!-- 4. Async confirm -->
+  <div class="section">
+    <div class="section-title">Async confirm</div>
+    <div class="row">
+      <span class="row-label">loading state</span>
+      <bim-button id="btn-async" label="Open modal" icon="solar:upload-bold"></bim-button>
+      <bim-label id="async-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+      <bim-modal id="modal-async" label="Save changes" icon="solar:diskette-bold" confirm-label="Save">
+        <bim-label style="white-space: normal;">
+          This will upload the file to the server. The modal stays open until the operation completes.
+        </bim-label>
+      </bim-modal>
+    </div>
+  </div>
+
+  <!-- 5. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">confirm / cancel</span>
+      <bim-button id="btn-events" label="Open modal" icon="solar:cursor-bold"></bim-button>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+      <bim-modal id="modal-events" label="Listen to events" icon="solar:bell-bold">
+        <bim-label style="white-space: normal;">Click Confirm or Cancel (or press Escape) and watch the event output.</bim-label>
+      </bim-modal>
+    </div>
+  </div>
+
+  <!-- 5. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-modal--bg</span>
+      <bim-button id="btn-custom-bg" label="Open styled modal" icon="solar:palette-bold"></bim-button>
+      <bim-modal
+        id="modal-custom-bg"
+        label="Custom background"
+        icon="solar:palette-bold"
+        style="--bim-modal--bg: rgb(30 27 75);">
+        <bim-label style="white-space: normal;">This modal uses a custom --bim-modal--bg color.</bim-label>
+      </bim-modal>
+    </div>
+  </div>
+
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>
