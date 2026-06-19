@@ -212,6 +212,15 @@ export class Panel extends LitElement implements HasName {
   headerHidden = false;
 
   /**
+   * When `true` (default), the panel's header title is rendered with gradient
+   * text (via the underlying bim-label). Set `false` for a flat title color.
+   * Customise the gradient with the `--bim-label--gradient` CSS variable.
+   * @default true
+   */
+  @property({ type: Boolean, reflect: true })
+  gradient = true;
+
+  /**
    * A record that maps element names or labels to transformation functions.
    * This record is used to transform the values from elements before they are returned as part of the `value` property.
    *
@@ -301,7 +310,7 @@ export class Panel extends LitElement implements HasName {
         ${this.label || this.name || this.icon
           ? html`
             <div class="header">
-              <bim-label .icon=${this.icon}>${this.label || this.name}</bim-label>
+              <bim-label ?gradient=${this.gradient} .icon=${this.icon}>${this.label || this.name}</bim-label>
               <div class="header-end">
                 <slot name="header-end"></slot>
               </div>

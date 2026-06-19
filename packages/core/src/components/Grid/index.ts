@@ -84,7 +84,7 @@ export class Grid<
     }
     
     .grid-divider:hover > div {
-      background-color: var(--bim-ui_accent-base);
+      background-color: var(--bim-grid--divider-c, var(--bim-ui_main-base));
     }
     
     .divider-horizontal {

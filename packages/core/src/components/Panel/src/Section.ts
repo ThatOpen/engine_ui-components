@@ -186,6 +186,15 @@ export class PanelSection extends LitElement implements HasName {
   fixed?: boolean;
 
   /**
+   * When `true` (default), the section's header title is rendered with gradient
+   * text (matching bim-panel). Set `false` for a flat title color. Customise via
+   * the `--bim-label--gradient` CSS variable.
+   * @default true
+   */
+  @property({ type: Boolean, reflect: true })
+  gradient = true;
+
+  /**
    * Controls the collapsed state of the panel section. When `collapsed` is true, the content of the section is hidden, and only the header is visible. This property can be toggled to show or hide the section's content, and is reflected to an attribute for easy HTML or JavaScript manipulation. Note that sections marked as `fixed` ignore changes to this property.
    * @type {Boolean}
    * @default undefined
@@ -287,7 +296,7 @@ export class PanelSection extends LitElement implements HasName {
         @keydown=${this.onHeaderKeydown}
       >
         ${this.label || this.icon || this.name
-          ? html`<bim-label aria-hidden="true" .icon=${this.icon}>${this.label}</bim-label>`
+          ? html`<bim-label aria-hidden="true" ?gradient=${this.gradient} .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="header-end">
           <slot name="header-end"></slot>

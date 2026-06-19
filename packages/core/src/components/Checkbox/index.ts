@@ -141,6 +141,56 @@ export class Checkbox extends LitElement implements HasValue<boolean> {
         transform: translateY(-100%) scale(1);
       }
     }
+
+    /* ── Toggle / switch mode: bim-checkbox[toggle] ──────────────────
+       Renders a sliding knob in a pill track instead of the check box.
+       Knob is a dark ball with an outline; track turns main-base when on. */
+    .switch-knob {
+      display: none;
+    }
+
+    :host([toggle]) .input-container {
+      width: 2rem;
+      height: 1.1rem;
+    }
+
+    :host([toggle]) input {
+      width: 100%;
+      height: 100%;
+      border-radius: 1rem;
+      box-shadow: none;
+      background: var(--bim-checkbox--toggle-track-c, var(--bim-ui_bg-contrast-30));
+      transition: background-color 0.2s;
+    }
+
+    :host([toggle]) input:checked,
+    :host([toggle]) input:indeterminate {
+      background: var(--bim-checkbox--toggle-track-on-c, var(--bim-ui_main-base));
+    }
+
+    :host([toggle]) input + svg {
+      display: none;
+    }
+
+    :host([toggle]) .switch-knob {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 0.15rem;
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      background: var(--bim-checkbox--toggle-knob-c, var(--bim-ui_bg-contrast-80));
+      border: 1px solid var(--bim-checkbox--toggle-knob-bd-c, var(--bim-ui_bg-contrast-40));
+      box-sizing: border-box;
+      transform: translateY(-50%);
+      transition: left 0.2s ease;
+      pointer-events: none;
+    }
+
+    :host([toggle]) input:checked ~ .switch-knob {
+      left: calc(100% - 0.95rem);
+    }
   `;
 
   /**
@@ -224,6 +274,17 @@ export class Checkbox extends LitElement implements HasValue<boolean> {
   inverted = false;
 
   /**
+   * Renders the checkbox as a toggle SWITCH (a sliding knob in a pill track)
+   * instead of a checkbox box. The knob is a dark ball with an outline; the
+   * track turns `--bim-ui_main-base` when on. Customise via
+   * `--bim-checkbox--toggle-track-c` / `-track-on-c` / `-knob-c` / `-knob-bd-c`.
+   * @default false
+   * @example <bim-checkbox toggle checked></bim-checkbox>
+   */
+  @property({ type: Boolean, reflect: true })
+  toggle = false;
+
+  /**
    * A getter that returns the current checked state of the checkbox. This is useful for retrieving the checkbox's value in form submissions or JavaScript interactions as it provides a consistent `value` property as many other components.
    * @type {boolean}
    * @default false
@@ -280,6 +341,7 @@ export class Checkbox extends LitElement implements HasValue<boolean> {
             .disabled="${this.disabled}"
           />
           ${this.indeterminate ? ICON_INDETERMINATE : ICON_CHECK}
+          <span class="switch-knob"></span>
         </div>
       </label>
     `;

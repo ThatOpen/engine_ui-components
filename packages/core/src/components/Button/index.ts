@@ -210,6 +210,15 @@ export class Button extends LitElement {
   /** @deprecated Use `<bim-tooltip>` inside the button instead. */
   private _tooltipText?: string;
 
+  /**
+   * The text of the tooltip to be displayed when hovering over the button.
+   * @type {string}
+   * @default undefined
+   * @example <bim-button label="Click me" tooltip-text="This is a tooltip"></bim-button>
+   * @example const button = document.createElement('bim-button');
+   *          button.label = 'Click me';
+   *          button.tooltipText = 'This is a tooltip';
+   */
   @property({ type: String, attribute: "tooltip-text", reflect: true })
   get tooltipText() { return this._tooltipText; }
   set tooltipText(value: string | undefined) {

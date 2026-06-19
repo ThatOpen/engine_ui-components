@@ -9,14 +9,11 @@ const scrollbar = css`
 
   ::-webkit-scrollbar-thumb {
     border-radius: 0.25rem;
-    background-color: var(
-      --bim-scrollbar--c,
-      var(--bim-ui_bg-contrast-60)
-    );
+    background-color: var(--bim-scrollbar--c, #3C3C41);
   }
 
   ::-webkit-scrollbar-track {
-    background-color: var(--bim-scrollbar--bgc, var(--bim-ui_bg-contrast-40));
+    background-color: var(--bim-scrollbar--bgc, transparent);
   }
 `;
 
@@ -52,6 +49,12 @@ const globalStyles = css`
     --bim-ui_success-contrast: var(--bim-ui_gray-0);
     --bim-ui_info-base: #4a90d9;
     --bim-ui_info-contrast: var(--bim-ui_gray-10);
+
+    /* Scrollbar (themeable; consumed by the global ::-webkit-scrollbar rule
+       above AND by any app scroll container that references these vars, so the
+       whole platform's scrollbars stay consistent from one place). */
+    --bim-scrollbar--c: #3C3C41;
+    --bim-scrollbar--bgc: transparent;
 
     /* Sizes */
     --bim-ui_size-4xs: 0.0625rem; /* 1px */

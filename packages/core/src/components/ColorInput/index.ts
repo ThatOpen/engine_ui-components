@@ -17,6 +17,11 @@ export class ColorInput extends LitElement implements HasValue, HasName {
     :host {
       /* flex: 1; */
       display: block;
+      /* Give the field a single dark surface (the SAME way NumberInput does),
+         so the control reads as one box. The swatch/hex sit inside bim-input's
+         padded field — NOT in a second nested background (which looked like a
+         "double background"). */
+      --bim-input--bgc: var(--bim-color-input--bgc, var(--bim-ui_bg-contrast-20));
     }
 
     :host(:focus) {

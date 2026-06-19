@@ -48,6 +48,22 @@ export class Label extends LitElement {
       overflow: hidden;
     }
 
+    /* Gradient text: the label text fades along a gradient (the icon is not
+       affected). Customise the gradient via --bim-label--gradient. */
+    :host([gradient]) .parent p {
+      background: var(
+        --bim-label--gradient,
+        linear-gradient(
+          90deg,
+          var(--bim-ui_bg-contrast-100) 0%,
+          var(--bim-ui_bg-contrast-60) 100%
+        )
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     :host([label-hidden]) .parent p,
     :host(:empty) .parent p {
       display: none;
@@ -115,6 +131,14 @@ export class Label extends LitElement {
    */
   @property({ type: Boolean, reflect: true })
   vertical = false;
+
+  /**
+   * When `true`, the label text is painted with a gradient (the icon is left
+   * untouched). Customise the gradient via the `--bim-label--gradient` CSS var.
+   * @default false
+   */
+  @property({ type: Boolean, reflect: true })
+  gradient = false;
 
   /**
    * Sets the label text programmatically, bypassing the slot.

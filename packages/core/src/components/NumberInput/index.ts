@@ -14,7 +14,8 @@ export class NumberInput extends LitElement implements HasValue, HasName {
     :host {
       --bim-input--olw: var(--bim-number-input--olw, 2px);
       --bim-input--olc: var(--bim-number-input--olc, transparent);
-      --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
+      --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-2xs));
+      --bim-input--bgc: var(--bim-number-input--bgc, var(--bim-ui_bg-contrast-20));
       --bim-input--p: 0 0.375rem;
       /* flex: 1; */
       display: block;
@@ -79,7 +80,11 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       position: absolute;
       top: 0;
       left: 0;
-      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
+      /* No radius on the fill itself — the field (.input) is rounded with
+         overflow:hidden, so the fill's LEFT edge is clipped to the field's
+         corner while its right edge stays a straight cut mid-field (the
+         expected slider look). Rounding the fill would round it mid-field. */
+      border-radius: 0;
     }
 
     bim-input {
