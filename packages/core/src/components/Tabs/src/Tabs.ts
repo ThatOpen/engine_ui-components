@@ -86,7 +86,7 @@ export class Tabs extends LitElement {
 
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_bg-contrast-100);
-        background-color: var(--bim-ui_bg-contrast-30);
+        background-color: var(--bim-tabs-switcher--active-bgc, var(--bim-ui_accent-base));
       }
 
       .switcher:focus-visible {
@@ -212,7 +212,7 @@ export class Tabs extends LitElement {
 
       .tab-option[data-active] {
         --bim-label--c: var(--bim-ui_bg-contrast-100);
-        background-color: var(--bim-ui_bg-contrast-30);
+        background-color: var(--bim-tabs-switcher--active-bgc, var(--bim-ui_accent-base));
       }
 
       .content {
@@ -241,7 +241,7 @@ export class Tabs extends LitElement {
       :host([floating]) .switchers {
         justify-self: center;
         overflow: hidden;
-        background-color: var(--bim-ui_bg-contrast-20);
+        background-color: var(--bim-tabs--switchers-bgc, var(--bim-ui_bg-contrast-10));
       }
 
       :host([floating]:not([bottom])) .switchers {
