@@ -1,5 +1,54 @@
 # Changelog
 
+## [3.5.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.4.0...v3.5.0) (2026-06-19)
+
+
+### Features
+
+* add bim-modal component ([316f175](https://github.com/ThatOpen/engine_ui-components/commit/316f17590a60d7975acde93183539496aee9de12))
+* add contributing guide ([d0db3d3](https://github.com/ThatOpen/engine_ui-components/commit/d0db3d33b19f632d15587fb675f29b34d835c797))
+* add design.md file with design system for llms ([5c759b4](https://github.com/ThatOpen/engine_ui-components/commit/5c759b433a8ecf5c34b0e5a6e329e8ad6ef9ddf5))
+* add disabled state to Checkbox component ([87c014d](https://github.com/ThatOpen/engine_ui-components/commit/87c014da9de36b2d59420f7ab22332c939d1a627))
+* add groups-only property to Table component ([2252b6a](https://github.com/ThatOpen/engine_ui-components/commit/2252b6ae47f5113494db6fbe8454df47d168a596))
+* add headersTransform property to Table component ([64a469c](https://github.com/ThatOpen/engine_ui-components/commit/64a469c7efb7561d3b019cbb3900eabb6c09d4f4))
+* add rows selection disabled property to Table component ([0754ac9](https://github.com/ThatOpen/engine_ui-components/commit/0754ac9fe9ef92ea0084e4feb94127849ae98c5b))
+* **button:** add keyboard accessibility for Enter and Space keys ([7dcd1cd](https://github.com/ThatOpen/engine_ui-components/commit/7dcd1cd18200b59be65dfb6bc1f8bcf82754f923))
+* **Button:** enhance button functionality with theme toggle, loading state, and dynamic context menus ([9a45eb3](https://github.com/ThatOpen/engine_ui-components/commit/9a45eb3f87db77c2b3d0bf01538bb35b7685e15e))
+* **Checkbox:** enhance checkbox component with improved accessibility, styling, and state management ([798ea41](https://github.com/ThatOpen/engine_ui-components/commit/798ea410201d988359aada8209c47675f0b52437))
+* **Dropdown:** refactor dropdown component for improved accessibility, styling, and state management ([f6ab857](https://github.com/ThatOpen/engine_ui-components/commit/f6ab857c8c578c99b6597b8f2a696f38ecc25c03))
+* **Input:** enhance styling with dynamic alignment and margin for label ([7ed30d1](https://github.com/ThatOpen/engine_ui-components/commit/7ed30d1259b55b75cd116d154e2297d7a41d7c88))
+* **Label:** enhance label component with improved text handling, accessibility, and styling ([b7ce0b8](https://github.com/ThatOpen/engine_ui-components/commit/b7ce0b87e1377e45cf7145e440944c13af79f199))
+* **Manager:** enhance animation handling with reduced motion support and cleanup logic ([a1f8495](https://github.com/ThatOpen/engine_ui-components/commit/a1f8495528015196a1286353e71ad2b63ac23965))
+* **Option:** refactor option component to enhance structure and improve attribute handling ([40506d1](https://github.com/ThatOpen/engine_ui-components/commit/40506d175db5b028a49f49d06eb80b0fb1d6f3d4))
+* **Panel, PanelSection:** refactor components for improved layout, accessibility, and styling ([95fc332](https://github.com/ThatOpen/engine_ui-components/commit/95fc332da3dc426935a0618150563092777ba38e))
+* **Selector:** enhance component with improved styling, accessibility, and keyboard navigation ([2ea78bb](https://github.com/ThatOpen/engine_ui-components/commit/2ea78bb0bdba5413313c0b5defc9a4851d8dcd95))
+* **spatial-tree:** add collapseCategories option ([edaa93c](https://github.com/ThatOpen/engine_ui-components/commit/edaa93c0a33e680aa2eb31241a5dd8dd4ad9cc8b))
+* **styles:** update global styles with new grayscale and status color variables ([a1f8495](https://github.com/ThatOpen/engine_ui-components/commit/a1f8495528015196a1286353e71ad2b63ac23965))
+* **table, spatial-tree:** expandedLevels, indent step, category-aware tree ([3406620](https://github.com/ThatOpen/engine_ui-components/commit/3406620a16ed794fdc9a044de7546a414ed36aaf))
+* **table, spatial-tree:** row-divider opt-in + collapseCategories scope ([b539f8a](https://github.com/ThatOpen/engine_ui-components/commit/b539f8a2deae1f62d9992171d101ae23f9e2c0f6))
+* **Table, TableRow:** update styles for improved appearance and consistency ([96b67bf](https://github.com/ThatOpen/engine_ui-components/commit/96b67bf42ca7375eb22068fd9cf4eb75ae62d399))
+* **Tabs, Tab:** enhance accessibility and styling with improved focus handling, dynamic tab management, and updated event dispatching ([4d87d44](https://github.com/ThatOpen/engine_ui-components/commit/4d87d443da3fd8617a3a2f59dcc836dc002470f3))
+* **Tabs:** implement overflow handling with dropdown for tab switchers ([135c573](https://github.com/ThatOpen/engine_ui-components/commit/135c57313215b77a1c8a603ec4297a57e9a37ce6))
+* **TextInput:** enhance component with improved layout, styling, and validation handling ([32371ed](https://github.com/ThatOpen/engine_ui-components/commit/32371ed74341a6ce436f6fc6e69fe2c75c736b97))
+* **Toolbar, ToolbarSection, ToolbarGroup:** enhance accessibility and layout with improved focus styles, dynamic row handling, and keyboard navigation ([5910076](https://github.com/ThatOpen/engine_ui-components/commit/5910076095d7ecf8df9ac385c5891626fa5f5be1))
+* **ui:** expose --bim-label--us, --bim-input--maxw, drop slider icon dup ([c0c5a49](https://github.com/ThatOpen/engine_ui-components/commit/c0c5a497b340d4f00a40785e0ee2db1287f4db73))
+* update library styles ([9e8ec5f](https://github.com/ThatOpen/engine_ui-components/commit/9e8ec5f71139b9e4e9ac4ac77b2e9e3b70d30ef2))
+
+
+### Bug Fixes
+
+* correct duplicate lit warning in examples ([4139aca](https://github.com/ThatOpen/engine_ui-components/commit/4139aca33fc18b3e8ce8ce062ad531fea83092ad))
+* prevent ItemsData StackOverflow on element click ([#92](https://github.com/ThatOpen/engine_ui-components/issues/92)) ([4fa0615](https://github.com/ThatOpen/engine_ui-components/commit/4fa06154337ea3f9f44bb13ef8b1a9d757444232))
+* solve spatial tree bug ([ba61582](https://github.com/ThatOpen/engine_ui-components/commit/ba61582a279780cd88bcf985de96cd44d89dab9d))
+* **spatial-tree:** drop forced zoom on row click ([05fa2f7](https://github.com/ThatOpen/engine_ui-components/commit/05fa2f72b72ea4e112ea2d653191f29d4ddeb68e))
+* type ItemsData placeholder row + dedupe @thatopen/components ([4e99def](https://github.com/ThatOpen/engine_ui-components/commit/4e99def7554f68f55b2e1c97f99cc5f80dca3de2))
+* **types:** improve HasValue interface to use generic type and deprecate event storage ([a1f8495](https://github.com/ThatOpen/engine_ui-components/commit/a1f8495528015196a1286353e71ad2b63ac23965))
+* **ui:** styles pass — input bg, toggle checkbox, gradient titles, themeable tooltip/grid/scrollbar ([9b9a1eb](https://github.com/ThatOpen/engine_ui-components/commit/9b9a1eb89236f028d917d02a13fdd1878df3edf2))
+* **ui:** tabs — floating switcher bar bg to contrast-10, active tab to accent; release 3.4.5 ([4ac1028](https://github.com/ThatOpen/engine_ui-components/commit/4ac1028256ba8cc4239b6af8222a866a0bc57f22))
+* update attribute name change ([300e8f5](https://github.com/ThatOpen/engine_ui-components/commit/300e8f5a7892db77bf68aa3278623e45ba3aba47))
+* update checkbox checked state logic in TableRow component ([d87f363](https://github.com/ThatOpen/engine_ui-components/commit/d87f3637d2e8337374d9dcb37e13d3ddf28c695b))
+* update TableRow to use table.value instead of table.data ([66071f3](https://github.com/ThatOpen/engine_ui-components/commit/66071f395270f45d1c2a0bf2ab3291b8b39d380e))
+
 ## [3.4.0](https://github.com/ThatOpen/engine_ui-components/compare/v3.3.3...v3.4.0) (2026-04-09)
 
 
