@@ -33,7 +33,7 @@ export class Checkbox extends LitElement implements HasValue<boolean> {
       align-items: center;
       cursor: pointer;
       width: 100%;
-      height: 1.75rem;
+      height: 25px;
       column-gap: 0.25rem;
       position: relative;
       user-select: none;
