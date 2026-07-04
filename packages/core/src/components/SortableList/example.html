@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SortableList</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+      padding-top: 0.25rem;
+    }
+
+    bim-sortable-list {
+      width: 16rem;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-sortable-list</h1>
+  <p class="subtitle">Drag-to-reorder list with optional active/available toggle via checkboxes.</p>
+
+  <!-- 1. Modes -->
+  <div class="section">
+    <div class="section-title">Modes</div>
+    <div class="row">
+      <span class="row-label">active + available</span>
+      <bim-sortable-list id="default-list"></bim-sortable-list>
+    </div>
+    <div class="row">
+      <span class="row-label">sort only</span>
+      <bim-sortable-list id="sort-only-list"></bim-sortable-list>
+    </div>
+  </div>
+
+  <!-- 2. With icons -->
+  <div class="section">
+    <div class="section-title">With icons</div>
+    <div class="row">
+      <span class="row-label">item icons</span>
+      <bim-sortable-list id="icons-list"></bim-sortable-list>
+    </div>
+  </div>
+
+  <!-- 3. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">change</span>
+      <bim-sortable-list id="events-list"></bim-sortable-list>
+      <bim-label id="events-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>
