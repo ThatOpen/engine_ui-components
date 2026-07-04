@@ -22,7 +22,6 @@ export class Slider extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {
       display: block;
-      flex: 1;
       user-select: none;
     }
 
@@ -186,7 +185,7 @@ export class Slider extends LitElement implements HasValue, HasName {
   name?: string;
 
   /**
-   * Optional label rendered above the track via bim-input.
+   * Optional label rendered above the track.
    * @type {String}
    * @default undefined
    * @example <bim-slider label="Volume"></bim-slider>
@@ -595,7 +594,7 @@ export class Slider extends LitElement implements HasValue, HasName {
       ${when(
         this.label || this.icon,
         () => html`
-          <bim-input .label=${this.label} .icon=${this.icon}></bim-input>
+          <bim-label .icon=${this.icon}>${this.label}</bim-label>
         `,
       )}
 
