@@ -28,6 +28,10 @@ export class PanelSection extends LitElement implements HasName {
         flex: 1;
       }
 
+      :host([scrollable]) {
+        height: 100%;
+      }
+
       :host .parent {
         display: grid;
         grid-template: "header" auto "content" minmax(0, 1fr);
@@ -52,20 +56,24 @@ export class PanelSection extends LitElement implements HasName {
         }
       }
 
-      :host(:not([fixed])) .header:hover > bim-label {
-        --bim-label--c: var(--bim-ui_accent-base);
+      :host(:not([fixed])) .header:hover .title > bim-label {
+        --bim-label--c: transparent;
+        background: linear-gradient(90deg, var(--bim-ui_accent-base) 0%, color-mix(in srgb, var(--bim-ui_accent-base) 60%, #99a0ae) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
       }
 
       :host(:not([fixed])) .header:hover .expand-icon {
         fill: var(--bim-ui_accent-base);
       }
 
-      .header > bim-label {
-        --bim-label--fz: var(--bim-ui_size-lg);
-        --bim-label--c: var(
-          --bim-panel-section_hc,
-          var(--bim-ui_bg-contrast-100)
-        );
+      .title > bim-label {
+        --bim-label--fz: var(--bim-panel-section--fz, var(--bim-ui_size-lg));
+        --bim-label--c: transparent;
+        --bim-icon--c: #99a0ae;
+        background: linear-gradient(90deg, #ffffff 0%, #99a0ae 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
       }
 
       .header {
@@ -75,7 +83,8 @@ export class PanelSection extends LitElement implements HasName {
         align-items: center;
         font-weight: 600;
         height: 2rem;
-        padding: 5px 10px;
+        padding: 2px 6px;
+        gap: 0.375rem;
       }
 
       .expand-icon {
@@ -91,6 +100,8 @@ export class PanelSection extends LitElement implements HasName {
         display: flex;
         align-items: center;
         column-gap: 0.5rem;
+        min-width: 0;
+        flex: 1;
       }
 
       .title p {
@@ -110,8 +121,8 @@ export class PanelSection extends LitElement implements HasName {
         display: flex;
         flex-direction: column;
         flex: 1;
-        padding: 10px;
-        gap: 0.75rem;
+        padding: 0.5rem;
+        gap: 0.5rem;
         box-sizing: border-box;
         overflow: auto;
       }
@@ -120,6 +131,7 @@ export class PanelSection extends LitElement implements HasName {
         display: none;
       }
 
+      .header-start,
       .header-end {
         display: flex;
         align-items: center;
@@ -184,6 +196,14 @@ export class PanelSection extends LitElement implements HasName {
    */
   @property({ type: Boolean, reflect: true })
   fixed?: boolean;
+
+  /**
+   * When true, the section fills its parent height and clips its content area,
+   * allowing individual children with `flex: 1` to scroll independently.
+   * Combine with a `bim-table` or similar element that has `flex: 1` set.
+   */
+  @property({ type: Boolean, reflect: true })
+  scrollable = false;
 
   /**
    * Controls the collapsed state of the panel section. When `collapsed` is true, the content of the section is hidden, and only the header is visible. This property can be toggled to show or hide the section's content, and is reflected to an attribute for easy HTML or JavaScript manipulation. Note that sections marked as `fixed` ignore changes to this property.
@@ -286,9 +306,13 @@ export class PanelSection extends LitElement implements HasName {
         @click=${this.onHeaderClick}
         @keydown=${this.onHeaderKeydown}
       >
-        ${this.label || this.icon || this.name
-          ? html`<bim-label aria-hidden="true" .icon=${this.icon}>${this.label}</bim-label>`
-          : null}
+        <div class="header-start"><slot name="header-start"></slot></div>
+        <div class="title">
+          ${this.label || this.icon || this.name
+            ? html`<bim-label aria-hidden="true" .icon=${this.icon}>${this.label}</bim-label>`
+            : null}
+          <slot name="header-tag"></slot>
+        </div>
         <div class="header-end">
           <slot name="header-end"></slot>
           ${!this.fixed ? expandIcon : null}

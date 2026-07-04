@@ -125,9 +125,106 @@
         </bim-panel-section>
       </div>
     </div>
+    <div class="row">
+      <span class="row-label">slot header-start</span>
+      <div style="width: 18rem;">
+        <bim-panel-section label="Clash Detail" icon="mdi:layers-search" fixed>
+          <bim-button ghost slot="header-start" icon="tabler:arrow-left" label-hidden label="Back" style="width: min-content;"></bim-button>
+          <bim-button slot="header-end" icon="mdi:dots-vertical" label-hidden label="More" style="width: min-content;"></bim-button>
+          <bim-label>Back button sits left of the title; actions remain on the right.</bim-label>
+        </bim-panel-section>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">header-start (panel)</span>
+      <div style="width: 18rem;">
+        <bim-panel label="Clash Detail" icon="mdi:layers-search">
+          <bim-button ghost slot="header-start" icon="tabler:arrow-left" label-hidden label="Back" style="width: min-content;"></bim-button>
+          <bim-button slot="header-end" icon="mdi:dots-vertical" label-hidden label="More" style="width: min-content;"></bim-button>
+          <bim-panel-section label="Results" fixed>
+            <bim-label>Same slot available on bim-panel.</bim-label>
+          </bim-panel-section>
+        </bim-panel>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">slot header-tag</span>
+      <div style="width: 18rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <!-- badge simple junto al título -->
+        <bim-panel-section label="Clash Detection" icon="mdi:layers-search">
+          <span slot="header-tag" style="
+            display: inline-flex; align-items: center;
+            padding: 0.1rem 0.45rem; border-radius: 1rem;
+            font-size: 0.6rem; font-weight: 600; letter-spacing: 0.04em;
+            background: #7f1d1d; color: #fecaca;
+          ">HARD</span>
+          <bim-button slot="header-end" icon="solar:add-circle-bold" label-hidden label="Add" style="width: min-content;"></bim-button>
+          <bim-checkbox label="Walls vs Pipes" checked></bim-checkbox>
+          <bim-checkbox label="Structure vs MEP" checked></bim-checkbox>
+        </bim-panel-section>
+        <!-- combinado con status y acciones -->
+        <bim-panel-section label="Foundation Report" icon="mdi:file-chart-outline">
+          <span slot="header-tag" style="
+            display: inline-flex; align-items: center;
+            padding: 0.1rem 0.45rem; border-radius: 1rem;
+            font-size: 0.6rem; font-weight: 600; letter-spacing: 0.04em;
+            background: #14532d; color: #bbf7d0;
+          ">RESOLVED</span>
+          <bim-button slot="header-end" icon="mdi:dots-vertical" label-hidden label="More" style="width: min-content;"></bim-button>
+          <bim-label>No active clashes in this set.</bim-label>
+        </bim-panel-section>
+        <!-- solo tag, sin acciones en header-end -->
+        <bim-panel-section label="IFC Site" fixed>
+          <span slot="header-tag" style="
+            display: inline-flex; align-items: center;
+            padding: 0.1rem 0.45rem; border-radius: 1rem;
+            font-size: 0.6rem; font-weight: 600; letter-spacing: 0.04em;
+            background: #1e3a8a; color: #bfdbfe;
+          ">v3</span>
+          <bim-label>Version tag alongside a fixed section title.</bim-label>
+        </bim-panel-section>
+      </div>
+    </div>
   </div>
 
-  <!-- 2. bim-panel basics -->
+  <!-- 2. scrollable -->
+  <div class="section">
+    <div class="section-title">scrollable</div>
+    <div class="row">
+      <span class="row-label" style="align-self: flex-start; padding-top: 0.25rem;">no scroll</span>
+      <div class="panel-wrap">
+        <bim-panel label="Clashes" icon="mdi:layers-search" style="height: 14rem;">
+          <bim-panel-section label="Results" icon="mdi:table" fixed>
+            <bim-label>Header stays, but whole section grows</bim-label>
+            <bim-table id="table-no-scroll" expanded no-indentation></bim-table>
+            <bim-button label="Action" icon="mdi:check"></bim-button>
+          </bim-panel-section>
+        </bim-panel>
+      </div>
+      <span class="row-label" style="align-self: flex-start; padding-top: 0.25rem;">table scrolls (default)</span>
+      <div class="panel-wrap">
+        <bim-panel label="Clashes" icon="mdi:layers-search" style="height: 14rem;">
+          <bim-panel-section label="Results" icon="mdi:table" fixed scrollable>
+            <bim-label>Label stays fixed</bim-label>
+            <bim-table id="table-default-scroll" expanded no-indentation></bim-table>
+            <bim-button label="Action" icon="mdi:check"></bim-button>
+          </bim-panel-section>
+        </bim-panel>
+      </div>
+      <span class="row-label" style="align-self: flex-start; padding-top: 0.25rem;">section scrolls (overflow: visible)</span>
+      <div class="panel-wrap">
+        <bim-panel label="Clashes" icon="mdi:layers-search" style="height: 14rem;">
+          <bim-panel-section label="Results" icon="mdi:table" fixed scrollable>
+            <bim-label>Everything scrolls together</bim-label>
+            <bim-table id="table-section-scroll" expanded no-indentation style="overflow: visible;"></bim-table>
+            <bim-button label="Action" icon="mdi:check"></bim-button>
+          </bim-panel-section>
+        </bim-panel>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. bim-panel basics -->
   <div class="section">
     <div class="section-title">bim-panel — básico</div>
     <div class="row">

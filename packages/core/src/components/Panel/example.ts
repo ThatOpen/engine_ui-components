@@ -48,6 +48,26 @@ document.getElementById("btn-get-transform")?.addEventListener("click", () => {
   transformOutput.textContent = JSON.stringify(panelTransform.value, null, 2);
 });
 
+// --- scrollable showcase ---
+const clashRows = [
+  { data: { name: "Wall vs Pipe #1", status: "new" } },
+  { data: { name: "Wall vs Pipe #2", status: "active" } },
+  { data: { name: "Beam vs Duct #1", status: "new" } },
+  { data: { name: "Beam vs Duct #2", status: "resolved" } },
+  { data: { name: "Column vs Cable #1", status: "new" } },
+  { data: { name: "Column vs Cable #2", status: "acknowledged" } },
+];
+
+const tableNoScroll = document.getElementById("table-no-scroll") as BUI.Table;
+tableNoScroll.data = clashRows;
+
+const tableDefaultScroll = document.getElementById("table-default-scroll") as BUI.Table;
+tableDefaultScroll.data = clashRows;
+
+const tableSectionScroll = document.getElementById("table-section-scroll") as BUI.Table;
+tableSectionScroll.data = clashRows;
+
+
 // --- collapseSections / expandSections ---
 const panelCollapse = document.getElementById("panel-collapse") as BUI.Panel;
 document.getElementById("btn-collapse-all")?.addEventListener("click", () => {

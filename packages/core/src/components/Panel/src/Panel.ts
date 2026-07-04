@@ -49,22 +49,29 @@ export class Panel extends LitElement implements HasName {
 
       .header {
         grid-area: header;
-        display: flex;
+        display: var(--bim-panel--header-display, flex);
         align-items: center;
         justify-content: space-between;
         font-weight: 600;
         height: 2rem;
-        padding: 5px 10px;
+        padding: 2px 6px;
+        gap: 0.375rem;
         flex-shrink: 0;
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
       .header bim-label {
-        --bim-label--c: var(--bim-panel--c, var(--bim-ui_bg-contrast-100));
+        --bim-label--c: transparent;
+        --bim-icon--c: #99a0ae;
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-lg));
+        background: linear-gradient(90deg, #ffffff 0%, #99a0ae 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
         pointer-events: none;
+        flex: 1;
       }
 
+      .header-start,
       .header-end {
         display: flex;
         align-items: center;
@@ -301,6 +308,7 @@ export class Panel extends LitElement implements HasName {
         ${this.label || this.name || this.icon
           ? html`
             <div class="header">
+              <div class="header-start"><slot name="header-start"></slot></div>
               <bim-label .icon=${this.icon}>${this.label || this.name}</bim-label>
               <div class="header-end">
                 <slot name="header-end"></slot>
