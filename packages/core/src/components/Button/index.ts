@@ -1,7 +1,6 @@
 import { LitElement, PropertyValues, TemplateResult, css, html, render } from "lit";
 import { property } from "lit/decorators.js";
 import { ref, createRef } from "lit/directives/ref.js";
-import "iconify-icon";
 import { Manager } from "../../core";
 
 /**
@@ -110,7 +109,22 @@ export class Button extends LitElement {
     :host([disabled]),
     :host([loading]) {
       --bim-label--c: var(--bim-ui_bg-contrast-50);
-      background-color: var(--bim-button--disabled-bgc, var(--bim-ui_bg-contrast-10));
+      background-color: var(--bim-button--disabled-bgc, var(--bim-ui_bg-contrast-20));
+    }
+
+    :host([ghost]) {
+      background-color: transparent;
+      --bim-label--c: var(--bim-ui_bg-contrast-60);
+    }
+
+    :host([ghost]:not([disabled]):not([loading]):hover) {
+      background-color: transparent;
+      --bim-label--c: var(--bim-ui_bg-contrast-100);
+    }
+
+    :host([ghost][disabled]),
+    :host([ghost][loading]) {
+      background-color: transparent;
     }
 
     .chevron {
@@ -178,6 +192,9 @@ export class Button extends LitElement {
 
   @property({ type: Boolean, reflect: true })
   vertical = false;
+
+  @property({ type: Boolean, reflect: true })
+  ghost = false;
 
   /** @deprecated Use `<bim-tooltip>` inside the button instead. */
   private _tooltipTime?: number;

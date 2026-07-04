@@ -174,7 +174,42 @@
     </div>
   </div>
 
-  <!-- 4. Tooltip -->
+  <!-- 4. Ghost variant -->
+  <div class="section">
+    <div class="section-title">Ghost</div>
+    <div class="row">
+      <span class="row-label">icon only</span>
+      <bim-button ghost icon="mdi:dots-vertical" label-hidden label="More"></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-button ghost label="Back" icon="tabler:arrow-left"></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">disabled</span>
+      <bim-button ghost label="Disabled" icon="solar:play-bold" disabled></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">active</span>
+      <bim-button ghost label="Active" icon="solar:layers-bold" active></bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">en header</span>
+      <div style="
+        display: flex; align-items: center; justify-content: space-between;
+        background: var(--bim-ui_bg-contrast-10);
+        border: 1px solid var(--bim-ui_bg-contrast-20);
+        border-radius: 0.75rem;
+        padding: 2px 6px; height: 2rem; width: 20rem; box-sizing: border-box;
+      ">
+        <bim-button ghost icon="tabler:arrow-left" label="Back" label-hidden></bim-button>
+        <bim-label icon="mdi:layers-search" style="flex: 1; padding: 0 0.25rem;">Clash Detection</bim-label>
+        <bim-button ghost icon="mdi:dots-vertical" label-hidden label="More"></bim-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Tooltip -->
   <div class="section">
     <div class="section-title">Tooltip</div>
     <div class="row">
