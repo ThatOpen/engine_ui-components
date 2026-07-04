@@ -12,53 +12,145 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .example-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .example-group h3 {
       color: var(--bim-ui_bg-contrast-80);
-      margin: 0;
-      font-size: 0.875rem;
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
     }
 
     bim-slider {
-      width: 20rem;
+      width: 22rem;
     }
   </style>
 </head>
 
 <body>
-  <!-- Continuous slider -->
-  <div class="example-group">
-    <h3>Continuous</h3>
-    <bim-slider id="continuous" label="Volume" min="0" max="100" value-label-display="auto"></bim-slider>
+  <bim-button id="theme-toggle" icon="solar:sun-bold" label-hidden style="position: fixed; top: 1rem; right: 1rem; z-index: 10;"></bim-button>
+
+  <h1>bim-slider</h1>
+  <p class="subtitle">Range input with single or dual thumbs, optional step marks, value label, and custom format.</p>
+
+  <!-- 1. Basic -->
+  <div class="section">
+    <div class="section-title">Basic</div>
+    <div class="row">
+      <span class="row-label">continuous</span>
+      <bim-slider id="continuous" label="Volume" min="0" max="100" value-label-display="auto"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">stepped</span>
+      <bim-slider id="stepped" label="Step" min="0" max="100" step="10" value-label-display="auto"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">stepped + marks</span>
+      <bim-slider id="stepped-marks" label="Temperature" min="0" max="40" step="10" show-marks value-label-display="auto"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-slider label="Brightness" icon="solar:sun-bold" min="0" max="100" value-label-display="auto"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">disabled</span>
+      <bim-slider label="Disabled" min="0" max="100" disabled></bim-slider>
+    </div>
   </div>
 
-  <!-- Stepped slider with marks -->
-  <div class="example-group">
-    <h3>Stepped with marks</h3>
-    <bim-slider id="stepped" label="Temperature" min="0" max="40" step="10" show-marks></bim-slider>
+  <!-- 2. Value label -->
+  <div class="section">
+    <div class="section-title">Value Label</div>
+    <div class="row">
+      <span class="row-label">display="auto"</span>
+      <bim-slider label="Auto (on drag)" min="0" max="100" value-label-display="auto"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">display="on"</span>
+      <bim-slider id="always-on" label="Always visible" min="0" max="100" value-label-display="on"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">custom format</span>
+      <bim-slider id="format-pct" label="Opacity" min="0" max="100" value-label-display="on"></bim-slider>
+    </div>
   </div>
 
-  <!-- Disabled slider -->
-  <div class="example-group">
-    <h3>Disabled</h3>
-    <bim-slider label="Disabled" min="0" max="100" disabled></bim-slider>
+  <!-- 3. Range (two thumbs) -->
+  <div class="section">
+    <div class="section-title">Range</div>
+    <div class="row">
+      <span class="row-label">two thumbs</span>
+      <bim-slider id="range" label="Range" min="0" max="100" step="5" show-marks value-label-display="auto"></bim-slider>
+    </div>
   </div>
 
-  <!-- Always-visible value label -->
-  <div class="example-group">
-    <h3>Value label always on</h3>
-    <bim-slider id="always-on" label="Opacity" min="0" max="100" value-label-display="on"></bim-slider>
+  <!-- 4. Snap-to-marks -->
+  <div class="section">
+    <div class="section-title">Snap to Marks</div>
+    <div class="row">
+      <span class="row-label">horizontal labels</span>
+      <bim-slider id="month" label="Month" min="0" max="11" value-label-display="on"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">diagonal labels</span>
+      <bim-slider id="phase-diagonal" label="Phase" min="0" max="5" value-label-display="on"></bim-slider>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical labels</span>
+      <bim-slider id="phase-vertical" label="Phase" min="0" max="5" value-label-display="on"></bim-slider>
+    </div>
+  </div>
+
+  <!-- 5. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">change</span>
+      <bim-slider id="evt-change" label="Drag me" min="0" max="100" value-label-display="auto"></bim-slider>
+      <bim-label id="out-change" style="font-size: 0.7rem;">—</bim-label>
+    </div>
+    <div class="row">
+      <span class="row-label">changecommitted</span>
+      <bim-slider id="evt-committed" label="Release to commit" min="0" max="100" value-label-display="auto"></bim-slider>
+      <bim-label id="out-committed" style="font-size: 0.7rem;">—</bim-label>
+    </div>
   </div>
 
   <script type="module" src="./example.ts"></script>
