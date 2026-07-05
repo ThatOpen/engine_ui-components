@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="bim-ui-dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmptyState</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
+      padding-top: 0.25rem;
+    }
+
+    .card {
+      width: 16rem;
+      height: 14rem;
+      background: var(--bim-ui_bg-contrast-10);
+      border: 1px solid var(--bim-ui_bg-contrast-20);
+      border-radius: 0.75rem;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <bim-button id="theme-toggle" icon="solar:moon-bold" label="Dark" label-hidden tooltip-title="Toggle theme"></bim-button>
+  <h1>bim-empty-state</h1>
+  <p class="subtitle">Placeholder simple para listas/paneles vacíos: ilustración estática + mensaje + slot opcional para una acción.</p>
+
+  <!-- 1. Basic -->
+  <div class="section">
+    <div class="section-title">Basic</div>
+    <div class="row">
+      <span class="row-label">solo label</span>
+      <div class="card">
+        <bim-empty-state label="No model loaded."></bim-empty-state>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <div class="card">
+        <bim-empty-state></bim-empty-state>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">label + description</span>
+      <div class="card">
+        <bim-empty-state label="No models in this project." description="Load an IFC or FRAG file to get started."></bim-empty-state>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Slot (CTA) -->
+  <div class="section">
+    <div class="section-title">Slot (call to action)</div>
+    <div class="row">
+      <span class="row-label">con bim-button</span>
+      <div class="card" style="height: 18rem;">
+        <bim-empty-state label="No models in this project." description="Load an IFC or FRAG file to get started.">
+          <bim-button label="Load model" icon="solar:upload-bold" style="width: min-content;"></bim-button>
+        </bim-empty-state>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">contenido libre</span>
+      <div class="card">
+        <bim-empty-state label="Nothing selected.">
+          <bim-label style="opacity: 0.5; font-size: var(--bim-ui_size-sm);">Select an item in the tree to see its properties.</bim-label>
+        </bim-empty-state>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. En contexto (bim-panel) -->
+  <div class="section">
+    <div class="section-title">En contexto (bim-panel)</div>
+    <div class="row">
+      <span class="row-label">dentro de un panel</span>
+      <div class="card" style="height: 16rem;">
+        <bim-panel label="Model Tree" icon="mdi:file-tree" style="height: 100%;">
+          <bim-empty-state label="No model loaded.">
+            <bim-button label="Load model" icon="solar:upload-bold" style="width: min-content;"></bim-button>
+          </bim-empty-state>
+        </bim-panel>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./example.ts"></script>
+</body>
+
+</html>
