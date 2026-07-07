@@ -4,6 +4,13 @@ import { HasValue, HasName } from "../../core/types";
 
 /**
  * A custom input web component for BIM applications. HTML tag: bim-input
+ *
+ * @deprecated `bim-input` is deprecated and will be removed in a future
+ * version of the library. It has already been replaced internally —
+ * `bim-text-input`, `bim-number-input`, `bim-selector`, and `bim-dropdown`
+ * no longer depend on it. Consumers using `<bim-input>` directly should
+ * migrate to one of those components (or build their own wrapper) before
+ * it's removed.
  */
 export class Input extends LitElement implements HasValue, HasName {
   /**
@@ -77,6 +84,13 @@ export class Input extends LitElement implements HasValue, HasName {
   vertical = false;
 
   onValueChange = new Event("change");
+
+  connectedCallback() {
+    super.connectedCallback();
+    console.warn(
+      "[bim-input] This component is deprecated and will be removed in a future version of the library.",
+    );
+  }
 
   get value() {
     const value: Record<string, any> = {};
