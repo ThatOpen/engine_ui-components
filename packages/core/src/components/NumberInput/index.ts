@@ -1,41 +1,71 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, PropertyValues } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
-import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { property, state } from "lit/decorators.js";
 import { HasName, HasValue } from "../../core/types";
 
 /**
  * A custom number input web component for BIM applications. HTML tag: bim-number-input
  */
-export class NumberInput extends LitElement implements HasValue, HasName {
+export class NumberInput extends LitElement implements HasValue<number>, HasName {
   /**
   * CSS styles for the component.
   */
   static styles = css`
     :host {
-      --bim-input--olw: var(--bim-number-input--olw, 2px);
-      --bim-input--olc: var(--bim-number-input--olc, transparent);
-      --bim-input--bdrs: var(--bim-number-input--bdrs, var(--bim-ui_size-4xs));
-      --bim-input--p: 0 0.375rem;
-      /* flex: 1; */
       display: block;
     }
 
-    :host(:focus) {
-      --bim-input--olw: var(--bim-number-input--olw, 2px);
-      --bim-input--olc: var(
-        --bim-number-input¡focus--c,
-        var(--bim-ui_accent-base)
-      );
+    .parent {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      user-select: none;
+      flex: 1;
+      align-items: normal;
     }
 
-    :host(:not([slider])) bim-label {
-      --bim-label--c: var(--bim-ui_bg-contrast-80);
-      --bim-label--fz: var(--bim-ui_size-sm);
+    :host(:not([vertical])) .parent {
+      justify-content: space-between;
     }
 
-    p {
-      margin: 0;
-      padding: 0;
+    :host([vertical]) .parent {
+      flex-direction: column;
+    }
+
+    bim-label {
+      margin-top: var(--bim-input--label-mt, 0);
+      pointer-events: none;
+    }
+
+    .input {
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      height: 25px;
+      min-width: 3rem;
+      gap: 4px;
+      padding: 0 7px;
+      background-color: var(--bim-input--bgc, var(--bim-ui_bg-contrast-20));
+      border: var(--bim-input--olw, 2px) solid var(--bim-input--olc, transparent);
+      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-2xs));
+      transition: border-color 0.15s;
+    }
+
+    :host(:not([vertical])) .input {
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    :host(:not([vertical])[label]) .input {
+      max-width: var(--bim-input--maxw, fit-content);
+    }
+
+    :host(:focus-within) .input {
+      border-color: var(--bim-number-input--focus-c, var(--bim-ui_bg-contrast-40));
     }
 
     input {
@@ -50,44 +80,70 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       font-variation-settings: inherit;
       font-size: var(--bim-ui_size-base);
       color: var(--bim-number-input--c, var(--bim-ui_bg-contrast-100));
+      color-scheme: dark;
+    }
+
+    :host-context(html.bim-ui-light) input {
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: light) {
+      input {
+        color-scheme: light;
+      }
     }
 
     :host([suffix]:not([pref])) input {
       text-align: left;
     }
 
-    :host([slider]) {
-      --bim-input--p: 0;
+    bim-label.affix {
+      pointer-events: auto;
+      --bim-label--c: var(--bim-ui_bg-contrast-80);
+      --bim-label--fz: var(--bim-ui_size-sm);
     }
 
-    :host([slider]) .slider {
-      --bim-label--c: var(--bim-ui_bg-contrast-100);
+    :host([slider]) .input {
+      padding: 0;
     }
 
     .slider {
       position: relative;
       display: flex;
+      align-items: center;
       justify-content: center;
       width: 100%;
       height: 100%;
       padding: 0 0.5rem;
     }
 
+    .slider bim-label.affix {
+      --bim-label--c: var(--bim-ui_bg-contrast-100);
+    }
+
+    .slider-affix {
+      position: relative;
+      z-index: 1;
+    }
+
+    .slider-affix.pref {
+      margin-right: 0.125rem;
+    }
+
     .slider-indicator {
       height: 100%;
+      width: var(--_number-input-slider-pct, 0%);
       background-color: var(--bim-ui_main-base);
       position: absolute;
       top: 0;
       left: 0;
-      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-4xs));
+      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-2xs));
     }
 
-    bim-input {
-      display: flex;
-    }
-
-    bim-label {
-      pointer-events: none;
+    @media (prefers-reduced-motion: reduce) {
+      .input {
+        transition: none;
+      }
     }
   `;
 
@@ -140,9 +196,10 @@ export class NumberInput extends LitElement implements HasValue, HasName {
   label?: string;
 
   /**
-   * The `pref` property is used to specify a prefix for the value in the number input component.
-   * This could be a currency symbol, a unit, or any other kind of prefix. The prefix is displayed
-   * inside the input field before the value. When the property changes, the displayed prefix updates accordingly.
+   * Short for "prefix" — a currency symbol, unit, or other text shown inside the
+   * input field before the value (e.g. `pref="$"` renders "$ 42"). Named `pref`
+   * (not `prefix`) because `prefix` collides with the native, read-only
+   * `Node.prefix` (XML namespace prefix) property inherited from `HTMLElement`.
    *
    * @type {String}
    * @default undefined
@@ -171,6 +228,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
   @property({ type: Number, reflect: true })
   min?: number;
 
+  @state()
   private _value = 0;
 
   /**
@@ -187,8 +245,9 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * numberInput.value = 10;
    * document.body.appendChild(numberInput);
    */
-  @property({ type: Number, reflect: true })
+  @property({ type: Number })
   set value(data: number) {
+    if (!Number.isFinite(data)) return;
     this.setValue(data.toString());
   }
 
@@ -198,8 +257,9 @@ export class NumberInput extends LitElement implements HasValue, HasName {
 
   /**
    * The `step` property determines the amount by which the value should increase or decrease
-   * when the user interacts with the component's stepping mechanism. It is used for incremental
-   * changes to the value. When the property changes, the step size for value changes is updated.
+   * when the user interacts with the component's stepping mechanism (dragging the slider, or
+   * pressing the Up/Down arrow keys while focused). It is used for incremental changes to the
+   * value. When the property changes, the step size for value changes is updated.
    *
    * @type {Number}
    * @default undefined
@@ -209,7 +269,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * numberInput.step = 5;
    * document.body.appendChild(numberInput);
    */
-  @property({ type: Number, reflect: true })
+  @property({ type: Number })
   step?: number;
 
   /**
@@ -226,7 +286,7 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * numberInput.sensitivity = 10;
    * document.body.appendChild(numberInput);
    */
-  @property({ type: Number, reflect: true })
+  @property({ type: Number })
   sensitivity?: number;
 
   /**
@@ -292,7 +352,19 @@ export class NumberInput extends LitElement implements HasValue, HasName {
   slider = false;
 
   private _input = createRef<HTMLInputElement>();
+
+  /**
+   * @deprecated Storing a reused Event instance is an anti-pattern. Listen for
+   * the "change" event on the element instead: `el.addEventListener("change", fn)`.
+   */
   readonly onValueChange = new Event("change");
+
+  // Tracked so disconnectedCallback can remove them if the component is
+  // destroyed mid-drag or while a "press Escape to blur" listener is armed —
+  // otherwise both leak on `document`/`window` and hold a closure over `this`.
+  private _sliderMouseMove?: (e: MouseEvent) => void;
+  private _sliderMouseUp?: () => void;
+  private _escapeKeyListener?: (e: KeyboardEvent) => void;
 
   private onChange(e: Event) {
     e.stopPropagation();
@@ -301,18 +373,66 @@ export class NumberInput extends LitElement implements HasValue, HasName {
     this.setValue(input.value);
   }
 
+  // Strips any character that isn't a digit, dot, or minus as the user types or
+  // pastes — so invalid characters never even appear, not just on blur/change.
+  private onInput(e: Event) {
+    e.stopPropagation();
+    const input = e.target as HTMLInputElement;
+    const original = input.value;
+    const sanitized = original.replace(/[^0-9.-]/g, "");
+    if (sanitized === original) return;
+    const cursor = input.selectionStart ?? sanitized.length;
+    const removedBeforeCursor =
+      original.slice(0, cursor).length -
+      original.slice(0, cursor).replace(/[^0-9.-]/g, "").length;
+    input.value = sanitized;
+    const newCursor = cursor - removedBeforeCursor;
+    input.setSelectionRange(newCursor, newCursor);
+  }
+
+  // Up/Down only — bound to the text input, where Left/Right must stay free
+  // for native caret movement.
+  private onInputKeyDown(e: KeyboardEvent) {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    this.stepValue(e.key === "ArrowUp" ? 1 : -1);
+  }
+
+  // Up/Down/Left/Right — bound to the slider, which has no text caret to
+  // protect, matching the standard ARIA slider keyboard pattern.
+  private onSliderKeyDown(e: KeyboardEvent) {
+    let direction = 0;
+    if (e.key === "ArrowUp" || e.key === "ArrowRight") direction = 1;
+    else if (e.key === "ArrowDown" || e.key === "ArrowLeft") direction = -1;
+    else return;
+    e.preventDefault();
+    this.stepValue(direction);
+  }
+
+  private stepValue(direction: number) {
+    const step = this.step ?? 1;
+    const stepDecimals = step.toString().split(".")[1]?.length || 0;
+    this.setValue((this.value + direction * step).toFixed(stepDecimals));
+  }
+
+  /**
+   * Parses, clamps, and commits a raw string value (from the input, a slider
+   * drag, or a keyboard step). Called with `_input.value` possibly `undefined`
+   * if invoked before the first render (e.g. `el.value = 5` right after
+   * `document.createElement`) — in that case `_value` is still updated, just
+   * not mirrored to the (not-yet-existing) DOM input; the next render picks it
+   * up via `.value=${this.value.toString()}`.
+   */
   private setValue(_value: string) {
     const { value: input } = this._input;
 
     let value = _value;
     value = value.replace(/[^0-9.-]/g, ""); // Only allow numbers, dots, and minus
     value = value.replace(/(\..*)\./g, "$1"); // Only allow one dot
-    // if (input) input.value = value;
     if (value.endsWith(".")) return;
     if (value.lastIndexOf("-") > 0) {
       value = value[0] + value.substring(1).replace(/-/g, "");
     }
-    // if (input) input.value = value;
     if (value === "-" || value === "-0") return;
 
     let numericValue = Number(value);
@@ -327,15 +447,22 @@ export class NumberInput extends LitElement implements HasValue, HasName {
     if (this.value !== numericValue) {
       this._value = numericValue;
       if (input) input.value = this.value.toString();
-      this.requestUpdate();
-      this.dispatchEvent(this.onValueChange);
+      this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
     }
   }
 
   private onBlur() {
+    if (this._escapeKeyListener) {
+      window.removeEventListener("keydown", this._escapeKeyListener);
+      this._escapeKeyListener = undefined;
+    }
     const { value: input } = this._input;
-    if (input && Number.isNaN(Number(input.value)))
-      input.value = this.value.toString();
+    if (!input) return;
+    // Re-run the full parse/clamp cycle (not just the NaN case) so text typed
+    // out of range (e.g. "999" with max=100) is corrected on blur too, not
+    // just when a "change" event happens to fire.
+    this.setValue(input.value);
+    input.value = this.value.toString();
   }
 
   private onSliderMouseDown(e: MouseEvent) {
@@ -354,40 +481,72 @@ export class NumberInput extends LitElement implements HasValue, HasName {
       const value = initialValue + calc * step;
       this.setValue(value.toFixed(stepDecimals));
     };
-    const onBlur = () => {
+    const onDragBlur = () => {
       this.slider = true;
-      this.removeEventListener("blur", onBlur);
+      this.removeEventListener("blur", onDragBlur);
     };
     const onMouseUp = () => {
       document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      this._sliderMouseMove = undefined;
+      this._sliderMouseUp = undefined;
       document.body.style.cursor = "default";
       if (mouseMove) {
         mouseMove = false;
       } else {
-        this.addEventListener("blur", onBlur);
+        this.addEventListener("blur", onDragBlur);
         this.slider = false;
         requestAnimationFrame(() => this.focus());
       }
-      document.removeEventListener("mouseup", onMouseUp);
     };
+    this._sliderMouseMove = onMouseMove;
+    this._sliderMouseUp = onMouseUp;
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   }
 
-  private onFocus(e: Event) {
-    e.stopPropagation();
-    const onKeyPress = (e: KeyboardEvent) => {
+  private onFocus() {
+    if (this._escapeKeyListener) {
+      window.removeEventListener("keydown", this._escapeKeyListener);
+    }
+    this._escapeKeyListener = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       this.blur();
-      window.removeEventListener("keydown", onKeyPress);
     };
-    window.addEventListener("keydown", onKeyPress);
+    window.addEventListener("keydown", this._escapeKeyListener);
   }
 
   connectedCallback() {
     super.connectedCallback();
-    if (this.min && this.min > this.value) this._value = this.min;
-    if (this.max && this.max < this.value) this._value = this.max;
+    if (this.min !== undefined && this.min > this._value) this._value = this.min;
+    if (this.max !== undefined && this.max < this._value) this._value = this.max;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._sliderMouseMove) {
+      document.removeEventListener("mousemove", this._sliderMouseMove);
+      this._sliderMouseMove = undefined;
+    }
+    if (this._sliderMouseUp) {
+      document.removeEventListener("mouseup", this._sliderMouseUp);
+      this._sliderMouseUp = undefined;
+    }
+    if (this._escapeKeyListener) {
+      window.removeEventListener("keydown", this._escapeKeyListener);
+      this._escapeKeyListener = undefined;
+    }
+  }
+
+  // Re-clamp the current value whenever `min`/`max` change after the fact —
+  // otherwise `el.value = 150` followed by `el.max = 100` left `_value` at the
+  // stale, now out-of-range 150 until the next user interaction.
+  protected updated(changedProperties: PropertyValues<this>) {
+    if (!changedProperties.has("min") && !changedProperties.has("max")) return;
+    let clamped = this._value;
+    if (this.min !== undefined) clamped = Math.max(clamped, this.min);
+    if (this.max !== undefined) clamped = Math.min(clamped, this.max);
+    if (clamped !== this._value) this._value = clamped;
   }
 
   /**
@@ -398,76 +557,91 @@ export class NumberInput extends LitElement implements HasValue, HasName {
    * If the input element reference is not available (not yet rendered or disconnected),
    * this method will do nothing.
    */
-  focus() {
+  focus(options?: FocusOptions) {
     const { value } = this._input;
     if (!value) return;
-    value.focus();
+    value.focus(options);
   }
 
-  protected render() {
-    const regularTemplate = html`
-      ${this.pref || this.icon
-        ? html`<bim-label
-            style="pointer-events: auto"
-            @mousedown=${this.onSliderMouseDown}
-            .icon=${this.icon}
+  private renderRegular() {
+    return html`
+      ${this.pref
+        ? html`<bim-label class="affix" @mousedown=${this.onSliderMouseDown}
             >${this.pref}</bim-label
           >`
         : null}
       <input
         ${ref(this._input)}
         type="text"
+        role="spinbutton"
         aria-label=${this.label || this.name || "Number Input"}
+        aria-valuenow=${this.value}
+        aria-valuemin=${ifDefined(this.min)}
+        aria-valuemax=${ifDefined(this.max)}
         size="1"
-        @input=${(e: Event) => e.stopPropagation()}
+        @input=${this.onInput}
         @change=${this.onChange}
         @blur=${this.onBlur}
         @focus=${this.onFocus}
+        @keydown=${this.onInputKeyDown}
         .value=${this.value.toString()}
       />
       ${this.suffix
-        ? html`<bim-label
-            style="pointer-events: auto"
-            @mousedown=${this.onSliderMouseDown}
+        ? html`<bim-label class="affix" @mousedown=${this.onSliderMouseDown}
             >${this.suffix}</bim-label
           >`
         : null}
     `;
+  }
 
+  // Only invoked while `slider` is true, so the normalized-position math (and
+  // the CSS custom property write) never runs on the regular-input render path.
+  private renderSlider() {
     const min = this.min ?? -Infinity;
     const max = this.max ?? +Infinity;
     const normalizedValue = (100 * (this.value - min)) / (max - min);
-    const sliderTemplate = html`
-      <style>
-        .slider-indicator {
-          width: ${`${normalizedValue}%`};
-        }
-      </style>
-      <div class="slider" @mousedown=${this.onSliderMouseDown}>
+    this.style.setProperty(
+      "--_number-input-slider-pct",
+      Number.isFinite(normalizedValue) ? `${normalizedValue}%` : "0%",
+    );
+    return html`
+      <div
+        class="slider"
+        role="slider"
+        tabindex="0"
+        aria-label=${this.label || this.name || "Slider"}
+        aria-valuenow=${this.value}
+        aria-valuemin=${ifDefined(this.min)}
+        aria-valuemax=${ifDefined(this.max)}
+        @mousedown=${this.onSliderMouseDown}
+        @keydown=${this.onSliderKeyDown}
+      >
         <div class="slider-indicator"></div>
         ${this.pref
-          ? html`<bim-label style="z-index: 1; margin-right: 0.125rem"
+          ? html`<bim-label class="affix slider-affix pref"
               >${`${this.pref}: `}</bim-label
             >`
           : null}
-        <bim-label style="z-index: 1;">${this.value}</bim-label>
+        <bim-label class="affix slider-affix">${this.value}</bim-label>
         ${this.suffix
-          ? html`<bim-label style="z-index: 1;">${this.suffix}</bim-label>`
+          ? html`<bim-label class="affix slider-affix">${this.suffix}</bim-label>`
           : null}
       </div>
     `;
+  }
 
+  protected render() {
     const title = `${this.label || this.name || this.pref ? `${this.label || this.name || this.pref}: ` : ""}${this.value}${this.suffix ?? ""}`;
 
     return html`
-      <bim-input
-        title=${title}
-        .label=${this.label}
-        .icon=${this.icon}
-        .vertical=${this.vertical}
-      >
-        ${this.slider ? sliderTemplate : regularTemplate}
-      </bim-input>
+      <div class="parent">
+        ${this.label || this.icon
+          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
+          : null}
+        <div class="input" title=${title}>
+          ${this.slider ? this.renderSlider() : this.renderRegular()}
+        </div>
+      </div>
     `;
   }
 }
