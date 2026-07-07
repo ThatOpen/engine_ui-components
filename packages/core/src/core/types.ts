@@ -67,117 +67,13 @@ export type ConditionFunctions = {
  * Represents a query for all IfcWallStandardCase at Nivel 1.
  * @example type=IFCWALLSTANDARDCASE & (type=IFCBUILDINGSTOREY & Name=Nivel 1)
  */
-// @ts-ignore
-const wallsAtLevel1: Query = [
-  { key: "type", condition: "=", value: "WEBIFC.IFCWALLSTANDARDCASE" },
-  {
-    operator: "&",
-    queries: [
-      {
-        key: "type",
-        condition: "=",
-        value: "WEBIFC.IFCBUILDINGSTOREY",
-      },
-      {
-        operator: "&",
-        key: "Name",
-        condition: "=",
-        value: "Nivel 1",
-      },
-    ],
-  },
-];
 
 /**
  * Represents a query for all load bearing IfcWallStandardCase with 300 mm in the name at Nivel 2.
  * @example (type=IFCWALLSTANDARDCASE & Name?300mm) & (type=IFCPROPERTYSINGLEVALUE & Name=LoadBearing & NominalValue=true) & (type=IFCBUILDINGSTOREY & Name?Nivel 1)
  */
-// @ts-ignore
-const loadBearing300mmWallsAtLevel2: QueryGroup[] = [
-  {
-    queries: [
-      {
-        queries: [
-          {
-            key: "type",
-            condition: "=",
-            value: "WEBIFC.IFCWALLSTANDARDCASE",
-          },
-          {
-            operator: "&",
-            key: "Name",
-            condition: "?",
-            value: "300mm",
-          },
-        ],
-      },
-      {
-        operator: "&",
-        queries: [
-          {
-            key: "type",
-            condition: "=",
-            value: "WEBIFC.IFCPROPERTYSINGLEVALUE",
-          },
-          {
-            operator: "&",
-            key: "Name",
-            condition: "=",
-            value: "LoadBearing",
-          },
-          {
-            operator: "&",
-            key: "NominalValue",
-            condition: "=",
-            value: true,
-          },
-        ],
-      },
-      {
-        operator: "&",
-        queries: [
-          {
-            key: "type",
-            condition: "=",
-            value: "WEBIFC.IFCBUILDINGSTOREY",
-          },
-          {
-            operator: "&",
-            key: "Name",
-            condition: "=",
-            value: "Nivel 2",
-          },
-        ],
-      },
-    ],
-  },
-];
 
 /**
  * Represents a query for all slabs with a property set named Construction.
  * @example type=IFCSLAB & (type:IFCPROPERTYSET AND Name:Construction)
  */
-// @ts-ignore
-const slabsWithConstructionPset: QueryGroup[] = [
-  {
-    queries: [
-      { key: "type", condition: "=", value: "WEBIFC.IFCSLAB" },
-      {
-        operator: "&",
-        queries: [
-          {
-            key: "type",
-            condition: "=",
-            value: "WEBIFC.IFCPROPERTYSET",
-          },
-          {
-            operator: "&",
-            key: "Name",
-            condition: "=",
-            value: "Construction",
-          },
-        ],
-      },
-    ],
-  },
-];

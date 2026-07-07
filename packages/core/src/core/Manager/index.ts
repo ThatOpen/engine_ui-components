@@ -111,6 +111,7 @@ export class Manager {
     Manager.defineCustomElement("bim-color-input", components.ColorInput);
     Manager.defineCustomElement("bim-context-menu", components.ContextMenu);
     Manager.defineCustomElement("bim-dropdown", components.Dropdown);
+    Manager.defineCustomElement("bim-empty-state", components.EmptyState);
     Manager.defineCustomElement("bim-grid", components.Grid);
     Manager.defineCustomElement("bim-icon", components.Icon);
     Manager.defineCustomElement("bim-input", components.Input);
