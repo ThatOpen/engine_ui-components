@@ -224,7 +224,7 @@ export class Button extends LitElement {
     this.requestUpdate("tooltipTitle", old);
   }
 
-  /** @deprecated Use `<bim-tooltip>` inside the button instead. */
+  /** @deprecated Use `<bim-tooltip>` as a child inside the button instead. */
   private _tooltipText?: string;
 
   @property({ type: String, attribute: "tooltip-text", reflect: true })
