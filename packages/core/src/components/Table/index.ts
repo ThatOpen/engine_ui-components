@@ -1,5 +1,5 @@
 import { LitElement, TemplateResult, css, html, nothing } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import {
   TableChildren,
@@ -416,6 +416,13 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
   @state()
   private _errorLoading = false;
+
+  @query(".body-scroll")
+  private _bodyScroll!: HTMLElement;
+
+  get body(): HTMLElement | null {
+    return this._bodyScroll ?? null;
+  }
 
   private _defaultVisibility = true;
 
@@ -890,12 +897,18 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
   async loadData(force = false) {
     if (this._value.length !== 0 && !force) return false;
     if (!this.loadFunction) return false;
-    this.loading = true;
+    const hasExistingData = this._value.length > 0;
+    const savedScroll = this._bodyScroll?.scrollTop ?? 0;
+    if (!hasExistingData) this.loading = true;
     try {
       const data = await this.loadFunction();
       this.data = data;
       this.loading = false;
       this._errorLoading = false;
+      if (hasExistingData && savedScroll > 0) {
+        await this.updateComplete;
+        requestAnimationFrame(() => { this._bodyScroll.scrollTop = savedScroll; });
+      }
       return true;
     } catch (error: any) {
       this.loading = false;
@@ -1124,7 +1137,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
           )}
           ${this.getGroupingMessageTemplate()}
         </div>
-        <div style="overflow-x: hidden; grid-area: Body">
+        <div class="body-scroll" style="overflow-x: hidden; grid-area: Body">
           <bim-table-children
             ${ref(onChildrenCreated)}
             style="grid-area: Body; background-color: transparent"
