@@ -1070,7 +1070,7 @@ interface ColumnData<T = TableRowData> {
 
 **Tag:** `bim-slider`  
 **Implements:** `HasValue`, `HasName`  
-**Fires:** `change` (continuous, via `onValueChange`), `changecommitted` (on pointer-up, via `onChangeCommitted`)
+**Fires:** `change` (continuous, `CustomEvent<SliderChangedEventDetail>`), `changecommitted` (on pointer-up, `CustomEvent<SliderChangedEventDetail>`) — listen via `addEventListener`
 
 Fully custom slider with range support, marks, keyboard navigation, and a floating value label.
 
