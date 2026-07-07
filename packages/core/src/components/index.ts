@@ -3,6 +3,7 @@ import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
 import { ContextMenu } from "./ContextMenu";
 import { Dropdown } from "./Dropdown";
+import { EmptyState } from "./EmptyState";
 import { ElementCreatedEventDetail, Grid } from "./Grid";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
@@ -34,6 +35,7 @@ import { Tooltip } from "./Tooltip";
 import { Slider, SliderChangedEventDetail } from "./Slider";
 import { PaperSpace } from "./PaperSpace";
 import { Modal } from "./Modal";
+import { SortableList } from "./SortableList";
 
 /**
  * Extends the global HTMLElementTagNameMap interface to include custom element tags.
@@ -46,6 +48,7 @@ declare global {
     "bim-color-input": ColorInput;
     "bim-context-menu": ContextMenu;
     "bim-dropdown": Dropdown;
+    "bim-empty-state": EmptyState;
     "bim-grid": Grid;
     "bim-icon": Icon;
     "bim-input": Input;
@@ -73,6 +76,7 @@ declare global {
     "bim-slider": Slider;
     "bim-paper-space": PaperSpace;
     "bim-modal": Modal;
+    "bim-sortable-list": SortableList;
   }
 
   /**
@@ -105,6 +109,7 @@ export * from "./Checkbox";
 export * from "./ColorInput";
 export * from "./ContextMenu";
 export * from "./Dropdown";
+export * from "./EmptyState";
 export * from "./Grid";
 export * from "./Icon";
 export * from "./Input";
@@ -127,3 +132,4 @@ export * from "./Tooltip";
 export * from "./Slider";
 export * from "./PaperSpace";
 export * from "./Modal";
+export * from "./SortableList";
