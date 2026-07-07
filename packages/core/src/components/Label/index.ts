@@ -53,11 +53,17 @@ export class Label extends LitElement {
       display: none;
     }
 
+    bim-icon {
+      flex-shrink: 0;
+      /* align-self: baseline; */
+    }
+
     img {
       height: 100%;
       aspect-ratio: 1;
       border-radius: var(--bim-label_img--bdrs, 100%);
       margin-right: 0.125rem;
+      flex-shrink: 0;
     }
 
     :host(:not([vertical])) img {
