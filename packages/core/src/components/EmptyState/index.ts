@@ -73,11 +73,18 @@ export class EmptyState extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 1rem;
       height: 100%;
       min-height: 12rem;
       padding: 1rem;
       text-align: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .illustration {
@@ -104,10 +111,6 @@ export class EmptyState extends LitElement {
       max-width: 220px;
       white-space: normal;
     }
-
-    .actions {
-      margin-top: 1rem;
-    }
   `;
 
   /**
@@ -131,14 +134,14 @@ export class EmptyState extends LitElement {
   protected render() {
     return html`
       <div class="parent">
-        <div class="illustration">
-          ${EmptyState._illustration}
-          ${this.label ? html`<bim-label class="title">${this.label}</bim-label>` : null}
+        <div class="content">
+          <div class="illustration">
+            ${EmptyState._illustration}
+            ${this.label ? html`<bim-label class="title">${this.label}</bim-label>` : null}
+          </div>
+          ${this.description ? html`<bim-label class="description">${this.description}</bim-label>` : null}
         </div>
-        ${this.description ? html`<bim-label class="description">${this.description}</bim-label>` : null}
-        <div class="actions">
-          <slot></slot>
-        </div>
+        <slot></slot>
       </div>
     `;
   }
