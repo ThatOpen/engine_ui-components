@@ -10,11 +10,48 @@ import { HasName, HasValue } from "../../core/types";
 export class Selector extends LitElement implements HasValue, HasName {
   static styles = css`
     :host {
-      --bim-input--g: 0;
-      --bim-input--p: 0;
-      --bim-input--olw: 0;
-      --bim-input--bgc: var(--bim-ui_bg-contrast-20);
       display: block;
+    }
+
+    .parent {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      user-select: none;
+      flex: 1;
+      align-items: normal;
+    }
+
+    :host(:not([vertical])) .parent {
+      justify-content: space-between;
+    }
+
+    :host([vertical]) .parent {
+      flex-direction: column;
+    }
+
+    bim-label.field-label {
+      margin-top: var(--bim-input--label-mt, 0);
+    }
+
+    .wrapper {
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      min-height: 25px;
+      min-width: 3rem;
+      background-color: var(--bim-input--bgc, var(--bim-ui_bg-contrast-20));
+      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-2xs));
+    }
+
+    :host(:not([vertical])) .wrapper {
+      flex: 1;
+    }
+
+    :host(:not([vertical])[label]) .wrapper {
+      max-width: var(--bim-input--maxw, fit-content);
     }
 
     .options {
@@ -54,7 +91,6 @@ export class Selector extends LitElement implements HasValue, HasName {
 
     :host([variant="underline"]) {
       --bim-input--bgc: transparent;
-      --bim-input--olw: 0;
       --bim-input--bdrs: 0;
     }
 
@@ -214,34 +250,38 @@ export class Selector extends LitElement implements HasValue, HasName {
 
   protected render() {
     return html`
-      <bim-input .vertical=${this.vertical} .label=${this.label} .icon=${this.icon}>
-        <div
-          class="options"
-          role="tablist"
-          aria-label=${ifDefined(this.label)}
-          @keydown=${this._onKeyDown}
-        >
-          ${this._options.map((o) => {
-            const checked = o === this._value;
-            return html`
-              <div
-                class="option ${checked ? "checked" : ""}"
-                role="tab"
-                aria-selected=${checked}
-                tabindex=${checked ? 0 : -1}
-                @click=${() => this._onOptionClick(o)}
-              >
-                <bim-label
-                  .icon=${o.icon}
-                  .img=${o.img}
-
-                  .vertical=${o.vertical}
-                >${o.label}</bim-label>
-              </div>
-            `;
-          })}
+      <div class="parent">
+        ${this.label || this.icon
+          ? html`<bim-label class="field-label" .icon=${this.icon}>${this.label}</bim-label>`
+          : null}
+        <div class="wrapper">
+          <div
+            class="options"
+            role="tablist"
+            aria-label=${ifDefined(this.label)}
+            @keydown=${this._onKeyDown}
+          >
+            ${this._options.map((o) => {
+              const checked = o === this._value;
+              return html`
+                <div
+                  class="option ${checked ? "checked" : ""}"
+                  role="tab"
+                  aria-selected=${checked}
+                  tabindex=${checked ? 0 : -1}
+                  @click=${() => this._onOptionClick(o)}
+                >
+                  <bim-label
+                    .icon=${o.icon}
+                    .img=${o.img}
+                    .vertical=${o.vertical}
+                  >${o.label}</bim-label>
+                </div>
+              `;
+            })}
+          </div>
         </div>
-      </bim-input>
+      </div>
     `;
   }
 }
