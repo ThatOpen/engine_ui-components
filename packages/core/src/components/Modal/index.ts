@@ -33,14 +33,16 @@ export class Modal extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      padding: 0.75rem 1rem;
+      padding: 0.5rem;
       border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      box-sizing: border-box;
+      height: 35px;
     }
 
     .header bim-label {
       flex: 1;
       font-weight: 600;
-      font-size: 0.875rem;
+      font-size: 13px;
     }
 
     .content {
@@ -139,7 +141,7 @@ export class Modal extends LitElement {
       >
         ${this.label || this.icon ? html`
           <div class="header">
-            <bim-label .icon=${this.icon ?? nothing}>${this.label ?? ""}</bim-label>
+            <bim-label .icon=${this.icon}>${this.label ?? ""}</bim-label>
           </div>
         ` : nothing}
         <div class="content">
