@@ -1,275 +1,256 @@
-import { LitElement, css, html } from "lit";
-import { createRef, ref } from "lit/directives/ref.js";
+import { LitElement, css, html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { HasName, HasValue } from "../../core/types";
 import { NumberInput } from "../NumberInput";
 
 /**
  * A custom color input web component for BIM applications. HTML tag: bim-color-input
  *
- * @fires input - Fired when the color input changes.
+ * @fires input - Fired when the color or opacity value changes.
  */
 export class ColorInput extends LitElement implements HasValue, HasName {
-  /**
-   * CSS styles for the component.
-   */
   static styles = css`
     :host {
-      /* flex: 1; */
       display: block;
-    }
-
-    :host(:focus) {
-      --bim-input--olw: var(--bim-number-input--olw, 2px);
-      --bim-input--olc: var(--bim-ui_accent-base);
     }
 
     .parent {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.375rem;
+      user-select: none;
     }
 
-    .color-container {
+    :host(:not([vertical])) .parent {
+      justify-content: space-between;
+    }
+
+    :host([vertical]) .parent {
+      flex-direction: column;
+    }
+
+    bim-label {
+      margin-top: var(--bim-input--label-mt, 0);
+    }
+
+    .input {
       position: relative;
-      outline: none;
+      overflow: hidden;
+      box-sizing: border-box;
       display: flex;
-      height: 100%;
-      gap: 0.5rem;
-      justify-content: flex-start;
       align-items: center;
-      flex: 1;
-      border-radius: var(--bim-color-input--bdrs, var(--bim-ui_size-4xs));
+      height: 25px;
+      min-width: 3rem;
+      gap: var(--bim-input--g, var(--bim-ui_size-4xs));
+      padding: 0 7px;
+      background-color: var(--bim-input--bgc, var(--bim-ui_bg-contrast-20));
+      border: var(--bim-input--olw, 2px) solid var(--bim-input--olc, transparent);
+      border-radius: var(--bim-input--bdrs, var(--bim-ui_size-2xs));
+      transition: border-color 0.15s;
     }
 
-    .color-container input[type="color"] {
+    :host(:not([vertical])) .input {
+      flex: 1;
+    }
+
+    :host(:not([vertical])[label]) .input,
+    :host(:not([vertical])[icon]) .input {
+      max-width: var(--bim-input--maxw, fit-content);
+    }
+
+    :host(:focus-within) .input {
+      border-color: var(--bim-ui_bg-contrast-40);
+    }
+
+    input[type="color"] {
       position: absolute;
-      bottom: -0.25rem;
       visibility: hidden;
       width: 0;
       height: 0;
     }
 
-    .color-container .sample {
-      width: 1rem;
-      height: 1rem;
-      border-radius: 0.125rem;
-      background-color: #fff;
+    .sample {
+      width: var(--bim-color-input--swatch-sz, 1rem);
+      height: var(--bim-color-input--swatch-sz, 1rem);
+      border-radius: var(--bim-color-input--swatch-bdrs, var(--bim-ui_size-4xs));
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+      background-color: var(--_swatch-c);
     }
 
-    .color-container input[type="text"] {
+    :host([disabled]) .sample {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .sample:focus-visible {
+      outline: 2px solid var(--bim-ui_accent-base);
+      outline-offset: 1px;
+    }
+
+    input[type="text"] {
       height: 100%;
       flex: 1;
-      width: 3.25rem;
+      min-width: 0;
       text-transform: uppercase;
       font-size: var(--bim-ui_size-sm);
+      font-family: inherit;
       background-color: transparent;
-      padding: 0%;
+      padding: 0;
       outline: none;
       border: none;
       color: var(--bim-color-input--c, var(--bim-ui_bg-contrast-100));
     }
 
-    :host([disabled]) .color-container input[type="text"] {
+    :host([disabled]) input[type="text"] {
       color: var(--bim-ui_bg-contrast-60);
     }
 
     bim-number-input {
-      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .input {
+        transition: none;
+      }
     }
   `;
 
-  /**
-   * The name of the color input.
-   * @type {string}
-   * @default undefined
-   * @example
-   * <bim-color-input name="colorInput"></bim-color-input>
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.name = 'colorInput';
-   */
   @property({ type: String, reflect: true })
   name?: string;
 
-  /**
-   * The label for the color input.
-   * @type {string}
-   * @default undefined
-   * @example
-   * <bim-color-input label="Select a color"></bim-color-input>
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.label = 'Select a color';
-   */
   @property({ type: String, reflect: true })
   label?: string;
 
-  /**
-   * The icon for the color input.
-   * @type {string}
-   * @default undefined
-   * @example
-   * <bim-color-input icon="palette"></bim-color-input>
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.icon = 'palette';
-   */
   @property({ type: String, reflect: true })
   icon?: string;
 
-  /**
-   * A boolean attribute which, if present, indicates that the color input should be displayed vertically.
-   * @default false
-   * @example
-   * <bim-color-input vertical></bim-color-input>
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.vertical = true;
-   */
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
-  /**
-   * The opacity of the color input.
-   * @type {number}
-   * @default undefined
-   * @example
-   * <bim-color-input opacity="0.5"></bim-color-input>
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.opacity = 0.5;
-   */
-  @property({ type: Number, reflect: true })
+  /** Opacity value in the range 0–100. When undefined, no opacity control is shown. */
+  @property({ type: Number })
   opacity?: number;
 
-  /**
-   * The color value of the color input in hexadecimal format.
-   * @default #bcf124
-   * @example
-   * <bim-color-input color="#ff0000"></bim-color-input>
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.color = '#ff0000';
-   */
-  @property({ type: String, reflect: true })
-  color = "#bcf124";
+  /** Hex color value in `#RRGGBB` format. */
+  @property({ type: String })
+  color = "#ffffff";
 
-  /**
-   * Disables the input, preventing user interaction.
-   */
   @property({ type: Boolean, reflect: true })
   disabled = false;
 
   private _colorInput = createRef<HTMLInputElement>();
   private _textInput = createRef<HTMLInputElement>();
-  onValueChange = new Event("input");
 
-  /**
-   * Represents both the color and opacity values combined into a single object. This is an instance property, not an HTMLElement attribute.
-   * @type {Object}
-   * @example
-   * const colorInput = document.createElement('bim-color-input');
-   * colorInput.value = { color: '#ff0000', opacity: 0.5 };
-   */
+  /** @deprecated Listen for the "input" event on the element instead. */
+  readonly onValueChange = new Event("input");
 
   set value(_value: { color: string; opacity?: number }) {
     const { color, opacity } = _value;
     this.color = color;
-    if (opacity) this.opacity = opacity;
+    if (opacity !== undefined) this.opacity = opacity;
   }
 
-  get value() {
-    const value: { color: string; opacity?: number } = {
-      color: this.color,
-    };
-    if (this.opacity) value.opacity = this.opacity;
-    return value;
+  get value(): { color: string; opacity?: number } {
+    const result: { color: string; opacity?: number } = { color: this.color };
+    if (this.opacity !== undefined) result.opacity = this.opacity;
+    return result;
   }
 
-  private onColorInput(e: Event) {
-    e.stopPropagation();
-    const { value: colorInput } = this._colorInput;
-    if (!colorInput) return;
-    this.color = colorInput.value;
-    this.dispatchEvent(this.onValueChange);
-  }
-
-  private onTextInput(e: Event) {
-    e.stopPropagation();
-    const { value: textInput } = this._textInput;
-    if (!textInput) return;
-    const { value: inputValue } = textInput;
-    let value = inputValue.replace(/[^a-fA-F0-9]/g, "");
-    if (!value.startsWith("#")) value = `#${value}`;
-    textInput.value = value.slice(0, 7);
-    if (textInput.value.length === 7) {
-      this.color = textInput.value;
-      this.dispatchEvent(this.onValueChange);
+  protected override updated(changed: PropertyValues) {
+    super.updated(changed);
+    if (changed.has("disabled")) {
+      if (this.disabled) {
+        this.setAttribute("aria-disabled", "true");
+      } else {
+        this.removeAttribute("aria-disabled");
+      }
     }
   }
 
-  private onOpacityInput = (e: Event) => {
-    const input = e.target as NumberInput;
-    this.opacity = input.value;
-    this.dispatchEvent(this.onValueChange);
-  };
+  private _onColorInput(e: Event) {
+    e.stopPropagation();
+    const input = this._colorInput.value;
+    if (!input) return;
+    this.color = input.value;
+    this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+  }
 
-  /**
-   * Focuses on the color input by programmatically triggering a click event on the underlying color input element.
-   * If the color input element is not available, the function does nothing.
-   */
+  private _onTextInput(e: Event) {
+    e.stopPropagation();
+    const input = this._textInput.value;
+    if (!input) return;
+    const hex = "#" + input.value.replace(/[^a-fA-F0-9]/g, "").slice(0, 6);
+    input.value = hex;
+    if (hex.length === 7) {
+      this.color = hex;
+      this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+    }
+  }
+
+  private _onOpacityInput(e: Event) {
+    if (!(e.target instanceof NumberInput)) return;
+    this.opacity = Math.max(0, Math.min(100, e.target.value));
+    this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+  }
+
   focus() {
-    const { value } = this._colorInput;
-    if (!value) return;
-    value.click();
+    this._textInput.value?.focus();
   }
 
   protected render() {
     return html`
       <div class="parent">
-        <bim-input
-          .label=${this.label}
-          .icon=${this.icon}
-          .vertical="${this.vertical}"
+        ${this.label || this.icon
+          ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
+          : nothing}
+        <div
+          class="input"
+          role="group"
+          aria-label=${this.label || this.name || "Color input"}
+          style="--_swatch-c: ${this.color}"
         >
-          <div class="color-container">
-            <div
-              style="display: flex; align-items: center; gap: .375rem; height: 100%; flex: 1;"
-            >
-              <input
-                ${ref(this._colorInput)}
-                @input="${this.onColorInput}"
-                type="color"
-                aria-label=${this.label || this.name || "Color Input"}
-                value="${this.color}"
-                ?disabled=${this.disabled}
-              />
-              <div
-                @click=${this.focus}
-                class="sample"
-                style="background-color: ${this.color}"
-              ></div>
-              <input
-                ${ref(this._textInput)}
-                @input="${this.onTextInput}"
-                value="${this.color}"
-                type="text"
-                aria-label=${this.label || this.name || "Text Color Input"}
-                ?disabled=${this.disabled}
-              />
-            </div>
-            ${this.opacity !== undefined
-              ? html`<bim-number-input
-                  @change=${this.onOpacityInput}
-                  slider
-                  suffix="%"
-                  min="0"
-                  value=${this.opacity}
-                  max="100"
-                ></bim-number-input>`
-              : null}
-          </div>
-        </bim-input>
+          <input
+            ${ref(this._colorInput)}
+            type="color"
+            .value=${this.color}
+            ?disabled=${this.disabled}
+            aria-hidden="true"
+            tabindex="-1"
+            @input=${this._onColorInput}
+          />
+          <button
+            class="sample"
+            type="button"
+            aria-label="Open color picker"
+            ?disabled=${this.disabled}
+            @click=${() => this._colorInput.value?.click()}
+          ></button>
+          <input
+            ${ref(this._textInput)}
+            type="text"
+            .value=${this.color}
+            ?disabled=${this.disabled}
+            aria-label=${this.label || this.name || "Hex color value (e.g. #FF0000)"}
+            @input=${this._onTextInput}
+          />
+          ${this.opacity !== undefined
+            ? html`<bim-number-input
+                label="Opacity"
+                label-hidden
+                suffix="%"
+                min="0"
+                max="100"
+                slider
+                .value=${this.opacity}
+                @change=${this._onOpacityInput}
+              ></bim-number-input>`
+            : nothing}
+        </div>
       </div>
     `;
   }
