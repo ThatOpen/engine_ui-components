@@ -35,29 +35,30 @@ const range = document.getElementById("range") as BUI.Slider;
 range.value = [20, 80];
 
 // --- Snap to marks ---
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const month = document.getElementById("month") as BUI.Slider;
-month.step = null;
-month.marks = MONTHS.map((label, value) => ({ value, label }));
-month.valueLabelFormat = (v) => MONTHS[v] ?? String(v);
-month.value = 0;
+const marksHorizontal = document.getElementById("marks-horizontal") as BUI.Slider;
+marksHorizontal.step = null;
+marksHorizontal.marks = [0, 20, 40, 60, 80, 100].map((value) => ({
+  value,
+  label: String(value),
+}));
+marksHorizontal.value = 0;
 
-const PHASES = ["Foundation", "Structure", "Envelope", "MEP Systems", "Interior Finish", "Landscaping"];
-const phaseMarks = PHASES.map((label, value) => ({ value, label }));
+const diagonalMarks = [0, 10, 20, 30, 40, 50].map((value) => ({
+  value,
+  label: String(value),
+}));
 
-const phaseDiagonal = document.getElementById("phase-diagonal") as BUI.Slider;
-phaseDiagonal.step = null;
-phaseDiagonal.markLabelOrientation = "diagonal";
-phaseDiagonal.marks = phaseMarks;
-phaseDiagonal.valueLabelFormat = (v) => PHASES[v] ?? String(v);
-phaseDiagonal.value = 0;
+const marksDiagonal = document.getElementById("marks-diagonal") as BUI.Slider;
+marksDiagonal.step = null;
+marksDiagonal.markLabelOrientation = "diagonal";
+marksDiagonal.marks = diagonalMarks;
+marksDiagonal.value = 0;
 
-const phaseVertical = document.getElementById("phase-vertical") as BUI.Slider;
-phaseVertical.step = null;
-phaseVertical.markLabelOrientation = "vertical";
-phaseVertical.marks = phaseMarks;
-phaseVertical.valueLabelFormat = (v) => PHASES[v] ?? String(v);
-phaseVertical.value = 0;
+const marksVertical = document.getElementById("marks-vertical") as BUI.Slider;
+marksVertical.step = null;
+marksVertical.markLabelOrientation = "vertical";
+marksVertical.marks = diagonalMarks;
+marksVertical.value = 0;
 
 // --- Events ---
 const evtChange = document.getElementById("evt-change") as BUI.Slider;
