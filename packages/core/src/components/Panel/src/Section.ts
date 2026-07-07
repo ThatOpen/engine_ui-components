@@ -34,8 +34,9 @@ export class PanelSection extends LitElement implements HasName {
 
       :host .parent {
         display: grid;
-        grid-template: "header" auto "content" minmax(0, 1fr);
+        grid-template: "header" auto "content" minmax(0, 1fr) / minmax(0, 1fr);
         height: 100%;
+        overflow: auto;
         /* display: flex; */
         /* flex-direction: column; */
         /* height: 100%; */
@@ -58,7 +59,7 @@ export class PanelSection extends LitElement implements HasName {
 
       :host(:not([fixed])) .header:hover .title > bim-label {
         --bim-label--c: transparent;
-        background: linear-gradient(90deg, var(--bim-ui_accent-base) 0%, color-mix(in srgb, var(--bim-ui_accent-base) 60%, #99a0ae) 100%);
+        background: linear-gradient(90deg, var(--bim-ui_accent-base) 0%, color-mix(in srgb, var(--bim-ui_accent-base) 60%, var(--bim-ui_bg-contrast-60)) 130%);
         -webkit-background-clip: text;
         background-clip: text;
       }
@@ -70,19 +71,22 @@ export class PanelSection extends LitElement implements HasName {
       .title > bim-label {
         --bim-label--fz: var(--bim-panel-section--fz, var(--bim-ui_size-lg));
         --bim-label--c: transparent;
-        --bim-icon--c: #99a0ae;
-        background: linear-gradient(90deg, #ffffff 0%, #99a0ae 100%);
+        --bim-icon--c: var(--bim-ui_bg-contrast-60);
+        background: linear-gradient(90deg, var(--bim-ui_bg-contrast-100) 0%, var(--bim-ui_bg-contrast-60) 130%);
         -webkit-background-clip: text;
         background-clip: text;
+        min-width: 0;
       }
 
       .header {
-        grid-area: "header";
+        grid-area: header;
         display: var(--bim-panel-section--header-display, flex);
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
-        height: 2rem;
+        box-sizing: border-box;
+        height: 35px;
+        min-width: 180px;
         padding: 2px 6px;
         gap: 0.375rem;
       }
@@ -101,7 +105,6 @@ export class PanelSection extends LitElement implements HasName {
         align-items: center;
         column-gap: 0.5rem;
         min-width: 0;
-        flex: 1;
       }
 
       .title p {
@@ -306,8 +309,8 @@ export class PanelSection extends LitElement implements HasName {
         @click=${this.onHeaderClick}
         @keydown=${this.onHeaderKeydown}
       >
-        <div class="header-start"><slot name="header-start"></slot></div>
         <div class="title">
+          <slot name="header-start"></slot>
           ${this.label || this.icon || this.name
             ? html`<bim-label aria-hidden="true" .icon=${this.icon}>${this.label}</bim-label>`
             : null}

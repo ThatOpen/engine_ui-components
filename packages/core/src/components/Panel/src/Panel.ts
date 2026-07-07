@@ -39,12 +39,12 @@ export class Panel extends LitElement implements HasName {
       .parent {
         /* display: flex; */
         display: grid;
-        grid-template: "header" auto "content" minmax(0, 1fr);
+        grid-template: "header" auto "content" minmax(0, 1fr) / minmax(0, 1fr);
         height: 100%;
+        overflow: auto;
         /* flex: 1; */
         /* flex-direction: column; */
         /* pointer-events: auto; */
-        /* overflow: auto; */
       }
 
       .header {
@@ -53,25 +53,33 @@ export class Panel extends LitElement implements HasName {
         align-items: center;
         justify-content: space-between;
         font-weight: 600;
-        height: 2rem;
+        box-sizing: border-box;
+        height: 35px;
+        min-width: 180px;
         padding: 2px 6px;
         gap: 0.375rem;
         flex-shrink: 0;
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
-      .header bim-label {
+      .title {
+        display: flex;
+        align-items: center;
+        column-gap: 0.5rem;
+        min-width: 0;
+      }
+
+      .title bim-label {
         --bim-label--c: transparent;
-        --bim-icon--c: #99a0ae;
+        --bim-icon--c: var(--bim-ui_bg-contrast-60);
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-lg));
-        background: linear-gradient(90deg, #ffffff 0%, #99a0ae 100%);
+        background: linear-gradient(90deg, var(--bim-ui_bg-contrast-100) 0%, var(--bim-ui_bg-contrast-60) 130%);
         -webkit-background-clip: text;
         background-clip: text;
         pointer-events: none;
-        flex: 1;
+        min-width: 0;
       }
 
-      .header-start,
       .header-end {
         display: flex;
         align-items: center;
@@ -84,6 +92,7 @@ export class Panel extends LitElement implements HasName {
 
       .sections {
         grid-area: content;
+        width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -308,8 +317,10 @@ export class Panel extends LitElement implements HasName {
         ${this.label || this.name || this.icon
           ? html`
             <div class="header">
-              <div class="header-start"><slot name="header-start"></slot></div>
-              <bim-label .icon=${this.icon}>${this.label || this.name}</bim-label>
+              <div class="title">
+                <slot name="header-start"></slot>
+                <bim-label .icon=${this.icon}>${this.label || this.name}</bim-label>
+              </div>
               <div class="header-end">
                 <slot name="header-end"></slot>
               </div>
