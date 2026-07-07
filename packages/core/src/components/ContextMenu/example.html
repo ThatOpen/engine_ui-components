@@ -12,30 +12,187 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
-      width: 100vw;
-      height: 100vh;
-      padding: 0;
-      margin: 0;
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
     }
 
-    #context-container {
-      width: 1rem;
-      height: 1rem;
-      background-color: white;
-      position: absolute;
-      top: 10rem;
-      left: 20rem;
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
     }
   </style>
 </head>
 
 <body>
-  <div id="context-container">
-    <bim-context-menu visible>
-      <bim-button label="Show Elements"></bim-button>
-      <bim-button label="Settings"></bim-button>
-    </bim-context-menu>
+  <h1>bim-context-menu</h1>
+  <p class="subtitle">Menú flotante posicionado con floating-ui. Se abre dentro de un &lt;dialog&gt; por encima de todo el contenido.</p>
+
+  <!-- 1. Via bim-button slot -->
+  <div class="section">
+    <div class="section-title">Via bim-button (slot)</div>
+    <div class="row">
+      <span class="row-label">simple</span>
+      <bim-button label="Options" icon="solar:menu-dots-bold" style="width: min-content;">
+        <bim-context-menu>
+          <bim-button label="Rename" icon="solar:pen-bold"></bim-button>
+          <bim-button label="Duplicate" icon="solar:copy-bold"></bim-button>
+          <bim-button label="Delete" icon="solar:trash-bin-trash-bold"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">contenido mixto</span>
+      <bim-button label="Model" icon="solar:box-bold" style="width: min-content;">
+        <bim-context-menu>
+          <bim-label style="font-size: 0.7rem; color: var(--bim-ui_bg-contrast-80);">Structural Model v3</bim-label>
+          <bim-button label="Inspect" icon="solar:eye-bold"></bim-button>
+          <bim-button label="Export" icon="solar:upload-bold"></bim-button>
+          <bim-button label="Remove" icon="solar:trash-bin-trash-bold"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">anidado</span>
+      <bim-button icon="fe:elipsis-v" style="width: min-content;">
+        <bim-context-menu>
+          <bim-button label="View">
+            <bim-context-menu>
+              <bim-button label="Wireframe"></bim-button>
+              <bim-button label="Solid"></bim-button>
+              <bim-button label="X-Ray"></bim-button>
+            </bim-context-menu>
+          </bim-button>
+          <bim-button label="Export">
+            <bim-context-menu>
+              <bim-button label="As IFC"></bim-button>
+              <bim-button label="As OBJ"></bim-button>
+            </bim-context-menu>
+          </bim-button>
+          <bim-button label="Delete" icon="solar:trash-bin-trash-bold"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
   </div>
+
+  <!-- 2. Placement -->
+  <div class="section">
+    <div class="section-title">Placement</div>
+    <div class="row">
+      <span class="row-label">right (default)</span>
+      <bim-button label="Right" icon="solar:arrow-right-bold" style="width: min-content;">
+        <bim-context-menu>
+          <bim-button label="Action A"></bim-button>
+          <bim-button label="Action B"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">bottom</span>
+      <bim-button label="Bottom" icon="solar:arrow-down-bold" style="width: min-content;">
+        <bim-context-menu placement="bottom">
+          <bim-button label="Action A"></bim-button>
+          <bim-button label="Action B"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">top</span>
+      <bim-button label="Top" icon="solar:arrow-up-bold" style="width: min-content;">
+        <bim-context-menu placement="top">
+          <bim-button label="Action A"></bim-button>
+          <bim-button label="Action B"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
+    <div class="row">
+      <span class="row-label">left</span>
+      <bim-button label="Left" icon="solar:arrow-left-bold" style="width: min-content;">
+        <bim-context-menu placement="left">
+          <bim-button label="Action A"></bim-button>
+          <bim-button label="Action B"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+    </div>
+  </div>
+
+  <!-- 3. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">toggle visible</span>
+      <div id="trigger-prog" style="display: inline-block;">
+        <bim-button id="btn-prog" label="Toggle menu" icon="solar:menu-dots-bold"></bim-button>
+        <bim-context-menu id="menu-prog">
+          <bim-button label="Option 1"></bim-button>
+          <bim-button label="Option 2"></bim-button>
+          <bim-button label="Option 3"></bim-button>
+        </bim-context-menu>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">removeMenus()</span>
+      <bim-button label="Open menu" icon="solar:menu-dots-bold" style="width: min-content;">
+        <bim-context-menu>
+          <bim-button label="Action A"></bim-button>
+          <bim-button label="Action B"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+      <bim-button id="btn-remove" label="Close all" icon="solar:close-circle-bold"></bim-button>
+    </div>
+  </div>
+
+  <!-- 4. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">visible / hidden</span>
+      <bim-button label="Watch events" icon="solar:eye-bold" style="width: min-content;">
+        <bim-context-menu id="menu-events">
+          <bim-button label="Action A"></bim-button>
+          <bim-button label="Action B"></bim-button>
+        </bim-context-menu>
+      </bim-button>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
   <script type="module" src="./example.ts"></script>
 </body>
 
