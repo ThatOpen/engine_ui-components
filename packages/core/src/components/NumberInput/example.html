@@ -12,6 +12,50 @@
 
     body {
       background-color: var(--bim-ui_bg-base);
+      color: var(--bim-ui_bg-contrast-80);
+      padding: 2rem;
+      max-width: 48rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--bim-ui_bg-contrast-80);
+      margin: 0 0 2.5rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bim-ui_bg-contrast-80);
+      border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.7rem;
+      color: var(--bim-ui_bg-contrast-80);
+      min-width: 10rem;
+      flex-shrink: 0;
     }
 
     bim-number-input {
@@ -21,10 +65,148 @@
 </head>
 
 <body>
-  <div>
-    <bim-number-input slider step="0.1" label="Element Height" pref="X" min="20" max="100"
-      suffix="m"></bim-number-input>
+  <h1>bim-number-input</h1>
+  <p class="subtitle">Input numérico con modo texto y modo slider, soporte para prefijo/sufijo, min/max y sensibilidad de arrastre.</p>
+
+  <!-- 1. Content -->
+  <div class="section">
+    <div class="section-title">Content</div>
+    <div class="row">
+      <span class="row-label">sin label</span>
+      <bim-number-input value="42"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">label</span>
+      <bim-number-input label="Floor count" value="5"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">label + icon</span>
+      <bim-number-input label="Height" icon="solar:ruler-bold" value="3.5"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">pref</span>
+      <bim-number-input label="Position X" pref="X" value="10"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">suffix</span>
+      <bim-number-input label="Height" suffix="m" value="3.5"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">pref + suffix</span>
+      <bim-number-input label="Length" pref="X" suffix="m" value="12"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">name</span>
+      <bim-number-input name="wallThickness" label="Wall thickness" suffix="mm" value="200"></bim-number-input>
+    </div>
   </div>
+
+  <!-- 2. Layout -->
+  <div class="section">
+    <div class="section-title">Layout</div>
+    <div class="row">
+      <span class="row-label">horizontal (default)</span>
+      <bim-number-input label="Height" suffix="m" value="3"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical</span>
+      <bim-number-input label="Height" suffix="m" value="3" vertical></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">vertical combinados</span>
+      <div style="display: flex; gap: 0.375rem;">
+        <bim-number-input vertical pref="X" suffix="m" value="10" style="width: 5rem;"></bim-number-input>
+        <bim-number-input vertical pref="Y" suffix="m" value="0" style="width: 5rem;"></bim-number-input>
+        <bim-number-input vertical pref="Z" suffix="m" value="3" style="width: 5rem;"></bim-number-input>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Constraints -->
+  <div class="section">
+    <div class="section-title">Constraints</div>
+    <div class="row">
+      <span class="row-label">min</span>
+      <bim-number-input label="Min 0" min="0" value="0" suffix="m"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">max</span>
+      <bim-number-input label="Max 100" max="100" value="100" suffix="%"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">min + max</span>
+      <bim-number-input label="Opacity" min="0" max="100" value="75" suffix="%"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">step</span>
+      <bim-number-input label="Step 0.5" step="0.5" value="1" suffix="m"></bim-number-input>
+    </div>
+  </div>
+
+  <!-- 4. Slider mode -->
+  <div class="section">
+    <div class="section-title">Slider Mode</div>
+    <div class="row">
+      <span class="row-label">slider básico</span>
+      <bim-number-input label="Value" slider min="0" max="100" value="50"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">slider + suffix</span>
+      <bim-number-input label="Opacity" slider min="0" max="100" value="80" suffix="%"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">slider + pref</span>
+      <bim-number-input label="Height" slider pref="Z" min="0" max="50" value="10" suffix="m"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">slider + step</span>
+      <bim-number-input label="Scale" slider min="0" max="2" step="0.1" value="1" suffix="x"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">sensitivity alta</span>
+      <bim-number-input label="Sensitivity 5" slider min="0" max="100" value="50" sensitivity="5"></bim-number-input>
+    </div>
+  </div>
+
+  <!-- 5. CSS Custom Properties -->
+  <div class="section">
+    <div class="section-title">CSS Custom Properties</div>
+    <div class="row">
+      <span class="row-label">--bim-number-input--c</span>
+      <bim-number-input label="Custom color" value="42"
+        style="--bim-number-input--c: rgb(251 191 36);"></bim-number-input>
+    </div>
+    <div class="row">
+      <span class="row-label">--bim-number-input--bdrs</span>
+      <bim-number-input label="Pill shape" value="42"
+        style="--bim-number-input--bdrs: 100px;"></bim-number-input>
+    </div>
+  </div>
+
+  <!-- 6. Programmatic -->
+  <div class="section">
+    <div class="section-title">Programmatic</div>
+    <div class="row">
+      <span class="row-label">set value</span>
+      <bim-number-input id="ni-prog" label="Floor" min="1" max="50" value="1" suffix="F"></bim-number-input>
+    </div>
+    <div class="row" style="padding-left: 10.5rem;">
+      <bim-button id="btn-inc" label="+1" icon="solar:arrow-up-bold"></bim-button>
+      <bim-button id="btn-dec" label="-1" icon="solar:arrow-down-bold"></bim-button>
+      <bim-button id="btn-reset" label="Reset" icon="solar:refresh-bold"></bim-button>
+    </div>
+  </div>
+
+  <!-- 7. Events -->
+  <div class="section">
+    <div class="section-title">Events</div>
+    <div class="row">
+      <span class="row-label">change</span>
+      <bim-number-input id="ni-event" label="Drag or type" slider min="0" max="100" value="0" suffix="%"></bim-number-input>
+      <bim-label id="event-output" style="color: var(--bim-ui_bg-contrast-80);">Waiting…</bim-label>
+    </div>
+  </div>
+
   <script type="module" src="./example.ts"></script>
 </body>
 
