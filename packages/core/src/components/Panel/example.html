@@ -64,11 +64,23 @@
       height: 20rem;
       display: flex;
       flex-direction: column;
+      resize: horizontal;
+      overflow: auto;
+      min-width: 6rem;
+      max-width: 30rem;
     }
 
     .panel-wrap bim-panel {
       flex: 1;
       min-height: 0;
+    }
+
+    .section-wrap-resizable {
+      resize: horizontal;
+      overflow: auto;
+      min-width: 6rem;
+      max-width: 30rem;
+      width: 18rem;
     }
   </style>
 </head>
@@ -136,8 +148,8 @@
       </div>
     </div>
     <div class="row">
-      <span class="row-label">header-start (panel)</span>
-      <div style="width: 18rem;">
+      <span class="row-label">header-start (panel) (resize →)</span>
+      <div class="section-wrap-resizable">
         <bim-panel label="Clash Detail" icon="mdi:layers-search">
           <bim-button ghost slot="header-start" icon="tabler:arrow-left" label-hidden label="Back" style="width: min-content;"></bim-button>
           <bim-button slot="header-end" icon="mdi:dots-vertical" label-hidden label="More" style="width: min-content;"></bim-button>
@@ -148,8 +160,8 @@
       </div>
     </div>
     <div class="row">
-      <span class="row-label">slot header-tag</span>
-      <div style="width: 18rem; display: flex; flex-direction: column; gap: 0.5rem;">
+      <span class="row-label">slot header-tag (resize →)</span>
+      <div class="section-wrap-resizable" style="display: flex; flex-direction: column; gap: 0.5rem;">
         <!-- badge simple junto al título -->
         <bim-panel-section label="Clash Detection" icon="mdi:layers-search">
           <span slot="header-tag" style="
@@ -228,7 +240,7 @@
   <div class="section">
     <div class="section-title">bim-panel — básico</div>
     <div class="row">
-      <span class="row-label">label + icon + sections</span>
+      <span class="row-label">label + icon + sections (resize →)</span>
       <div class="panel-wrap">
         <bim-panel label="Model Settings" icon="solar:settings-bold">
           <bim-button slot="header-end" icon="solar:add-circle-bold" label="Add section" label-hidden style="width: min-content;"></bim-button>
