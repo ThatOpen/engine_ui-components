@@ -31,6 +31,58 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         --bim-input--olc: var(--bim-ui_bg-contrast-40);
       }
 
+      .parent {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        user-select: none;
+        flex: 1;
+        align-items: normal;
+      }
+
+      :host(:not([vertical])) .parent {
+        justify-content: space-between;
+      }
+
+      :host([vertical]) .parent {
+        flex-direction: column;
+      }
+
+      bim-label.field-label {
+        margin-top: var(--bim-input--label-mt, 0);
+      }
+
+      .wrapper {
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        min-height: 25px;
+        min-width: 3rem;
+        gap: var(--bim-input--g, var(--bim-ui_size-4xs));
+        padding: var(--bim-input--p, 0 7px);
+        background-color: var(--bim-input--bgc, var(--bim-ui_bg-contrast-50));
+        border: var(--bim-input--olw, 2px) solid var(--bim-input--olc, transparent);
+        border-radius: var(--bim-input--bdrs, var(--bim-ui_size-2xs));
+        transition: border-color 0.15s;
+      }
+
+      :host(:not([vertical])) .wrapper {
+        flex: 1;
+      }
+
+      :host(:not([vertical])[label]) .wrapper {
+        max-width: var(--bim-input--maxw, fit-content);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .wrapper {
+          transition: none;
+        }
+      }
+
       /* --bim-dropdown--c: color of the trigger label and chevron. Default: --bim-ui_bg-contrast-100 */
       .input {
         --bim-label--c: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
@@ -506,31 +558,31 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     }
 
     return html`
-      <bim-input
-        title=${this.label ?? ""}
-        .label=${this.label}
-        .icon=${this.icon}
-        .vertical=${this.vertical}
-      >
-        <div
-          ${ref(this._trigger)}
-          class="input"
-          tabindex="0"
-          role="combobox"
-          aria-haspopup="listbox"
-          aria-expanded=${this.visible}
-          aria-controls="bim-dropdown-listbox"
-          aria-label=${this.label ?? "Dropdown"}
-          @click=${() => (this.visible = !this.visible)}
-          @keydown=${this._onTriggerKeydown}
-        >
-          <bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>
-          <svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem">
-            <path d="M0 0h24v24H0V0z" fill="none"/>
-            <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-          </svg>
+      <div class="parent" title=${this.label ?? ""}>
+        ${this.label || this.icon
+          ? html`<bim-label class="field-label" .icon=${this.icon}>${this.label}</bim-label>`
+          : null}
+        <div class="wrapper">
+          <div
+            ${ref(this._trigger)}
+            class="input"
+            tabindex="0"
+            role="combobox"
+            aria-haspopup="listbox"
+            aria-expanded=${this.visible}
+            aria-controls="bim-dropdown-listbox"
+            aria-label=${this.label ?? "Dropdown"}
+            @click=${() => (this.visible = !this.visible)}
+            @keydown=${this._onTriggerKeydown}
+          >
+            <bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>
+            <svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem">
+              <path d="M0 0h24v24H0V0z" fill="none"/>
+              <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+            </svg>
+          </div>
         </div>
-      </bim-input>
+      </div>
       ${!this.isValid && this._validationMessage
         ? html`<span class="validation-message">${this._validationMessage}</span>`
         : nothing}
