@@ -53,6 +53,7 @@ export class Tabs extends LitElement {
       }
 
       .switchers {
+        height: 35px;
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
         position: relative;
         display: flex;
