@@ -242,7 +242,7 @@ export class Tabs extends LitElement {
       :host([floating]) .switchers {
         justify-self: center;
         overflow: hidden;
-        background-color: var(--bim-ui_bg-contrast-20);
+        background-color: var(--bim-ui_bg-contrast-10);
       }
 
       :host([floating]:not([bottom])) .switchers {
