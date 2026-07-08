@@ -249,6 +249,10 @@ export class Tooltip extends LitElement {
   }
 
   protected render() {
-    return html`<div role="tooltip" aria-live="polite"><slot></slot></div>`;
+    // Render the content through bim-label so the tooltip text picks up the
+    // theme text color. The tooltip is reparented into a floating container on
+    // the body, where a bare <slot> would inherit the document's default (near
+    // black) and be unreadable on the dark tooltip surface.
+    return html`<bim-label role="tooltip" aria-live="polite"><slot></slot></bim-label>`;
   }
 }
