@@ -59,7 +59,7 @@
     "eslint-plugin-wc": "2.1.0",
     "glob": "10.3.12",
     "prettier": "3.2.5",
-    "three": "0.182.0",
+    "three": "0.185.0",
     "typescript": "5.4.2",
     "vite": "5.1.6",
     "vite-plugin-dts": "3.7.3",
@@ -69,7 +69,7 @@
     "@thatopen/components": "~3.4.0",
     "@thatopen/components-front": "~3.4.0",
     "@thatopen/fragments": "~3.4.0",
-    "three": ">=0.182.0",
+    "three": "0.185.0",
     "web-ifc": ">=0.0.77"
   }
 }
