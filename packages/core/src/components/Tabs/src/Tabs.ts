@@ -87,7 +87,9 @@ export class Tabs extends LitElement {
 
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_bg-contrast-100);
-        background-color: var(--bim-ui_bg-contrast-30);
+        /* Active tab = the ThatOpen brand purple (main-base #6528d7) by default,
+           not a gray. Themeable via --bim-tabs-switcher--active-bgc. */
+        background-color: var(--bim-tabs-switcher--active-bgc, var(--bim-ui_main-base));
       }
 
       .switcher:focus-visible {
@@ -125,7 +127,7 @@ export class Tabs extends LitElement {
       }
 
       :host([switchers-compact]) .switcher[data-active] {
-        background-color: var(--bim-ui_bg-contrast-40);
+        background-color: var(--bim-tabs-switcher--active-bgc, var(--bim-ui_main-base));
       }
 
       /* Invisible measure strip — always rendered to detect overflow */
@@ -242,28 +244,32 @@ export class Tabs extends LitElement {
       :host([floating]) .switchers {
         justify-self: center;
         overflow: hidden;
-        background-color: var(--bim-ui_bg-contrast-10);
+        /* Switcher bar = panel surface (#262629 = bg-contrast-10). Themeable. */
+        background-color: var(--bim-tabs--switchers-bgc, var(--bim-ui_bg-contrast-10));
       }
 
+      /* Floating dock borders match the panel/toolbar border (1px bg-contrast-20
+         = #3C3C41), so the whole dock frames uniformly. Was contrast-40
+         (#5F5F64, lighter). Themeable via --bim-tabs--switchers-bdc. */
       :host([floating]:not([bottom])) .switchers {
         border-radius: var(--bim-ui_size-2xs) var(--bim-ui_size-2xs) 0 0;
-        border: 1px solid var(--bim-ui_bg-contrast-40);
+        border: 1px solid var(--bim-tabs--switchers-bdc, var(--bim-ui_bg-contrast-20));
         border-bottom: none;
       }
 
       :host([floating][bottom]) .switchers {
         border-radius: 0 0 var(--bim-ui_size-2xs) var(--bim-ui_size-2xs);
-        border: 1px solid var(--bim-ui_bg-contrast-40);
+        border: 1px solid var(--bim-tabs--switchers-bdc, var(--bim-ui_bg-contrast-20));
         border-top: none;
       }
 
       :host([floating][tab="hidden"]) .switchers {
         border-radius: var(--bim-ui_size-2xs);
-        border: 1px solid var(--bim-ui_bg-contrast-40);
+        border: 1px solid var(--bim-tabs--switchers-bdc, var(--bim-ui_bg-contrast-20));
       }
 
       :host([floating]) .content {
-        border: 1px solid var(--bim-ui_bg-contrast-40);
+        border: 1px solid var(--bim-tabs--switchers-bdc, var(--bim-ui_bg-contrast-20));
         border-radius: var(--bim-ui_size-2xs);
         background-color: var(--bim-ui_bg-base);
       }
