@@ -236,5 +236,3 @@ export class SortableList extends LitElement {
     `;
   }
 }
-
-customElements.define("bim-sortable-list", SortableList);
