@@ -6,7 +6,7 @@ import { createRef, ref } from "lit/directives/ref.js";
  * A modal dialog web component for BIM applications. HTML tag: bim-modal
  *
  * @fires confirm - Fired when the user clicks the confirm button.
- * @fires cancel - Fired when the user clicks the cancel button, presses Escape, or clicks the backdrop.
+ * @fires cancel - Fired when the user clicks the cancel button or presses Escape.
  */
 export class Modal extends LitElement {
   static styles = css`
@@ -118,26 +118,12 @@ export class Modal extends LitElement {
     }
   }
 
-  private _onDialogClick(e: MouseEvent) {
-    if (this.loading) return;
-    const dialog = this._dialog.value;
-    if (!dialog) return;
-    const rect = dialog.getBoundingClientRect();
-    const isBackdrop =
-      e.clientX < rect.left ||
-      e.clientX > rect.right ||
-      e.clientY < rect.top ||
-      e.clientY > rect.bottom;
-    if (isBackdrop) this._cancel();
-  }
-
   protected render() {
     return html`
       <dialog
         ${ref(this._dialog)}
         @cancel=${this._onDialogCancel}
         @close=${this._onDialogClose}
-        @click=${this._onDialogClick}
       >
         ${this.label || this.icon ? html`
           <div class="header">
