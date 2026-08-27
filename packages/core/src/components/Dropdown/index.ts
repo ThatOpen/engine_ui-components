@@ -302,6 +302,9 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
       _value.add(opt);
       if (!this.multiple && value.length === 1) break;
     }
+    const changed =
+      _value.size !== this._value.size || [..._value].some((opt) => !this._value.has(opt));
+    if (!changed) return;
     this._value = _value;
     this._updateOptionsState();
     this.dispatchEvent(new Event("change"));
