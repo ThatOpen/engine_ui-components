@@ -44,6 +44,33 @@ export const getElementValue = <
 };
 
 /**
+ * Like `Element.closest()`, but walks the composed (flat) tree instead of the
+ * light DOM: it follows `assignedSlot` for elements distributed into a slot
+ * (crossing *into* the shadow root that owns that slot), and falls back to
+ * the shadow host when it runs out of light-DOM ancestors (crossing *out of*
+ * a shadow root). Useful when a component may be nested inside another
+ * custom element's shadow root, or slotted into one, rather than sitting
+ * directly in the light DOM of its logical ancestor.
+ * @param element - The element to start searching from.
+ * @param selector - The CSS selector to match against.
+ * @returns The closest matching ancestor, or `null` if none is found.
+ */
+export const closestComposed = (element: Element, selector: string) => {
+  let node: Element | null = element;
+  while (node) {
+    if (node.matches(selector)) return node;
+    const parent: Node | null =
+      node.assignedSlot ??
+      node.parentElement ??
+      (node.getRootNode() instanceof ShadowRoot
+        ? (node.getRootNode() as ShadowRoot).host
+        : null);
+    node = parent instanceof Element ? parent : null;
+  }
+  return null;
+};
+
+/**
  * Converts a string to a boolean, number, or string based on its value.
  * @param value - The string to convert.
  * @returns The converted value.

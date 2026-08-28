@@ -2,7 +2,7 @@ import { LitElement, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../../core/Manager/src/styles";
 import { HasName } from "../../../core/types";
-import { getElementValue } from "../../../core/utils";
+import { closestComposed, getElementValue } from "../../../core/utils";
 import { Panel } from "./Panel";
 
 /**
@@ -115,9 +115,11 @@ export class PanelSection extends LitElement implements HasName {
         border-bottom: 1px solid var(--bim-ui_bg-contrast-20);
       }
 
+      /* Temporarily disabled for visual testing.
       :host(:last-child[collapsed]) .header {
         border-bottom: none;
       }
+      */
 
       .components {
         grid-area: content;
@@ -224,7 +226,14 @@ export class PanelSection extends LitElement implements HasName {
   connectedCallback() {
     super.connectedCallback();
     if (this.fixed === undefined) {
-      this.fixed = !this.closest("bim-panel");
+      // Deferred a microtask: when this element is a static child of a custom
+      // element host, its connectedCallback can fire before that host's own
+      // render (itself microtask-scheduled) has populated its shadow root with
+      // the slot this element is projected through — so an ancestor that only
+      // exists after that render completes would otherwise go undetected.
+      queueMicrotask(() => {
+        if (this.fixed === undefined) this.fixed = !closestComposed(this, "bim-panel");
+      });
     }
   }
 
