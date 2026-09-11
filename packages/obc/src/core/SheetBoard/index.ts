@@ -595,7 +595,6 @@ export class SheetBoard extends LitElement {
     const hostRect = this.getBoundingClientRect();
     const hostW = hostRect.width;
     const hostH = hostRect.height;
-    const dpr = window.devicePixelRatio;
 
     // Clear the whole canvas to transparent first.
     renderer.setScissorTest(false);
@@ -666,14 +665,18 @@ export class SheetBoard extends LitElement {
         if (sx + sw <= 0 || sx >= hostW || sy + sh <= 0 || sy >= hostH)
           continue;
 
-        // Convert to WebGL coords: origin bottom-left, device pixels.
-        const glX = Math.round(sx * dpr);
-        const glY = Math.round((hostH - sy - sh) * dpr);
-        const glW = Math.round(sw * dpr);
-        const glH = Math.round(sh * dpr);
+        // Convert to WebGL coords: origin bottom-left. These stay in CSS
+        // pixels — setScissor() and setViewport() multiply by the renderer's
+        // own pixel ratio internally, and the canvas was sized with
+        // setSize() in CSS pixels too, so scaling here as well would apply
+        // devicePixelRatio twice.
+        const vpX = Math.round(sx);
+        const vpY = Math.round(hostH - sy - sh);
+        const vpW = Math.round(sw);
+        const vpH = Math.round(sh);
 
-        renderer.setScissor(glX, glY, glW, glH);
-        renderer.setViewport(glX, glY, glW, glH);
+        renderer.setScissor(vpX, vpY, vpW, vpH);
+        renderer.setViewport(vpX, vpY, vpW, vpH);
         renderer.setClearColor(0xffffff, 1);
         renderer.clear();
         renderer.render(scene, vp.camera);
