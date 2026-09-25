@@ -161,6 +161,7 @@ components:
     tag: "bim-text-input"
     css-vars:
       --bim-input--maxw: "max-width of the host element"
+      --bim-input--ta: "horizontal alignment of the value (shared with number-input and dropdown)"
       --bim-text-input--bdrs: "border radius override"
 
   # ── bim-number-input ─────────────────────────────────────
@@ -839,6 +840,7 @@ A layout wrapper that adds a shared label row above its child inputs.
 | Property | Description |
 |---|---|
 | `--bim-input--maxw` | Max-width constraint for the host |
+| `--bim-input--ta` | Horizontal alignment of the value (`bim-text-input`, `bim-number-input`, `bim-dropdown`) |
 
 ---
 
