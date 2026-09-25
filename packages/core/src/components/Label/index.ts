@@ -43,6 +43,7 @@ export class Label extends LitElement {
     }
 
     .parent p {
+      flex-grow: var(--bim-label--p-grow, 0);
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;
