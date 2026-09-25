@@ -105,7 +105,21 @@ export class Tooltip extends LitElement {
   private _hostParent: HTMLElement | null = null;
   private _escapeListener?: (e: KeyboardEvent) => void;
 
+  // Set while the host's context menu is open (see bim-button): the modal
+  // dialog makes the page inert, so the host never receives `mouseleave`.
+  private _suppressed = false;
+
+  private _suppress = () => {
+    this._suppressed = true;
+    this._cancelAndHide();
+  };
+
+  private _unsuppress = () => {
+    this._suppressed = false;
+  };
+
   private _scheduleShow = () => {
+    if (this._suppressed) return;
     clearTimeout(this.timeoutId);
     this.timeoutId = setTimeout(() => {
       this.visible = true;
@@ -223,6 +237,8 @@ export class Tooltip extends LitElement {
     this._hostParent.addEventListener("mouseleave", this._cancelAndHide);
     this._hostParent.addEventListener("focus", this._scheduleShow);
     this._hostParent.addEventListener("blur", this._cancelAndHide);
+    this._hostParent.addEventListener("bim-tooltip-suppress", this._suppress);
+    this._hostParent.addEventListener("bim-tooltip-unsuppress", this._unsuppress);
   }
 
   disconnectedCallback(): void {
@@ -242,6 +258,8 @@ export class Tooltip extends LitElement {
         this._hostParent.removeEventListener("mouseleave", this._cancelAndHide);
         this._hostParent.removeEventListener("focus", this._scheduleShow);
         this._hostParent.removeEventListener("blur", this._cancelAndHide);
+        this._hostParent.removeEventListener("bim-tooltip-suppress", this._suppress);
+        this._hostParent.removeEventListener("bim-tooltip-unsuppress", this._unsuppress);
         this._hostParent.removeAttribute("aria-describedby");
         this._hostParent = null;
       }
