@@ -74,7 +74,7 @@ export class NumberInput extends LitElement implements HasValue<number>, HasName
       border: none;
       padding: 0;
       flex-grow: 1;
-      text-align: right;
+      text-align: var(--bim-input--ta, right);
       font-family: inherit;
       font-feature-settings: inherit;
       font-variation-settings: inherit;
@@ -94,7 +94,7 @@ export class NumberInput extends LitElement implements HasValue<number>, HasName
     }
 
     :host([suffix]:not([pref])) input {
-      text-align: left;
+      text-align: var(--bim-input--ta, left);
     }
 
     bim-label.affix {
