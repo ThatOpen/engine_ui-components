@@ -284,12 +284,53 @@ export class Button extends LitElement {
     // Flip horizontal: if no space to the right, open to the left
     if (x + m.width > vw - padding) x = t.left - m.width - gap;
 
-    // Shift vertical: keep in viewport
-    if (y + m.height > vh - padding) y = vh - m.height - padding;
+    // Flip vertical: if it doesn't fit below the button's top edge, open
+    // upward with the menu's bottom aligned to the button's bottom edge
+    if (y + m.height > vh - padding) {
+      const upY = t.bottom - m.height;
+      if (upY >= padding) y = upY;
+      // Otherwise neither fits: clamp to the viewport
+      else y = vh - m.height - padding;
+    }
     y = Math.max(padding, y);
 
     dialog.style.left = `${x}px`;
     dialog.style.top = `${y}px`;
+  }
+
+  private _menuResizeObserver?: ResizeObserver;
+  private _menuRaf?: number;
+
+  private _onWindowResize = () => this._updateMenuPosition();
+
+  // The menu entries are custom elements that render asynchronously, so the
+  // dialog only reaches its real size after they update. Re-measure then, and
+  // whenever the size changes while open.
+  private _watchMenuPosition(dialog: HTMLDialogElement) {
+    this._unwatchMenuPosition();
+    window.addEventListener("resize", this._onWindowResize);
+    if (typeof ResizeObserver !== "undefined") {
+      this._menuResizeObserver = new ResizeObserver(() => this._updateMenuPosition());
+      this._menuResizeObserver.observe(dialog);
+    }
+    this._menuRaf = requestAnimationFrame(() => {
+      this._menuRaf = undefined;
+      this._updateMenuPosition();
+    });
+    const pending = [...dialog.children].map((child) =>
+      (child as { updateComplete?: Promise<unknown> }).updateComplete,
+    );
+    Promise.all(pending).then(() => {
+      if (dialog.open) this._updateMenuPosition();
+    });
+  }
+
+  private _unwatchMenuPosition() {
+    window.removeEventListener("resize", this._onWindowResize);
+    this._menuResizeObserver?.disconnect();
+    this._menuResizeObserver = undefined;
+    if (this._menuRaf !== undefined) cancelAnimationFrame(this._menuRaf);
+    this._menuRaf = undefined;
   }
 
   private _openMenu() {
@@ -330,15 +371,22 @@ export class Button extends LitElement {
     }
 
     Button._openMenuButtons.add(this);
+    // Hide/suppress this button's own tooltips (non-bubbling: the entries'
+    // tooltips are not affected) — the modal dialog would otherwise leave a
+    // hover-triggered tooltip stuck on.
+    this.dispatchEvent(new Event("bim-tooltip-suppress"));
     dialog.showModal();
     this._updateMenuPosition();
+    this._watchMenuPosition(dialog);
   }
 
   private _closeMenu() {
+    this._unwatchMenuPosition();
     const dialog = this._menuDialog.value;
     if (!dialog || !dialog.open) return;
 
     dialog.close();
+    this.dispatchEvent(new Event("bim-tooltip-unsuppress"));
     Button._openMenuButtons.delete(this);
     this.dispatchEvent(new Event("menuclose", { bubbles: true, composed: true }));
 
