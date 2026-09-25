@@ -97,7 +97,12 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         justify-content: space-between;
       }
 
+      /* --bim-input--ta: horizontal alignment of the selected value. Default: current (start) */
       .input bim-label {
+        --bim-label--p-grow: 1;
+        flex: 1;
+        min-width: 0;
+        text-align: var(--bim-input--ta, inherit);
         pointer-events: none;
         overflow: hidden;
       }
