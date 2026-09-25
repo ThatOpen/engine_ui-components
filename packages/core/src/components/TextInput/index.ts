@@ -111,6 +111,7 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
         background-color: transparent;
         border: none;
         width: 100%;
+        text-align: var(--bim-input--ta, start);
         color: var(--bim-text-input--c, var(--bim-ui_bg-contrast-100));
       }
 
