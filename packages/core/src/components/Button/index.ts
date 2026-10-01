@@ -256,8 +256,30 @@ export class Button extends LitElement {
    * context menu. More efficient than a declarative `<bim-context-menu>` child
    * for high-frequency scenarios (e.g. table rows) because the template is only
    * rendered when the menu is actually opened.
+   *
+   * The function is called once per open and may return the template directly or
+   * a promise of it (e.g. to build the menu from state fetched when it opens). A
+   * synchronous template behaves exactly as before. With a promise the menu opens
+   * immediately showing a small loading indicator, and its content replaces the
+   * indicator when the promise resolves (the menu is repositioned). If it resolves
+   * to an empty menu, or rejects (the error is logged with the `[bim-button]`
+   * prefix), the menu closes. If the menu is closed before the promise settles, or
+   * the button is disconnected, the late result is discarded; if the menu is opened
+   * again meanwhile only the most recent call fills it.
+   *
+   * @example
+   * ```typescript
+   * button.contextMenuTemplate = async () => {
+   *   const actions = await fetchActions();
+   *   return html`<bim-context-menu>${actions.map(a => html`<bim-button label=${a}></bim-button>`)}</bim-context-menu>`;
+   * };
+   * ```
    */
-  contextMenuTemplate?: () => TemplateResult;
+  contextMenuTemplate?: () => TemplateResult | Promise<TemplateResult>;
+
+  // Bumped on every open and every close; an async template result is only applied
+  // if the token it was started with is still current.
+  private _menuToken = 0;
 
   private _menuDialog = createRef<HTMLDialogElement>();
   private _movedChildren: Element[] = [];
@@ -342,14 +364,15 @@ export class Button extends LitElement {
     this._movedChildren = [];
 
     const contextMenuEl = this.querySelector("bim-context-menu");
+    const token = ++this._menuToken;
 
     if (this.contextMenuTemplate) {
-      // Render template into a temp node, take children of the resulting
-      // bim-context-menu (or the node itself if it isn't one)
-      const temp = document.createElement("div");
-      render(this.contextMenuTemplate(), temp);
-      const source = temp.querySelector("bim-context-menu") ?? temp;
-      for (const child of [...source.children]) dialog.append(child);
+      const result = this.contextMenuTemplate();
+      if (typeof (result as PromiseLike<TemplateResult>)?.then === "function") {
+        this._openAsyncMenu(dialog, result as PromiseLike<TemplateResult>, token);
+        return;
+      }
+      this._fillFromTemplate(dialog, result as TemplateResult);
     } else if (contextMenuEl) {
       this._movedChildren = [...contextMenuEl.children];
       for (const child of this._movedChildren) dialog.append(child);
@@ -358,18 +381,72 @@ export class Button extends LitElement {
     if (!dialog.children.length) return;
 
     // Register for nested-menu coordination
-    const groupID = this.getAttribute("data-context-group");
-    if (groupID) {
+    if (this.getAttribute("data-context-group")) {
       this.closeNestedContexts();
-      // Assign a new group ID to children so their submenus can coordinate
-      const childID = Manager.newRandomId();
-      for (const child of dialog.children) {
-        if (child.tagName === "BIM-BUTTON") {
-          child.setAttribute("data-context-group", childID);
-        }
+      this._assignChildGroups(dialog);
+    }
+    this._showMenu(dialog);
+  }
+
+  // Render template into a temp node, take children of the resulting
+  // bim-context-menu (or the node itself if it isn't one)
+  private _fillFromTemplate(dialog: HTMLDialogElement, template: TemplateResult) {
+    const temp = document.createElement("div");
+    render(template, temp);
+    const source = temp.querySelector("bim-context-menu") ?? temp;
+    for (const child of [...source.children]) dialog.append(child);
+  }
+
+  // Assign a new group ID to children so their submenus can coordinate
+  private _assignChildGroups(dialog: HTMLDialogElement) {
+    const childID = Manager.newRandomId();
+    for (const child of dialog.children) {
+      if (child.tagName === "BIM-BUTTON") {
+        child.setAttribute("data-context-group", childID);
       }
     }
+  }
 
+  // Async template: open right away with a loading indicator, fill when it settles.
+  private _openAsyncMenu(
+    dialog: HTMLDialogElement,
+    pending: PromiseLike<TemplateResult>,
+    token: number,
+  ) {
+    // Inert placeholder that sizes itself from its content (spinner + text); the dialog's
+    // own padding gives it the same breathing room as the menu entries.
+    const loading = document.createElement("bim-label");
+    loading.icon = "eos-icons:loading";
+    loading.textContent = "Loading…";
+    loading.setAttribute("aria-busy", "true");
+    loading.style.setProperty("--bim-label--c", "var(--bim-ui_bg-contrast-50)");
+    dialog.append(loading);
+
+    if (this.getAttribute("data-context-group")) this.closeNestedContexts();
+    this._showMenu(dialog);
+
+    pending.then(
+      (template) => {
+        if (token !== this._menuToken) return; // closed or reopened meanwhile
+        while (dialog.firstChild) dialog.removeChild(dialog.firstChild);
+        this._fillFromTemplate(dialog, template);
+        if (!dialog.children.length) {
+          this._closeMenu();
+          return;
+        }
+        if (this.getAttribute("data-context-group")) this._assignChildGroups(dialog);
+        this._updateMenuPosition();
+        this._watchMenuPosition(dialog);
+      },
+      (error) => {
+        if (token !== this._menuToken) return;
+        console.error("[bim-button] contextMenuTemplate rejected:", error);
+        this._closeMenu();
+      },
+    );
+  }
+
+  private _showMenu(dialog: HTMLDialogElement) {
     Button._openMenuButtons.add(this);
     // Hide/suppress this button's own tooltips (non-bubbling: the entries'
     // tooltips are not affected) — the modal dialog would otherwise leave a
@@ -381,6 +458,7 @@ export class Button extends LitElement {
   }
 
   private _closeMenu() {
+    this._menuToken++; // discards any pending async template result
     this._unwatchMenuPosition();
     const dialog = this._menuDialog.value;
     if (!dialog || !dialog.open) return;
@@ -405,6 +483,36 @@ export class Button extends LitElement {
     }
 
     this.dispatchEvent(new Event("hidden"));
+  }
+
+  /**
+   * Closes this button's context menu if it is open (a no-op otherwise). It goes
+   * through the same path as every other close: a pending async `contextMenuTemplate`
+   * result is discarded, tooltips are restored and `menuclose` / `hidden` fire.
+   *
+   * Closing a menu also closes the sub-menus opened from its items (each one fires
+   * its own `menuclose` / `hidden`), so calling it on the root button closes the
+   * whole chain, even when the clicked item sits in a nested sub-menu.
+   *
+   * Items do not close the menu by themselves; call this from the item's click
+   * handler. The handler can get the button either by closure (when the button and
+   * its `contextMenuTemplate` are created together), or from the item itself: menu
+   * items are moved into the button's own `<dialog>`, which lives in its shadow root, so
+   * `(item.getRootNode() as ShadowRoot).host` is the button owning that menu (for an
+   * item of a nested sub-menu, the sub-menu's button; use the root button's reference
+   * to close the whole chain).
+   *
+   * @example
+   * ```typescript
+   * button.contextMenuTemplate = () => html`
+   *   <bim-context-menu>
+   *     <bim-button label="Rename" @click=${() => { rename(); button.closeMenu(); }}></bim-button>
+   *   </bim-context-menu>
+   * `;
+   * ```
+   */
+  closeMenu() {
+    this._closeMenu();
   }
 
   /**
