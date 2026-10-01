@@ -1,6 +1,24 @@
 import { TableGroupData, TableRowData, TableGroupingTransform } from './types';
 import { Table } from '..';
 
+// Computed groups only get a derived `id` (so their expand state survives regrouping and
+// reloads) when the table data uses ids; id-less tables are left exactly as they were.
+// The prefix starts with a NUL char so it cannot collide with a consumer-provided id.
+const GROUP_ID_PREFIX = "\u0000bim-group";
+
+const groupId = (parentId: string | undefined, column: PropertyKey, value: unknown) =>
+  parentId === undefined
+    ? undefined
+    : `${parentId}|${JSON.stringify([String(column), typeof value, String(value)])}`;
+
+const withGroupId = <T extends TableRowData>(
+  id: string | undefined,
+  group: TableGroupData<T>,
+) => {
+  if (id !== undefined) group.id = id;
+  return group;
+};
+
 /**
  * Grouping system that creates hierarchies independent of groupBy column count.
  * The groupingTransform functions determine the hierarchy depth, not the groupBy array.
@@ -30,7 +48,13 @@ export function groupTableData<T extends TableRowData>(
 ): TableGroupData<T>[] { 
   if (groupByColumns.length === 0 || data.length === 0) return data;
   const flatData = Table.flattenData(data)
-  return processColumnGrouping(flatData, groupByColumns, groupingTransform);
+  const usesIds = flatData.some((row) => row.id != null);
+  return processColumnGrouping(
+    flatData,
+    groupByColumns,
+    groupingTransform,
+    usesIds ? GROUP_ID_PREFIX : undefined,
+  );
 }
 
 /**
@@ -39,7 +63,8 @@ export function groupTableData<T extends TableRowData>(
 function processColumnGrouping<T extends TableRowData>(
   data: TableGroupData<T>[],
   columns: (keyof T)[],
-  transforms?: TableGroupingTransform<T>
+  transforms?: TableGroupingTransform<T>,
+  parentId?: string
 ): TableGroupData<T>[] {
   if (columns.length === 0) return data;
   
@@ -47,10 +72,10 @@ function processColumnGrouping<T extends TableRowData>(
   const transformFn = transforms?.[currentColumn];
   
   if (transformFn) {
-    return createHierarchicalGroups(data, currentColumn, transformFn, remainingColumns, transforms);
+    return createHierarchicalGroups(data, currentColumn, transformFn, remainingColumns, transforms, parentId);
   }
   
-  return createSimpleGroups(data, currentColumn, remainingColumns, transforms);
+  return createSimpleGroups(data, currentColumn, remainingColumns, transforms, parentId);
 }
 
 /**
@@ -61,7 +86,8 @@ function createHierarchicalGroups<T extends TableRowData>(
   column: keyof T,
   transformFn: (value: T[keyof T], data: Partial<T>) => string[],
   remainingColumns: (keyof T)[],
-  transforms?: TableGroupingTransform<T>
+  transforms?: TableGroupingTransform<T>,
+  parentId?: string
 ): TableGroupData<T>[] {
   // Collect hierarchy paths and group data by them
   const pathGroups = new Map<string, {
@@ -82,7 +108,7 @@ function createHierarchicalGroups<T extends TableRowData>(
     pathGroups.get(pathKey)!.rows.push(row);
   }
   
-  return buildHierarchyTree(pathGroups, column, remainingColumns, transforms);
+  return buildHierarchyTree(pathGroups, column, remainingColumns, transforms, parentId);
 }
 
 /**
@@ -92,7 +118,8 @@ function buildHierarchyTree<T extends TableRowData>(
   pathGroups: Map<string, { path: string[]; rows: TableGroupData<T>[] }>,
   column: keyof T,
   remainingColumns: (keyof T)[],
-  transforms?: TableGroupingTransform<T>
+  transforms?: TableGroupingTransform<T>,
+  parentId?: string
 ): TableGroupData<T>[] {
   const treeBuilder = new HierarchyTreeBuilder<T>();
   
@@ -102,7 +129,7 @@ function buildHierarchyTree<T extends TableRowData>(
   }
   
   // Convert tree to final structure and process remaining columns
-  return treeBuilder.buildResult(remainingColumns, transforms);
+  return treeBuilder.buildResult(remainingColumns, transforms, parentId);
 }
 
 /**
@@ -112,7 +139,8 @@ function createSimpleGroups<T extends TableRowData>(
   data: TableGroupData<T>[],
   column: keyof T,
   remainingColumns: (keyof T)[],
-  transforms?: TableGroupingTransform<T>
+  transforms?: TableGroupingTransform<T>,
+  parentId?: string
 ): TableGroupData<T>[] {
   const groups = new Map<any, TableGroupData<T>[]>();
   
@@ -126,15 +154,16 @@ function createSimpleGroups<T extends TableRowData>(
   
   const result: TableGroupData<T>[] = [];
   for (const [value, rows] of groups) {
+    const id = groupId(parentId, column, value);
     const children = remainingColumns.length > 0 
-      ? processColumnGrouping(rows, remainingColumns, transforms)
+      ? processColumnGrouping(rows, remainingColumns, transforms, id)
       : rows;
     
-    result.push({
+    result.push(withGroupId(id, {
       data: { [column]: value } as Partial<T>,
       children,
       _isComputedGroup: true
-    });
+    }));
   }
   
   return result;
@@ -174,39 +203,42 @@ class HierarchyTreeBuilder<T extends TableRowData> {
   
   buildResult(
     remainingColumns: (keyof T)[],
-    transforms?: TableGroupingTransform<T>
+    transforms?: TableGroupingTransform<T>,
+    parentId?: string
   ): TableGroupData<T>[] {
-    return this.convertMapToResult(this.tree, remainingColumns, transforms);
+    return this.convertMapToResult(this.tree, remainingColumns, transforms, parentId);
   }
   
   private convertMapToResult(
     levelMap: Map<string, HierarchyNode<T>>,
     remainingColumns: (keyof T)[],
-    transforms?: TableGroupingTransform<T>
+    transforms?: TableGroupingTransform<T>,
+    parentId?: string
   ): TableGroupData<T>[] {
     const result: TableGroupData<T>[] = [];
     
     for (const node of levelMap.values()) {
       const children: TableGroupData<T>[] = [];
+      const id = groupId(parentId, node.column, node.value);
       
       // Add sub-hierarchy children
       if (node.children.size > 0) {
-        children.push(...this.convertMapToResult(node.children, remainingColumns, transforms));
+        children.push(...this.convertMapToResult(node.children, remainingColumns, transforms, id));
       }
       
       // Add direct rows (processed with remaining columns if any)
       if (node.rows.length > 0) {
         const processedRows = remainingColumns.length > 0
-          ? processColumnGrouping(node.rows, remainingColumns, transforms)
+          ? processColumnGrouping(node.rows, remainingColumns, transforms, id)
           : node.rows;
         children.push(...processedRows);
       }
       
-      result.push({
+      result.push(withGroupId(id, {
         data: { [node.column]: node.value } as Partial<T>,
         children,
         _isComputedGroup: true
-      });
+      }));
     }
     
     return result;

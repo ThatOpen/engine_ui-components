@@ -75,6 +75,17 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
   data: TableGroupData<T> = { data: {} };
 
+  // True between a disconnect and the microtask that finalises it. A DOM move
+  // (repeat() reordering) is a disconnect + reconnect in the same task, so a
+  // reconnect while pending means "moved": state and data must be kept.
+  private _disconnectPending = false;
+
+  // The id this group was indexed under in the table (data is reset after disconnect).
+  private _registeredId?: string;
+
+  private _visualSyncPending = false;
+  private _visualKey = "";
+
   get rowElement() {
     const root = this.shadowRoot;
     if (!root) return null;
@@ -93,30 +104,121 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     return !(this.data.children && this.data.children.length !== 0);
   }
 
+  private get _initialChildrenHidden() {
+    if (!this.table) return true;
+    const { expandedLevels } = this.table;
+    if (typeof expandedLevels === "number") return this.depth >= expandedLevels;
+    return !this.table.expanded;
+  }
+
   connectedCallback() {
     super.connectedCallback();
-    if (!this.table) {
-      this.childrenHidden = true;
+    // Idempotent (a Set), so a group that is moved or re-attached is subscribed exactly once.
+    this._registeredId = this.data.id;
+    this.table?._registerGroup(this, this._registeredId);
+    if (this._disconnectPending) {
+      // Moved inside the DOM: keep the current expand/collapse state and data.
+      this._disconnectPending = false;
       return;
     }
-    const { expandedLevels } = this.table;
-    if (typeof expandedLevels === "number") {
-      this.childrenHidden = this.depth >= expandedLevels;
-    } else if (this.table.expanded) {
-      this.childrenHidden = false;
-    } else {
-      this.childrenHidden = true;
-    }
+    const { id } = this.data;
+    const remembered = id != null ? this.table?._expansionMemory.get(id) : undefined;
+    this.childrenHidden = remembered ?? this._initialChildrenHidden;
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    this.data = { data: {} }
+    this.table?._unregisterGroup(this, this._registeredId);
+    this._disconnectPending = true;
+    queueMicrotask(() => {
+      if (!this._disconnectPending) return;
+      this._disconnectPending = false;
+      this.data = { data: {} };
+    });
+  }
+
+  /**
+   * Called by {@link TableChildren} when this element is reused for a row with the
+   * same `id`. Takes the new data object and refreshes the row cells and the nested
+   * children (which reconcile their own groups with the same rule). The expand/collapse
+   * state is kept.
+   */
+  reuse(data: TableGroupData<T>, depth: number) {
+    this.depth = depth;
+    if (this.data === data) return;
+    this.data = data;
+    this._visualSyncPending = true;
+    this.requestUpdate();
+    this.refreshRow();
+    this.childrenElement?.requestUpdate();
+  }
+
+  /**
+   * Rebuilds this group's row cells from the current data (no element is recreated and
+   * the intersection state is kept). With `deep`, also the rows of every child group
+   * currently rendered, at every depth. Batched through Lit's `requestUpdate`.
+   */
+  refreshRow(deep = false) {
+    this.rowElement?.requestUpdate();
+    if (!deep) return;
+    for (const child of this.childrenElement?.groupElements ?? []) {
+      child.refreshRow(true);
+    }
+  }
+
+  /**
+   * Re-applies the table-level expansion (`expandedLevels` first, then `expanded`), the same
+   * rule used when the group first connects. Does nothing if already in that state. It
+   * does not animate: the state is set and the caret/branches are synced directly, which
+   * keeps bulk changes cheap (a single caret click still animates through toggleChildren).
+   */
+  applyExpansion() {
+    const hidden = this._initialChildrenHidden;
+    if (hidden === this.childrenHidden) return;
+    this.childrenHidden = hidden;
+    this._visualSyncPending = true;
+  }
+
+  private get _showChildren() {
+    const hasComputedChildren = this.data.children?.some(c => c._isComputedGroup) ?? false;
+    return !this._isChildrenEmpty && (!this.table?.groupsOnly || hasComputedChildren);
+  }
+
+  // After a reuse the imperative caret/branch transforms (set in firstUpdated and by the
+  // toggle animations) can disagree with the state, e.g. a group that gained children.
+  private _syncVisuals() {
+    const hidden = this.childrenHidden;
+    const apply = (el: Element | null | undefined, transform: string) => {
+      if (!(el instanceof HTMLElement)) return;
+      el.getAnimations().forEach((animation) => animation.cancel());
+      el.style.setProperty("transform", transform);
+    };
+    apply(this.renderRoot.querySelector(".caret"), `translateY(-50%) rotate(${hidden ? 0 : 90}deg)`);
+    apply(this.renderRoot.querySelector("bim-table-row .branch-vertical"), `scaleY(${hidden ? 0 : 1})`);
+    apply(this.renderRoot.querySelector("bim-table-row .branch-horizontal"), `scaleX(${hidden ? 1 : 0})`);
+    apply(
+      this.renderRoot.querySelector("bim-table-children")?.querySelector(".branch-vertical"),
+      `scaleY(${hidden ? 0 : 1})`,
+    );
+  }
+
+  protected updated() {
+    const key = `${this._showChildren}|${this.childrenHidden}`;
+    if (this._visualSyncPending && key !== this._visualKey) this._syncVisuals();
+    this._visualSyncPending = false;
+    this._visualKey = key;
   }
 
   toggleChildren(force?: boolean) {
     this.childrenHidden =
       typeof force === "undefined" ? !this.childrenHidden : !force;
+
+    // Remember the user's choice by id (computed groups are not in the consumer data,
+    // so their derived ids would be pruned on every data assignment: not remembered).
+    const { id, _isComputedGroup } = this.data;
+    if (id != null && !_isComputedGroup) {
+      this.table?._expansionMemory.set(id, this.childrenHidden);
+    }
 
     this.animateTableChildren(true); // set it to false to deactivate the animations
   }
@@ -371,8 +473,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
       caretTemplate = html`<div @click=${onClick} style=${styleMap(styles)} class="caret">${toggleCaret}</div>`
     }
 
-    const hasComputedChildren = this.data.children?.some(c => c._isComputedGroup) ?? false;
-    const showChildren = !this._isChildrenEmpty && (!this.table?.groupsOnly || hasComputedChildren);
+    const showChildren = this._showChildren;
 
     let childrenTemplate: TemplateResult | undefined
     if (showChildren && !this.childrenHidden) {

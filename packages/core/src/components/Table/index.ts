@@ -1,4 +1,4 @@
-import { LitElement, TemplateResult, css, html, nothing } from "lit";
+import { LitElement, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import {
@@ -8,6 +8,7 @@ import {
   TableGroupingTransform,
   TableGroupData,
   TableLoadFunction,
+  RefreshRowsOptions,
   TableRow,
   TableRowData,
   TableRowTemplate,
@@ -22,6 +23,41 @@ import { processingBar } from "./src/processing-bar";
 import { ref } from "lit/directives/ref.js";
 import { when } from "lit/directives/when.js";
 
+const withId = <T extends TableRowData>(
+  source: TableGroupData<T>,
+  target: TableGroupData<T>,
+) => {
+  if (source.id !== undefined) target.id = source.id;
+  return target;
+};
+
+// Ids must be unique across the table; warn once per data assignment (single pass).
+// Returns the set of ids found in the data (undefined if none).
+const warnDuplicateIds = <T extends TableRowData>(data: TableGroupData<T>[]) => {
+  let seen: Set<string> | undefined;
+  const duplicated = new Set<string>();
+  const visit = (rows: TableGroupData<T>[]) => {
+    for (const row of rows) {
+      if (row.id != null) {
+        seen ??= new Set();
+        if (seen.has(row.id)) duplicated.add(row.id);
+        else seen.add(row.id);
+      }
+      if (row.children) visit(row.children);
+    }
+  };
+  visit(data);
+  if (duplicated.size === 0) return seen;
+  const maxListed = 10;
+  const ids = [...duplicated];
+  const listed = ids.slice(0, maxListed).map((id) => JSON.stringify(id)).join(", ");
+  const more = ids.length > maxListed ? ` and ${ids.length - maxListed} more` : "";
+  console.warn(
+    `bim-table: duplicated row ids (${listed}${more}). Row ids must be unique across the table; duplicates fall back to object identity.`,
+  );
+  return seen;
+};
+
 /**
  * A custom table web component for BIM applications. HTML tag: bim-table
  */
@@ -31,7 +67,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
     for (const group of data) {
       // Add the current group data (without children)
-      result.push({ data: group.data });
+      result.push(withId(group, { data: group.data }));
 
       // Recursively flatten children if they exist
       if (group.children && group.children.length > 0) {
@@ -234,6 +270,11 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
   @property({ type: Array, attribute: false })
   set data(value: TableGroupData<T>[]) {
     this._data = value;
+    const ids = warnDuplicateIds(value);
+    // Forget the remembered expand state of rows that are no longer in the data.
+    for (const id of this._expansionMemory.keys()) {
+      if (!ids?.has(id)) this._expansionMemory.delete(id);
+    }
     this.updateValue();
     const computed = this.computeMissingColumns(value);
     if (computed) this.columns = this._columns;
@@ -292,6 +333,138 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
    */
   @property({ type: Number, attribute: "expanded-levels", reflect: true })
   expandedLevels?: number;
+
+  // Connected groups, kept so expansion changes and refreshRows reach existing rows.
+  private _connectedGroups = new Set<TableGroup<T>>();
+
+  // id -> connected groups carrying it, in connection order. The first one owns the id;
+  // a list (not a single slot) so a row recreated under another parent, whose new
+  // element can connect before the old one disconnects, never leaves the id unindexed.
+  private _groupsById = new Map<string, TableGroup<T>[]>();
+
+  /** @internal Called by a group when it connects (idempotent, safe for DOM moves). */
+  _registerGroup(group: TableGroup<T>, id?: string) {
+    this._connectedGroups.add(group);
+    if (id === undefined) return;
+    const list = this._groupsById.get(id);
+    if (!list) this._groupsById.set(id, [group]);
+    else if (!list.includes(group)) list.push(group);
+  }
+
+  /** @internal Called by a group when it disconnects. */
+  _unregisterGroup(group: TableGroup<T>, id?: string) {
+    this._connectedGroups.delete(group);
+    if (id === undefined) return;
+    const list = this._groupsById.get(id);
+    if (!list) return;
+    const index = list.indexOf(group);
+    if (index !== -1) list.splice(index, 1);
+    if (list.length === 0) this._groupsById.delete(id);
+  }
+
+  /**
+   * @internal Expand state the user left on rows with an `id` (id -> childrenHidden),
+   * so a recreated group restores it. Written by user toggles only; cleared by any
+   * table-wide expansion (`expanded`/`expandedLevels` change, expandAll, collapseAll).
+   */
+  _expansionMemory = new Map<string, boolean>();
+
+  private _applyExpansion() {
+    this._expansionMemory.clear();
+    for (const group of this._connectedGroups) group.applyExpansion();
+  }
+
+  /**
+   * Repaints the rows with the given ids: their cells are rebuilt, re-running
+   * `dataTransform` against the row's current data. Use it when something that only
+   * affects the content of a row changed, e.g. a value mutated in place on the row's
+   * `data` object, or state held outside the data and read by a `dataTransform`.
+   *
+   * It is a content repaint only: it does not re-evaluate `queryString`,
+   * `groupedBy`, the columns or the row's `children`, and it does not change the
+   * expand/collapse state, the selection or the row elements. If the change affects
+   * filtering, grouping or the set of rows, reassign `table.data` instead (cheap for
+   * rows with an `id`). Ids that are not currently rendered (unknown, inside a
+   * collapsed parent, filtered out, or rows without `id`) are ignored silently.
+   * Repaints are batched with the rest of the pending updates.
+   *
+   * With an active `queryString` or `groupedBy` the table shows the same `data` objects
+   * of your rows, so mutate `row.data` in place (replacing `row.data` itself needs a
+   * `table.data` reassignment).
+   *
+   * @param ids - The ids of the rows to repaint. Always an array.
+   * @param options - `deep: true` also repaints every descendant row currently in the DOM.
+   *
+   * @example
+   * ```typescript
+   * table.refreshRows(["file:123"]);
+   * ```
+   * @example
+   * ```typescript
+   * table.refreshRows(["file:123", "file:456", "folder:docs"]);
+   * ```
+   * @example
+   * ```typescript
+   * // The folder and every visible row inside it
+   * table.refreshRows(["folder:docs"], { deep: true });
+   * ```
+   */
+  refreshRows(ids: string[], options?: RefreshRowsOptions) {
+    const deep = options?.deep ?? false;
+    for (const id of ids) {
+      this._groupsById.get(id)?.[0]?.refreshRow(deep);
+    }
+  }
+
+  protected willUpdate(changed: PropertyValues) {
+    super.willUpdate(changed);
+    if (changed.has("expanded") || changed.has("expandedLevels")) {
+      this._applyExpansion();
+    }
+  }
+
+  private _setExpansion(expanded: boolean) {
+    // While a filter with `preserveStructureOnFilter` is active the value to restore
+    // when it is cleared is the one the consumer just asked for.
+    if (this._expandedBeforeFilter !== undefined) {
+      this._expandedBeforeFilter = expanded;
+    }
+    this.expandedLevels = undefined;
+    this.expanded = expanded;
+    this._applyExpansion(); // forced: the properties may not have changed
+  }
+
+  /**
+   * Expands every group at every depth, regardless of the current `expanded` /
+   * `expandedLevels` values and of what the user toggled by hand. It sets
+   * `expanded = true` and clears `expandedLevels` (which would otherwise take
+   * precedence), so rows created later (e.g. after a data reload) also start expanded.
+   * With `preserveStructureOnFilter` and an active query, the expanded state is also
+   * what is restored when the query is cleared.
+   *
+   * @example
+   * ```typescript
+   * table.expandAll();
+   * ```
+   */
+  expandAll() {
+    this._setExpansion(true);
+  }
+
+  /**
+   * Collapses every group, regardless of the current `expanded` / `expandedLevels`
+   * values and of what the user toggled by hand. It sets `expanded = false` and
+   * clears `expandedLevels`. Note that with `preserveStructureOnFilter` an active
+   * query expands the table again the next time the data is filtered.
+   *
+   * @example
+   * ```typescript
+   * table.collapseAll();
+   * ```
+   */
+  collapseAll() {
+    this._setExpansion(false);
+  }
 
   /**
    * A boolean property that determines whether the table preserves its structure when filtering.
@@ -1019,7 +1192,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
       const valueMatch = filterFunction(queryString, row);
       if (valueMatch) {
         if (this.preserveStructureOnFilter) {
-          const rowToAdd: TableGroupData<T> = { data: row.data };
+          const rowToAdd = withId(row, { data: row.data });
           if (row.children) {
             const childResults = this.filter(
               queryString,
@@ -1030,7 +1203,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
           }
           results.push(rowToAdd);
         } else {
-          results.push({ data: row.data });
+          results.push(withId(row, { data: row.data }));
           if (row.children) {
             const childResults = this.filter(
               queryString,
@@ -1047,10 +1220,7 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
           row.children,
         );
         if (this.preserveStructureOnFilter && childResults.length) {
-          results.push({
-            data: row.data,
-            children: childResults,
-          });
+          results.push(withId(row, { data: row.data, children: childResults }));
         } else {
           results.push(...childResults);
         }

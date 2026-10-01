@@ -237,7 +237,16 @@ export class TableRow<T extends TableRowData> extends LitElement {
     );
     this.toggleAttribute("selected", this._isSelected);
     this.table.addEventListener("columnschange", this.onTableColumnsChange);
+    if (this._disconnectPending) {
+      // Moved inside the DOM (not discarded): keep data/table and observe again.
+      this._disconnectPending = false;
+      if (this.hasUpdated) this._observer.observe(this);
+    }
   }
+
+  // True between a disconnect and the microtask that finalises it; a reconnect while
+  // pending is a DOM move (repeat() reordering) and must not lose data/table.
+  private _disconnectPending = false;
 
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -248,8 +257,13 @@ export class TableRow<T extends TableRowData> extends LitElement {
       "dataselectioncleared",
       this._onDataSelectionCleared,
     );
-    this.data = {};
-    this.table = null;
+    this._disconnectPending = true;
+    queueMicrotask(() => {
+      if (!this._disconnectPending) return;
+      this._disconnectPending = false;
+      this.data = {};
+      this.table = null;
+    });
   }
 
   @state()
