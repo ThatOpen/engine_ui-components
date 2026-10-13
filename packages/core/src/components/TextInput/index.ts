@@ -367,6 +367,9 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
       this._cachedQuery = undefined;
     }
     this._currentValidation = this._validation ? this._validation(this.value) : undefined;
+    // The search bar's magnifier is inside the box, and it is laid out as one said so (`icon-inside`): without the
+    // attribute the box took the icon's row and its text squeezed to a line under it (Antonio 13-10).
+    if (this.type === "search" && !this.iconInside) this.iconInside = true;
   }
 
   protected override updated() {
