@@ -126,6 +126,13 @@ export class ColorInput extends LitElement implements HasValue, HasName {
   @property({ type: String, reflect: true })
   label?: string;
 
+  /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
   @property({ type: String, reflect: true })
   icon?: string;
 
@@ -205,6 +212,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
   protected render() {
     return html`
       <div class="parent">
+        ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : null}
         ${this.label || this.icon
           ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : nothing}

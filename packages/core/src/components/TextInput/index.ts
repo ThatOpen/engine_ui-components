@@ -210,6 +210,13 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
   label?: string;
 
   /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
+  /**
    * Represents the name property of the TextInput component.
    * This property is used to uniquely identify the input field within a form or group of inputs.
    *
@@ -398,6 +405,7 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
     const labelIcon = useIconInside ? undefined : this.icon;
     return html`
       <div class="parent">
+        ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : nothing}
         ${this.label || labelIcon
           ? html`<bim-label .icon=${labelIcon}>${this.label}</bim-label>`
           : nothing}

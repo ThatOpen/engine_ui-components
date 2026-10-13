@@ -1,4 +1,4 @@
-import { LitElement, css, html, nothing } from "lit";
+import { LitElement, css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { styles } from "../../../core/Manager/src/styles";
 import { HasName } from "../../../core/types";
@@ -314,7 +314,6 @@ export class PanelSection extends LitElement implements HasName {
         role="button"
         tabindex=${this.fixed ? -1 : 0}
         aria-expanded=${!this.collapsed}
-        title=${this.label || nothing}
         @click=${this.onHeaderClick}
         @keydown=${this.onHeaderKeydown}
       >

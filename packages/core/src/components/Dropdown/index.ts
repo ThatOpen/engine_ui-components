@@ -213,6 +213,13 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
   @property({ type: String, reflect: true })
   label?: string;
 
+  /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
   @property({ type: Boolean, reflect: true })
   multiple = false;
 
@@ -566,7 +573,8 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     }
 
     return html`
-      <div class="parent" title=${this.label ?? ""}>
+      <div class="parent">
+        ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : nothing}
         ${this.label || this.icon
           ? html`<bim-label class="field-label" .icon=${this.icon}>${this.label}</bim-label>`
           : null}

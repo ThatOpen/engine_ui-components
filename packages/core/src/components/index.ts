@@ -1,3 +1,4 @@
+import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
@@ -43,6 +44,7 @@ import { SortableList } from "./SortableList";
  */
 declare global {
   interface HTMLElementTagNameMap {
+    "bim-badge": Badge;
     "bim-button": Button;
     "bim-checkbox": Checkbox;
     "bim-color-input": ColorInput;
@@ -104,6 +106,7 @@ declare global {
   }
 }
 
+export * from "./Badge";
 export * from "./Button";
 export * from "./Checkbox";
 export * from "./ColorInput";

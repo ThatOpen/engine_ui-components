@@ -1,5 +1,5 @@
 import { LitElement, css, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { convertString } from "../../core/utils";
 import { when } from "lit/directives/when.js";
 
@@ -132,6 +132,17 @@ export class Label extends LitElement {
   @property({ type: String })
   label?: string;
 
+  /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
+  /** Its text is cut short by its box (an ellipsis): the whole of it is then its tooltip. */
+  @state()
+  private _cut = false;
+
   get value(): string | boolean | number | undefined {
     const text = (this.label ?? this.textContent)?.trim();
     if (!text) return undefined;
@@ -139,6 +150,9 @@ export class Label extends LitElement {
   }
 
   protected updated() {
+    const shown = this.renderRoot.querySelector("p");
+    const cut = !!shown && shown.scrollWidth > shown.clientWidth + 1;
+    if (cut !== this._cut) this._cut = cut;
     const text = (this.label ?? this.textContent)?.trim() ?? "";
     if (this.labelHidden && text) {
       this.setAttribute("aria-label", text);
@@ -150,7 +164,8 @@ export class Label extends LitElement {
   protected render() {
     const text = this.label ?? this.textContent ?? "";
     return html`
-      <div class="parent" title=${text}>
+      <div class="parent">
+        ${this.tooltip || (this._cut && text) ? html`<bim-tooltip>${this.tooltip || text}</bim-tooltip>` : nothing}
         ${when(this.img, () => html`<img src=${this.img} alt=${text} />`)}
         ${when(!this.iconHidden && this.icon, () => html`<bim-icon .icon=${this.icon}></bim-icon>`)}
         ${this.label !== undefined

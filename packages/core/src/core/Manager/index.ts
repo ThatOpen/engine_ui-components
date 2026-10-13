@@ -106,6 +106,8 @@ export class Manager {
    */
   static init(querySelectorElements = "", animateOnLoad = true) {
     Manager.addGlobalStyles();
+    // Every hover text of every app through the one tooltip (`data-tooltip`, see `Tooltip.watch`).
+    components.Tooltip.watch();
     Manager.defineCustomElement("bim-button", components.Button);
     Manager.defineCustomElement("bim-checkbox", components.Checkbox);
     Manager.defineCustomElement("bim-color-input", components.ColorInput);
@@ -115,6 +117,7 @@ export class Manager {
     Manager.defineCustomElement("bim-grid", components.Grid);
     Manager.defineCustomElement("bim-icon", components.Icon);
     Manager.defineCustomElement("bim-input", components.Input);
+    Manager.defineCustomElement("bim-badge", components.Badge);
     Manager.defineCustomElement("bim-label", components.Label);
     Manager.defineCustomElement("bim-number-input", components.NumberInput);
     Manager.defineCustomElement("bim-option", components.Option);

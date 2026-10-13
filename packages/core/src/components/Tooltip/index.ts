@@ -23,7 +23,7 @@ export class Tooltip extends LitElement {
       box-shadow: var(--bim-tooltip--shadow, 0 0 10px 3px rgba(0, 0, 0, 0.2));
       padding: var(--bim-tooltip--p, 0.75rem);
       max-width: var(--bim-tooltip--maxw, 20rem);
-      font-size: var(--bim-tooltip--fs, var(--bim-ui_size-xs, 0.875rem));
+      font-size: var(--bim-tooltip--fs, var(--bim-ui_size-base, 0.875rem));
       display: none;
     }
     :host([visible]) {
@@ -32,6 +32,59 @@ export class Tooltip extends LitElement {
   `;
 
   private static _container: HTMLDivElement | null = null;
+
+  /**
+   * 🔴 ONE TOOLTIP FOR EVERY HOVER TEXT (Antonio, 2026-10-13: «UNIFICA todos los tooltips»). Any element, in any shadow
+   * root and in plain HTML strings alike, says its hover text with `data-tooltip="…"` instead of the browser's `title`:
+   * one listener of the whole document shows it with this same component, styled and placed as every other. A
+   * component's own child `<bim-tooltip>` keeps working as before.
+   */
+  private static _shared: Tooltip | null = null;
+  private static _watching = false;
+  /** For the shared one: the element it is shown for, instead of its parent. */
+  private _anchor: Element | null = null;
+
+  /** Starts the document's one listener for `data-tooltip` (`Manager.init` calls it). Safe to call more than once. */
+  static watch() {
+    if (Tooltip._watching || typeof document === "undefined") return;
+    Tooltip._watching = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let current: Element | null = null;
+    const said = (event: Event): Element | null => {
+      for (const one of event.composedPath()) if (one instanceof Element && one.hasAttribute("data-tooltip")) return one;
+      return null;
+    };
+    const hide = () => {
+      clearTimeout(timer);
+      if (Tooltip._shared) Tooltip._shared.visible = false;
+    };
+    document.addEventListener(
+      "pointerover",
+      (event) => {
+        const element = said(event);
+        if (element === current) return;
+        hide();
+        current = element;
+        if (!element) return;
+        timer = setTimeout(() => {
+          const text = element.getAttribute("data-tooltip") ?? "";
+          if (!text || !element.isConnected) return;
+          const tip = (Tooltip._shared ??= document.createElement("bim-tooltip") as Tooltip);
+          tip._anchor = element;
+          tip.textContent = text;
+          tip.visible = true;
+        }, 800);
+      },
+      true,
+    );
+    const away = () => {
+      hide();
+      current = null;
+    };
+    document.addEventListener("pointerdown", away, true);
+    document.addEventListener("wheel", away, { capture: true, passive: true });
+    document.addEventListener("keydown", (event) => event.key === "Escape" && away(), true);
+  }
 
   // Always non-null: recreated on demand if a previous one was torn down
   // (see `_hide`), so callers never need to null-check `Tooltip.container`.
@@ -149,7 +202,7 @@ export class Tooltip extends LitElement {
     // Captured synchronously, before the only `await` below, so a `_hide()`
     // that interleaves mid-flight (e.g. the mouse leaves while positioning is
     // still being computed) always has a correct container to restore to.
-    this._previousContainer = this._hostParent;
+    this._previousContainer = this._anchor ? null : this._hostParent;
     Tooltip.container.style.top = `${window.scrollY || document.documentElement.scrollTop}px`;
     Tooltip.container.append(this);
 
@@ -173,7 +226,7 @@ export class Tooltip extends LitElement {
     if (this._previousContainer) {
       this._previousContainer.append(this);
       this._previousContainer = null;
-    }
+    } else if (this._anchor) this.remove();
     if (Tooltip.container.children.length === 0 && Tooltip.container.parentElement) {
       Tooltip.container.remove();
       Tooltip._container = null;
@@ -181,7 +234,7 @@ export class Tooltip extends LitElement {
   }
 
   private async _updatePosition(): Promise<void> {
-    const parent = this._previousContainer;
+    const parent = this._anchor ?? this._previousContainer;
     if (!parent) return;
 
     this.style.display = "block";
@@ -227,7 +280,7 @@ export class Tooltip extends LitElement {
     // firing (right after the internal move) would re-capture `_hostParent`
     // as `Tooltip.container` itself, silently rebinding all the hover/focus
     // listeners to the floating container instead of the real anchor.
-    if (this._hostParent) return;
+    if (this._hostParent || this._anchor) return;
     const parent = this.parentElement;
     if (!parent) return;
     this._hostParent = parent;
