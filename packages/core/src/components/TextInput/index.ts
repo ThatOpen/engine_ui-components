@@ -401,8 +401,13 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
   }
 
   protected render() {
-    const useIconInside = this.iconInside && this.type !== "area";
-    const labelIcon = useIconInside ? undefined : this.icon;
+    // THE ONE SEARCH BAR: `type="search"` is it, wherever something is searched (a dropdown's list, a panel's fields, a
+    // table): the magnifier inside the box and «Search...» unless said otherwise, so no app draws its own.
+    const searching = this.type === "search";
+    const icon = this.icon ?? (searching ? "mdi:magnify" : undefined);
+    const useIconInside = (this.iconInside || searching) && this.type !== "area";
+    const labelIcon = useIconInside ? undefined : icon;
+    const placeholder = this.placeholder ?? (searching ? "Search..." : undefined);
     return html`
       <div class="parent">
         ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : nothing}
@@ -410,8 +415,8 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
           ? html`<bim-label .icon=${labelIcon}>${this.label}</bim-label>`
           : nothing}
         <div class="input">
-          ${useIconInside && this.icon
-            ? html`<bim-label .icon=${this.icon}></bim-label>`
+          ${useIconInside && icon
+            ? html`<bim-label .icon=${icon}></bim-label>`
             : nothing}
           ${this.type === "area"
             ? html`<textarea
@@ -428,7 +433,7 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
                 .type=${this.type}
                 .value=${this.value}
                 ?disabled=${this.disabled}
-                placeholder=${ifDefined(this.placeholder)}
+                placeholder=${ifDefined(placeholder)}
                 autocomplete=${ifDefined(this.autocomplete)}
                 @input=${this.onInputChange}
               />`}

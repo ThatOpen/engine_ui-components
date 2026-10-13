@@ -613,8 +613,8 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
       >
         ${this.searchBox
           ? html`<bim-text-input
+              type="search"
               @input=${this._onSearch}
-              placeholder="Search..."
               debounce="200"
             ></bim-text-input>`
           : nothing}
