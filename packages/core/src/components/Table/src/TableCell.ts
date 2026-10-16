@@ -155,8 +155,13 @@ export class TableCell<T extends TableRowData> extends LitElement {
     const min = 48;
     let width = Math.round(start);
     let frame = 0;
-    const cursor = document.body.style.cursor;
-    document.body.style.cursor = "col-resize";
+    // A sheet over the page while dragging: it holds the cursor, and the rows
+    // under the pointer get no hover to answer to. (Setting the body's cursor
+    // restyled the whole page at the first step, and the rows' hover handlers
+    // ran at every row crossed: the first drag felt heavy, Antonio 17-10.)
+    const sheet = document.createElement("div");
+    sheet.style.cssText = "position:fixed; inset:0; z-index:2147483647; cursor:col-resize;";
+    document.body.append(sheet);
     const move = (event: PointerEvent) => {
       width = Math.max(min, Math.round(start + event.clientX - from));
       if (frame) return;
@@ -167,7 +172,7 @@ export class TableCell<T extends TableRowData> extends LitElement {
     };
     const up = () => {
       cancelAnimationFrame(frame);
-      document.body.style.cursor = cursor;
+      sheet.remove();
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
       table.resizeColumn(column, `${width}px`);
