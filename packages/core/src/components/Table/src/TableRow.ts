@@ -22,7 +22,10 @@ export class TableRow<T extends TableRowData> extends LitElement {
       grid-area: Data;
       display: grid;
       min-height: var(--bim-table-row--min-h, 30px);
-      transition: all 0.15s;
+      /* Only what a hover or a selection changes: "all" animated the column
+         widths too, so a column dragged from a flexible width only jumped
+         once the pointer stopped (Antonio, 17-10). */
+      transition: background-color 0.15s, color 0.15s;
       gap: var(--bim-table-row--gap, 4px);
       /* Off by default; consumers opt into row dividers by setting the
          bim-table-row--border-bottom token on the bim-table host
