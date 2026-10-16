@@ -149,6 +149,21 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
   @property({ type: String, attribute: "min-col-width", reflect: true })
   minColWidth = "4rem";
 
+  /**
+   * Whether a column's width can be dragged from its header's right edge.
+   * Each drag sets that column's width in px and fires `columnresize`
+   * (`{ column, width }`), so an app can keep it.
+   * @example <bim-table resizable-columns></bim-table>
+   */
+  @property({ type: Boolean, attribute: "resizable-columns", reflect: true })
+  resizableColumns = false;
+
+  /** Sets one column's width (as a drag of its header does) and says so. */
+  resizeColumn(column: keyof T, width: string) {
+    this.columns = this._columns.map((one) => (one.name === column ? { ...one, width } : one));
+    this.dispatchEvent(new CustomEvent("columnresize", { detail: { column, width } }));
+  }
+
   private _columns: ColumnData<T>[] = [];
 
   /**
