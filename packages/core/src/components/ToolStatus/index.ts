@@ -9,34 +9,24 @@ export interface ToolShortcut {
   action: string;
 }
 
-/** Where whether the help is folded is remembered: one choice for every tool and app. */
-const FOLDED_KEY = "bim-tool-status:folded";
-
-const readFolded = () => {
-  try {
-    return localStorage.getItem(FOLDED_KEY) === "1";
-  } catch {
-    return false;
-  }
-};
-
 /**
- * What a person is doing in a viewer, and how to do it: the active tool's name
- * (with its icon), what to do now under it, and under that the tool's
- * shortcuts, one per line, the keys on the left and what they do on the right.
- * HTML tag: bim-tool-status
+ * What a person is doing in a viewer, and how to do it. HTML tag: bim-tool-status
+ *
+ * The chip says the active tool's name (with its icon) and what to do now,
+ * nothing more: always there and small. How the tool is used (its gestures and
+ * keys, the keys on the left, what they do on the right) shows only while the
+ * pointer is over the chip, in a panel of its own just under it, and goes when
+ * the pointer leaves (Antonio, 17-10: open, it was too much to keep on the
+ * view). A "?" in the chip says there is such help.
  *
  * The same piece in every app, so that a tool explains itself the same way
- * everywhere: an app does not draw its own. The shortcuts fold away from a
- * chevron beside the name (the step to do now is always said), and stays as it was left (for every tool and app:
- * whoever folds it once knows the tools).
- *
- * It takes no clicks but the chevron's: the rest lets the pointer through to
- * the drawing under it.
+ * everywhere: an app does not draw its own. It takes the pointer only to be
+ * hovered; a click goes nowhere.
  */
 export class ToolStatus extends LitElement {
   static styles = css`
     :host {
+      position: relative;
       box-sizing: border-box;
       display: inline-flex;
       flex-direction: column;
@@ -49,8 +39,9 @@ export class ToolStatus extends LitElement {
       color: var(--bim-ui_bg-contrast-100);
       font: 400 var(--bim-tool-status--fs, 0.75rem) / 1.25 var(--bim-ui_font-family, "Plus Jakarta Sans", sans-serif);
       letter-spacing: 0.01em;
-      pointer-events: none;
+      pointer-events: auto;
       user-select: none;
+      cursor: default;
     }
 
     :host([hidden]) {
@@ -74,25 +65,26 @@ export class ToolStatus extends LitElement {
       flex: 1;
     }
 
-    /* A target a pointer finds at once (Antonio, 16-10: the little triangle
-       was too small to hit): a 1.5rem square with a chevron icon. */
-    .fold {
-      pointer-events: auto;
-      cursor: pointer;
+    /* There is help to see: hover the chip. */
+    .hint {
+      flex: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 1.5rem;
-      height: 1.5rem;
-      margin: -0.2rem -0.45rem -0.2rem 0;
-      border-radius: 0.35rem;
-      color: var(--bim-ui_bg-contrast-80);
-      font-size: 1.15rem;
+      width: 1rem;
+      height: 1rem;
+      margin-right: -0.2rem;
+      border-radius: 50%;
+      border: 1px solid var(--bim-ui_bg-contrast-40);
+      color: var(--bim-ui_bg-contrast-60);
+      font-size: 0.65rem;
+      font-weight: 700;
+      line-height: 1;
     }
 
-    .fold:hover {
+    :host(:hover) .hint {
       color: var(--bim-ui_bg-contrast-100);
-      background: var(--bim-ui_bg-contrast-20);
+      border-color: var(--bim-ui_bg-contrast-80);
     }
 
     .detail {
@@ -101,17 +93,32 @@ export class ToolStatus extends LitElement {
       color: var(--bim-ui_bg-contrast-80);
     }
 
-    .shortcuts {
+    /* The help: a panel of its own, the chip's look, just under it. */
+    .help {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      z-index: 1;
+      box-sizing: border-box;
+      min-width: max(100%, 16rem);
+      max-width: 24rem;
       display: grid;
       grid-template-columns: auto 1fr;
       column-gap: 0.6rem;
       row-gap: 0.15rem;
-      /* Its own sides too: in a box narrower than the list (an app that sets
-         the HUD's width), the rows wrap inside it instead of touching its edges. */
-      padding: 0.25rem 0.15rem 0.1rem;
-      margin-top: 0.1rem;
-      min-width: 0;
-      border-top: 1px solid var(--bim-ui_bg-contrast-20);
+      padding: 0.4rem 0.6rem;
+      border-radius: 0.5rem;
+      background: var(--bim-tool-status--bgc, var(--bim-ui_bg-contrast-10));
+      border: 1px solid var(--bim-ui_bg-contrast-20);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+
+    .help.start {
+      left: 0;
+    }
+
+    .help.end {
+      right: 0;
     }
 
     .keys {
@@ -144,43 +151,49 @@ export class ToolStatus extends LitElement {
   @property({ type: Array, attribute: false })
   shortcuts: ToolShortcut[] = [];
 
-  /** Whether the shortcuts are folded away. Remembered across tools and apps. */
+  /** Whether the help is shown: while the pointer is over the chip. */
   @state()
-  folded = readFolded();
+  private _helping = false;
 
-  private _toggle = (event: Event) => {
-    event.stopPropagation();
-    this.folded = !this.folded;
-    try {
-      localStorage.setItem(FOLDED_KEY, this.folded ? "1" : "0");
-    } catch {
-      /* no storage: it stays as chosen while the page lives */
-    }
-    this.dispatchEvent(new Event("foldchange"));
+  /** The side the help hangs from: the chip's own side of the page. */
+  @state()
+  private _side: "start" | "end" = "start";
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("pointerenter", this._enter);
+    this.addEventListener("pointerleave", this._leave);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener("pointerenter", this._enter);
+    this.removeEventListener("pointerleave", this._leave);
+  }
+
+  private _enter = () => {
+    if (this.shortcuts.length === 0) return;
+    const rect = this.getBoundingClientRect();
+    const middle = (this.ownerDocument.defaultView?.innerWidth ?? 0) / 2;
+    this._side = rect.left + rect.width / 2 > middle ? "end" : "start";
+    this._helping = true;
+  };
+
+  private _leave = () => {
+    this._helping = false;
   };
 
   protected render() {
-    // The step is always said; what folds is the list of how to use it.
     const helps = this.shortcuts.length > 0;
-    const open = helps && !this.folded;
     return html`
       <div class="head">
         ${this.icon ? html`<bim-icon .icon=${this.icon}></bim-icon>` : nothing}
         <span class="name">${this.label}</span>
-        ${helps
-          ? html`<span
-              class="fold"
-              data-action="fold"
-              title=${open ? "Hide the help" : "Show how to use it"}
-              @pointerdown=${(e: Event) => e.stopPropagation()}
-              @click=${this._toggle}
-              ><bim-icon .icon=${open ? "mdi:chevron-up" : "mdi:chevron-down"}></bim-icon></span
-            >`
-          : nothing}
+        ${helps ? html`<span class="hint" data-hint>?</span>` : nothing}
       </div>
       ${this.detail ? html`<div class="detail">${this.detail}</div>` : nothing}
-      ${open && this.shortcuts.length > 0
-        ? html`<div class="shortcuts">
+      ${helps && this._helping
+        ? html`<div class="help ${this._side}" data-help>
             ${this.shortcuts.map(
               (one) => html`<span class="keys">${one.keys}</span><span class="action">${one.action}</span>`,
             )}
