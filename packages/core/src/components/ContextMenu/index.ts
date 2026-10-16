@@ -61,6 +61,17 @@ export class ContextMenu extends LitElement {
         transform: scale(0.8);
         clip-path: circle(0 at top left);
       }
+
+      /* A menu at the pointer looks like the central toolbar (Antonio, 16-10):
+         its background, border, corner and shadow. */
+      :host([data-at-pointer]) {
+        background-color: var(--bim-toolbar--bgc, var(--bim-ui_bg-contrast-10));
+        border: var(--bim-toolbar--border, 1px solid var(--bim-ui_bg-contrast-20));
+        border-radius: var(--bim-toolbar--bdrs, var(--bim-ui_size-2xs));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        padding: 0.15rem;
+        gap: 0.1rem;
+      }
     `,
   ];
 
@@ -89,7 +100,7 @@ export class ContextMenu extends LitElement {
     for (const item of items) {
       if (item.separated && menu.childElementCount > 0) {
         const line = document.createElement("div");
-        line.style.cssText = "height:1px; margin:0.25rem 0; background:var(--bim-ui_bg-contrast-30);";
+        line.style.cssText = "height:1px; margin:0.15rem 0.25rem; background:var(--bim-ui_bg-contrast-20);";
         menu.append(line);
       }
       const button = document.createElement("bim-button") as HTMLElement & { label: string; icon?: string; disabled: boolean };
@@ -97,6 +108,7 @@ export class ContextMenu extends LitElement {
       if (item.icon) button.icon = item.icon;
       button.disabled = !!item.disabled;
       button.setAttribute("data-entry", item.label);
+      button.style.setProperty("--bim-button--bgc", "transparent");
       button.style.setProperty("--bim-button--jc", "flex-start");
       button.addEventListener("click", () => {
         if (item.disabled) return;

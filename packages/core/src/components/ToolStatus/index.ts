@@ -74,18 +74,20 @@ export class ToolStatus extends LitElement {
       flex: 1;
     }
 
+    /* A target a pointer finds at once (Antonio, 16-10: the little triangle
+       was too small to hit): a 1.5rem square with a chevron icon. */
     .fold {
       pointer-events: auto;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 1rem;
-      height: 1rem;
-      margin-right: -0.3rem;
-      border-radius: 0.25rem;
-      color: var(--bim-ui_bg-contrast-60);
-      font-size: 0.75rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin: -0.2rem -0.45rem -0.2rem 0;
+      border-radius: 0.35rem;
+      color: var(--bim-ui_bg-contrast-80);
+      font-size: 1.15rem;
     }
 
     .fold:hover {
@@ -172,7 +174,7 @@ export class ToolStatus extends LitElement {
               title=${open ? "Hide the help" : "Show how to use it"}
               @pointerdown=${(e: Event) => e.stopPropagation()}
               @click=${this._toggle}
-              >${open ? "▴" : "▾"}</span
+              ><bim-icon .icon=${open ? "mdi:chevron-up" : "mdi:chevron-down"}></bim-icon></span
             >`
           : nothing}
       </div>
