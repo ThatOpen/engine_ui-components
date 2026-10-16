@@ -1,6 +1,7 @@
 import { LitElement, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { TableRowData } from "./types";
+import { columnWidthVar } from "./column-width";
 import { Table, TableGroup, TableRow } from "..";
 
 export class TableCell<T extends TableRowData> extends LitElement {
@@ -137,27 +138,40 @@ export class TableCell<T extends TableRowData> extends LitElement {
     }
   }
 
-  // Followed on the window, not on the grip: a header's cells are made anew as
-  // its columns change, so the grip pressed is gone after the first step.
+  // Followed on the window, not on the grip (a header's cells are made anew
+  // when its columns change). While dragging only the column's width variable
+  // changes, once a frame: no row renders again (re-rendering every cell on
+  // every step lagged and flickered, Antonio 17-10). The width is set for good
+  // when the button is let go.
   private _startResize = (down: PointerEvent) => {
     const table = this.table;
     if (!table) return;
     down.preventDefault();
     down.stopPropagation();
     const column = this.column;
+    const variable = columnWidthVar(String(column));
     const start = this.getBoundingClientRect().width;
     const from = down.clientX;
     const min = 48;
+    let width = Math.round(start);
+    let frame = 0;
     const cursor = document.body.style.cursor;
     document.body.style.cursor = "col-resize";
     const move = (event: PointerEvent) => {
-      const width = Math.max(min, Math.round(start + event.clientX - from));
-      table.resizeColumn(column, `${width}px`);
+      width = Math.max(min, Math.round(start + event.clientX - from));
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        table.style.setProperty(variable, `${width}px`);
+      });
     };
     const up = () => {
+      cancelAnimationFrame(frame);
       document.body.style.cursor = cursor;
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
+      table.resizeColumn(column, `${width}px`);
+      table.style.removeProperty(variable);
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);

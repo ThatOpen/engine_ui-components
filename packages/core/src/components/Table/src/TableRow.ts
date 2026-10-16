@@ -1,4 +1,5 @@
 import { LitElement, PropertyValues, css, html, nothing } from "lit";
+import { columnWidthVar } from "./column-width";
 import { property, state } from "lit/decorators.js";
 import { Table, TableGroup } from "../index";
 import { TableCell } from "./TableCell";
@@ -292,7 +293,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
     if (!(this.table && this._intersecting)) return html`${nothing}`;
     const filtered = this.columns.filter(c => !this.hiddenColumns.includes(c.name as string));
     const columnNames = filtered.map(c => c.name);
-    const columnWidths = filtered.map(c => c.width);
+    // Each width through a variable of its column (`columnWidthVar`): a column
+    // being dragged wider changes only that variable, and no row renders again.
+    const columnWidths = filtered.map(c => `var(${columnWidthVar(c.name as string)}, ${c.width})`);
     this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${columnNames.join(" ")}"`;
     this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${columnWidths.join(" ")}`;
 
