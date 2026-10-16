@@ -11,6 +11,18 @@ import { property } from "lit/decorators.js";
 import { styles } from "../../core/Manager/src/styles";
 import { Component } from "../../core";
 
+/** One entry of a menu opened at the pointer ({@link ContextMenu.showAt}). */
+export interface ContextMenuItem {
+  label: string;
+  icon?: string;
+  /** What it does; the menu closes first. */
+  action?: () => void;
+  /** There, and not usable now. */
+  disabled?: boolean;
+  /** A line above it, setting it apart from the entries before. */
+  separated?: boolean;
+}
+
 export class ContextMenu extends LitElement {
   /**
    * CSS styles for the component.
@@ -55,6 +67,49 @@ export class ContextMenu extends LitElement {
   private _previousContainer: HTMLElement | null = null;
   private _placement?: Placement;
 
+  /**
+   * A point on the screen (client pixels) the menu opens at, instead of beside
+   * the element it is in: where a right click happened.
+   */
+  point?: { x: number; y: number };
+
+  /**
+   * Opens a menu at the pointer of this event (a right click: `contextmenu`)
+   * with these entries, the one menu of every app (no app draws its own). It
+   * closes when an entry is chosen, on Escape or on a click outside.
+   * @returns the menu, already shown.
+   */
+  static showAt(event: { clientX: number; clientY: number; preventDefault?: () => void }, items: ContextMenuItem[]) {
+    event.preventDefault?.();
+    if ([...ContextMenu.dialog.children].some((one) => one instanceof ContextMenu)) ContextMenu.removeMenus();
+    const menu = document.createElement("bim-context-menu") as ContextMenu;
+    menu.point = { x: event.clientX, y: event.clientY };
+    menu.placement = "bottom-start";
+    menu.setAttribute("data-at-pointer", "");
+    for (const item of items) {
+      if (item.separated && menu.childElementCount > 0) {
+        const line = document.createElement("div");
+        line.style.cssText = "height:1px; margin:0.25rem 0; background:var(--bim-ui_bg-contrast-30);";
+        menu.append(line);
+      }
+      const button = document.createElement("bim-button") as HTMLElement & { label: string; icon?: string; disabled: boolean };
+      button.label = item.label;
+      if (item.icon) button.icon = item.icon;
+      button.disabled = !!item.disabled;
+      button.setAttribute("data-entry", item.label);
+      button.style.setProperty("--bim-button--jc", "flex-start");
+      button.addEventListener("click", () => {
+        if (item.disabled) return;
+        ContextMenu.removeMenus();
+        item.action?.();
+      });
+      menu.append(button);
+    }
+    document.body.append(menu);
+    menu.visible = true;
+    return menu;
+  }
+
   @property({ type: String, reflect: true })
   get placement() {
     return this._placement;
@@ -87,13 +142,18 @@ export class ContextMenu extends LitElement {
     ></dialog>`;
   });
 
+  private static _closing?: ReturnType<typeof setTimeout>;
+
   static removeMenus() {
     for (const menu of [...ContextMenu.dialog.children]) {
       if (!(menu instanceof ContextMenu)) continue;
       menu.remove()
+      // One opened at the pointer belongs nowhere: it goes for good.
+      if (menu.point) menu._previousContainer = null;
       menu.visible = false;
     }
-    setTimeout(() => {
+    clearTimeout(ContextMenu._closing);
+    ContextMenu._closing = setTimeout(() => {
       ContextMenu.dialog.close();
       ContextMenu.dialog.remove();
     }, 310); // at the transition max speed
@@ -109,6 +169,8 @@ export class ContextMenu extends LitElement {
   set visible(value: boolean) {
     this._visible = value;
     if (value) {
+      // A menu opened while another was closing keeps the dialog it is in.
+      clearTimeout(ContextMenu._closing);
       if (!ContextMenu.dialog.parentElement) {
         document.body.append(ContextMenu.dialog);
       }
@@ -121,6 +183,10 @@ export class ContextMenu extends LitElement {
       this.dispatchEvent(new Event("visible"));
     } else {
       setTimeout(() => {
+        if (!this._previousContainer && this.point) {
+          this.remove();
+          return;
+        }
         this._previousContainer?.append(this);
         this._previousContainer = null;
         this.style.setProperty("display", "none");
@@ -145,9 +211,18 @@ export class ContextMenu extends LitElement {
   async updatePosition() {
     if (!(this.visible && this._previousContainer)) return;
     const placement: Placement = this.placement ?? "right";
-    const position = await computePosition(this._previousContainer, this, {
+    const point = this.point;
+    const reference = point
+      ? {
+          getBoundingClientRect: () =>
+            ({ x: point.x, y: point.y, top: point.y, left: point.x, bottom: point.y, right: point.x, width: 0, height: 0 }) as DOMRect,
+        }
+      : this._previousContainer;
+    const position = await computePosition(reference, this, {
       placement,
-      middleware: [offset(10), inline(), flip(), shift({ padding: 5 })],
+      middleware: point
+        ? [offset(2), flip(), shift({ padding: 5 })]
+        : [offset(10), inline(), flip(), shift({ padding: 5 })],
     });
     const { x, y } = position;
     this.style.left = `${x}px`;

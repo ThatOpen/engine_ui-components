@@ -565,14 +565,16 @@ export class Button extends LitElement {
     this._closeMenu();
   };
 
-  constructor() {
-    super();
-    if (!this.hasAttribute("role")) this.setAttribute("role", "button");
-    if (!this.hasAttribute("tabindex")) this.setAttribute("tabindex", "0");
-  }
 
   connectedCallback() {
     super.connectedCallback();
+    // ARIA defaults live HERE and not in the constructor: a custom element
+    // constructor must not add attributes, and `document.createElement` enforces
+    // it ("The result must not have attributes"), so every programmatic
+    // `createElement("bim-button")` came out as a dead, un-upgraded element
+    // (same fix as engine_ui-components 9a2b2e6). User-set values still win.
+    if (!this.hasAttribute("role")) this.setAttribute("role", "button");
+    if (!this.hasAttribute("tabindex")) this.setAttribute("tabindex", "0");
     this.addEventListener("click", this._onHostClick);
     this.addEventListener("keydown", this._onKeyDown);
   }

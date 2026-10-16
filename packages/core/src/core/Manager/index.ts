@@ -146,6 +146,7 @@ export class Manager {
     Manager.defineCustomElement("bim-paper-space", components.PaperSpace);
     Manager.defineCustomElement("bim-modal", components.Modal);
     Manager.defineCustomElement("bim-sortable-list", components.SortableList);
+    Manager.defineCustomElement("bim-tool-status", components.ToolStatus);
 
     if (animateOnLoad) this.animateOnLoad(querySelectorElements);
   }

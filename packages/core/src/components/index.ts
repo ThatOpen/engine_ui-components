@@ -37,6 +37,7 @@ import { Slider, SliderChangedEventDetail } from "./Slider";
 import { PaperSpace } from "./PaperSpace";
 import { Modal } from "./Modal";
 import { SortableList } from "./SortableList";
+import { ToolStatus } from "./ToolStatus";
 
 /**
  * Extends the global HTMLElementTagNameMap interface to include custom element tags.
@@ -79,6 +80,7 @@ declare global {
     "bim-paper-space": PaperSpace;
     "bim-modal": Modal;
     "bim-sortable-list": SortableList;
+    "bim-tool-status": ToolStatus;
   }
 
   /**
@@ -136,3 +138,4 @@ export * from "./Slider";
 export * from "./PaperSpace";
 export * from "./Modal";
 export * from "./SortableList";
+export * from "./ToolStatus";
