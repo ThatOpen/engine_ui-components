@@ -138,8 +138,8 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         background: transparent;
       }
 
+      /* (The search as every search is, with no colour of its own: Antonio 17-10, «SIEMPRE EL MISMO SEARCHBAR».) */
       dialog bim-text-input {
-        --bim-input--bgc: var(--bim-ui_bg-contrast-30);
         margin: 0 0.375rem 0.125rem;
       }
 
@@ -404,14 +404,20 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     const t = trigger.getBoundingClientRect();
     const m = dialog.getBoundingClientRect();
 
+    // 🔴 IT OPENS DOWNWARD, AND A LIST WITH A SEARCH OPENS WITH ITS SEARCH ON THE INPUT (Antonio 17-10): flipped above the
+    // input when there was no room under it, a list filtered to one name was left floating far above the field it was
+    // opened from. Never above: with little room under the input the list is shorter and scrolls, and only when even
+    // that is too little does it rise, as little as it must.
+    const dialogPadTop = parseFloat(getComputedStyle(dialog).paddingTop) || 0;
     let x = t.left;
-    let y = t.bottom + gap;
+    let y = this.searchBox ? t.top - dialogPadTop : t.bottom + gap;
 
-    if (y + m.height > vh - padding) y = t.top - m.height - gap;
     if (x + m.width > vw - padding) x = t.right - m.width;
-
     x = Math.max(padding, Math.min(x, vw - m.width - padding));
-    y = Math.max(padding, Math.min(y, vh - m.height - padding));
+
+    const fewest = 160;
+    if (vh - padding - y < fewest) y = Math.max(padding, vh - padding - fewest);
+    dialog.style.maxHeight = `${Math.min(320, vh - padding - y)}px`;
 
     dialog.style.minWidth = `${t.width}px`;
     dialog.style.left = `${x}px`;
