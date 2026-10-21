@@ -287,6 +287,9 @@ export class PanelSection extends LitElement implements HasName {
   }
 
   private onHeaderKeydown(e: KeyboardEvent) {
+    // Only the header's own keys: a key typed into something in it (an input
+    // in its `header-end`) is that input's, and a space there is a space.
+    if (e.target !== e.currentTarget) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       this.onHeaderClick();

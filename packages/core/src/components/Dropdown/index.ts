@@ -401,16 +401,24 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     const padding = 5;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const t = trigger.getBoundingClientRect();
+    // (The field's box as it is seen, the trigger's frame round it: what the list, and its search, line up with.)
+    const t = (trigger.parentElement ?? trigger).getBoundingClientRect();
     const m = dialog.getBoundingClientRect();
 
     // 🔴 IT OPENS DOWNWARD, AND A LIST WITH A SEARCH OPENS WITH ITS SEARCH ON THE INPUT (Antonio 17-10): flipped above the
     // input when there was no room under it, a list filtered to one name was left floating far above the field it was
     // opened from. Never above: with little room under the input the list is shorter and scrolls, and only when even
     // that is too little does it rise, as little as it must.
-    const dialogPadTop = parseFloat(getComputedStyle(dialog).paddingTop) || 0;
-    let x = t.left;
-    let y = this.searchBox ? t.top - dialogPadTop : t.bottom + gap;
+    // 🔴 AND ITS SEARCH LINED UP WITH THE FIELD (Antonio 22-10: «el searchbar estar alineado con la posición del
+    // dropdown»): the search stands in from the list's edges by its own margins, so the list is put out by as much
+    // and made as much wider: its search box is where the field's box is, as wide and at the same height.
+    const search = this.searchBox ? dialog.querySelector<HTMLElement>("bim-text-input") : null;
+    const s = search?.getBoundingClientRect();
+    const inLeft = s && s.width ? s.left - m.left : 0;
+    const inRight = s && s.width ? m.right - s.right : 0;
+    const inTop = s && s.width ? s.top - m.top : parseFloat(getComputedStyle(dialog).paddingTop) || 0;
+    let x = this.searchBox ? t.left - inLeft : t.left;
+    let y = this.searchBox ? t.top - inTop : t.bottom + gap;
 
     if (x + m.width > vw - padding) x = t.right - m.width;
     x = Math.max(padding, Math.min(x, vw - m.width - padding));
@@ -419,7 +427,7 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     if (vh - padding - y < fewest) y = Math.max(padding, vh - padding - fewest);
     dialog.style.maxHeight = `${Math.min(320, vh - padding - y)}px`;
 
-    dialog.style.minWidth = `${t.width}px`;
+    dialog.style.minWidth = `${this.searchBox ? t.width + inLeft + inRight : t.width}px`;
     dialog.style.left = `${x}px`;
     dialog.style.top = `${y}px`;
   }
