@@ -127,6 +127,15 @@ export class Button extends LitElement {
       background-color: transparent;
     }
 
+    /* Asking for the second click of a confirm button. */
+    :host([confirming]),
+    :host([confirming]:hover),
+    :host([ghost][confirming]),
+    :host([ghost][confirming]:hover) {
+      --bim-label--c: white;
+      background-color: var(--bim-ui_danger-base);
+    }
+
     .chevron {
       fill: var(--bim-label--c);
       flex-shrink: 0;
@@ -195,6 +204,36 @@ export class Button extends LitElement {
 
   @property({ type: Boolean, reflect: true })
   ghost = false;
+
+  /**
+   * Asks for a second click before acting, inline (Antonio, 22-10: confirming a delete without an alert). The
+   * first click shows this text on the button, in the danger colour, and fires nothing; a second click within
+   * `confirmTimeout` ms fires `click`; otherwise (or when the pointer leaves) it goes back. An icon-only button
+   * shows the text too while it asks. A button that confirms does not open a context menu.
+   *
+   * @example
+   * ```html
+   * <bim-button icon="mdi:trash-can-outline" confirm="Delete?"></bim-button>
+   * ```
+   */
+  @property({ type: String, reflect: true })
+  confirm?: string;
+
+  /** How long the confirm text waits for the second click, in ms. */
+  @property({ type: Number, attribute: "confirm-timeout" })
+  confirmTimeout = 3000;
+
+  /** Waiting for the second click of `confirm`. */
+  @property({ type: Boolean, reflect: true })
+  confirming = false;
+
+  private _confirmTimer?: ReturnType<typeof setTimeout>;
+
+  private _stopConfirming = () => {
+    clearTimeout(this._confirmTimer);
+    this._confirmTimer = undefined;
+    this.confirming = false;
+  };
 
   /** @deprecated Use `<bim-tooltip>` inside the button instead. */
   private _tooltipTime?: number;
@@ -536,14 +575,23 @@ export class Button extends LitElement {
 
   // Fires on the inner .parent div — stops propagation then re-dispatches
   // a fresh click on the host so external listeners receive it cleanly.
+  // With `confirm`, the first click only asks (nothing outside sees it) and the second one goes out.
   private _onParentClick = (e: PointerEvent) => {
     e.stopPropagation();
-    if (!this.disabled && !this._loading) this.dispatchEvent(new Event("click"));
+    if (this.disabled || this._loading) return;
+    if (this.confirm && !this.confirming) {
+      this.confirming = true;
+      clearTimeout(this._confirmTimer);
+      this._confirmTimer = setTimeout(this._stopConfirming, this.confirmTimeout);
+      return;
+    }
+    this._stopConfirming();
+    this.dispatchEvent(new Event("click"));
   };
 
-  // Fires on the host — opens the context menu if one is configured.
+  // Fires on the host — opens the context menu if one is configured (never on a confirm button).
   private _onHostClick = () => {
-    if (!this.disabled && !this._loading && this._hasContextMenu()) this._openMenu();
+    if (!this.disabled && !this._loading && !this.confirm && this._hasContextMenu()) this._openMenu();
   };
 
   private _onKeyDown = (e: KeyboardEvent) => {
@@ -583,6 +631,7 @@ export class Button extends LitElement {
     super.disconnectedCallback();
     this.removeEventListener("click", this._onHostClick);
     this.removeEventListener("keydown", this._onKeyDown);
+    this._stopConfirming();
     this._closeMenu();
   }
 
@@ -613,28 +662,35 @@ export class Button extends LitElement {
   }
 
   protected render() {
-    const hasMenu = this._hasContextMenu();
+    const hasMenu = this._hasContextMenu() && !this.confirm;
     const effectiveIcon = this._loading ? "eos-icons:loading" : this.icon;
+    const asking = this.confirming && !!this.confirm;
+    const label = asking ? this.confirm : this.label;
 
-    let labelContent = html`${this.label}`;
-    if (hasMenu && this.label) {
+    let labelContent = html`${label}`;
+    if (hasMenu && label) {
       labelContent = html`
         <div style="display: flex; align-items: center;">
-          ${this.label}
+          ${label}
           ${Button._chevron}
         </div>
       `;
     }
 
     return html`
-      <div class="parent" @click=${this._onParentClick}>
-        ${this.label || effectiveIcon
+      <div
+        class="parent"
+        style=${asking ? "padding: 0 6px" : ""}
+        @click=${this._onParentClick}
+        @mouseleave=${asking ? this._stopConfirming : null}
+      >
+        ${label || effectiveIcon
           ? html`
               <div class="button">
                 <bim-label
                   .icon=${effectiveIcon}
                   .vertical=${this.vertical}
-                  .labelHidden=${this.labelHidden}
+                  .labelHidden=${this.labelHidden && !asking}
                   >${labelContent}</bim-label
                 >
               </div>
