@@ -148,6 +148,13 @@ export class PanelSection extends LitElement implements HasName {
         overflow: visible;
       }
 
+      /* Tables scroll on their own by default; inside a non-scrollable
+         section they grow too, so the panel stays the only scrollbar. */
+      :host(:not([scrollable])) ::slotted(bim-table) {
+        overflow: visible;
+        height: auto;
+      }
+
       .header-start,
       .header-end {
         display: flex;
