@@ -1,13 +1,17 @@
 import { css } from "lit";
 
+/* The :host variants style the component's own scrollbar too (a panel
+   capped with max-height scrolls on its host), so every scrollbar matches. */
 const scrollbar = css`
-  ::-webkit-scrollbar {
+  ::-webkit-scrollbar,
+  :host::-webkit-scrollbar {
     width: 0.4rem;
     height: 0.4rem;
     overflow: hidden;
   }
 
-  ::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb,
+  :host::-webkit-scrollbar-thumb {
     border-radius: 0.25rem;
     background-color: var(
       --bim-scrollbar--c,
@@ -15,7 +19,8 @@ const scrollbar = css`
     );
   }
 
-  ::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track,
+  :host::-webkit-scrollbar-track {
     background-color: var(--bim-scrollbar--bgc, var(--bim-ui_bg-contrast-40));
   }
 `;
