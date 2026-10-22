@@ -135,6 +135,18 @@ export class PanelSection extends LitElement implements HasName {
       :host(:not([fixed])[collapsed]) .components {
         display: none;
       }
+      /* Inside a panel, the panel is the one scroll container: a section
+         grows with its content instead of scrolling on its own, so menus
+         never show two scrollbars. Sections that must scroll by themselves
+         opt in with the scrollable attribute. */
+      :host(:not([scrollable])) .parent {
+        height: auto;
+        overflow: visible;
+      }
+
+      :host(:not([scrollable])) .components {
+        overflow: visible;
+      }
 
       .header-start,
       .header-end {
