@@ -149,10 +149,37 @@ export class Label extends LitElement {
     return convertString(text);
   }
 
+  /**
+   * Labels waiting to be measured, ALL AT ONCE in the next frame.
+   *
+   * Reading `scrollWidth` forces a layout. Read in each label's `updated()`, a
+   * table of a few hundred labels re-rendered in one go made a layout per label,
+   * each invalidated by the label written before it: 3.3 s to close the CDE's
+   * viewer (Antonio, 22-10, «se siente pesado»). Read together, after every write
+   * of the batch, it is one layout.
+   */
+  private static _toMeasure = new Set<Label>();
+  private static _measuring = false;
+  private static _measureAll() {
+    Label._measuring = false;
+    const labels = [...Label._toMeasure].filter((label) => label.isConnected);
+    Label._toMeasure.clear();
+    // Every read first (one layout), then every write.
+    const cuts = labels.map((label) => {
+      const shown = label.renderRoot.querySelector("p");
+      return !!shown && shown.scrollWidth > shown.clientWidth + 1;
+    });
+    labels.forEach((label, i) => {
+      if (cuts[i] !== label._cut) label._cut = cuts[i];
+    });
+  }
+
   protected updated() {
-    const shown = this.renderRoot.querySelector("p");
-    const cut = !!shown && shown.scrollWidth > shown.clientWidth + 1;
-    if (cut !== this._cut) this._cut = cut;
+    Label._toMeasure.add(this);
+    if (!Label._measuring) {
+      Label._measuring = true;
+      requestAnimationFrame(() => Label._measureAll());
+    }
     const text = (this.label ?? this.textContent)?.trim() ?? "";
     if (this.labelHidden && text) {
       this.setAttribute("aria-label", text);
