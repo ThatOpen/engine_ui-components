@@ -120,6 +120,14 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
         color-scheme: dark;
       }
 
+      /* What is selected in it, the one purple of every selection, never the browser's blue (Antonio 23-10: a name
+         renamed in place showed its text selected in blue). */
+      input::selection,
+      textarea::selection {
+        background-color: var(--bim-ui_main-base);
+        color: var(--bim-ui_main-contrast, #fff);
+      }
+
       :host-context(html.bim-ui-light) input {
         color-scheme: light;
       }
