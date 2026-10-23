@@ -42,6 +42,11 @@ export class TableRow<T extends TableRowData> extends LitElement {
       background-color: color-mix(in lab, var(--bim-ui_bg-contrast-20) 30%, var(--bim-ui_bg-contrast-70) 10%);
     }
 
+    /* Chosen by clicking (click-select): the one purple every choice has, not the hover's grey. */
+    :host([selected][click-chosen]) {
+      background-color: color-mix(in lab, var(--bim-ui_main-base) 28%, transparent);
+    }
+
     :host([is-header]) {
       min-height: auto;
       height: var(--bim-ui_size-10xl);
@@ -116,6 +121,32 @@ export class TableRow<T extends TableRowData> extends LitElement {
   }
 
   private _isRangeClick = false;
+
+  /** A row clicked in a table that chooses by clicking (`click-select`): see {@link Table.clickSelect}. */
+  private _onRowClick = (e: MouseEvent) => {
+    const table = this.table;
+    if (!table?.clickSelect || this.isHeader || !this.data) return;
+    // (What is clicked inside a row that does something of its own is left to it.)
+    const inside = e.composedPath().slice(0, e.composedPath().indexOf(this));
+    if (inside.some((n) => n instanceof HTMLElement && /^(BIM-BUTTON|BIM-CHECKBOX|BIM-DROPDOWN|BIM-TEXT-INPUT|BIM-NUMBER-INPUT|INPUT|A|BUTTON|SELECT|TEXTAREA)$/.test(n.tagName))) return;
+    const flat = Table.flattenData<T>(table.value).map((entry) => entry.data);
+    const anchor = table._lastSelectedData;
+    if (e.shiftKey && anchor && flat.includes(anchor)) {
+      const [a, b] = [flat.indexOf(anchor), flat.indexOf(this.data)].sort((x, y) => x - y);
+      // (With Ctrl as well, the run is added to what was chosen; alone, it is the choice.)
+      if (!(e.ctrlKey || e.metaKey)) table.selection.clear();
+      table.selection.add(...flat.slice(a, b + 1));
+      return;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      if (table.selection.has(this.data)) table.selection.delete(this.data);
+      else table.selection.add(this.data);
+    } else {
+      table.selection.clear();
+      table.selection.add(this.data);
+    }
+    table._lastSelectedData = this.data;
+  };
 
   private _onCheckboxClick = (e: MouseEvent) => {
     e.stopPropagation()
@@ -218,6 +249,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
   private _onDataSelected = () => {
     if (this.isHeader) { this._updateHeaderCheckbox(); return; }
     this.toggleAttribute("selected", this.table?.selection.has(this.data));
+    this.toggleAttribute("click-chosen", !!this.table?.clickSelect);
   };
 
   private _onDataDeselected = () => {
@@ -232,6 +264,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this.addEventListener("click", this._onRowClick);
     if (!this.table) return;
     this.table.addEventListener("dataselected", this._onDataSelected);
     this.table.addEventListener("datadeselected", this._onDataDeselected);
@@ -254,6 +287,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this.removeEventListener("click", this._onRowClick);
     this._observer.unobserve(this);
     this.table?.removeEventListener("dataselected", this._onDataSelected);
     this.table?.removeEventListener("datadeselected", this._onDataDeselected);

@@ -533,6 +533,14 @@ export class Table<T extends TableRowData = TableRowData> extends LitElement {
 
   selection = new DataSet<Partial<T>>();
 
+  /**
+   * Rows chosen by clicking them, as a file list does (Google Drive, Finder), with no checkbox: a click chooses that row
+   * alone, Ctrl (⌘) + click adds or takes away one, Shift + click chooses the run from the last row clicked. The chosen
+   * rows are marked. Instead of {@link selectableRows}, not with it.
+   */
+  @property({ type: Boolean, reflect: true, attribute: "click-select" })
+  clickSelect = false;
+
   @property({ type: Boolean, attribute: "rows-selection-disabled", reflect: true })
   rowsSelectionDisabled = false;
 
