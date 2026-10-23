@@ -449,8 +449,10 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     dialog.style.top = `${y}px`;
   }
 
+  // 🔴 THE SEARCH STAYS WHAT IT SAID, AND IS APPLIED AS THE LIST OPENS AGAIN (Antonio 23-10: «al abrir el buscador, si hay
+  // una búsqueda anterior, debería aplicarse al inicio sin tener que tipear nada»): closing emptied the filter and left
+  // its words in the box, so the list opened unfiltered under a search that said otherwise.
   private _resetState() {
-    this._searchValue = "";
     for (const child of Array.from(this.children)) {
       if (child instanceof Option) (child as HTMLElement).style.display = "";
     }
@@ -548,8 +550,11 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
   };
 
   private _onSearch = (e: Event) => {
-    this._searchValue = ((e.target as TextInput).value ?? "").toLowerCase();
+    this._searchText = (e.target as TextInput).value ?? "";
+    this._searchValue = this._searchText.toLowerCase();
   };
+  /** The search as it was typed, given back to its box when the list opens again. */
+  private _searchText = "";
 
   private _renderOption(option: Option, index: number) {
     const checked = this._value.has(option);
@@ -647,6 +652,7 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         ${this.searchBox
           ? html`<bim-text-input
               type="search"
+              .value=${this._searchText}
               @input=${this._onSearch}
               debounce="200"
             ></bim-text-input>`
