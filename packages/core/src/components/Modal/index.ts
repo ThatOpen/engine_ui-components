@@ -1,6 +1,7 @@
 import { LitElement, PropertyValues, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { styles } from "../../core/Manager/src/styles";
 
 /**
  * A modal dialog web component for BIM applications. HTML tag: bim-modal
@@ -9,7 +10,8 @@ import { createRef, ref } from "lit/directives/ref.js";
  * @fires cancel - Fired when the user clicks the cancel button or presses Escape.
  */
 export class Modal extends LitElement {
-  static styles = css`
+  // (Its scrollbar the library's one, as every panel's: Antonio 23-10, «el scrollbar… igual que el del resto»).
+  static styles = [styles.scrollbar, css`
     :host {
       display: contents;
     }
@@ -63,7 +65,7 @@ export class Modal extends LitElement {
       gap: 0.5rem;
       padding: 0.75rem 1rem;
     }
-  `;
+  `];
 
   /** Title displayed in the modal header. */
   @property({ type: String, reflect: true })
