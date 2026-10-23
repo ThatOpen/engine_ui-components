@@ -128,6 +128,29 @@ export class Modal extends LitElement {
     }
   }
 
+  /** Whether the press began on the dark around the box (its backdrop), not on the box. */
+  private _pressedOutside = false;
+
+  private _isOutside(e: MouseEvent) {
+    const dialog = this._dialog.value;
+    if (!dialog || e.target !== dialog) return false;
+    const box = dialog.getBoundingClientRect();
+    return e.clientX < box.left || e.clientX > box.right || e.clientY < box.top || e.clientY > box.bottom;
+  }
+
+  // A click on the dark around it closes it, as Cancel (Antonio 23-10: «al clicar en la zona oscura fuera del menú
+  // debería cerrarse automáticamente»). Only a press AND a release out there: a drag that began inside (selecting text
+  // in a field) and ended outside is no click away.
+  private _onDialogPointerDown = (e: PointerEvent) => {
+    this._pressedOutside = this._isOutside(e);
+  };
+
+  private _onDialogClick = (e: MouseEvent) => {
+    const away = this._pressedOutside && this._isOutside(e);
+    this._pressedOutside = false;
+    if (away && !this.loading) this._cancel();
+  };
+
   protected render() {
     return html`
       <dialog
@@ -136,6 +159,8 @@ export class Modal extends LitElement {
         ${ref(this._dialog)}
         @cancel=${this._onDialogCancel}
         @close=${this._onDialogClose}
+        @pointerdown=${this._onDialogPointerDown}
+        @click=${this._onDialogClick}
       >
         ${this.label || this.icon ? html`
           <div class="header">
