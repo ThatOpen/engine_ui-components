@@ -104,8 +104,10 @@ export class ToolStatus extends LitElement {
       display: grid;
       grid-template-columns: auto 1fr;
       column-gap: 0.6rem;
-      row-gap: 0.15rem;
-      padding: 0.4rem 0.6rem;
+      /* One entry apart from the next (Antonio 23-10: «dejar cierta separación entre entradas o se confunde dónde acaba
+         una explicación y empieza la siguiente»). */
+      row-gap: 0.55rem;
+      padding: 0.55rem 0.7rem;
       border-radius: 0.5rem;
       background: var(--bim-tool-status--bgc, var(--bim-ui_bg-contrast-10));
       border: 1px solid var(--bim-ui_bg-contrast-20);

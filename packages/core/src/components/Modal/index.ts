@@ -25,6 +25,12 @@ export class Modal extends LitElement {
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
 
+    /* The dialog itself takes the focus as it opens (autofocus), not its first button: Cancel wore the purple ring of a
+       button chosen by keyboard on every modal (Antonio 23-10, «quita el borde morado del botón cancel del modal»). */
+    dialog:focus {
+      outline: none;
+    }
+
     dialog::backdrop {
       background-color: rgba(0, 0, 0, 0.55);
       backdrop-filter: blur(2px);
@@ -91,7 +97,11 @@ export class Modal extends LitElement {
     const dialog = this._dialog.value;
     if (!dialog) return;
     if (this.open) {
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) {
+        dialog.showModal();
+        // (Its own focus, not its first button's: see \`dialog:focus\`. \`autofocus\` alone left Cancel focused.)
+        dialog.focus({ preventScroll: true });
+      }
     } else {
       if (dialog.open) dialog.close();
     }
@@ -121,6 +131,8 @@ export class Modal extends LitElement {
   protected render() {
     return html`
       <dialog
+        autofocus
+        tabindex="-1"
         ${ref(this._dialog)}
         @cancel=${this._onDialogCancel}
         @close=${this._onDialogClose}
