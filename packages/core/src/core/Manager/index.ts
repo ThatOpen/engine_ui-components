@@ -1,6 +1,8 @@
 import { loadIcons, addCollection } from "iconify-icon";
 import * as components from "../../components";
 import { styles } from "./src/styles";
+// (The library's own styles, its scrollbar first, for a component outside it that scrolls: one scrollbar in every app.)
+export { styles };
 
 /**
  * Configuration interface for the Manager class. Defines the properties and their types that can be configured for the Manager.

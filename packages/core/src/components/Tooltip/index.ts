@@ -288,7 +288,7 @@ export class Tooltip extends LitElement {
     this._hostParent.setAttribute("aria-describedby", this.id);
     this._hostParent.addEventListener("mouseenter", this._scheduleShow);
     this._hostParent.addEventListener("mouseleave", this._cancelAndHide);
-    this._hostParent.addEventListener("focus", this._scheduleShow);
+    this._hostParent.addEventListener("focus", this._onFocus);
     this._hostParent.addEventListener("blur", this._cancelAndHide);
     this._hostParent.addEventListener("bim-tooltip-suppress", this._suppress);
     this._hostParent.addEventListener("bim-tooltip-unsuppress", this._unsuppress);
@@ -309,7 +309,7 @@ export class Tooltip extends LitElement {
       if (this._hostParent) {
         this._hostParent.removeEventListener("mouseenter", this._scheduleShow);
         this._hostParent.removeEventListener("mouseleave", this._cancelAndHide);
-        this._hostParent.removeEventListener("focus", this._scheduleShow);
+        this._hostParent.removeEventListener("focus", this._onFocus);
         this._hostParent.removeEventListener("blur", this._cancelAndHide);
         this._hostParent.removeEventListener("bim-tooltip-suppress", this._suppress);
         this._hostParent.removeEventListener("bim-tooltip-unsuppress", this._unsuppress);
@@ -318,6 +318,18 @@ export class Tooltip extends LitElement {
       }
     });
   }
+
+  /**
+   * 🔴 SHOWN ON FOCUS ONLY WHEN THE FOCUS IS THE KEYBOARD'S (Antonio 23-10: «cuando abro plan sets y cierro el modal,
+   * aparece ese tooltip aunque el ratón no pase por ahí»): a dialog closed gives the focus back to the button that opened
+   * it, and that focus, no hand on it, put up its tooltip. Tabbed to, it is `:focus-visible` and shown as before.
+   */
+  private _onFocus = () => {
+    const host = this._hostParent;
+    if (!host) return;
+    const byKeyboard = host.matches(":focus-visible") || !!host.shadowRoot?.querySelector(":focus-visible");
+    if (byKeyboard) this._scheduleShow();
+  };
 
   protected render() {
     // Render the content through bim-label so the tooltip text picks up the
