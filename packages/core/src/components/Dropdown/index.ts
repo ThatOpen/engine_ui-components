@@ -107,6 +107,15 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         overflow: hidden;
       }
 
+      /* Compact: its icon and the chevron, nothing written (what is chosen is its tooltip's). */
+      :host([compact]) .wrapper {
+        min-width: 0;
+      }
+
+      :host([compact]) .input bim-label {
+        flex: none;
+      }
+
       .input svg {
         flex-shrink: 0;
         fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
@@ -231,6 +240,14 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
 
   @property({ type: String, reflect: true })
   placeholder?: string;
+
+  /**
+   * Only its `icon` and the chevron, nothing written: for a list in a toolbar, where «Multiple (4)» says nothing (Antonio
+   * 23-10, the snaps of the authoring apps: «la palabra "multiple" no aporta mucho»). What is chosen goes in `tooltip`.
+   * @example <bim-dropdown compact multiple icon="tabler:adjustments" tooltip="Snaps"></bim-dropdown>
+   */
+  @property({ type: Boolean, reflect: true })
+  compact = false;
 
   multipleLabel?: (count: number) => string;
 
@@ -589,7 +606,7 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     return html`
       <div class="parent">
         ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : nothing}
-        ${this.label || this.icon
+        ${(this.label || this.icon) && !this.compact
           ? html`<bim-label class="field-label" .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="wrapper">
@@ -605,7 +622,9 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
             @click=${() => (this.visible = !this.visible)}
             @keydown=${this._onTriggerKeydown}
           >
-            <bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>
+            ${this.compact
+              ? html`<bim-label aria-hidden="true" .icon=${this.icon}></bim-label>`
+              : html`<bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>`}
             <svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem">
               <path d="M0 0h24v24H0V0z" fill="none"/>
               <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
