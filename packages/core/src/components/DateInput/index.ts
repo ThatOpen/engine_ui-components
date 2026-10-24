@@ -86,6 +86,12 @@ export class DateInput extends LitElement {
       pointer-events: none;
     }
 
+    /* The calendar icon in the colour every label's icon has: left to inherit, it took the page's text colour, black
+       in an app (Antonio 24-10). */
+    .trigger bim-icon {
+      --bim-icon--c: var(--bim-label--ic, var(--bim-label--c, var(--bim-ui_bg-contrast-80)));
+    }
+
     .placeholder {
       --bim-label--c: var(--bim-ui_bg-contrast-60);
     }

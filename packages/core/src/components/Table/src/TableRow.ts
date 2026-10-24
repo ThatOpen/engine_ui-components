@@ -42,9 +42,12 @@ export class TableRow<T extends TableRowData> extends LitElement {
       background-color: color-mix(in lab, var(--bim-ui_bg-contrast-20) 30%, var(--bim-ui_bg-contrast-70) 10%);
     }
 
-    /* Chosen by clicking (click-select): the one purple every choice has, not the hover's grey. */
+    /* Chosen by clicking (click-select): the one purple every choice has (the active buttons', the tabs'), not the
+       hover's grey nor a darker mix of it. */
     :host([selected][click-chosen]) {
-      background-color: color-mix(in lab, var(--bim-ui_main-base) 28%, transparent);
+      background-color: var(--bim-ui_main-base);
+      color: var(--bim-ui_main-contrast, #fff);
+      --bim-label--c: var(--bim-ui_main-contrast, #fff);
     }
 
     :host([is-header]) {
