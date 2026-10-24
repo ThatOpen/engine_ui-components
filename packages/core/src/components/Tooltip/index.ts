@@ -210,6 +210,16 @@ export class Tooltip extends LitElement {
       this._escapeListener = this._onEscape;
       document.addEventListener("keydown", this._escapeListener);
     }
+    // 🔴 NEVER LEFT FLOATING (Antonio 24-10: a row's whole title stayed on screen over the issues' list): shown, it
+    // lives in the floating container, away from what it speaks of; when that is drawn again or taken away under the
+    // pointer (a list refreshed by the click that chose the row), no `mouseleave` ever came. Gone with it, and with any
+    // press anywhere.
+    clearInterval(this._watch);
+    this._watch = setInterval(() => {
+      const host = this._anchor ?? this._hostParent;
+      if (!host || !host.isConnected) this.visible = false;
+    }, 200);
+    document.addEventListener("pointerdown", this._cancelAndHide, true);
 
     try {
       await this._updatePosition();
@@ -218,7 +228,13 @@ export class Tooltip extends LitElement {
     }
   }
 
+  /** While shown: whether what it speaks of is still on the page (see `_show`). */
+  private _watch?: ReturnType<typeof setInterval>;
+
   private _hide() {
+    clearInterval(this._watch);
+    this._watch = undefined;
+    document.removeEventListener("pointerdown", this._cancelAndHide, true);
     if (this._escapeListener) {
       document.removeEventListener("keydown", this._escapeListener);
       this._escapeListener = undefined;
