@@ -95,6 +95,22 @@ export class SortableList extends LitElement {
 
   @state() private _activeIds: string[] = [];
   @state() private _availableIds: string[] = [];
+  /**
+   * The items shown, in their order (ids): the others are offered below, to be added. Set it to say how the list
+   * starts; read it (or the `change` event) for what was chosen.
+   */
+  @property({ attribute: false })
+  set active(ids: string[]) {
+    const known = new Set(this._items.map((item) => item.id));
+    this._activeIds = ids.filter((id) => known.has(id) || !this._items.length);
+    const shown = new Set(this._activeIds);
+    this._availableIds = this._items.map((item) => item.id).filter((id) => !shown.has(id));
+  }
+
+  get active(): string[] {
+    return [...this._activeIds];
+  }
+
   @state() private _dragIndex = -1;
   @state() private _dragOverIndex = -1;
 
