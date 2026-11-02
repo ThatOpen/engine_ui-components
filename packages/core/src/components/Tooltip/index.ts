@@ -72,6 +72,10 @@ export class Tooltip extends LitElement {
           const tip = (Tooltip._shared ??= document.createElement("bim-tooltip") as Tooltip);
           tip._anchor = element;
           tip.textContent = text;
+          // 🔴 IN THE PAGE BEFORE IT IS SHOWN (2-11, Coordinator: no `data-tooltip` was ever seen): an element never connected
+          // never updates, so `visible` reached nothing and it stayed out of the page; and hidden, it leaves it (`_hide`).
+          // Connected with its anchor set, it takes no parent of its own; shown, it goes to the floating layer (`_show`).
+          if (!tip.isConnected) document.body.append(tip);
           tip.visible = true;
         }, 800);
       },
