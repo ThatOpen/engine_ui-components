@@ -19,6 +19,8 @@ export class Tooltip extends LitElement {
     :host {
       position: absolute;
       background: var(--bim-ui_bg-contrast-10);
+      /* Its own text colour: shown, it hangs from the page, whose colour is not the theme's (2-11, black on the dark one). */
+      color: var(--bim-tooltip--c, var(--bim-ui_bg-contrast-100));
       border-radius: 4px;
       box-shadow: var(--bim-tooltip--shadow, 0 0 10px 3px rgba(0, 0, 0, 0.2));
       padding: var(--bim-tooltip--p, 0.75rem);
