@@ -22,7 +22,10 @@ export class Tooltip extends LitElement {
       /* Its own text colour: shown, it hangs from the page, whose colour is not the theme's (2-11, black on the dark one). */
       color: var(--bim-tooltip--c, var(--bim-ui_bg-contrast-100));
       border-radius: 4px;
-      box-shadow: var(--bim-tooltip--shadow, 0 0 10px 3px rgba(0, 0, 0, 0.2));
+      /* The panels' one border and no cast shadow, as everything else (Antonio 2-11, and 4-11: a tooltip with a light
+         ring around it). */
+      border: 1px solid var(--bim-ui_bg-contrast-20);
+      box-shadow: var(--bim-tooltip--shadow, none);
       padding: var(--bim-tooltip--p, 0.75rem);
       max-width: var(--bim-tooltip--maxw, 20rem);
       font-size: var(--bim-tooltip--fs, var(--bim-ui_size-base, 0.875rem));

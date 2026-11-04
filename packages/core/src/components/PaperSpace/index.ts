@@ -480,7 +480,7 @@ export class PaperSpace extends LitElement {
         <button
           class="ruler-rotate-btn"
           @click=${this.toggleRulerOrientation}
-          title="Toggle horizontal/vertical"
+          data-tooltip="Toggle horizontal/vertical"
         >
           ${isHorizontal ? "⇅" : "⇄"}
         </button>
