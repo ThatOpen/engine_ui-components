@@ -75,7 +75,7 @@ export class NumberInput extends LitElement implements HasValue<number>, HasName
       padding: 0;
       flex-grow: 1;
       text-align: var(--bim-input--ta, right);
-      font-family: inherit;
+      font-family: var(--bim-ui_font-family, inherit);
       font-feature-settings: inherit;
       font-variation-settings: inherit;
       font-size: var(--bim-ui_size-base);

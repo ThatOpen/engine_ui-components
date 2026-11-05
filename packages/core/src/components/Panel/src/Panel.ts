@@ -73,6 +73,7 @@ export class Panel extends LitElement implements HasName {
         --bim-label--c: transparent;
         --bim-icon--c: var(--bim-ui_bg-contrast-60);
         --bim-label--fz: var(--bim-panel--fz, var(--bim-ui_size-lg));
+        --bim-label--ff: var(--bim-ui_font-family-title);
         background: linear-gradient(90deg, var(--bim-ui_bg-contrast-100) 0%, var(--bim-ui_bg-contrast-60) 130%);
         -webkit-background-clip: text;
         background-clip: text;

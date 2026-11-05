@@ -13,6 +13,7 @@ export class Label extends LitElement {
       box-sizing: border-box;
       color: var(--bim-label--c, var(--bim-ui_bg-contrast-80));
       font-size: var(--bim-label--fz, var(--bim-ui_size-base));
+      font-family: var(--bim-label--ff, var(--bim-ui_font-family, inherit));
       display: block;
       white-space: nowrap;
       transition: color var(--bim-ui_duration-fast, 0.15s),

@@ -102,6 +102,7 @@ export class EmptyState extends LitElement {
     }
 
     bim-label.title {
+      --bim-label--ff: var(--bim-ui_font-family-title);
       font-size: var(--bim-ui_size-lg);
       font-weight: 500;
     }
