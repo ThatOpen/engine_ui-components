@@ -142,6 +142,10 @@ export class PanelSection extends LitElement implements HasName {
          opt in with the scrollable attribute. */
       :host(:not([scrollable])) .parent {
         height: auto;
+        /* Still fills a section that is stretched (the last one in a panel),
+           so content that centers itself, like bim-empty-state, is centered
+           in the whole section and not only in its own height. */
+        min-height: 100%;
         overflow: visible;
       }
 
