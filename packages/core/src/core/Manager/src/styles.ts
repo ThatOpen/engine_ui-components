@@ -88,6 +88,15 @@ const globalStyles = css`
     --bim-ui_size-20xl: 3.3125rem; /* 53px */
     --bim-ui_size-21xl: 3.4375rem; /* 55px */
     --bim-ui_size-22xl: 3.5625rem; /* 57px */
+
+    /* Fonts: Sora for titles, Plus Jakarta Sans for everything else */
+    --bim-ui_font-family: "Plus Jakarta Sans", system-ui, -apple-system,
+      sans-serif;
+    --bim-ui_font-family-title: "Sora", var(--bim-ui_font-family);
+  }
+
+  html {
+    font-family: var(--bim-ui_font-family);
   }
 
   /* Background Colors */

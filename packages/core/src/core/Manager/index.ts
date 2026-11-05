@@ -14,6 +14,12 @@ export interface ManagerConfig {
 
   internalComponentNameAttribute: string;
 
+  /**
+   * Stylesheet that loads the library fonts (Sora and Plus Jakarta Sans).
+   * Set it to an empty string when the page loads them itself.
+   */
+  fontsUrl: string;
+
   // /**
   //  * Determines whether toolbars should be draggable.
   //  * Default value is `true`.
@@ -35,6 +41,8 @@ export class Manager {
   private static _config: Required<ManagerConfig> = {
     sectionLabelOnVerticalToolbar: false,
     internalComponentNameAttribute: "bim-element-name",
+    fontsUrl:
+      "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Sora:wght@100..800&display=swap",
     // draggableToolbars: true,
     // draggablePanels: true,
   };
@@ -45,6 +53,16 @@ export class Manager {
 
   static get config(): Required<ManagerConfig> {
     return Manager._config;
+  }
+
+  private static addFonts() {
+    const url = Manager.config.fontsUrl;
+    if (!url || document.querySelector("link[id='bim-ui-fonts']")) return;
+    const link = document.createElement("link");
+    link.id = "bim-ui-fonts";
+    link.rel = "stylesheet";
+    link.href = url;
+    document.head.append(link);
   }
 
   private static addGlobalStyles() {
@@ -106,6 +124,7 @@ export class Manager {
    */
   static init(querySelectorElements = "", animateOnLoad = true) {
     Manager.addGlobalStyles();
+    Manager.addFonts();
     Manager.defineCustomElement("bim-button", components.Button);
     Manager.defineCustomElement("bim-checkbox", components.Checkbox);
     Manager.defineCustomElement("bim-color-input", components.ColorInput);

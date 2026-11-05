@@ -70,6 +70,7 @@ export class PanelSection extends LitElement implements HasName {
 
       .title > bim-label {
         --bim-label--fz: var(--bim-panel-section--fz, var(--bim-ui_size-lg));
+        --bim-label--ff: var(--bim-ui_font-family-title);
         --bim-label--c: transparent;
         --bim-icon--c: var(--bim-ui_bg-contrast-60);
         background: linear-gradient(90deg, var(--bim-ui_bg-contrast-100) 0%, var(--bim-ui_bg-contrast-60) 130%);

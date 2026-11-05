@@ -97,7 +97,7 @@ export class ColorInput extends LitElement implements HasValue, HasName {
       min-width: 0;
       text-transform: uppercase;
       font-size: var(--bim-ui_size-sm);
-      font-family: inherit;
+      font-family: var(--bim-ui_font-family, inherit);
       background-color: transparent;
       padding: 0;
       outline: none;

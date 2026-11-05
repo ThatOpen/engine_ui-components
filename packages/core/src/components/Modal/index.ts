@@ -41,6 +41,7 @@ export class Modal extends LitElement {
 
     .header bim-label {
       flex: 1;
+      --bim-label--ff: var(--bim-ui_font-family-title);
       font-weight: 600;
       font-size: 13px;
     }

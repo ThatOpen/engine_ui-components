@@ -107,7 +107,7 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
       input,
       textarea {
         font-size: var(--bim-ui_size-base);
-        font-family: inherit;
+        font-family: var(--bim-ui_font-family, inherit);
         background-color: transparent;
         border: none;
         width: 100%;

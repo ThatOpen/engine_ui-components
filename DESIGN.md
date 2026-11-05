@@ -42,7 +42,8 @@ colors:
 
 typography:
   families:
-    ui: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    ui: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"   # --bim-ui_font-family
+    title: "'Sora', {typography.families.ui}"                          # --bim-ui_font-family-title
 
   # All sizes come from the design-token scale below.
   # Font sizes reference {spacing.*} tokens defined in the spacing block.
@@ -411,7 +412,14 @@ The animation uses a `clip-path: circle()` overlay at 1 000 ms.
 
 ## 3. Typography
 
-There is no explicit font family token — the library intentionally inherits the host application's font stack. All sizing derives from the `--bim-ui_size-*` token scale (see §4).
+Two font families, both tokens on `:root`:
+
+- `--bim-ui_font-family`: **Plus Jakarta Sans**, for all text. Set on `html` and on every `bim-label` and input.
+- `--bim-ui_font-family-title`: **Sora**, for titles: panel and panel-section headers, modal headers and empty-state titles. A label takes it through `--bim-label--ff`.
+
+`Manager.init()` loads both fonts with the stylesheet in `Manager.config.fontsUrl`. Set it to `""` when the page loads them itself.
+
+All sizing derives from the `--bim-ui_size-*` token scale (see §4).
 
 ### Common usage patterns
 
