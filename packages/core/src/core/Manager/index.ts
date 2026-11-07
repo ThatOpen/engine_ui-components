@@ -1,6 +1,8 @@
 import { loadIcons, addCollection } from "iconify-icon";
 import * as components from "../../components";
 import { styles } from "./src/styles";
+// (The library's own styles, its scrollbar first, for a component outside it that scrolls: one scrollbar in every app.)
+export { styles };
 
 /**
  * Configuration interface for the Manager class. Defines the properties and their types that can be configured for the Manager.
@@ -125,15 +127,20 @@ export class Manager {
   static init(querySelectorElements = "", animateOnLoad = true) {
     Manager.addGlobalStyles();
     Manager.addFonts();
+    // Every hover text of every app through the one tooltip (`data-tooltip`, see `Tooltip.watch`).
+    components.Tooltip.watch();
     Manager.defineCustomElement("bim-button", components.Button);
     Manager.defineCustomElement("bim-checkbox", components.Checkbox);
     Manager.defineCustomElement("bim-color-input", components.ColorInput);
+    Manager.defineCustomElement("bim-date-input", components.DateInput);
+    Manager.defineCustomElement("bim-inline-confirm", components.InlineConfirm);
     Manager.defineCustomElement("bim-context-menu", components.ContextMenu);
     Manager.defineCustomElement("bim-dropdown", components.Dropdown);
     Manager.defineCustomElement("bim-empty-state", components.EmptyState);
     Manager.defineCustomElement("bim-grid", components.Grid);
     Manager.defineCustomElement("bim-icon", components.Icon);
     Manager.defineCustomElement("bim-input", components.Input);
+    Manager.defineCustomElement("bim-badge", components.Badge);
     Manager.defineCustomElement("bim-label", components.Label);
     Manager.defineCustomElement("bim-number-input", components.NumberInput);
     Manager.defineCustomElement("bim-option", components.Option);
@@ -162,6 +169,7 @@ export class Manager {
     Manager.defineCustomElement("bim-paper-space", components.PaperSpace);
     Manager.defineCustomElement("bim-modal", components.Modal);
     Manager.defineCustomElement("bim-sortable-list", components.SortableList);
+    Manager.defineCustomElement("bim-tool-status", components.ToolStatus);
 
     if (animateOnLoad) this.animateOnLoad(querySelectorElements);
   }

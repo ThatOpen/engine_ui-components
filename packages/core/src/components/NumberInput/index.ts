@@ -196,6 +196,13 @@ export class NumberInput extends LitElement implements HasValue<number>, HasName
   label?: string;
 
   /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
+  /**
    * Short for "prefix" — a currency symbol, unit, or other text shown inside the
    * input field before the value (e.g. `pref="$"` renders "$ 42"). Named `pref`
    * (not `prefix`) because `prefix` collides with the native, read-only
@@ -631,14 +638,13 @@ export class NumberInput extends LitElement implements HasValue<number>, HasName
   }
 
   protected render() {
-    const title = `${this.label || this.name || this.pref ? `${this.label || this.name || this.pref}: ` : ""}${this.value}${this.suffix ?? ""}`;
-
     return html`
       <div class="parent">
         ${this.label || this.icon
           ? html`<bim-label .icon=${this.icon}>${this.label}</bim-label>`
           : null}
-        <div class="input" title=${title}>
+        <div class="input">
+          ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : null}
           ${this.slider ? this.renderSlider() : this.renderRegular()}
         </div>
       </div>

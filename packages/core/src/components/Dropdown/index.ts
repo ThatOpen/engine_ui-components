@@ -107,6 +107,15 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         overflow: hidden;
       }
 
+      /* Compact: its icon and the chevron, nothing written (what is chosen is its tooltip's). */
+      :host([compact]) .wrapper {
+        min-width: 0;
+      }
+
+      :host([compact]) .input bim-label {
+        flex: none;
+      }
+
       .input svg {
         flex-shrink: 0;
         fill: var(--bim-dropdown--c, var(--bim-ui_bg-contrast-100));
@@ -138,8 +147,8 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         background: transparent;
       }
 
+      /* (The search as every search is, with no colour of its own: Antonio 17-10, «SIEMPRE EL MISMO SEARCHBAR».) */
       dialog bim-text-input {
-        --bim-input--bgc: var(--bim-ui_bg-contrast-30);
         margin: 0 0.375rem 0.125rem;
       }
 
@@ -213,6 +222,13 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
   @property({ type: String, reflect: true })
   label?: string;
 
+  /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
   @property({ type: Boolean, reflect: true })
   multiple = false;
 
@@ -224,6 +240,14 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
 
   @property({ type: String, reflect: true })
   placeholder?: string;
+
+  /**
+   * Only its `icon` and the chevron, nothing written: for a list in a toolbar, where «Multiple (4)» says nothing (Antonio
+   * 23-10, the snaps of the authoring apps: «la palabra "multiple" no aporta mucho»). What is chosen goes in `tooltip`.
+   * @example <bim-dropdown compact multiple icon="tabler:adjustments" tooltip="Snaps"></bim-dropdown>
+   */
+  @property({ type: Boolean, reflect: true })
+  compact = false;
 
   multipleLabel?: (count: number) => string;
 
@@ -394,25 +418,41 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     const padding = 5;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const t = trigger.getBoundingClientRect();
+    // (The field's box as it is seen, the trigger's frame round it: what the list, and its search, line up with.)
+    const t = (trigger.parentElement ?? trigger).getBoundingClientRect();
     const m = dialog.getBoundingClientRect();
 
-    let x = t.left;
-    let y = t.bottom + gap;
+    // 🔴 IT OPENS DOWNWARD, AND A LIST WITH A SEARCH OPENS WITH ITS SEARCH ON THE INPUT (Antonio 17-10): flipped above the
+    // input when there was no room under it, a list filtered to one name was left floating far above the field it was
+    // opened from. Never above: with little room under the input the list is shorter and scrolls, and only when even
+    // that is too little does it rise, as little as it must.
+    // 🔴 AND ITS SEARCH LINED UP WITH THE FIELD (Antonio 22-10: «el searchbar estar alineado con la posición del
+    // dropdown»): the search stands in from the list's edges by its own margins, so the list is put out by as much
+    // and made as much wider: its search box is where the field's box is, as wide and at the same height.
+    const search = this.searchBox ? dialog.querySelector<HTMLElement>("bim-text-input") : null;
+    const s = search?.getBoundingClientRect();
+    const inLeft = s && s.width ? s.left - m.left : 0;
+    const inRight = s && s.width ? m.right - s.right : 0;
+    const inTop = s && s.width ? s.top - m.top : parseFloat(getComputedStyle(dialog).paddingTop) || 0;
+    let x = this.searchBox ? t.left - inLeft : t.left;
+    let y = this.searchBox ? t.top - inTop : t.bottom + gap;
 
-    if (y + m.height > vh - padding) y = t.top - m.height - gap;
     if (x + m.width > vw - padding) x = t.right - m.width;
-
     x = Math.max(padding, Math.min(x, vw - m.width - padding));
-    y = Math.max(padding, Math.min(y, vh - m.height - padding));
 
-    dialog.style.minWidth = `${t.width}px`;
+    const fewest = 160;
+    if (vh - padding - y < fewest) y = Math.max(padding, vh - padding - fewest);
+    dialog.style.maxHeight = `${Math.min(320, vh - padding - y)}px`;
+
+    dialog.style.minWidth = `${this.searchBox ? t.width + inLeft + inRight : t.width}px`;
     dialog.style.left = `${x}px`;
     dialog.style.top = `${y}px`;
   }
 
+  // 🔴 THE SEARCH STAYS WHAT IT SAID, AND IS APPLIED AS THE LIST OPENS AGAIN (Antonio 23-10: «al abrir el buscador, si hay
+  // una búsqueda anterior, debería aplicarse al inicio sin tener que tipear nada»): closing emptied the filter and left
+  // its words in the box, so the list opened unfiltered under a search that said otherwise.
   private _resetState() {
-    this._searchValue = "";
     for (const child of Array.from(this.children)) {
       if (child instanceof Option) (child as HTMLElement).style.display = "";
     }
@@ -510,8 +550,11 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
   };
 
   private _onSearch = (e: Event) => {
-    this._searchValue = ((e.target as TextInput).value ?? "").toLowerCase();
+    this._searchText = (e.target as TextInput).value ?? "";
+    this._searchValue = this._searchText.toLowerCase();
   };
+  /** The search as it was typed, given back to its box when the list opens again. */
+  private _searchText = "";
 
   private _renderOption(option: Option, index: number) {
     const checked = this._value.has(option);
@@ -566,8 +609,9 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
     }
 
     return html`
-      <div class="parent" title=${this.label ?? ""}>
-        ${this.label || this.icon
+      <div class="parent">
+        ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : nothing}
+        ${(this.label || this.icon) && !this.compact
           ? html`<bim-label class="field-label" .icon=${this.icon}>${this.label}</bim-label>`
           : null}
         <div class="wrapper">
@@ -583,7 +627,9 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
             @click=${() => (this.visible = !this.visible)}
             @keydown=${this._onTriggerKeydown}
           >
-            <bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>
+            ${this.compact
+              ? html`<bim-label aria-hidden="true" .icon=${this.icon}></bim-label>`
+              : html`<bim-label aria-hidden="true" .img=${inputImg} .icon=${inputIcon}>${inputLabel}</bim-label>`}
             <svg xmlns="http://www.w3.org/2000/svg" height="1.125rem" viewBox="0 0 24 24" width="1.125rem">
               <path d="M0 0h24v24H0V0z" fill="none"/>
               <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
@@ -605,8 +651,9 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
       >
         ${this.searchBox
           ? html`<bim-text-input
+              type="search"
+              .value=${this._searchText}
               @input=${this._onSearch}
-              placeholder="Search..."
               debounce="200"
             ></bim-text-input>`
           : nothing}

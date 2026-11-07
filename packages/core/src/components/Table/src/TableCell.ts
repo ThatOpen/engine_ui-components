@@ -1,6 +1,7 @@
 import { LitElement, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { TableRowData } from "./types";
+import { columnWidthVar } from "./column-width";
 import { Table, TableGroup, TableRow } from "..";
 
 export class TableCell<T extends TableRowData> extends LitElement {
@@ -18,6 +19,34 @@ export class TableCell<T extends TableRowData> extends LitElement {
     
     :host([data-cell-header]) {
       --bim-label--c: var(--bim-ui_bg-contrast-80);
+      position: relative;
+    }
+
+    /* The grip a column is resized by: the header's right edge. */
+    .grip {
+      position: absolute;
+      top: 15%;
+      right: 0;
+      width: 7px;
+      height: 70%;
+      cursor: col-resize;
+      touch-action: none;
+      z-index: 1;
+    }
+    .grip::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 3px;
+      width: 1px;
+      background: var(--bim-ui_bg-contrast-20);
+    }
+    .grip:hover::after,
+    .grip.dragging::after {
+      width: 2px;
+      right: 2px;
+      background: var(--bim-ui_accent-base);
     }
 
     :host([data-column-index="0"]) {
@@ -109,7 +138,54 @@ export class TableCell<T extends TableRowData> extends LitElement {
     }
   }
 
+  // Followed on the window, not on the grip (a header's cells are made anew
+  // when its columns change). While dragging only the column's width variable
+  // changes, once a frame: no row renders again (re-rendering every cell on
+  // every step lagged and flickered, Antonio 17-10). The width is set for good
+  // when the button is let go.
+  private _startResize = (down: PointerEvent) => {
+    const table = this.table;
+    if (!table) return;
+    down.preventDefault();
+    down.stopPropagation();
+    const column = this.column;
+    const variable = columnWidthVar(String(column));
+    const start = this.getBoundingClientRect().width;
+    const from = down.clientX;
+    const min = 48;
+    let width = Math.round(start);
+    let frame = 0;
+    // A sheet over the page while dragging: it holds the cursor, and the rows
+    // under the pointer get no hover to answer to. (Setting the body's cursor
+    // restyled the whole page at the first step, and the rows' hover handlers
+    // ran at every row crossed: the first drag felt heavy, Antonio 17-10.)
+    const sheet = document.createElement("div");
+    sheet.style.cssText = "position:fixed; inset:0; z-index:2147483647; cursor:col-resize;";
+    document.body.append(sheet);
+    const move = (event: PointerEvent) => {
+      width = Math.max(min, Math.round(start + event.clientX - from));
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        table.style.setProperty(variable, `${width}px`);
+      });
+    };
+    const up = () => {
+      cancelAnimationFrame(frame);
+      sheet.remove();
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      table.resizeColumn(column, `${width}px`);
+      table.style.removeProperty(variable);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
+
   protected render() {
-    return html`${this.templateValue}`;
+    const resizable = this.row?.isHeader && this.table?.resizableColumns;
+    return html`${this.templateValue}${resizable
+      ? html`<div class="grip" data-grip=${String(this.column)} @pointerdown=${this._startResize} @click=${(e: Event) => e.stopPropagation()}></div>`
+      : nothing}`;
   }
 }

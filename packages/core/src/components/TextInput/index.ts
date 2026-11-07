@@ -120,6 +120,14 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
         color-scheme: dark;
       }
 
+      /* What is selected in it, the one purple of every selection, never the browser's blue (Antonio 23-10: a name
+         renamed in place showed its text selected in blue). */
+      input::selection,
+      textarea::selection {
+        background-color: var(--bim-ui_main-base);
+        color: var(--bim-ui_main-contrast, #fff);
+      }
+
       :host-context(html.bim-ui-light) input {
         color-scheme: light;
       }
@@ -208,6 +216,13 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
    */
   @property({ type: String, reflect: true })
   label?: string;
+
+  /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
 
   /**
    * Represents the name property of the TextInput component.
@@ -360,6 +375,9 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
       this._cachedQuery = undefined;
     }
     this._currentValidation = this._validation ? this._validation(this.value) : undefined;
+    // The search bar's magnifier is inside the box, and it is laid out as one said so (`icon-inside`): without the
+    // attribute the box took the icon's row and its text squeezed to a line under it (Antonio 13-10).
+    if (this.type === "search" && !this.iconInside) this.iconInside = true;
   }
 
   protected override updated() {
@@ -394,16 +412,22 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
   }
 
   protected render() {
-    const useIconInside = this.iconInside && this.type !== "area";
-    const labelIcon = useIconInside ? undefined : this.icon;
+    // THE ONE SEARCH BAR: `type="search"` is it, wherever something is searched (a dropdown's list, a panel's fields, a
+    // table): the magnifier inside the box and «Search...» unless said otherwise, so no app draws its own.
+    const searching = this.type === "search";
+    const icon = this.icon ?? (searching ? "mdi:magnify" : undefined);
+    const useIconInside = (this.iconInside || searching) && this.type !== "area";
+    const labelIcon = useIconInside ? undefined : icon;
+    const placeholder = this.placeholder ?? (searching ? "Search..." : undefined);
     return html`
       <div class="parent">
+        ${this.tooltip ? html`<bim-tooltip>${this.tooltip}</bim-tooltip>` : nothing}
         ${this.label || labelIcon
           ? html`<bim-label .icon=${labelIcon}>${this.label}</bim-label>`
           : nothing}
         <div class="input">
-          ${useIconInside && this.icon
-            ? html`<bim-label .icon=${this.icon}></bim-label>`
+          ${useIconInside && icon
+            ? html`<bim-label .icon=${icon}></bim-label>`
             : nothing}
           ${this.type === "area"
             ? html`<textarea
@@ -420,7 +444,7 @@ export class TextInput extends LitElement implements HasName, HasValue<string> {
                 .type=${this.type}
                 .value=${this.value}
                 ?disabled=${this.disabled}
-                placeholder=${ifDefined(this.placeholder)}
+                placeholder=${ifDefined(placeholder)}
                 autocomplete=${ifDefined(this.autocomplete)}
                 @input=${this.onInputChange}
               />`}

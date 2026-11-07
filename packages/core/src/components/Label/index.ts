@@ -1,5 +1,5 @@
 import { LitElement, css, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { convertString } from "../../core/utils";
 import { when } from "lit/directives/when.js";
 
@@ -133,13 +133,54 @@ export class Label extends LitElement {
   @property({ type: String })
   label?: string;
 
+  /**
+   * A tooltip for it, shown with the library's one tooltip (`bim-tooltip`): what it is or what it does, beyond its
+   * label. Every hover text of the library goes through `bim-tooltip`; no component uses the browser's own `title`.
+   */
+  @property({ type: String })
+  tooltip?: string;
+
+  /** Its text is cut short by its box (an ellipsis): the whole of it is then its tooltip. */
+  @state()
+  private _cut = false;
+
   get value(): string | boolean | number | undefined {
     const text = (this.label ?? this.textContent)?.trim();
     if (!text) return undefined;
     return convertString(text);
   }
 
+  /**
+   * Labels waiting to be measured, ALL AT ONCE in the next frame.
+   *
+   * Reading `scrollWidth` forces a layout. Read in each label's `updated()`, a
+   * table of a few hundred labels re-rendered in one go made a layout per label,
+   * each invalidated by the label written before it: 3.3 s to close the CDE's
+   * viewer (Antonio, 22-10, «se siente pesado»). Read together, after every write
+   * of the batch, it is one layout.
+   */
+  private static _toMeasure = new Set<Label>();
+  private static _measuring = false;
+  private static _measureAll() {
+    Label._measuring = false;
+    const labels = [...Label._toMeasure].filter((label) => label.isConnected);
+    Label._toMeasure.clear();
+    // Every read first (one layout), then every write.
+    const cuts = labels.map((label) => {
+      const shown = label.renderRoot.querySelector("p");
+      return !!shown && shown.scrollWidth > shown.clientWidth + 1;
+    });
+    labels.forEach((label, i) => {
+      if (cuts[i] !== label._cut) label._cut = cuts[i];
+    });
+  }
+
   protected updated() {
+    Label._toMeasure.add(this);
+    if (!Label._measuring) {
+      Label._measuring = true;
+      requestAnimationFrame(() => Label._measureAll());
+    }
     const text = (this.label ?? this.textContent)?.trim() ?? "";
     if (this.labelHidden && text) {
       this.setAttribute("aria-label", text);
@@ -151,7 +192,8 @@ export class Label extends LitElement {
   protected render() {
     const text = this.label ?? this.textContent ?? "";
     return html`
-      <div class="parent" title=${text}>
+      <div class="parent">
+        ${this.tooltip || (this._cut && text) ? html`<bim-tooltip>${this.tooltip || text}</bim-tooltip>` : nothing}
         ${when(this.img, () => html`<img src=${this.img} alt=${text} />`)}
         ${when(!this.iconHidden && this.icon, () => html`<bim-icon .icon=${this.icon}></bim-icon>`)}
         ${this.label !== undefined
