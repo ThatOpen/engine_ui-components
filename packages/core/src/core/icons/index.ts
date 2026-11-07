@@ -85,6 +85,7 @@ export const ICONS = {
   "measure.angle": "tabler:angle",
   "measure.volume": "tabler:box",
   section: "tabler:scissors",
+  "section.box": "tabler:box-model-2",
 
   // The platform's things.
   document: "tabler:file-text",
@@ -162,6 +163,7 @@ export const ICONS = {
   "element.door": "tabler:door",
   "element.window": "mdi:window-closed-variant",
   "element.component": "mdi:sofa-outline",
+  "element.generic": "mdi:cube-outline",
   "element.floor": "mdi:floor-plan",
   "element.ceiling": "mdi:ceiling-light-outline",
   "element.roof": "mdi:home-roof",
@@ -216,6 +218,8 @@ export const ICONS = {
   "tool.wallJoins": "tabler:border-corners",
   "tool.joinGeometry": "tabler:layers-intersect",
   "tool.blend": "tabler:box-multiple",
+  "tool.extrude": "tabler:box",
+  "tool.instanced": "tabler:copy",
   "tool.revolution": "tabler:rotate-360",
   "tool.sweep": "tabler:route",
   "tool.importShape": "tabler:file-import",
@@ -223,6 +227,7 @@ export const ICONS = {
   "tool.editProfile": "tabler:vector-spline",
   "tool.resetProfile": "tabler:vector-off",
   "tool.symbolicArc": "tabler:chart-arcs",
+  "tool.symbolicLines": "tabler:vector-spline",
   "tool.equal": "tabler:equal",
   "tool.lockToPlane": "tabler:lock",
   "tool.handle": "tabler:hand-grab",
