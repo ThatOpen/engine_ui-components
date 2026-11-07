@@ -3,6 +3,7 @@ import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
 import { when } from "lit/directives/when.js";
+import { ICONS } from "../../core/icons";
 
 export interface SortableListItem {
   id: string;
@@ -186,7 +187,7 @@ export class SortableList extends LitElement {
               @dragend=${() => this._onDragEnd()}
             >
               <bim-label
-                icon="tabler:grip-vertical"
+                icon=${ICONS["ui.grip"]}
                 style="cursor:grab; color:var(--bim-ui_bg-contrast-60); flex-shrink:0;"
               ></bim-label>
               ${when(
