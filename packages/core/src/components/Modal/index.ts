@@ -1,6 +1,7 @@
 import { LitElement, PropertyValues, css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { styles } from "../../core/Manager/src/styles";
 
 /**
  * A modal dialog web component for BIM applications. HTML tag: bim-modal
@@ -9,7 +10,8 @@ import { createRef, ref } from "lit/directives/ref.js";
  * @fires cancel - Fired when the user clicks the cancel button or presses Escape.
  */
 export class Modal extends LitElement {
-  static styles = css`
+  // (Its scrollbar the library's one, as every panel's: Antonio 23-10, «el scrollbar… igual que el del resto»).
+  static styles = [styles.scrollbar, css`
     :host {
       display: contents;
     }
@@ -23,6 +25,12 @@ export class Modal extends LitElement {
       min-width: 20rem;
       max-width: min(90vw, 36rem);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    /* The dialog itself takes the focus as it opens (autofocus), not its first button: Cancel wore the purple ring of a
+       button chosen by keyboard on every modal (Antonio 23-10, «quita el borde morado del botón cancel del modal»). */
+    dialog:focus {
+      outline: none;
     }
 
     dialog::backdrop {
@@ -58,7 +66,7 @@ export class Modal extends LitElement {
       gap: 0.5rem;
       padding: 0.75rem 1rem;
     }
-  `;
+  `];
 
   /** Title displayed in the modal header. */
   @property({ type: String, reflect: true })
@@ -92,7 +100,11 @@ export class Modal extends LitElement {
     const dialog = this._dialog.value;
     if (!dialog) return;
     if (this.open) {
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) {
+        dialog.showModal();
+        // (Its own focus, not its first button's: see \`dialog:focus\`. \`autofocus\` alone left Cancel focused.)
+        dialog.focus({ preventScroll: true });
+      }
     } else {
       if (dialog.open) dialog.close();
     }
@@ -119,12 +131,39 @@ export class Modal extends LitElement {
     }
   }
 
+  /** Whether the press began on the dark around the box (its backdrop), not on the box. */
+  private _pressedOutside = false;
+
+  private _isOutside(e: MouseEvent) {
+    const dialog = this._dialog.value;
+    if (!dialog || e.target !== dialog) return false;
+    const box = dialog.getBoundingClientRect();
+    return e.clientX < box.left || e.clientX > box.right || e.clientY < box.top || e.clientY > box.bottom;
+  }
+
+  // A click on the dark around it closes it, as Cancel (Antonio 23-10: «al clicar en la zona oscura fuera del menú
+  // debería cerrarse automáticamente»). Only a press AND a release out there: a drag that began inside (selecting text
+  // in a field) and ended outside is no click away.
+  private _onDialogPointerDown = (e: PointerEvent) => {
+    this._pressedOutside = this._isOutside(e);
+  };
+
+  private _onDialogClick = (e: MouseEvent) => {
+    const away = this._pressedOutside && this._isOutside(e);
+    this._pressedOutside = false;
+    if (away && !this.loading) this._cancel();
+  };
+
   protected render() {
     return html`
       <dialog
+        autofocus
+        tabindex="-1"
         ${ref(this._dialog)}
         @cancel=${this._onDialogCancel}
         @close=${this._onDialogClose}
+        @pointerdown=${this._onDialogPointerDown}
+        @click=${this._onDialogClick}
       >
         ${this.label || this.icon ? html`
           <div class="header">

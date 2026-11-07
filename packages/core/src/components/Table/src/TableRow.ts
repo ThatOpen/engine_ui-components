@@ -1,4 +1,5 @@
 import { LitElement, PropertyValues, css, html, nothing } from "lit";
+import { columnWidthVar } from "./column-width";
 import { property, state } from "lit/decorators.js";
 import { Table, TableGroup } from "../index";
 import { TableCell } from "./TableCell";
@@ -21,7 +22,10 @@ export class TableRow<T extends TableRowData> extends LitElement {
       grid-area: Data;
       display: grid;
       min-height: var(--bim-table-row--min-h, 30px);
-      transition: all 0.15s;
+      /* Only what a hover or a selection changes: "all" animated the column
+         widths too, so a column dragged from a flexible width only jumped
+         once the pointer stopped (Antonio, 17-10). */
+      transition: background-color 0.15s, color 0.15s;
       gap: var(--bim-table-row--gap, 4px);
       /* Off by default; consumers opt into row dividers by setting the
          bim-table-row--border-bottom token on the bim-table host
@@ -36,6 +40,14 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
     :host([selected]) {
       background-color: color-mix(in lab, var(--bim-ui_bg-contrast-20) 30%, var(--bim-ui_bg-contrast-70) 10%);
+    }
+
+    /* Chosen by clicking (click-select): the one purple every choice has (the active buttons', the tabs'), not the
+       hover's grey nor a darker mix of it. */
+    :host([selected][click-chosen]) {
+      background-color: var(--bim-ui_main-base);
+      color: var(--bim-ui_main-contrast, #fff);
+      --bim-label--c: var(--bim-ui_main-contrast, #fff);
     }
 
     :host([is-header]) {
@@ -112,6 +124,32 @@ export class TableRow<T extends TableRowData> extends LitElement {
   }
 
   private _isRangeClick = false;
+
+  /** A row clicked in a table that chooses by clicking (`click-select`): see {@link Table.clickSelect}. */
+  private _onRowClick = (e: MouseEvent) => {
+    const table = this.table;
+    if (!table?.clickSelect || this.isHeader || !this.data) return;
+    // (What is clicked inside a row that does something of its own is left to it.)
+    const inside = e.composedPath().slice(0, e.composedPath().indexOf(this));
+    if (inside.some((n) => n instanceof HTMLElement && /^(BIM-BUTTON|BIM-CHECKBOX|BIM-DROPDOWN|BIM-TEXT-INPUT|BIM-NUMBER-INPUT|INPUT|A|BUTTON|SELECT|TEXTAREA)$/.test(n.tagName))) return;
+    const flat = Table.flattenData<T>(table.value).map((entry) => entry.data);
+    const anchor = table._lastSelectedData;
+    if (e.shiftKey && anchor && flat.includes(anchor)) {
+      const [a, b] = [flat.indexOf(anchor), flat.indexOf(this.data)].sort((x, y) => x - y);
+      // (With Ctrl as well, the run is added to what was chosen; alone, it is the choice.)
+      if (!(e.ctrlKey || e.metaKey)) table.selection.clear();
+      table.selection.add(...flat.slice(a, b + 1));
+      return;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      if (table.selection.has(this.data)) table.selection.delete(this.data);
+      else table.selection.add(this.data);
+    } else {
+      table.selection.clear();
+      table.selection.add(this.data);
+    }
+    table._lastSelectedData = this.data;
+  };
 
   private _onCheckboxClick = (e: MouseEvent) => {
     e.stopPropagation()
@@ -214,6 +252,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
   private _onDataSelected = () => {
     if (this.isHeader) { this._updateHeaderCheckbox(); return; }
     this.toggleAttribute("selected", this.table?.selection.has(this.data));
+    this.toggleAttribute("click-chosen", !!this.table?.clickSelect);
   };
 
   private _onDataDeselected = () => {
@@ -228,6 +267,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this.addEventListener("click", this._onRowClick);
     if (!this.table) return;
     this.table.addEventListener("dataselected", this._onDataSelected);
     this.table.addEventListener("datadeselected", this._onDataDeselected);
@@ -250,6 +290,7 @@ export class TableRow<T extends TableRowData> extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this.removeEventListener("click", this._onRowClick);
     this._observer.unobserve(this);
     this.table?.removeEventListener("dataselected", this._onDataSelected);
     this.table?.removeEventListener("datadeselected", this._onDataDeselected);
@@ -292,7 +333,9 @@ export class TableRow<T extends TableRowData> extends LitElement {
     if (!(this.table && this._intersecting)) return html`${nothing}`;
     const filtered = this.columns.filter(c => !this.hiddenColumns.includes(c.name as string));
     const columnNames = filtered.map(c => c.name);
-    const columnWidths = filtered.map(c => c.width);
+    // Each width through a variable of its column (`columnWidthVar`): a column
+    // being dragged wider changes only that variable, and no row renders again.
+    const columnWidths = filtered.map(c => `var(${columnWidthVar(c.name as string)}, ${c.width})`);
     this.style.gridTemplateAreas = `"${this.table.selectableRows ? "Selection" : ""} ${columnNames.join(" ")}"`;
     this.style.gridTemplateColumns = `${this.table.selectableRows ? "1.6rem" : ""} ${columnWidths.join(" ")}`;
 

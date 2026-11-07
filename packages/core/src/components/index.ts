@@ -1,6 +1,9 @@
+import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
+import { DateInput } from "./DateInput";
+import { InlineConfirm } from "./InlineConfirm";
 import { ContextMenu } from "./ContextMenu";
 import { Dropdown } from "./Dropdown";
 import { EmptyState } from "./EmptyState";
@@ -36,6 +39,7 @@ import { Slider, SliderChangedEventDetail } from "./Slider";
 import { PaperSpace } from "./PaperSpace";
 import { Modal } from "./Modal";
 import { SortableList } from "./SortableList";
+import { ToolStatus } from "./ToolStatus";
 
 /**
  * Extends the global HTMLElementTagNameMap interface to include custom element tags.
@@ -43,9 +47,12 @@ import { SortableList } from "./SortableList";
  */
 declare global {
   interface HTMLElementTagNameMap {
+    "bim-badge": Badge;
     "bim-button": Button;
     "bim-checkbox": Checkbox;
     "bim-color-input": ColorInput;
+    "bim-date-input": DateInput;
+    "bim-inline-confirm": InlineConfirm;
     "bim-context-menu": ContextMenu;
     "bim-dropdown": Dropdown;
     "bim-empty-state": EmptyState;
@@ -77,6 +84,7 @@ declare global {
     "bim-paper-space": PaperSpace;
     "bim-modal": Modal;
     "bim-sortable-list": SortableList;
+    "bim-tool-status": ToolStatus;
   }
 
   /**
@@ -104,9 +112,12 @@ declare global {
   }
 }
 
+export * from "./Badge";
 export * from "./Button";
 export * from "./Checkbox";
 export * from "./ColorInput";
+export * from "./DateInput";
+export * from "./InlineConfirm";
 export * from "./ContextMenu";
 export * from "./Dropdown";
 export * from "./EmptyState";
@@ -133,3 +144,4 @@ export * from "./Slider";
 export * from "./PaperSpace";
 export * from "./Modal";
 export * from "./SortableList";
+export * from "./ToolStatus";
