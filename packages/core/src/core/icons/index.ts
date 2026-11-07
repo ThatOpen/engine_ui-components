@@ -95,8 +95,8 @@ export const ICONS = {
   clash: "tabler:arrows-cross",
   // A layout's button and every button of the same thing ask for its key here.
   history: "mdi:source-branch",
-  // What is shown and how it is coloured, by rules.
-  lens: "mdi:filter-variant",
+  // What is shown and how it is coloured, by rules: a lens, never a filter.
+  lens: "mdi:magnify-scan",
   // Clashes and topics: what is wrong with the models.
   review: "mdi:vector-intersection",
   // The models' tree and their properties.
