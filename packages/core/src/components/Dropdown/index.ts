@@ -168,6 +168,12 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
         background-color: var(--bim-ui_bg-contrast-20);
       }
 
+      /* A long name wraps to the next line instead of being cut off at the list's edge (Antonio 9-11, a wall type in Designer). */
+      .option bim-label {
+        white-space: normal;
+        min-width: 0;
+      }
+
       .option:focus-visible {
         outline: 2px solid var(--bim-ui_accent-base);
         outline-offset: -2px;

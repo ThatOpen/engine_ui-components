@@ -1035,6 +1035,19 @@ export class SheetBoard extends LitElement {
 
     this._applyTransform();
 
+    // ⚠️ THE WEBGPU BUILD OF three HAS NO `WebGLRenderer`. An app bundled against
+    // `three.webgpu.js` (the components WebGPU config aliases bare `three` to it) hands us a
+    // namespace where this constructor is `undefined`, and `new (void 0)` killed the whole board
+    // at boot. The board's viewport preview is WebGL-only for now, so under that build it is
+    // SKIPPED with a warning instead of crashing: toolbars, paper space and DXF export all still
+    // work, only the live 3D thumbnail is missing until the preview is ported.
+    if (typeof THREE.WebGLRenderer !== "function") {
+      console.warn(
+        "[bim-sheet-board] three build has no WebGLRenderer (webgpu build?); " +
+          "the viewport preview is disabled.",
+      );
+      return;
+    }
     // alpha:true so the canvas is transparent outside scissored regions,
     // letting the board's CSS dot-grid background show through.
     this._renderer = new THREE.WebGLRenderer({
