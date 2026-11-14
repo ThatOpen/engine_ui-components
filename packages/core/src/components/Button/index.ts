@@ -35,8 +35,12 @@ export class Button extends LitElement {
       transition: background-color var(--bim-ui_duration-sm) var(--bim-ui_ease-standard);
     }
 
-    :host(:not([disabled]):not([loading]):hover) {
+    :host(:not([disabled]):not([loading]):not([active]):hover) {
       background-color: var(--bim-button--bgc-h, var(--bim-ui_bg-contrast-30));
+      cursor: pointer;
+    }
+
+    :host(:not([disabled]):not([loading])[active]:hover) {
       cursor: pointer;
     }
 
