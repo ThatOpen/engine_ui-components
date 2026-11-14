@@ -140,7 +140,7 @@ export class Dropdown extends LitElement implements HasValue<unknown[]>, HasName
 
       dialog[open] {
         display: flex;
-        animation: bim-dropdown-open 0.15s cubic-bezier(0.72, 0.1, 0.45, 2.35);
+        animation: bim-dropdown-open var(--bim-ui_duration-sm) var(--bim-ui_ease-standard);
       }
 
       dialog::backdrop {

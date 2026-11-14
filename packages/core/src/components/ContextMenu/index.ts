@@ -50,7 +50,13 @@ export class ContextMenu extends LitElement {
         background-color: var(--bim-ui_bg-contrast-50);
         transition:
           clip-path 0.2s cubic-bezier(0.72, 0.1, 0.43, 0.93),
-          transform 0.3s cubic-bezier(0.72, 0.1, 0.45, 2.35);
+          transform 0.3s var(--bim-ui_ease-standard);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        :host {
+          transition: none;
+        }
       }
 
       ::slotted(bim-button) {

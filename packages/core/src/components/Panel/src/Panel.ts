@@ -277,10 +277,14 @@ export class Panel extends LitElement implements HasName {
       },
     ];
 
+    const easeStandard =
+      getComputedStyle(this).getPropertyValue("--bim-ui_ease-standard").trim() ||
+      "cubic-bezier(0.65, 0.05, 0.36, 1)";
+
     this._animation?.cancel();
     this._animation = this.animate(animationKeyframes, {
       duration: 300,
-      easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
+      easing: easeStandard,
       direction: this.hidden ? "normal" : "reverse",
       fill: "forwards",
     });

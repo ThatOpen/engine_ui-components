@@ -255,6 +255,14 @@ export class TableGroup<T extends TableRowData> extends LitElement {
     const elementEnteringDelay = 0;
     const strokesDuration = 200;
     const crateDuration = 350;
+    // The caret used to rotate with a "back" easing (y values outside
+    // [0, 1]) that overshoots past its resting angle before settling — a
+    // bounce, same family of curve the dropdown's open used to have, and
+    // the one motion rule in these apps says never to use. Reading the
+    // token keeps this one spring-free curve, not a second copy of it.
+    const easeStandard =
+      getComputedStyle(this).getPropertyValue("--bim-ui_ease-standard").trim() ||
+      "cubic-bezier(0.65, 0.05, 0.36, 1)";
 
     requestAnimationFrame(() => {
       // Targeting Elements
@@ -305,7 +313,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
         caret?.animate(caretAnimKeyframes, {
           duration: crateDuration,
-          easing: "cubic-bezier(0.68, -0.55, 0.27, 1.55)",
+          easing: easeStandard,
           fill: "forwards",
           direction: this.childrenHidden ? "normal" : "reverse",
         });
