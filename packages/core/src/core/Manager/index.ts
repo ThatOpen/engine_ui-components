@@ -130,6 +130,7 @@ export class Manager {
     // Every hover text of every app through the one tooltip (`data-tooltip`, see `Tooltip.watch`).
     components.Tooltip.watch();
     Manager.defineCustomElement("bim-button", components.Button);
+    Manager.defineCustomElement("bim-button-group", components.ButtonGroup);
     Manager.defineCustomElement("bim-checkbox", components.Checkbox);
     Manager.defineCustomElement("bim-color-input", components.ColorInput);
     Manager.defineCustomElement("bim-date-input", components.DateInput);

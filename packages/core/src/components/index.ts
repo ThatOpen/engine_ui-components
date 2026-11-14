@@ -1,5 +1,6 @@
 import { Badge } from "./Badge";
 import { Button } from "./Button";
+import { ButtonGroup } from "./ButtonGroup";
 import { Checkbox } from "./Checkbox";
 import { ColorInput } from "./ColorInput";
 import { DateInput } from "./DateInput";
@@ -49,6 +50,7 @@ declare global {
   interface HTMLElementTagNameMap {
     "bim-badge": Badge;
     "bim-button": Button;
+    "bim-button-group": ButtonGroup;
     "bim-checkbox": Checkbox;
     "bim-color-input": ColorInput;
     "bim-date-input": DateInput;
@@ -114,6 +116,7 @@ declare global {
 
 export * from "./Badge";
 export * from "./Button";
+export * from "./ButtonGroup";
 export * from "./Checkbox";
 export * from "./ColorInput";
 export * from "./DateInput";
