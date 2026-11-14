@@ -60,6 +60,19 @@ No se ha publicado nada, no se ha tocado el remoto, no hay PR.
    `TypeError: css(...).components is not a function`. Se corrigió quitando las
    comillas invertidas del comentario.
 
+   **Segundo bug propio, de accesibilidad, encontrado después de dar el pase por
+   validado:** `display: none` sacaba gratis el contenido colapsado del orden de
+   tabulación y del árbol de accesibilidad. Una animación de altura con
+   `overflow: hidden` no hace eso — confirmado en Chrome: un `bim-checkbox`
+   dentro de una sección colapsada recibía el foco igualmente (con `.focus()` y,
+   por tanto, también con Tab). Se corrigió añadiendo `inert` a `.components`,
+   ligado a `collapsed && !fixed` y reactivo (se quita en el mismo render en que
+   `collapsed` pasa a `false`, antes de que termine la animación de expansión).
+   Reverificado: con `inert`, el foco no entra estando colapsado y sí entra en
+   cuanto se expande; probado también con `panel.collapseSections()` /
+   `expandSections()` sobre tres secciones a la vez, las tres cambian `inert` en
+   conjunto con `collapsed`.
+
 ## Lo mismo, encontrado por barrido y no en las capturas de Jesús
 
 Un rebote idéntico (`cubic-bezier(0.72, 0.1, 0.45, 2.35)`, la misma curva del

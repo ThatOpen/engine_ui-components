@@ -380,7 +380,10 @@ export class PanelSection extends LitElement implements HasName {
     return html`
       <div class="parent">
         ${header ? headerTemplate : null}
-        <div class="components">
+        <!-- display:none used to pull collapsed content out of the tab order
+             and the accessibility tree for free; a height animation doesn't,
+             so inert does that job explicitly now. -->
+        <div class="components" ?inert=${!this.fixed && !!this.collapsed}>
           <div class="components-inner">
             <slot></slot>
           </div>
