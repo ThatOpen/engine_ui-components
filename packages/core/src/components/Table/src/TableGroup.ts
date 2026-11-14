@@ -299,7 +299,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
           child.animate(childAnimKeyframes, {
             duration: elementEnteringDuration / 2,
             delay: 50 + index * elementEnteringDelay,
-            easing: "cubic-bezier(0.65, 0.05, 0.36, 1)",
+            easing: easeStandard,
             fill: "forwards",
           });
         });
@@ -327,7 +327,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
         rowVerticalBranch?.animate(verticalBranchAnimKeyframes, {
           duration: strokesDuration,
-          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          easing: easeStandard,
           delay: elementEnteringDelay,
           fill: "forwards",
           direction: this.childrenHidden ? "normal" : "reverse",
@@ -348,7 +348,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
           neededBranch.animate(exceptionalBranchAnimKeyframes, {
             duration: strokesDuration,
-            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+            easing: easeStandard,
             fill: "forwards",
             direction: this.childrenHidden ? "normal" : "reverse",
           });
@@ -363,7 +363,7 @@ export class TableGroup<T extends TableRowData> extends LitElement {
 
         childrenVerticalBranch?.animate(childrenVerticalBranchAnimKeyframes, {
           duration: strokesDuration * 1.2,
-          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          easing: easeStandard,
           fill: "forwards",
           delay: (elementEnteringDelay + strokesDuration) * 0.7,
         });
