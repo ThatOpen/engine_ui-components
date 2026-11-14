@@ -90,7 +90,7 @@ Dropdown) también estaba en:
 llevaba su curva escrita a mano. Se añadieron tres:
 
 ```css
---bim-ui_ease-standard: cubic-bezier(0.65, 0.05, 0.36, 1);
+--bim-ui_ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 --bim-ui_duration-sm: 0.15s;
 --bim-ui_duration-md: 0.2s;
 ```
@@ -98,6 +98,15 @@ llevaba su curva escrita a mano. Se añadieron tres:
 `Panel.ts` y `TableGroup.ts` (que ya usaban esa misma curva, escrita a mano en
 cada sitio) pasaron a leerla del token vía `getComputedStyle(this)`, para que
 quede una sola fuente en vez de cuatro copias idénticas.
+
+**Actualización 14-11 (motion-pass-2, Jesús):** el valor de
+`--bim-ui_ease-standard` cambió de `cubic-bezier(0.65, 0.05, 0.36, 1)` (un
+ajuste propio sin atribución) a `cubic-bezier(0.4, 0, 0.2, 1)` — la curva
+"standard" de Material Design de Google, con nombre y con respaldo. Mismo
+motivo que llevó a esta capa a existir: una sola curva, no una por
+componente — esta vez compartida también con `platform_builtin-components`
+(su `MOTION_EASE`, que antes copiaba una curva distinta, la del lado React
+de `platform_backend-api`, con la que esto nunca comparte pantalla).
 
 ## Revisado y dejado tal cual, a propósito
 
