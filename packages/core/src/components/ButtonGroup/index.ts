@@ -66,8 +66,16 @@ export class ButtonGroup extends LitElement {
       z-index: 2;
       flex: 1 1 0;
       height: var(--bim-button-group--h, 1.7rem);
-      /* The indicator supplies the active fill now, not each button's own
-         (the rest of the app's bim-buttons keep their default). */
+      /* The indicator supplies the active fill, not each button's own (the
+         rest of the app's bim-buttons keep their default) — but the RESTING
+         background needs the same treatment, not just the active one: left
+         at its default grey, every button still faded grey↔transparent on
+         its own, 0.15s, every time "active" toggled, layered behind the
+         indicator's own 0.2s slide (two colour changes where bim-tabs' own
+         .switcher — transparent at rest, nothing of its own while active —
+         only ever has one). That's the mismatch Jesús saw (14-11): not a
+         skip, a second fade nobody asked for racing the first. */
+      --bim-button--bgc: transparent;
       --bim-button--bgc-active: transparent;
     }
 
