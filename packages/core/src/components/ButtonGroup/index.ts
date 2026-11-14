@@ -166,11 +166,18 @@ export class ButtonGroup extends LitElement {
     }
     indicator.hidden = false;
     this._ro.observe(active);
-    // The first positioning snaps — nothing to slide from yet.
+    // Rects, not offsetLeft/offsetWidth: `active` is slotted (projected from
+    // the CONSUMER's light DOM, unlike bim-tabs' own `.switcher`s, which it
+    // renders itself inside its own shadow root) — its offsetParent resolves
+    // through the light DOM, not the flattened tree, and can land on some
+    // unrelated positioned ancestor out there instead of `.group` here. Rects
+    // always reflect the real rendered (flattened) position, slotted or not.
+    const groupRect = indicator.parentElement!.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
     indicator.style.transition = this._indicatorPositioned ? "" : "none";
     this._indicatorPositioned = true;
-    indicator.style.width = `${active.offsetWidth}px`;
-    indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+    indicator.style.width = `${activeRect.width}px`;
+    indicator.style.transform = `translateX(${activeRect.left - groupRect.left}px)`;
     indicator.style.borderRadius = getComputedStyle(active).borderRadius;
   }
 
