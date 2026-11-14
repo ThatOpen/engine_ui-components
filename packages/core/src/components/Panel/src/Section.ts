@@ -131,18 +131,24 @@ export class PanelSection extends LitElement implements HasName {
          content, collapsing to 0fr instead of snapping away with
          display:none. .components-inner carries the flex column layout
          (and the padding, kept off .components itself so a 0fr row is
-         truly zero, not padding-plus-zero) that used to live here directly. */
+         truly zero, not padding-plus-zero) that used to live here directly.
+         minmax(0, …), not a bare 1fr/0fr: a bare <flex> track is
+         minmax(auto, <flex>) by spec, and that auto floor is the track's
+         own max-content size — here, .components-inner's padding, which
+         is content-independent and never shrinks to nothing on its own.
+         Confirmed live (Jesús, 14-11): collapsed still measured 16px, a
+         visible sliver instead of fully closed — exactly that floor. */
       .components {
         grid-area: content;
         display: grid;
-        grid-template-rows: 1fr;
+        grid-template-rows: minmax(0, 1fr);
         box-sizing: border-box;
         overflow: hidden;
         transition: grid-template-rows var(--bim-ui_duration-md) var(--bim-ui_ease-standard);
       }
 
       :host(:not([fixed])[collapsed]) .components {
-        grid-template-rows: 0fr;
+        grid-template-rows: minmax(0, 0fr);
       }
 
       .components-inner {
