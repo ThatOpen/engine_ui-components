@@ -91,7 +91,11 @@ export class Button extends LitElement {
 
     :host([active]) {
       --bim-label--c: var(--bim-ui_main-contrast);
-      background-color: var(--bim-ui_main-base);
+      /* Overridable like --bim-button--bgc-h (hover) already is: a consumer
+         sliding its own indicator behind a row of these (motion-pass-2,
+         model-tree's view switcher) sets this to transparent so the two
+         fills don't double up. */
+      background-color: var(--bim-button--bgc-active, var(--bim-ui_main-base));
     }
 
     :host(:not([label]):not([icon])) .children {
