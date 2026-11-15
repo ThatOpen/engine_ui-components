@@ -93,6 +93,18 @@ const globalStyles = css`
     --bim-ui_font-family: "Plus Jakarta Sans", system-ui, -apple-system,
       sans-serif;
     --bim-ui_font-family-title: "Sora", var(--bim-ui_font-family);
+
+    /* Motion: one decelerate curve so panels, dropdowns, tabs and lists all
+       settle the same way, and never overshoot (no bounce). Two durations
+       for the two sizes of change a component makes: a color/border fade
+       (sm) and a reveal/slide that moves more pixels (md).
+       Material Design's own "standard" curve (motion-pass-2, Jesús 14-11):
+       a named, vetted reference instead of a value nobody could attribute —
+       and the one value every consumer of this library now shares with it,
+       platform_builtin-components' MOTION_EASE included. */
+    --bim-ui_ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --bim-ui_duration-sm: 0.15s;
+    --bim-ui_duration-md: 0.2s;
   }
 
   html {

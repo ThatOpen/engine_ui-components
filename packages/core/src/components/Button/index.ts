@@ -32,11 +32,15 @@ export class Button extends LitElement {
       pointer-events: none;
       background-color: var(--bim-button--bgc, var(--bim-ui_bg-contrast-20));
       border-radius: var(--bim-ui_size-2xs);
-      transition: background-color 0.15s;
+      transition: background-color var(--bim-ui_duration-sm) var(--bim-ui_ease-standard);
     }
 
-    :host(:not([disabled]):not([loading]):hover) {
+    :host(:not([disabled]):not([loading]):not([active]):hover) {
       background-color: var(--bim-button--bgc-h, var(--bim-ui_bg-contrast-30));
+      cursor: pointer;
+    }
+
+    :host(:not([disabled]):not([loading])[active]:hover) {
       cursor: pointer;
     }
 
@@ -91,7 +95,11 @@ export class Button extends LitElement {
 
     :host([active]) {
       --bim-label--c: var(--bim-ui_main-contrast);
-      background-color: var(--bim-ui_main-base);
+      /* Overridable like --bim-button--bgc-h (hover) already is: a consumer
+         sliding its own indicator behind a row of these (motion-pass-2,
+         model-tree's view switcher) sets this to transparent so the two
+         fills don't double up. */
+      background-color: var(--bim-button--bgc-active, var(--bim-ui_main-base));
     }
 
     :host(:not([label]):not([icon])) .children {

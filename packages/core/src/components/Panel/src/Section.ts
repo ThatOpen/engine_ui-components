@@ -55,6 +55,10 @@ export class PanelSection extends LitElement implements HasName {
         .expand-icon {
           transition: none;
         }
+
+        .components {
+          transition: none;
+        }
       }
 
       :host(:not([fixed])) .header:hover .title > bim-label {
@@ -122,20 +126,41 @@ export class PanelSection extends LitElement implements HasName {
       }
       */
 
+      /* .components is its own single-row grid so its height — not just
+         its display — can transition: a 1fr row sized to the slotted
+         content, collapsing to 0fr instead of snapping away with
+         display:none. .components-inner carries the flex column layout
+         (and the padding, kept off .components itself so a 0fr row is
+         truly zero, not padding-plus-zero) that used to live here directly.
+         minmax(0, …), not a bare 1fr/0fr: a bare <flex> track is
+         minmax(auto, <flex>) by spec, and that auto floor is the track's
+         own max-content size — here, .components-inner's padding, which
+         is content-independent and never shrinks to nothing on its own.
+         Confirmed live (Jesús, 14-11): collapsed still measured 16px, a
+         visible sliver instead of fully closed — exactly that floor. */
       .components {
         grid-area: content;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        padding: 0.5rem;
-        gap: 0.5rem;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr);
         box-sizing: border-box;
-        overflow: auto;
+        overflow: hidden;
+        transition: grid-template-rows var(--bim-ui_duration-md) var(--bim-ui_ease-standard);
       }
 
       :host(:not([fixed])[collapsed]) .components {
-        display: none;
+        grid-template-rows: minmax(0, 0fr);
       }
+
+      .components-inner {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        min-width: 0;
+        padding: 0.5rem;
+        gap: 0.5rem;
+        overflow: auto;
+      }
+
       /* Inside a panel, the panel is the one scroll container: a section
          grows with its content instead of scrolling on its own, so menus
          never show two scrollbars. Sections that must scroll by themselves
@@ -149,7 +174,7 @@ export class PanelSection extends LitElement implements HasName {
         overflow: visible;
       }
 
-      :host(:not([scrollable])) .components {
+      :host(:not([scrollable])) .components-inner {
         overflow: visible;
       }
 
@@ -361,8 +386,13 @@ export class PanelSection extends LitElement implements HasName {
     return html`
       <div class="parent">
         ${header ? headerTemplate : null}
-        <div class="components">
-          <slot></slot>
+        <!-- display:none used to pull collapsed content out of the tab order
+             and the accessibility tree for free; a height animation doesn't,
+             so inert does that job explicitly now. -->
+        <div class="components" ?inert=${!this.fixed && !!this.collapsed}>
+          <div class="components-inner">
+            <slot></slot>
+          </div>
         </div>
       </div>
     `;

@@ -87,9 +87,35 @@ export class Tabs extends LitElement {
 
       .switcher[data-active] {
         --bim-label--c: var(--bim-ui_bg-contrast-100);
-        /* Active tab = the ThatOpen brand purple (main-base #6528d7) by default,
-           not a gray. Themeable via --bim-tabs-switcher--active-bgc. */
+      }
+
+      /* The active tab's purple fill, as one element that slides and resizes
+         to the active switcher's own rect (set from JS in _updateIndicator)
+         instead of each switcher instantly snapping its own background on
+         and off — same reason the dropdown's open lost its bounce: one
+         discrete color-swap here, a spring there, read as unplanned. Sits
+         behind the switchers (z-index below --bim-tabs-switcher--z) so their
+         label and hover state still render on top of it. Themeable via the
+         same --bim-tabs-switcher--active-bgc as before. */
+      .indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        border-radius: inherit;
         background-color: var(--bim-tabs-switcher--active-bgc, var(--bim-ui_main-base));
+        transition: transform var(--bim-ui_duration-md) var(--bim-ui_ease-standard),
+          width var(--bim-ui_duration-md) var(--bim-ui_ease-standard);
+        pointer-events: none;
+      }
+
+      .indicator[hidden] {
+        display: none;
+      }
+
+      :host([switchers-compact]) .indicator {
+        display: none;
       }
 
       .switcher:focus-visible {
@@ -282,6 +308,10 @@ export class Tabs extends LitElement {
         .switcher {
           transition: none;
         }
+
+        .indicator {
+          transition: none;
+        }
       }
     `,
   ];
@@ -299,6 +329,15 @@ export class Tabs extends LitElement {
   private _ro?: ResizeObserver;
   private _dialogRef = createRef<HTMLDialogElement>();
   private _triggerRef = createRef<HTMLButtonElement>();
+  private _indicatorRef = createRef<HTMLDivElement>();
+  private _indicatorPositioned = false;
+  // The active switcher's own width can change after the indicator is first
+  // positioned — most commonly because its text was measured in a fallback
+  // font before @font-face finished loading. Observing that one element
+  // directly (not `this`, whose own box rarely changes in these cases) is
+  // what catches that and re-measures, instead of the indicator being stuck
+  // narrower than the tab it is meant to cover until the next click.
+  private _switcherRo = new ResizeObserver(() => this._updateIndicator());
 
   /** Indicates whether the tabs are positioned at the bottom of the container. */
   @property({ type: Boolean, reflect: true })
@@ -362,6 +401,7 @@ export class Tabs extends LitElement {
         child.removeEventListener("hiddenchange", this._onTabHiddenChange);
     }
     this._ro?.disconnect();
+    this._switcherRo.disconnect();
     this._dialogRef.value?.close();
   }
 
@@ -376,6 +416,7 @@ export class Tabs extends LitElement {
     if (changed.has("_switcherData")) {
       requestAnimationFrame(() => this._checkOverflow());
     }
+    this._updateIndicator();
   }
 
   private _checkOverflow() {
@@ -387,6 +428,31 @@ export class Tabs extends LitElement {
     const available = this.clientWidth;
     const shouldUse = needed > available;
     if (shouldUse !== this._useDropdown) this._useDropdown = shouldUse;
+    this._updateIndicator();
+  }
+
+  /** Slides and resizes `.indicator` to match the active `.switcher`'s own
+   * rect — called after every render and on every resize, since both the
+   * active tab and the switchers' widths can change independently. */
+  private _updateIndicator() {
+    const indicator = this._indicatorRef.value;
+    if (!indicator) return;
+    const active = this._useDropdown
+      ? null
+      : this.renderRoot.querySelector<HTMLElement>(".switcher[data-active]");
+    this._switcherRo.disconnect();
+    if (!active) {
+      indicator.style.width = "0px";
+      return;
+    }
+    this._switcherRo.observe(active);
+    // The first positioning snaps — there is nothing to slide from yet, and
+    // animating in from the indicator's initial 0-width would read as its
+    // own, unrelated motion rather than the lack of one.
+    indicator.style.transition = this._indicatorPositioned ? "" : "none";
+    this._indicatorPositioned = true;
+    indicator.style.width = `${active.offsetWidth}px`;
+    indicator.style.transform = `translateX(${active.offsetLeft}px)`;
   }
 
   private _onTriggerClick() {
@@ -538,6 +604,12 @@ export class Tabs extends LitElement {
           aria-label=${this.label ?? nothing}
           @keydown=${this._useDropdown ? nothing : this._onSwitchersKeyDown}
         >
+          <div
+            class="indicator"
+            ${ref(this._indicatorRef)}
+            ?hidden=${this._useDropdown}
+            aria-hidden="true"
+          ></div>
           ${this._useDropdown
             ? html`
                 <button
