@@ -4,19 +4,20 @@
 // (tabler: outlined, one stroke) so that nothing filled stands among them. An app asks `ICONS["visibility.hide"]`, never
 // an icon name of its own; a meaning that is missing is added HERE, and a change here reaches every app at once.
 // Our own format icons (`format:*`) are registered as this module loads (`format-icons.ts`).
-export { FORMATS_DRAWN, formatIcon } from "./format-icons";
+export { FORMATS_DRAWN, formatIcon, RHINO_MARK_PATH } from "./format-icons";
 export type { FormatDrawn } from "./format-icons";
 
 export const ICONS = {
   // Native applications: their initial in an outline.
   "app.revit": "tabler:square-letter-r",
   "app.autocad": "tabler:square-letter-a",
-  "app.rhino": "tabler:hexagon-letter-r",
+  "app.rhino": "format:3dm",
   "app.ifc": "format:ifc",
 
   // Formats. Ours (format-icons.ts): the file with its letters, or the format's own mark.
   "format.ifc": "format:ifc",
   "format.rvt": "tabler:square-letter-r",
+  "format.3dm": "format:3dm",
   "format.frag": "format:frag",
   "format.pdf": "tabler:file-type-pdf",
   "format.csv": "tabler:file-type-csv",
