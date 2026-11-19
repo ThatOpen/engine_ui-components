@@ -185,7 +185,7 @@ export const ICONS = {
   "element.stripFooting": "mdi:format-align-bottom",
   "element.pile": "mdi:arrow-collapse-down",
   "element.rebar": "tabler:line-dashed",
-  "element.grid": "drawn:grid",
+  "element.grid": "tabler:grid-3x3",
   "element.panel": "mdi:border-none-variant",
   "element.form": "tabler:cube",
   "element.opening": "tabler:square-off",

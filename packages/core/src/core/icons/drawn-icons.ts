@@ -30,16 +30,6 @@ const DRAWINGS: Record<string, Drawing> = {
   wall: { paths: ["M3 6 L21 6 L21 18 L3 18 Z", "M3 12 L21 12", "M10 6 L10 12", "M14 12 L14 18"] },
   // The ground as two peaks (tabler's mountain read as a volcano, Antonio 19-11).
   ground: { paths: ["M2 19 L9 7 L12.34 12.73", "M12.34 12.73 L15.5 8 L22 19", "M2 19 L22 19"] },
-  // Grid lines with their bubbles, as drawn on a plan.
-  grid: {
-    paths: ["M9 7 L9 21", "M17 7 L17 21", "M7 10 L21 10", "M7 17 L21 17"],
-    circles: [
-      [9, 4.5, 2.5],
-      [17, 4.5, 2.5],
-      [4.5, 10, 2.5],
-      [4.5, 17, 2.5],
-    ],
-  },
 };
 
 const body = ({ paths, circles = [] }: Drawing) =>
