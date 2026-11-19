@@ -6,6 +6,8 @@
 // Our own format icons (`format:*`) are registered as this module loads (`format-icons.ts`).
 export { FORMATS_DRAWN, formatIcon, RHINO_MARK_PATH } from "./format-icons";
 export type { FormatDrawn } from "./format-icons";
+// And the shapes no family has (`drawn:*`, `drawn-icons.ts`): the slab.
+export { DRAWN } from "./drawn-icons";
 
 export const ICONS = {
   // Native applications: their initial in an outline.
@@ -163,9 +165,9 @@ export const ICONS = {
   "element.curtainWall": "mdi:view-grid-outline",
   "element.door": "tabler:door",
   "element.window": "mdi:window-closed-variant",
-  "element.component": "mdi:sofa-outline",
+  "element.component": "lucide:package-open",
   "element.generic": "mdi:cube-outline",
-  "element.floor": "mdi:floor-plan",
+  "element.floor": "drawn:slab",
   "element.ceiling": "mdi:ceiling-light-outline",
   "element.roof": "mdi:home-roof",
   "element.stair": "mdi:stairs",
