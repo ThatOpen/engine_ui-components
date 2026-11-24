@@ -112,6 +112,8 @@ export class ButtonGroup extends LitElement {
   private _indicatorRef = createRef<HTMLDivElement>();
   private _indicatorPositioned = false;
   private _ro = new ResizeObserver(() => this._updateIndicator());
+  /** The button `_ro` observes now, or null. */
+  private _observed: HTMLElement | null = null;
   private _bound = new WeakSet<Element>();
 
   constructor() {
@@ -122,6 +124,7 @@ export class ButtonGroup extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     this._ro.disconnect();
+    this._observed = null;
     for (const el of this.children) {
       if (el.tagName === "BIM-BUTTON") el.removeEventListener("click", this._onClick);
     }
@@ -167,13 +170,20 @@ export class ButtonGroup extends LitElement {
     const indicator = this._indicatorRef.value;
     if (!indicator) return;
     const active = this.querySelector<HTMLElement>("bim-button[active]");
-    this._ro.disconnect();
+    // Observed again only when the active button is another one: observing an
+    // element always notifies once, so re-observing it from its own observer's
+    // callback notified again every frame — a resize loop that never ended
+    // (as bim-tabs' indicator, 25-11).
+    if (active !== this._observed) {
+      this._ro.disconnect();
+      if (active) this._ro.observe(active);
+      this._observed = active;
+    }
     if (!active) {
       indicator.hidden = true;
       return;
     }
     indicator.hidden = false;
-    this._ro.observe(active);
     // Rects, not offsetLeft/offsetWidth: `active` is slotted (projected from
     // the CONSUMER's light DOM, unlike bim-tabs' own `.switcher`s, which it
     // renders itself inside its own shadow root) — its offsetParent resolves

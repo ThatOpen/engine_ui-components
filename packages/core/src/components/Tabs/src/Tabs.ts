@@ -338,6 +338,8 @@ export class Tabs extends LitElement {
   // what catches that and re-measures, instead of the indicator being stuck
   // narrower than the tab it is meant to cover until the next click.
   private _switcherRo = new ResizeObserver(() => this._updateIndicator());
+  /** The switcher `_switcherRo` observes now, or null. */
+  private _observedSwitcher: HTMLElement | null = null;
 
   /** Indicates whether the tabs are positioned at the bottom of the container. */
   @property({ type: Boolean, reflect: true })
@@ -402,6 +404,7 @@ export class Tabs extends LitElement {
     }
     this._ro?.disconnect();
     this._switcherRo.disconnect();
+    this._observedSwitcher = null;
     this._dialogRef.value?.close();
   }
 
@@ -440,12 +443,20 @@ export class Tabs extends LitElement {
     const active = this._useDropdown
       ? null
       : this.renderRoot.querySelector<HTMLElement>(".switcher[data-active]");
-    this._switcherRo.disconnect();
+    // Observed again only when the active switcher is another one: observing
+    // an element always notifies once, so re-observing the same switcher from
+    // its own observer's callback notified again on every frame — a resize
+    // loop that never ended (the browser's «ResizeObserver loop completed with
+    // undelivered notifications», ~130 a second in the Coordinator, 25-11).
+    if (active !== this._observedSwitcher) {
+      this._switcherRo.disconnect();
+      if (active) this._switcherRo.observe(active);
+      this._observedSwitcher = active;
+    }
     if (!active) {
       indicator.style.width = "0px";
       return;
     }
-    this._switcherRo.observe(active);
     // The first positioning snaps — there is nothing to slide from yet, and
     // animating in from the indicator's initial 0-width would read as its
     // own, unrelated motion rather than the lack of one.
